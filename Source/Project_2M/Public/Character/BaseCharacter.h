@@ -12,13 +12,5 @@ class PROJECT_2M_API ABaseCharacter : public ACharacter
 
 public:
 	ABaseCharacter();
-
-protected:
-	virtual void BeginPlay() override;
-
-public:	
-	virtual void Tick(float DeltaTime) override;
-
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
 };
