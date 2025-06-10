@@ -15,7 +15,9 @@ public class Project_2M : ModuleRules
 			"InputCore",
 			"GameplayTags",
 			"EnhancedInput",
-			
+			"AnimGraphRuntime",
+			"GameplayAbilities",
+			"GameplayTasks",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

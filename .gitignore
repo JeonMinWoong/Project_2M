@@ -74,14 +74,15 @@ Plugins/*/Intermediate/*
 DerivedDataCache/*
 
 # My lgnore
-Binaries/*
+Binaries/
 Build/*
-Intermediate/*
-DerivedDataCache/*
-Saved/*
-Package/*
-Plugins/*
-.idea/*
-.vs/*
-.vsconfig
+DerivedDataCache/
+Intermediate/
+Saved/
+.vs/
+.vscode/
+*.VC.db
+*.VC.VC.opendb
+.idea/
 .sln
+.vsconfig

@@ -5,10 +5,10 @@
 #include "CoreMinimal.h"
 #include "EnhancedInputComponent.h"
 #include "GameplayTagContainer.h"
-#include "DataAssets/CharacterDataAsset.h"
+#include "DataAssets/DataAsset_InputConfig.h"
 #include "CharacterInputComponent.generated.h"
 
-class UCharacterDataAsset;
+class UDataAsset_InputConfig;
 /**
  * 
  */
@@ -19,12 +19,12 @@ class PROJECT_2M_API UCharacterInputComponent : public UEnhancedInputComponent
 
 public:
 	template<class UserObject, typename CallbackFunc>
-	void BindNativeInputAction(const UCharacterDataAsset* InInputConfig, const FGameplayTag InInputTag,
+	void BindNativeInputAction(const UDataAsset_InputConfig* InInputConfig, const FGameplayTag InInputTag,
 		ETriggerEvent TriggerEvent, UserObject* ContextObject, CallbackFunc Func);
 };
 
 template<class UserObject, typename CallbackFunc>
-inline void UCharacterInputComponent::BindNativeInputAction(const UCharacterDataAsset* InInputConfig,
+inline void UCharacterInputComponent::BindNativeInputAction(const UDataAsset_InputConfig* InInputConfig,
 	const FGameplayTag InInputTag, ETriggerEvent TriggerEvent, UserObject* ContextObject, CallbackFunc Func)
 {
 	if (UInputAction* FoundAction = InInputConfig->FindNativeInputActionByTag(InInputTag))
