@@ -6,8 +6,8 @@
 #include "Engine/DataAsset.h"
 #include "DataAsset_StartUpDataBase.generated.h"
 
-class UToMinAbilitySystemComponent;
-class UToMinGameplayAbility;
+class UTwoMinAbilitySystemComponent;
+class UTwoMinGameplayAbility;
 /**
  * 
  */
@@ -17,12 +17,12 @@ class PROJECT_2M_API UDataAsset_StartUpDataBase : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	virtual void GiveToAbilitySystemComponent(UToMinAbilitySystemComponent* InAscToGive, int32 ApplyLevel = 1);
+	virtual void GiveToAbilitySystemComponent(UTwoMinAbilitySystemComponent* InAscToGive, int32 ApplyLevel = 1);
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "StartUpData")
-	TArray<TSubclassOf<UToMinGameplayAbility>> ActivateOnGivenAbilities;
+	TArray<TSubclassOf<UTwoMinGameplayAbility>> ActivateOnGivenAbilities;
 
-	void GrantAbilities(const TArray<TSubclassOf<UToMinGameplayAbility>>& InAbilitiesToGive,
-		UToMinAbilitySystemComponent* InAscToGive, int32 ApplyLevel = 1); 
+	void GrantAbilities(const TArray<TSubclassOf<UTwoMinGameplayAbility>>& InAbilitiesToGive,
+		UTwoMinAbilitySystemComponent* InAscToGive, int32 ApplyLevel = 1); 
 };

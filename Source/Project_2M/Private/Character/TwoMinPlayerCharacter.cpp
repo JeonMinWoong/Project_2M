@@ -3,9 +3,10 @@
 
 #include "Character/TwoMinPlayerCharacter.h"
 
-#include "ToMinGameplayTag.h"
+#include "TwoMinGameplayTag.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
+#include "Compnents/Combat/PlayerCombatComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "DataAssets/StartUpData/DataAsset_StartUpDataBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -34,12 +35,19 @@ ATwoMinPlayerCharacter::ATwoMinPlayerCharacter()
 	CameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	CameraComponent->bUsePawnControlRotation = false;
 	CameraComponent->FieldOfView = FieldOfView;
-
+	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
 	GetCharacterMovement()->RotationRate = CharacterRotationRate;
 
+	PlayerCombatComponent = CreateDefaultSubobject<UPlayerCombatComponent>("PlayerCombatComponent");
+	
 	bIsRun = false;
+}
+
+UBaseCombatComponent* ATwoMinPlayerCharacter::GetCombatComponent() const
+{
+	return PlayerCombatComponent;
 }
 
 void ATwoMinPlayerCharacter::PossessedBy(AController* NewController)
@@ -50,7 +58,7 @@ void ATwoMinPlayerCharacter::PossessedBy(AController* NewController)
 	{
 		if (UDataAsset_StartUpDataBase* LoadedData = CharacterStartUpData.LoadSynchronous())
 		{
-			LoadedData->GiveToAbilitySystemComponent(ToMinAbilitySystemComponent);
+			LoadedData->GiveToAbilitySystemComponent(TwoMinAbilitySystemComponent);
 		}
 	}
 }
@@ -68,15 +76,15 @@ void ATwoMinPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	
 	UCharacterInputComponent* CharacterInputComponent = CastChecked<UCharacterInputComponent>(PlayerInputComponent);
 
-	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, ToMinGameplayTag::InputTag_Move,
+	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_Move,
 		ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
-	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, ToMinGameplayTag::InputTag_Move,
+	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_Move,
 	ETriggerEvent::Completed, this, &ThisClass::Stoped);
 
-	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, ToMinGameplayTag::InputTag_Look,
+	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_Look,
 		ETriggerEvent::Triggered, this, &ThisClass::Input_Look);
 
-	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, ToMinGameplayTag::InputTag_Toggle_Run,
+	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_Toggle_Run,
 		ETriggerEvent::Started, this, &ThisClass::Input_ToggleRun);
 }
 

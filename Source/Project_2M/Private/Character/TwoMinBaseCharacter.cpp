@@ -1,7 +1,7 @@
 
 #include "Character/TwoMinBaseCharacter.h"
 
-#include "AbilitySystem/ToMinAbilitySystemComponent.h"
+#include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 
 ATwoMinBaseCharacter::ATwoMinBaseCharacter()
 {
@@ -10,16 +10,21 @@ ATwoMinBaseCharacter::ATwoMinBaseCharacter()
 
 	GetMesh()->bReceivesDecals = false;
 
-	ToMinAbilitySystemComponent =
-		CreateDefaultSubobject<UToMinAbilitySystemComponent>(TEXT("ToMinAbilitySystemComponent"));
+	TwoMinAbilitySystemComponent =
+		CreateDefaultSubobject<UTwoMinAbilitySystemComponent>(TEXT("ToMinAbilitySystemComponent"));
+}
+
+UBaseCombatComponent* ATwoMinBaseCharacter::GetCombatComponent() const
+{
+	return nullptr;
 }
 
 void ATwoMinBaseCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	if (ToMinAbilitySystemComponent)
+	if (TwoMinAbilitySystemComponent)
 	{
-		ToMinAbilitySystemComponent->InitAbilityActorInfo(this, this);	
+		TwoMinAbilitySystemComponent->InitAbilityActorInfo(this, this);	
 	}
 }

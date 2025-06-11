@@ -3,22 +3,22 @@
 
 #include "DataAssets/StartUpData/DataAsset_StartUpDataBase.h"
 
-#include "AbilitySystem/ToMinAbilitySystemComponent.h"
-#include "AbilitySystem/Ability/ToMinGameplayAbility.h"
+#include "AbilitySystem/TwoMinAbilitySystemComponent.h"
+#include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
 
 
-void UDataAsset_StartUpDataBase::GiveToAbilitySystemComponent(UToMinAbilitySystemComponent* InAscToGive,
-	int32 ApplyLevel)
+void UDataAsset_StartUpDataBase::GiveToAbilitySystemComponent(UTwoMinAbilitySystemComponent* InAscToGive,
+                                                              int32 ApplyLevel)
 {
 	GrantAbilities(ActivateOnGivenAbilities, InAscToGive, ApplyLevel);
 }
 
-void UDataAsset_StartUpDataBase::GrantAbilities(const TArray<TSubclassOf<UToMinGameplayAbility>>& InAbilitiesToGive,
-	UToMinAbilitySystemComponent* InAscToGive, int32 ApplyLevel)
+void UDataAsset_StartUpDataBase::GrantAbilities(const TArray<TSubclassOf<UTwoMinGameplayAbility>>& InAbilitiesToGive,
+	UTwoMinAbilitySystemComponent* InAscToGive, int32 ApplyLevel)
 {
 	if (InAbilitiesToGive.IsEmpty()) return;
 
-	for (const TSubclassOf<UToMinGameplayAbility> Ability : InAbilitiesToGive)
+	for (const TSubclassOf<UTwoMinGameplayAbility> Ability : InAbilitiesToGive)
 	{
 		if (!Ability) continue;
 

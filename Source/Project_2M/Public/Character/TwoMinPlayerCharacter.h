@@ -6,6 +6,7 @@
 #include "TwoMinBaseCharacter.h"
 #include "TwoMinPlayerCharacter.generated.h"
 
+class UPlayerCombatComponent;
 struct FInputActionValue;
 class UDataAsset_InputConfig;
 class USpringArmComponent;
@@ -21,11 +22,12 @@ class PROJECT_2M_API ATwoMinPlayerCharacter : public ATwoMinBaseCharacter
 public:
 	ATwoMinPlayerCharacter();
 
+	virtual UBaseCombatComponent* GetCombatComponent() const override;
+	
 protected:
 	//~ Begin APawn Interface.
 	virtual void PossessedBy(AController* NewController) override;
 	//~ End APawn Interface
-
 	
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
@@ -36,6 +38,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	UPlayerCombatComponent* PlayerCombatComponent;
 	
 	/** CharacterInfo **/
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|Capsule")

@@ -5,8 +5,9 @@
 #include "GameFramework/Character.h"
 #include "TwoMinBaseCharacter.generated.h"
 
+class UBaseCombatComponent;
 class UDataAsset_StartUpDataBase;
-class UToMinAbilitySystemComponent;
+class UTwoMinAbilitySystemComponent;
 
 UCLASS()
 class PROJECT_2M_API ATwoMinBaseCharacter : public ACharacter
@@ -16,13 +17,15 @@ class PROJECT_2M_API ATwoMinBaseCharacter : public ACharacter
 public:
 	ATwoMinBaseCharacter();
 
+	virtual UBaseCombatComponent* GetCombatComponent() const;
+	
 protected:
 	//~ Begin APawn Interface.
 	virtual void PossessedBy(AController* NewController) override;
 	//~ End APawn Interface
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AbilitySystem")
-	UToMinAbilitySystemComponent* ToMinAbilitySystemComponent;
+	UTwoMinAbilitySystemComponent* TwoMinAbilitySystemComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData")
 	TSoftObjectPtr<UDataAsset_StartUpDataBase> CharacterStartUpData;
