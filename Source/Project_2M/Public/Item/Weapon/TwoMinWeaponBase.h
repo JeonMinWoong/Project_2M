@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "TwoMinWeaponBase.generated.h"
 
+struct FTwoMinPlayerWeaponData;
 class UBoxComponent;
 
 DECLARE_DELEGATE_OneParam(FOnTargetInteractedDelegate, AActor*);
@@ -20,6 +21,8 @@ public:
 	
 	FOnTargetInteractedDelegate OnWeaponHitTarget;
 	FOnTargetInteractedDelegate OnWeaponPulledFromTarget;
+
+	virtual FTwoMinPlayerWeaponData GetWeaponData() const;
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapons")

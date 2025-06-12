@@ -3,3 +3,7 @@
 
 #include "Item/Weapon/TwoMinWeaponPlayer.h"
 
+FTwoMinPlayerWeaponData ATwoMinWeaponPlayer::GetWeaponData() const
+{
+	return PlayerWeaponData;
+}

@@ -28,6 +28,12 @@ protected:
 		const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	//~ End UGameplayAbility Interface
 
+	void PlayToAnimMontage(UAnimMontage* AnimMontage);
+	
 	UPROPERTY(EditDefaultsOnly, Category = "AbilityPoicy")
 	EToMinAbilityActivationPolicy AbilityActivationPolicy = EToMinAbilityActivationPolicy::OnTriggered;
+
+private:
+	UFUNCTION()
+	void CustomEndAbility();
 };

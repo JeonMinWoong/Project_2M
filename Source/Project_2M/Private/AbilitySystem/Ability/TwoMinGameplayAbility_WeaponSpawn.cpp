@@ -3,9 +3,13 @@
 
 #include "AbilitySystem/Ability/TwoMinGameplayAbility_WeaponSpawn.h"
 
+#include "EnhancedInputSubsystems.h"
+#include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "Character/TwoMinBaseCharacter.h"
+#include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/Combat/BaseCombatComponent.h"
 #include "Item/Weapon/TwoMinWeaponBase.h"
+#include "ToMinTypes/TwoMinStructTypes.h"
 
 void UTwoMinGameplayAbility_WeaponSpawn::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
@@ -16,11 +20,17 @@ void UTwoMinGameplayAbility_WeaponSpawn::ActivateAbility(const FGameplayAbilityS
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.Owner = GetAvatarActorFromActorInfo();
 		SpawnParameters.Instigator = Cast<APawn>(GetAvatarActorFromActorInfo());
-		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		SpawnParameters.SpawnCollisionHandlingOverride =
+			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 		SpawnParameters.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
 		
 		ATwoMinWeaponBase* SpawnWeapon =
-			GetWorld()->SpawnActor<ATwoMinWeaponBase>(WeaponClass, FVector(), FRotator(), SpawnParameters);
+			GetWorld()->SpawnActor<ATwoMinWeaponBase>(
+				WeaponClass,
+				FVector(),
+				FRotator(),
+				SpawnParameters
+			);
 
 		if (SpawnWeapon)
 		{
@@ -41,6 +51,36 @@ void UTwoMinGameplayAbility_WeaponSpawn::ActivateAbility(const FGameplayAbilityS
 				if (UBaseCombatComponent* CombatComponent = OwnerCharacter->GetCombatComponent())
 				{
 					CombatComponent->RegisterSpawnedWeapon(WeaponSpawnTag, SpawnWeapon);
+				}
+
+				if (ATwoMinPlayerCharacter* Player = Cast<ATwoMinPlayerCharacter>(OwnerCharacter))
+				{
+					APlayerController* PC = GetWorld()->GetFirstPlayerController();
+					if (PC)
+					{
+						ULocalPlayer* LocalPlayer = PC ->GetLocalPlayer();
+						if (LocalPlayer)
+						{
+							UEnhancedInputLocalPlayerSubsystem* EnhancedInputLocalPlayerSubsystem =
+							ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+							if (EnhancedInputLocalPlayerSubsystem)
+							{
+								const FTwoMinPlayerWeaponData& WeaponData = SpawnWeapon->GetWeaponData();
+								
+								EnhancedInputLocalPlayerSubsystem->AddMappingContext(
+									WeaponData.WeaponInputMappingContext,
+									1
+								);
+
+								TArray<FGameplayAbilitySpecHandle> GrantedAbilityHandles;
+								Player->GetAbilitySystemComponent()->GrantHeroWeaponAbilities(
+									WeaponData.DefaultWeaponAbilities,
+									1,
+									GrantedAbilityHandles
+								);
+							}
+						}
+					}
 				}
 			}
 		}

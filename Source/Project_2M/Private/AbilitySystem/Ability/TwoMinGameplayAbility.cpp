@@ -4,6 +4,7 @@
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
 
 #include "AbilitySystemComponent.h"
+#include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 
 void UTwoMinGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
@@ -31,6 +32,31 @@ void UTwoMinGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 			ActorInfo->AbilitySystemComponent->ClearAbility(Handle);
 		}
 	}
+}
+
+void UTwoMinGameplayAbility::PlayToAnimMontage(UAnimMontage* AnimMontage)
+{
+	UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
+		this, NAME_None, AnimMontage
+	);
+
+	if (!Task) return;
+	
+	Task->OnCompleted.AddDynamic(this, &ThisClass::CustomEndAbility);
+	Task->OnBlendOut.AddDynamic(this, &ThisClass::CustomEndAbility);
+	Task->OnInterrupted.AddDynamic(this, &ThisClass::CustomEndAbility);
+	Task->OnCancelled.AddDynamic(this, &ThisClass::CustomEndAbility);
+
+	Task->ReadyForActivation();
+}
+
+void UTwoMinGameplayAbility::CustomEndAbility()
+{
+	bool bReplicateEndAbility = true;
+	bool bWasCancelled = false;
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	// Todo ?
 }
 
 

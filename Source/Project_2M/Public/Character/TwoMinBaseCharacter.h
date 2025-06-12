@@ -25,9 +25,12 @@ protected:
 	//~ End APawn Interface
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AbilitySystem")
-	UTwoMinAbilitySystemComponent* TwoMinAbilitySystemComponent;
+	UTwoMinAbilitySystemComponent* AbilitySystemComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData")
 	TSoftObjectPtr<UDataAsset_StartUpDataBase> CharacterStartUpData;
-	
+
+public:
+	FORCEINLINE UTwoMinAbilitySystemComponent* GetAbilitySystemComponent() const
+	{ return AbilitySystemComponent; }
 };

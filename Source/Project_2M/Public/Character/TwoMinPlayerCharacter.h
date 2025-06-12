@@ -6,6 +6,7 @@
 #include "TwoMinBaseCharacter.h"
 #include "TwoMinPlayerCharacter.generated.h"
 
+struct FGameplayTag;
 class UPlayerCombatComponent;
 struct FInputActionValue;
 class UDataAsset_InputConfig;
@@ -107,6 +108,9 @@ private:
 	void Input_ToggleRun(const FInputActionValue& InputActionValue);
 
 	bool IsUsingGamepad() const;
+
+	void Input_AbilityInputPressed(FGameplayTag InInputTag);
+	void Input_AbilityInputReleased(FGameplayTag InInputTag);
 	
 #pragma endregion
 

@@ -5,6 +5,7 @@
 
 #include "TwoMinGameplayTag.h"
 #include "EnhancedInputSubsystems.h"
+#include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Compnents/Combat/PlayerCombatComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -58,7 +59,7 @@ void ATwoMinPlayerCharacter::PossessedBy(AController* NewController)
 	{
 		if (UDataAsset_StartUpDataBase* LoadedData = CharacterStartUpData.LoadSynchronous())
 		{
-			LoadedData->GiveToAbilitySystemComponent(TwoMinAbilitySystemComponent);
+			LoadedData->GiveToAbilitySystemComponent(AbilitySystemComponent);
 		}
 	}
 }
@@ -86,6 +87,9 @@ void ATwoMinPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_Toggle_Run,
 		ETriggerEvent::Started, this, &ThisClass::Input_ToggleRun);
+
+	CharacterInputComponent->BindAbilityInputAction(InputConfigDataAsset, this,
+			&ThisClass::Input_AbilityInputPressed, &ThisClass::Input_AbilityInputReleased);
 }
 
 void ATwoMinPlayerCharacter::Input_Move(const FInputActionValue& InputActionValue)
@@ -162,4 +166,14 @@ bool ATwoMinPlayerCharacter::IsUsingGamepad() const
 	}
 	
 	return false;
+}
+
+void ATwoMinPlayerCharacter::Input_AbilityInputPressed(FGameplayTag InInputTag)
+{
+	AbilitySystemComponent->OnAbilityInputPressed(InInputTag);
+}
+
+void ATwoMinPlayerCharacter::Input_AbilityInputReleased(FGameplayTag InInputTag)
+{
+	AbilitySystemComponent->OnAbilityInputReleased(InInputTag);
 }
