@@ -75,7 +75,7 @@ DerivedDataCache/*
 
 # My lgnore
 Binaries/
-Build/*
+Build/
 DerivedDataCache/
 Intermediate/
 Saved/
@@ -84,5 +84,5 @@ Saved/
 *.VC.db
 *.VC.VC.opendb
 .idea/
-.sln
+*.sln
 .vsconfig
