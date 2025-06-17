@@ -16,7 +16,7 @@ enum class EToMinAbilityActivationPolicy : uint8
 /**
  * 
  */
-UCLASS()
+UCLASS(DefaultToInstanced)
 class PROJECT_2M_API UTwoMinGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()

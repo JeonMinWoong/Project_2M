@@ -57,3 +57,32 @@ void UTwoMinAbilitySystemComponent::GrantHeroWeaponAbilities(
 		OutGrantedAbilitySpecHandles.AddUnique(GiveAbility(AbilitySpec));
 	}
 }
+
+UTwoMinGameplayAbility* UTwoMinAbilitySystemComponent::GetActiveAbility(
+	const TSubclassOf<UTwoMinGameplayAbility> AbilityClass)
+{
+	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		if (AbilitySpec.IsActive() && AbilitySpec.Ability && AbilitySpec.Ability->GetClass() == AbilityClass)
+		{
+			return Cast<UTwoMinGameplayAbility>(AbilitySpec.Ability);
+		}
+	}
+	
+	return nullptr;
+}
+
+bool UTwoMinAbilitySystemComponent::IsAbilityActive(const TSubclassOf<UTwoMinGameplayAbility> AbilityClass)
+{
+	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		if (AbilitySpec.IsActive() && AbilitySpec.Ability && AbilitySpec.Ability->GetClass() == AbilityClass)
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	return false;
+}

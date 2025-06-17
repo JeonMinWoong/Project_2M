@@ -3,17 +3,27 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Abilities/Tasks/AbilityTask_WaitDelay.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
-#include "TwoMinGA_LightAttack.generated.h"
+#include "TwoMinGA_AttackBase.generated.h"
 
 /**
  * 
  */
-UCLASS()
-class PROJECT_2M_API UTwoMinGA_LightAttack : public UTwoMinGameplayAbility
+UCLASS(DefaultToInstanced)
+class PROJECT_2M_API UTwoMinGA_AttackBase : public UTwoMinGameplayAbility
 {
 	GENERATED_BODY()
 
+public:
+	UTwoMinGA_AttackBase();
+
+	UFUNCTION()
+	void AddComboCount();
+	
+	UFUNCTION()
+	void ResetComboCount();
+	
 protected:
 	//~ Begin UGameplayAbility Interface.
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -23,16 +33,9 @@ protected:
 		const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	//~ End UGameplayAbility Interface.
 	
-	void StartComboTimer();
-
-	UFUNCTION()
-	void CancelComboTimer();
-	
-	void ResetComboCount();
-	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Montages")
-	TMap<int, UAnimMontage*> LightAttackMontages;
+	TMap<int, UAnimMontage*> AttackMontages;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Combo")
 	int32 MaxComboCount = 1;
@@ -42,7 +45,4 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Combo")
 	float ComboResetTime = 0.3f;
-
-	UPROPERTY()
-	FTimerHandle StartComboTimerHandle;
 };

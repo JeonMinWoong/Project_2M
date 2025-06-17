@@ -37,13 +37,12 @@ void UTwoMinGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 void UTwoMinGameplayAbility::PlayToAnimMontage(UAnimMontage* AnimMontage)
 {
 	UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-		this, NAME_None, AnimMontage
+		this, NAME_None, AnimMontage, 1.f, NAME_None, false
 	);
 
 	if (!Task) return;
 	
 	Task->OnCompleted.AddDynamic(this, &ThisClass::CustomEndAbility);
-	Task->OnBlendOut.AddDynamic(this, &ThisClass::CustomEndAbility);
 	Task->OnInterrupted.AddDynamic(this, &ThisClass::CustomEndAbility);
 	Task->OnCancelled.AddDynamic(this, &ThisClass::CustomEndAbility);
 
@@ -55,8 +54,6 @@ void UTwoMinGameplayAbility::CustomEndAbility()
 	bool bReplicateEndAbility = true;
 	bool bWasCancelled = false;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicateEndAbility, bWasCancelled);
-
-	// Todo ?
 }
 
 

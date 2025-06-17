@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "TwoMinAbilitySystemComponent.generated.h"
 
+class UTwoMinGameplayAbility;
 struct FTwoMinPlayerAbilitySet;
 /**
  * 
@@ -21,4 +22,7 @@ public:
 	
 	void GrantHeroWeaponAbilities(const TArray<FTwoMinPlayerAbilitySet>& InDefaultWeaponAbilities, int ApplyLevel,
 		TArray<FGameplayAbilitySpecHandle>& OutGrantedAbilitySpecHandles);
+
+	UTwoMinGameplayAbility* GetActiveAbility(const TSubclassOf<UTwoMinGameplayAbility> AbilityClass);
+	bool IsAbilityActive(const TSubclassOf<UTwoMinGameplayAbility> AbilityClass);
 };
