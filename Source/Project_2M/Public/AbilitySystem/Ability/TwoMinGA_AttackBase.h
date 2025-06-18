@@ -3,21 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Abilities/Tasks/AbilityTask_WaitDelay.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
 #include "TwoMinGA_AttackBase.generated.h"
 
 /**
  * 
  */
-UCLASS(DefaultToInstanced)
+UCLASS()
 class PROJECT_2M_API UTwoMinGA_AttackBase : public UTwoMinGameplayAbility
 {
 	GENERATED_BODY()
 
 public:
 	UTwoMinGA_AttackBase();
-
+	
 	UFUNCTION()
 	void AddComboCount();
 	
@@ -32,6 +31,8 @@ protected:
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	//~ End UGameplayAbility Interface.
+
+	virtual bool bIsReTriggerSameAbility() const override;
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Montages")
@@ -42,7 +43,5 @@ private:
  
 	UPROPERTY()
 	int32 CurComboCount = 1;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Attack|Combo")
-	float ComboResetTime = 0.3f;
+	
 };

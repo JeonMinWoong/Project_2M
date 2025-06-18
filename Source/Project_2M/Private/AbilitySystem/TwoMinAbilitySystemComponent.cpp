@@ -3,8 +3,10 @@
 
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 
+#include "TwoMinDebugHelper.h"
 #include "TwoMinGameplayTag.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
+#include "AbilitySystem/Ability/TwoMinGA_AttackBase.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 
 void UTwoMinAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InInputTag)
@@ -21,7 +23,15 @@ void UTwoMinAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& In
 		}
 		else
 		{
-			TryActivateAbility(AbilitySpec.Handle);
+			UTwoMinGameplayAbility* Ability = Cast<UTwoMinGameplayAbility>(AbilitySpec.Ability);
+			if (IsAbilityActive(Ability->GetClass()))
+			{
+				OnCancelAndReTriggerAbility(Ability, Ability->GetClass());
+			}
+			else
+			{
+				TryActivateAbility(AbilitySpec.Handle);	
+			}
 		}
 	}
 }
@@ -37,6 +47,37 @@ void UTwoMinAbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& I
 			CancelAbilityHandle(AbilitySpec.Handle);
 		}
 	}
+}
+
+void UTwoMinAbilitySystemComponent::OnCancelAndReTriggerAbility(UTwoMinGameplayAbility* InAbilityCDO,
+	const TSubclassOf<UTwoMinGameplayAbility> InAbilityToReTrigger)
+{
+ 	if (!InAbilityToReTrigger)
+	{
+		return;
+	}
+
+	UTwoMinGameplayAbility* ReTriggerAbility = GetActiveAbility(InAbilityToReTrigger);
+	if (ReTriggerAbility->GetAbilityInputType() == ETwoAbilityInputType::Only)
+	{
+		return;
+	}
+	
+	if (!ReTriggerAbility->IsReTriggerActive())
+	{
+		return;
+	}
+	
+	CancelAbility(Cast<UGameplayAbility>(InAbilityCDO));
+
+	FTimerDelegate Delegate;
+	Delegate.BindLambda([this, InAbilityToReTrigger]()
+	{
+		this->TryActivateAbilityByClass(InAbilityToReTrigger);
+		Debug::Print(TEXT("Delegate ReTrigger Ability"), FColor::Yellow);
+	});
+
+	this->GetWorld()->GetTimerManager().SetTimerForNextTick(Delegate);
 }
 
 void UTwoMinAbilitySystemComponent::GrantHeroWeaponAbilities(
@@ -65,7 +106,10 @@ UTwoMinGameplayAbility* UTwoMinAbilitySystemComponent::GetActiveAbility(
 	{
 		if (AbilitySpec.IsActive() && AbilitySpec.Ability && AbilitySpec.Ability->GetClass() == AbilityClass)
 		{
-			return Cast<UTwoMinGameplayAbility>(AbilitySpec.Ability);
+			if (UTwoMinGameplayAbility* FindAbility = Cast<UTwoMinGameplayAbility>(AbilitySpec.GetPrimaryInstance()))
+			{
+				return FindAbility;	
+			}
 		}
 	}
 	
@@ -80,8 +124,6 @@ bool UTwoMinAbilitySystemComponent::IsAbilityActive(const TSubclassOf<UTwoMinGam
 		{
 			return true;
 		}
-		
-		return false;
 	}
 	
 	return false;

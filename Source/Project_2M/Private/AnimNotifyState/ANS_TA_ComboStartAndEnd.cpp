@@ -8,7 +8,6 @@
 
 void UANS_TA_ComboStartAndEnd::StartToggleAbilityProcess(UTwoMinGameplayAbility* InAbility)
 {
-	
 	if (UTwoMinGA_AttackBase* Attack = Cast<UTwoMinGA_AttackBase>(InAbility))
 	{
 		Attack->AddComboCount();

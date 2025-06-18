@@ -116,5 +116,6 @@ private:
 
 public:
 	FORCEINLINE bool GetIsRunning() const { return bIsRun; }
+	FORCEINLINE UCameraComponent* GetCamera() const { return CameraComponent; }
 };
 

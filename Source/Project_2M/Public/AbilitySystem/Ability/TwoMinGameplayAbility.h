@@ -13,14 +13,25 @@ enum class EToMinAbilityActivationPolicy : uint8
 	OnGiven,
 };
 
+UENUM(BlueprintType)
+enum class ETwoAbilityInputType : uint8
+{
+	Only,
+	ReTriggerable,
+};
+
+
 /**
  * 
  */
-UCLASS(DefaultToInstanced)
+UCLASS()
 class PROJECT_2M_API UTwoMinGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 
+public:
+	UTwoMinGameplayAbility();
+	
 protected:
 	//~ Begin UGameplayAbility Interface.
 	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
@@ -28,12 +39,26 @@ protected:
 		const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	//~ End UGameplayAbility Interface
 
+	virtual bool bIsReTriggerSameAbility() const;
+	
 	void PlayToAnimMontage(UAnimMontage* AnimMontage);
+	void RotateTowardsCamera();
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AbilityPoicy")
 	EToMinAbilityActivationPolicy AbilityActivationPolicy = EToMinAbilityActivationPolicy::OnTriggered;
 
+	UPROPERTY()
+	ETwoAbilityInputType AbilityInputType = ETwoAbilityInputType::Only;
+
+	UPROPERTY()
+	bool bIsReTriggerAble = false;
+	
 private:
 	UFUNCTION()
 	void CustomEndAbility();
+	void CustomCancelAbility();
+
+public:
+	FORCEINLINE ETwoAbilityInputType GetAbilityInputType() const { return AbilityInputType; }
+	FORCEINLINE bool IsReTriggerActive() const { return bIsReTriggerAble; }
 };

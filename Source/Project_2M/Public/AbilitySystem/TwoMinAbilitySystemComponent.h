@@ -19,6 +19,8 @@ class PROJECT_2M_API UTwoMinAbilitySystemComponent : public UAbilitySystemCompon
 public:
 	void OnAbilityInputPressed(const FGameplayTag& InInputTag);
 	void OnAbilityInputReleased(const FGameplayTag& InInputTag);
+
+	void OnCancelAndReTriggerAbility(UTwoMinGameplayAbility* InAbilityCDO, const TSubclassOf<UTwoMinGameplayAbility> InAbilityToReTrigger);
 	
 	void GrantHeroWeaponAbilities(const TArray<FTwoMinPlayerAbilitySet>& InDefaultWeaponAbilities, int ApplyLevel,
 		TArray<FGameplayAbilitySpecHandle>& OutGrantedAbilitySpecHandles);

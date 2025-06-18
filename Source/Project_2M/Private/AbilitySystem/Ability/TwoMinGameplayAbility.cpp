@@ -5,6 +5,13 @@
 
 #include "AbilitySystemComponent.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "Camera/CameraComponent.h"
+#include "Character/TwoMinPlayerCharacter.h"
+
+UTwoMinGameplayAbility::UTwoMinGameplayAbility()
+{
+	bRetriggerInstancedAbility = UTwoMinGameplayAbility::bIsReTriggerSameAbility();
+}
 
 void UTwoMinGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
@@ -34,6 +41,11 @@ void UTwoMinGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	}
 }
 
+bool UTwoMinGameplayAbility::bIsReTriggerSameAbility() const
+{
+	return false;
+}
+
 void UTwoMinGameplayAbility::PlayToAnimMontage(UAnimMontage* AnimMontage)
 {
 	UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
@@ -49,10 +61,40 @@ void UTwoMinGameplayAbility::PlayToAnimMontage(UAnimMontage* AnimMontage)
 	Task->ReadyForActivation();
 }
 
+void UTwoMinGameplayAbility::RotateTowardsCamera()
+{
+	ATwoMinPlayerCharacter* Player = Cast<ATwoMinPlayerCharacter>(GetOwningActorFromActorInfo());
+	if (!Player)
+	{
+		return;
+	}
+
+	UCameraComponent* Camera = Player->GetCamera();
+	if (!Camera)
+	{
+		return;
+	}
+
+	FRotator CameraRotator = Camera->GetComponentRotation();
+	FRotator PlayerRotator = Player->GetActorRotation();
+
+	FRotator NewRotator = FRotator(PlayerRotator.Pitch, CameraRotator.Yaw, PlayerRotator.Roll);
+	Player->SetActorRotation(NewRotator);
+
+	// Todo: RotatorSpeed 
+}
+
 void UTwoMinGameplayAbility::CustomEndAbility()
 {
 	bool bReplicateEndAbility = true;
 	bool bWasCancelled = false;
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+void UTwoMinGameplayAbility::CustomCancelAbility()
+{
+	bool bReplicateEndAbility = true;
+	bool bWasCancelled = true;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 

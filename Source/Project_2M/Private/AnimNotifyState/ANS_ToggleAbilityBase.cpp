@@ -21,7 +21,7 @@ void UANS_ToggleAbilityBase::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 
 	const ATwoMinBaseCharacter* Owner = Cast<ATwoMinBaseCharacter>(MeshComp->GetOwner());
 	if (!Owner) return;
-
+	
 	UTwoMinGameplayAbility* ActiveAbility = Owner->GetAbilitySystemComponent()->GetActiveAbility(AbilityClass);
 	if (ActiveAbility)
 	{
@@ -41,7 +41,7 @@ void UANS_ToggleAbilityBase::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSe
 
 	const ATwoMinBaseCharacter* Owner = Cast<ATwoMinBaseCharacter>(MeshComp->GetOwner());
 	if (!Owner) return;
-
+	
 	UTwoMinGameplayAbility* ActiveAbility = Owner->GetAbilitySystemComponent()->GetActiveAbility(AbilityClass);
 	if (ActiveAbility)
 	{

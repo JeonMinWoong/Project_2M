@@ -15,7 +15,7 @@ void UTwoMinGA_AttackBase::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 	if (CurComboCount > MaxComboCount)
 	{
-		CurComboCount = 1;
+		ResetComboCount();
 	}
 
 	if (!AttackMontages.Contains(CurComboCount)) return;
@@ -23,9 +23,9 @@ void UTwoMinGA_AttackBase::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 	if (UAnimMontage* MontageToPlay = AttackMontages[CurComboCount])
 	{
+		bIsReTriggerAble = false;
 		PlayToAnimMontage(MontageToPlay);
-		//UE_LOG(LogTemp, Warning, TEXT("Ability this: %p"), static_cast<const void*>(this));
-		//UE_LOG(LogTemp, Warning, TEXT("Increase ptr: %p"), static_cast<const void*>(&CurComboCount));
+		RotateTowardsCamera();
 	}
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
@@ -36,27 +36,29 @@ void UTwoMinGA_AttackBase::EndAbility(const FGameplayAbilitySpecHandle Handle,
                                       const FGameplayAbilityActivationInfo ActivationInfo,
                                       bool bReplicateEndAbility, bool bWasCancelled)
 {
-	//ResetComboCount();
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
+bool UTwoMinGA_AttackBase::bIsReTriggerSameAbility() const
+{
+	return MaxComboCount > 1;
+}
+
 UTwoMinGA_AttackBase::UTwoMinGA_AttackBase()
 {
-	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
-	UE_LOG(LogTemp, Warning, TEXT("AttackBase Constructor | this = %p"), this);
+	bRetriggerInstancedAbility = UTwoMinGA_AttackBase::bIsReTriggerSameAbility();
+	AbilityInputType = ETwoAbilityInputType::ReTriggerable;
 }
 
 void UTwoMinGA_AttackBase::AddComboCount()
 {
 	CurComboCount++;
-	UE_LOG(LogTemp, Warning, TEXT("Ability this: %p"), static_cast<const void*>(this));
-	UE_LOG(LogTemp, Warning, TEXT("Decrease ptr: %p"), static_cast<const void*>(&CurComboCount));
+	bIsReTriggerAble = true;
 }
 
 void UTwoMinGA_AttackBase::ResetComboCount()
 {
 	CurComboCount = 1;
-	UE_LOG(LogTemp, Warning, TEXT("Ability this: %p"), static_cast<const void*>(this));
-	UE_LOG(LogTemp, Warning, TEXT("Decrease ptr: %p"), static_cast<const void*>(&CurComboCount));
+	bIsReTriggerAble = false;
 }
