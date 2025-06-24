@@ -3,6 +3,8 @@
 
 #include "Item/Weapon/TwoMinWeaponBase.h"
 
+#include "TwoMinDebugHelper.h"
+#include "TwoMinFunctionLibrary.h"
 #include "Components/BoxComponent.h"
 #include "Item/Weapon/TwoMinWeaponPlayer.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
@@ -38,7 +40,13 @@ void ATwoMinWeaponBase::OnCollisionBoxBeginOverlap(UPrimitiveComponent* Overlapp
 	
 	if (APawn* HitPawn = Cast<APawn>(OtherActor))
 	{
-		// Todo : Check In
+		if (UTwoMinFunctionLibrary::IsTargetPawnHostile(WeaponOwningPawn, HitPawn))
+		{
+			FString HitPlayerName = FString::Printf(TEXT("Hit Pawn! : %s"), *HitPawn->GetActorNameOrLabel());
+			DebugTwoMin::Print(HitPlayerName, FColor::Green);
+
+			OnWeaponHitTarget.ExecuteIfBound(OtherActor);
+		}
 	}
 }
 
@@ -51,7 +59,10 @@ void ATwoMinWeaponBase::OnCollisionBoxEndOverlap(UPrimitiveComponent* Overlapped
 	
 	if (APawn* HitPawn = Cast<APawn>(OtherActor))
 	{
-		// Todo : Check Out
+		if (UTwoMinFunctionLibrary::IsTargetPawnHostile(WeaponOwningPawn, HitPawn))
+		{
+			OnWeaponPulledFromTarget.ExecuteIfBound(OtherActor);
+		}
 	}
 }
 

@@ -5,13 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Compnents/BaseComponent.h"
+#include "ToMinTypes/TwoMinEnumTypes.h"
 #include "BaseCombatComponent.generated.h"
-
-UENUM(BlueprintType)
-enum class EToggleDamageType : uint8
-{
-	CurrentEquippedWeapon,
-};
 
 class ATwoMinWeaponBase;
 /**
@@ -28,10 +23,10 @@ public:
 	TArray<ATwoMinWeaponBase*> GetCharacterCurrentEquippedWeapon() const;
 	
 	void ToggleWeaponCollision(bool bShouldEnable, EToggleDamageType ToggleDamageType =
-		EToggleDamageType::CurrentEquippedWeapon);
+		EToggleDamageType::None);
 
 protected:
-	virtual void ToggleCurrentEquippedWeaponCollision(bool bShouldEnable);
+	virtual void ToggleCurrentEquippedWeaponCollision(bool bShouldEnable, EToggleDamageType ToggleDamageType);
 
 	virtual void OnHitTargetActor(AActor* HitActor);
 	virtual void OnWeaponPulledFromTargetActor(AActor* InteractedActor);

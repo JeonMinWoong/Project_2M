@@ -24,6 +24,7 @@ public:
 	ATwoMinPlayerCharacter();
 
 	virtual UBaseCombatComponent* GetCombatComponent() const override;
+	void CancelInputToggle();
 	
 protected:
 	//~ Begin APawn Interface.

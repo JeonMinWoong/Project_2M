@@ -61,29 +61,6 @@ void UTwoMinGameplayAbility::PlayToAnimMontage(UAnimMontage* AnimMontage)
 	Task->ReadyForActivation();
 }
 
-void UTwoMinGameplayAbility::RotateTowardsCamera()
-{
-	ATwoMinPlayerCharacter* Player = Cast<ATwoMinPlayerCharacter>(GetOwningActorFromActorInfo());
-	if (!Player)
-	{
-		return;
-	}
-
-	UCameraComponent* Camera = Player->GetCamera();
-	if (!Camera)
-	{
-		return;
-	}
-
-	FRotator CameraRotator = Camera->GetComponentRotation();
-	FRotator PlayerRotator = Player->GetActorRotation();
-
-	FRotator NewRotator = FRotator(PlayerRotator.Pitch, CameraRotator.Yaw, PlayerRotator.Roll);
-	Player->SetActorRotation(NewRotator);
-
-	// Todo: RotatorSpeed 
-}
-
 void UTwoMinGameplayAbility::CustomEndAbility()
 {
 	bool bReplicateEndAbility = true;
@@ -97,5 +74,4 @@ void UTwoMinGameplayAbility::CustomCancelAbility()
 	bool bWasCancelled = true;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
-
 

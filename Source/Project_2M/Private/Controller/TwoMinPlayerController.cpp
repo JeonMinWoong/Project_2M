@@ -3,3 +3,12 @@
 
 #include "Controller/TwoMinPlayerController.h"
 
+ATwoMinPlayerController::ATwoMinPlayerController()
+{
+	PlayerTeamId = FGenericTeamId(0);
+}
+
+FGenericTeamId ATwoMinPlayerController::GetGenericTeamId() const
+{
+	return PlayerTeamId;
+}

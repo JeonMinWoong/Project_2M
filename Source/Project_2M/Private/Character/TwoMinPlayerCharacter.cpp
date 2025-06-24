@@ -51,6 +51,13 @@ UBaseCombatComponent* ATwoMinPlayerCharacter::GetCombatComponent() const
 	return PlayerCombatComponent;
 }
 
+void ATwoMinPlayerCharacter::CancelInputToggle()
+{
+	bIsWalk = false;
+	bIsRun = false;
+	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
+}
+
 void ATwoMinPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);

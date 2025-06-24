@@ -74,7 +74,6 @@ void UTwoMinAbilitySystemComponent::OnCancelAndReTriggerAbility(UTwoMinGameplayA
 	Delegate.BindLambda([this, InAbilityToReTrigger]()
 	{
 		this->TryActivateAbilityByClass(InAbilityToReTrigger);
-		Debug::Print(TEXT("Delegate ReTrigger Ability"), FColor::Yellow);
 	});
 
 	this->GetWorld()->GetTimerManager().SetTimerForNextTick(Delegate);

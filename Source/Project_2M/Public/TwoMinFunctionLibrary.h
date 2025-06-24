@@ -1,0 +1,20 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Kismet/BlueprintFunctionLibrary.h"
+#include "TwoMinFunctionLibrary.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class PROJECT_2M_API UTwoMinFunctionLibrary : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+
+public:
+	UFUNCTION()
+	static bool IsTargetPawnHostile(APawn* OwnerPawn, APawn* TargetPawn);
+};

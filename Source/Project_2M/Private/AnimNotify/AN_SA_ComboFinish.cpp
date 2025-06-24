@@ -11,6 +11,6 @@ void UAN_SA_ComboFinish::FinishAbilityProcess(UTwoMinGameplayAbility* InAbility)
 	if (UTwoMinGA_AttackBase* Attack = Cast<UTwoMinGA_AttackBase>(InAbility))
 	{
 		Attack->ResetComboCount();
-		Debug::Print(TEXT("Combo Finished"), FColor::Blue);
+		DebugTwoMin::Print(TEXT("Combo Finished"), FColor::Blue);
 	}
 }

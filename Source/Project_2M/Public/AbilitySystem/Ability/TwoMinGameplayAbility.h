@@ -42,7 +42,6 @@ protected:
 	virtual bool bIsReTriggerSameAbility() const;
 	
 	void PlayToAnimMontage(UAnimMontage* AnimMontage);
-	void RotateTowardsCamera();
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AbilityPoicy")
 	EToMinAbilityActivationPolicy AbilityActivationPolicy = EToMinAbilityActivationPolicy::OnTriggered;

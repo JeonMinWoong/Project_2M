@@ -4,6 +4,7 @@
 #include "Compnents/Combat/BaseCombatComponent.h"
 
 #include "GameplayTagContainer.h"
+#include "TwoMinDebugHelper.h"
 #include "Components/BoxComponent.h"
 #include "Item/Weapon/TwoMinWeaponBase.h"
 
@@ -31,14 +32,20 @@ TArray<ATwoMinWeaponBase*> UBaseCombatComponent::GetCharacterCurrentEquippedWeap
 
 void UBaseCombatComponent::ToggleWeaponCollision(bool bShouldEnable, EToggleDamageType ToggleDamageType)
 {
-	if (ToggleDamageType == EToggleDamageType::CurrentEquippedWeapon)
+	if (ToggleDamageType == EToggleDamageType::None)
 	{
-		ToggleCurrentEquippedWeaponCollision(bShouldEnable);
+		return;
 	}
+
+	if (ToggleDamageType <= EToggleDamageType::CurrentEquippedWeapon_All)
+	{
+		ToggleCurrentEquippedWeaponCollision(bShouldEnable, ToggleDamageType);
+	}
+
 	// Todo : Enemy
 }
 
-void UBaseCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bShouldEnable)
+void UBaseCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bShouldEnable, EToggleDamageType ToggleDamageType)
 {
 	TArray<ATwoMinWeaponBase*> WeaponToToggle = GetCharacterCurrentEquippedWeapon();
 
@@ -48,6 +55,14 @@ void UBaseCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bShouldEnab
 	{
 		if (!Weapon) continue;
 
+		if (Weapon->ToggleDamageType != EToggleDamageType::CurrentEquippedWeapon_All)
+		{
+			if (Weapon->ToggleDamageType != ToggleDamageType)
+			{
+				return;
+			}
+		}
+		
 		if (bShouldEnable)
 		{
 			Weapon->GetWeaponCollisionBox()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);

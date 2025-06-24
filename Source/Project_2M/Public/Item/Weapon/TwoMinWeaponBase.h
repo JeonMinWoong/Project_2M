@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "ToMinTypes/TwoMinEnumTypes.h"
 #include "TwoMinWeaponBase.generated.h"
 
 struct FTwoMinPlayerWeaponData;
@@ -23,6 +24,9 @@ public:
 	FOnTargetInteractedDelegate OnWeaponPulledFromTarget;
 
 	virtual FTwoMinPlayerWeaponData GetWeaponData() const;
+
+	UPROPERTY(EditAnywhere, Category = "ToggleDamageType")
+	EToggleDamageType ToggleDamageType = EToggleDamageType::None;
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapons")

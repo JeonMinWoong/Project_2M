@@ -11,7 +11,6 @@ void UANS_TA_ComboStartAndEnd::StartToggleAbilityProcess(UTwoMinGameplayAbility*
 	if (UTwoMinGA_AttackBase* Attack = Cast<UTwoMinGA_AttackBase>(InAbility))
 	{
 		Attack->AddComboCount();
-		Debug::Print(TEXT("Combo Delay Start"), FColor::Green);
 	}
 }
 
@@ -20,6 +19,5 @@ void UANS_TA_ComboStartAndEnd::EndToggleAbilityProcess(UTwoMinGameplayAbility* I
 	if (UTwoMinGA_AttackBase* Attack = Cast<UTwoMinGA_AttackBase>(InAbility))
 	{
 		Attack->ResetComboCount();
-		Debug::Print(TEXT("Combo Count Reset"), FColor::Red);
 	}
 }

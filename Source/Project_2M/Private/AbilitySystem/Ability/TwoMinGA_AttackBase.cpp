@@ -5,6 +5,7 @@
 
 #include "TwoMinDebugHelper.h"
 #include "Abilities/Tasks/AbilityTask_WaitDelay.h"
+#include "Character/TwoMinPlayerCharacter.h"
 
 void UTwoMinGA_AttackBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                            const FGameplayAbilityActorInfo* ActorInfo,
@@ -23,9 +24,14 @@ void UTwoMinGA_AttackBase::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 	if (UAnimMontage* MontageToPlay = AttackMontages[CurComboCount])
 	{
+		ATwoMinPlayerCharacter* Player = Cast<ATwoMinPlayerCharacter>(ActorInfo->OwnerActor);
+		if (Player)
+		{
+			Player->CancelInputToggle();
+		}
+		
 		bIsReTriggerAble = false;
 		PlayToAnimMontage(MontageToPlay);
-		RotateTowardsCamera();
 	}
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
