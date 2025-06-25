@@ -58,6 +58,11 @@ void ATwoMinPlayerCharacter::CancelInputToggle()
 	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
 }
 
+FVector ATwoMinPlayerCharacter::GetInputDirection() const
+{
+	return GetLastMovementInputVector();
+}
+
 void ATwoMinPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);

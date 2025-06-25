@@ -25,6 +25,7 @@ public:
 
 	virtual UBaseCombatComponent* GetCombatComponent() const override;
 	void CancelInputToggle();
+	FVector GetInputDirection() const;
 	
 protected:
 	//~ Begin APawn Interface.
