@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "TwoMinBaseCharacter.generated.h"
 
+class UMotionWarpingComponent;
 class UBaseCombatComponent;
 class UDataAsset_StartUpDataBase;
 class UTwoMinAbilitySystemComponent;
@@ -30,7 +31,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData")
 	TSoftObjectPtr<UDataAsset_StartUpDataBase> CharacterStartUpData;
 
+	UPROPERTY(VisibleAnywhere, Category = "MotionWarping")
+	UMotionWarpingComponent* MotionWarpingComponent;
+
+
 public:
 	FORCEINLINE UTwoMinAbilitySystemComponent* GetAbilitySystemComponent() const
 	{ return AbilitySystemComponent; }
+
+	FORCEINLINE UMotionWarpingComponent* GetMotionWarpingComponent() const
+	{ return MotionWarpingComponent; }
 };

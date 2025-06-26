@@ -1,6 +1,7 @@
 
 #include "Character/TwoMinBaseCharacter.h"
 
+#include "MotionWarpingComponent.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 
 ATwoMinBaseCharacter::ATwoMinBaseCharacter()
@@ -12,6 +13,7 @@ ATwoMinBaseCharacter::ATwoMinBaseCharacter()
 
 	AbilitySystemComponent =
 		CreateDefaultSubobject<UTwoMinAbilitySystemComponent>(TEXT("ToMinAbilitySystemComponent"));
+	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 }
 
 UBaseCombatComponent* ATwoMinBaseCharacter::GetCombatComponent() const

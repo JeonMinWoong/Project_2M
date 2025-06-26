@@ -19,6 +19,7 @@ public class Project_2M : ModuleRules
 			"GameplayAbilities",
 			"GameplayTasks",
 			"AIModule",
+			"MotionWarping",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
