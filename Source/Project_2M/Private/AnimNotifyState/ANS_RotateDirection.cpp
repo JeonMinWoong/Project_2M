@@ -3,8 +3,13 @@
 
 #include "AnimNotifyState/ANS_RotateDirection.h"
 
+#include "MotionWarpingComponent.h"
+#include "Character/TwoMinBaseCharacter.h"
+
+class UMotionWarpingComponent;
+
 void UANS_RotateDirection::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
-	float TotalDuration, const FAnimNotifyEventReference& EventReference)
+                                       float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 }
@@ -19,4 +24,16 @@ void UANS_RotateDirection::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequ
 	const FAnimNotifyEventReference& EventReference)
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
+}
+
+void UANS_RotateDirection::PlayMotionWarpingRotator(ATwoMinBaseCharacter* Character, FRotator TargetDRotator)
+{
+	UMotionWarpingComponent* MotionWarpingComponent = Character->GetMotionWarpingComponent();
+	if (!MotionWarpingComponent)
+	{
+		return;
+	}
+	
+	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(TEXT("RotationDirection"),
+		Character->GetActorLocation(), TargetDRotator);
 }

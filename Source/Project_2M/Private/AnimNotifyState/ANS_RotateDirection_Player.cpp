@@ -3,8 +3,6 @@
 
 #include "AnimNotifyState/ANS_RotateDirection_Player.h"
 
-#include "MotionWarpingComponent.h"
-#include "TwoMinDebugHelper.h"
 #include "Character/TwoMinPlayerCharacter.h"
 
 
@@ -29,56 +27,40 @@ void UANS_RotateDirection_Player::NotifyTick(USkeletalMeshComponent* MeshComp, U
 		return;
 	}
 
-	FVector InputDirection = PlayerCharacter->GetInputDirection();
-	if (InputDirection.IsNearlyZero())
-	{
-		return;	
-	}
-	
-	FRotator TargetDirection = InputDirection.Rotation();
-	TargetDirection.Pitch = 0;
-	TargetDirection.Roll = 0;
-
-	// FString DebugString2 = FString::Printf(TEXT("목표 %f"), TargetDirection.Yaw);
-	// DebugTwoMin::Print(DebugString2, FColor::Purple);
-	
 	FRotator CurrentRotation = PlayerCharacter->GetActorRotation();
 	CurrentRotation.Pitch = 0;
 	CurrentRotation.Roll = 0;
-
-	if (MaxRotationAngle > 0.f)
+	
+	FVector InputDirection = PlayerCharacter->GetInputDirection();
+	if (!InputDirection.IsNearlyZero())
 	{
-		float HalfValue = MaxRotationAngle * 0.5f;
-		float DeltaYaw = FMath::FindDeltaAngleDegrees(CurrentRotation.Yaw, TargetDirection.Yaw);
+		FRotator TargetDirection = InputDirection.Rotation();
+		TargetDirection.Pitch = 0;
+		TargetDirection.Roll = 0;
 
-		// FString DebugString3 = FString::Printf(TEXT("차이 %f"), DeltaYaw);
-		// DebugTwoMin::Print(DebugString3, FColor::Blue);
-		if (DeltaYaw > HalfValue)
+		if (MaxRotationAngle > 0.f)
 		{
-			TargetDirection.Yaw = CurrentRotation.Yaw + HalfValue;
-			// FString DebugString = FString::Printf(TEXT("오른쪽으로 %f 만큼 넘음"), DeltaYaw - HalfValue);
-			// DebugTwoMin::Print(DebugString, FColor::Yellow);
+			float HalfValue = MaxRotationAngle * 0.5f;
+			float DeltaYaw = FMath::FindDeltaAngleDegrees(CurrentRotation.Yaw, TargetDirection.Yaw);
+			
+			if (DeltaYaw > HalfValue)
+			{
+				TargetDirection.Yaw = CurrentRotation.Yaw + HalfValue;
+			}
+			else if (DeltaYaw < -HalfValue)
+			{
+				TargetDirection.Yaw = CurrentRotation.Yaw - HalfValue;
+			}	
 		}
-		else if (DeltaYaw < -HalfValue)
-		{
-			TargetDirection.Yaw = CurrentRotation.Yaw - HalfValue;
-			// FString DebugString = FString::Printf(TEXT("왼쪽으로 %f 만큼 넘음"), HalfValue + DeltaYaw);
-			// DebugTwoMin::Print(DebugString, FColor::Red);
-		}	
-	}
 
-	UMotionWarpingComponent* MotionWarpingComponent = PlayerCharacter->GetMotionWarpingComponent();
-	if (!MotionWarpingComponent)
+		bIsRotation = true;
+		PlayMotionWarpingRotator(PlayerCharacter, TargetDirection);
+	}
+	else
 	{
-		return;
+		bIsRotation = true;
+		PlayMotionWarpingRotator(PlayerCharacter, CurrentRotation);
 	}
-
-	bIsRotation = true;
-	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(TEXT("RotationDirection"),
-		PlayerCharacter->GetActorLocation(), TargetDirection);
-
-	// FString DebugString = FString::Printf(TEXT("기존 회전 %f, 최종 회전 %f"), CurrentRotation.Yaw, TargetDirection.Yaw);
-	// DebugTwoMin::Print(DebugString, FColor::Green);
 	
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 }

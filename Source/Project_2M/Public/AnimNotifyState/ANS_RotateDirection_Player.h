@@ -29,7 +29,6 @@ protected:
 	virtual void NotifyEnd(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation,
 		const FAnimNotifyEventReference& EventReference) override;
 	//~ End UAnimNotifyState Interface.
-
 private:
 	UPROPERTY()
 	bool bIsRotation;

@@ -6,6 +6,7 @@
 #include "AnimNotifyState/BaseAnimNotifyState.h"
 #include "ANS_RotateDirection.generated.h"
 
+class ATwoMinBaseCharacter;
 /**
  * 
  */
@@ -25,4 +26,6 @@ protected:
 	virtual void NotifyEnd(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation,
 		const FAnimNotifyEventReference& EventReference) override;
 	//~ End UAnimNotifyState Interface.
+
+	virtual void PlayMotionWarpingRotator(ATwoMinBaseCharacter* Character, FRotator TargetDRotator);
 };
