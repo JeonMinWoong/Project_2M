@@ -70,8 +70,7 @@ void UTwoMinGameplayAbility::CustomEndAbility()
 
 void UTwoMinGameplayAbility::CustomCancelAbility()
 {
-	bool bReplicateEndAbility = true;
-	bool bWasCancelled = true;
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicateEndAbility, bWasCancelled);
+	CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(),
+		true);
 }
 

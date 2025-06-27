@@ -42,6 +42,7 @@ protected:
 	virtual bool bIsReTriggerSameAbility() const;
 	
 	void PlayToAnimMontage(UAnimMontage* AnimMontage);
+	void CustomCancelAbility();
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AbilityPoicy")
 	EToMinAbilityActivationPolicy AbilityActivationPolicy = EToMinAbilityActivationPolicy::OnTriggered;
@@ -55,7 +56,6 @@ protected:
 private:
 	UFUNCTION()
 	void CustomEndAbility();
-	void CustomCancelAbility();
 
 public:
 	FORCEINLINE ETwoAbilityInputType GetAbilityInputType() const { return AbilityInputType; }
