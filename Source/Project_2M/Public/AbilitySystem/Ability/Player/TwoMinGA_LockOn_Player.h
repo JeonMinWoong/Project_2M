@@ -6,6 +6,9 @@
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
 #include "TwoMinGA_LockOn_Player.generated.h"
 
+class UInputMappingContext;
+class UTwoMinAT_LockOn_Player;
+class UTwoMinWidgetBase;
 /**
  * 
  */
@@ -26,6 +29,17 @@ protected:
 private:
 	AActor* FindLockOnTarget();
 	void CheckSphereOverTargetGroup();
+	bool IsLockOnCondition(const AActor* Target, float& ClosestDistance) const;
+	void DrawLockOnWidget();
+	void SetTargetLockOnWidgetPosition();
+	void StartLockOnTickTask();
+	void ChangeMappingContext();
+	
+	UFUNCTION()
+	void UpdateLockOnTarget(float DeltaTime);
+
+	void EndLockOnTarget();
+	void ResetMappingContext();
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Settings")
 	float LockOnDistance = 1000.f;
@@ -37,8 +51,21 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Settings")
 	float LockOnSwitchTime = 0.5f;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Settings|OffsetDistance")
+	float LockOnCameraOffsetDistance = 20.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Settings|LockSpeed")
+	float LockOnCameraRotationSpeed = 5.f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Settings|LockSpeed")
+	float LockOnCharacterRotationSpeed = 10.f;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Settings|Debug")
-	bool bIsDebugLockOnRange = false; 
+	bool bIsDebugLockOnRange = false;
+
+	UPROPERTY()
+	bool bIsCharacterRotationLock = false;
+	
 	UPROPERTY()
 	TArray<AActor*> LockOnTargetGroup;
 
@@ -47,4 +74,19 @@ private:
 
 	UPROPERTY()
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Settings|Image")
+	TSubclassOf<UTwoMinWidgetBase> LockOnTargetWidgetClass;
+
+	UPROPERTY()
+	UTwoMinWidgetBase* LockOnTargetWidget;
+
+	UPROPERTY()
+	FVector2D LockOnTargetWidgetSize = FVector2D::ZeroVector;
+
+	UPROPERTY()
+	UTwoMinAT_LockOn_Player* LockOnTickTask;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Settings|Mapping")
+	UInputMappingContext* LockOnInputMappingContext;
 };

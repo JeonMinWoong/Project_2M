@@ -6,6 +6,7 @@
 #include "TwoMinBaseCharacter.h"
 #include "TwoMinPlayerCharacter.generated.h"
 
+class ATwoMinPlayerController;
 struct FGameplayTag;
 class UPlayerCombatComponent;
 struct FInputActionValue;
@@ -24,6 +25,8 @@ public:
 	ATwoMinPlayerCharacter();
 
 	virtual UBaseCombatComponent* GetCombatComponent() const override;
+	ATwoMinPlayerController* GetPlayerController() const;
+	
 	void CancelInputToggle();
 	FVector GetInputDirection() const;
 	

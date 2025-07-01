@@ -9,6 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "Compnents/Combat/PlayerCombatComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Controller/TwoMinPlayerController.h"
 #include "DataAssets/StartUpData/DataAsset_StartUpDataBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/InputDeviceSubsystem.h"
@@ -49,6 +50,11 @@ ATwoMinPlayerCharacter::ATwoMinPlayerCharacter()
 UBaseCombatComponent* ATwoMinPlayerCharacter::GetCombatComponent() const
 {
 	return PlayerCombatComponent;
+}
+
+ATwoMinPlayerController* ATwoMinPlayerCharacter::GetPlayerController() const
+{
+	return Cast<ATwoMinPlayerController>(GetController());
 }
 
 void ATwoMinPlayerCharacter::CancelInputToggle()
