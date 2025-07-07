@@ -3,6 +3,7 @@
 
 #include "Character/TwoMinPlayerCharacter.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
@@ -103,6 +104,12 @@ void ATwoMinPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_Look,
 		ETriggerEvent::Triggered, this, &ThisClass::Input_Look);
 
+	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_SwitchTarget,
+		ETriggerEvent::Triggered, this, &ThisClass::Input_SwitchTargetTrigger);
+
+	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_SwitchTarget,
+	ETriggerEvent::Completed, this, &ThisClass::Input_SwitchTargetComplete);
+
 	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_Toggle_Run,
 		ETriggerEvent::Started, this, &ThisClass::Input_ToggleRun);
 
@@ -148,6 +155,24 @@ void ATwoMinPlayerCharacter::Input_Look(const FInputActionValue& InputActionValu
 		
 		AddControllerPitchInput(AxisVectorY);
 	}
+}
+
+void ATwoMinPlayerCharacter::Input_SwitchTargetTrigger(const FInputActionValue& InputActionValue)
+{
+	SwitchDirection = InputActionValue.Get<FVector2D>();
+}
+
+void ATwoMinPlayerCharacter::Input_SwitchTargetComplete(const FInputActionValue& InputActionValue)
+{
+	FGameplayEventData EventData;
+	
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+		this,
+		SwitchDirection.X > 0.f ?
+		TwoMinGameplayTag::Player_Event_SwitchTarget_Right :
+		TwoMinGameplayTag::Player_Event_SwitchTarget_Left,
+		EventData
+	);
 }
 
 void ATwoMinPlayerCharacter::Stoped(const FInputActionValue& InputActionValue)

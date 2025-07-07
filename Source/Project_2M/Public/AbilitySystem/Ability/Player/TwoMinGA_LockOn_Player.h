@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
+#include "Character/TwoMinPlayerCharacter.h"
 #include "TwoMinGA_LockOn_Player.generated.h"
 
+class UAbilityTask_WaitGameplayEvent;
 class UInputMappingContext;
 class UTwoMinAT_LockOn_Player;
 class UTwoMinWidgetBase;
@@ -29,17 +31,29 @@ protected:
 private:
 	AActor* FindLockOnTarget();
 	void CheckSphereOverTargetGroup();
-	bool IsLockOnCondition(const AActor* Target, float& ClosestDistance) const;
+
+	bool IsLockOnCondition(const AActor* Target) const;
+	bool IsLockOnDistance(const FVector& PlayerLocation, const FVector& TargetLocation) const;
+	bool IsLockOnLineTraceHit(FVector CameraLocation, FVector TargetLocation) const;
+	bool IsLockOnScreenToDistance(const AActor* Target, float& ClosestDistance) const;
+	bool IsInScreenPos(const AActor* Target, FVector2D& ScreenCenter, FVector2D& ScreenPos) const;
+	
 	void DrawLockOnWidget();
 	void SetTargetLockOnWidgetPosition();
+	void LockCharacterMovement();
 	void StartLockOnTickTask();
 	void ChangeMappingContext();
 	
 	UFUNCTION()
 	void UpdateLockOnTarget(float DeltaTime);
 
+	UFUNCTION()
+	void OnSwitchTarget(FGameplayEventData InputEventData);
+	void OnSplitLeftRightTargetGroup(TArray<AActor*>& ActorsOnLeft, TArray<AActor*>& ActorsOnRight);
+
 	void EndLockOnTarget();
 	void ResetMappingContext();
+	void ResetCharacterMovement();
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Settings")
 	float LockOnDistance = 1000.f;
@@ -57,12 +71,12 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Settings|LockSpeed")
 	float LockOnCameraRotationSpeed = 5.f;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Settings|LockSpeed")
+	UPROPERTY(EditDefaultsOnly, Category = "Settings|Character")
 	float LockOnCharacterRotationSpeed = 10.f;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Settings|Debug")
 	bool bIsDebugLockOnRange = false;
-
+	
 	UPROPERTY()
 	bool bIsCharacterRotationLock = false;
 	
@@ -86,6 +100,9 @@ private:
 
 	UPROPERTY()
 	UTwoMinAT_LockOn_Player* LockOnTickTask;
+
+	UPROPERTY()
+	UAbilityTask_WaitGameplayEvent* LockOnSwitchTargetEvent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Settings|Mapping")
 	UInputMappingContext* LockOnInputMappingContext;

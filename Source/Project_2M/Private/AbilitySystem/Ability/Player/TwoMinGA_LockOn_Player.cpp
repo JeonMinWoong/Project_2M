@@ -5,6 +5,8 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "TwoMinDebugHelper.h"
+#include "TwoMinGameplayTag.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystem/Ability/PlayerTask/TwoMinAT_LockOn_Player.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Blueprint/WidgetTree.h"
@@ -13,6 +15,7 @@
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Components/SizeBox.h"
 #include "Controller/TwoMinPlayerController.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Widgets/TwoMinWidgetBase.h"
@@ -37,6 +40,7 @@ void UTwoMinGA_LockOn_Player::ActivateAbility(const FGameplayAbilitySpecHandle H
 	DrawLockOnWidget();
 	SetTargetLockOnWidgetPosition();
 	ChangeMappingContext();
+	LockCharacterMovement();
 	StartLockOnTickTask();
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
@@ -49,6 +53,7 @@ void UTwoMinGA_LockOn_Player::EndAbility(const FGameplayAbilitySpecHandle Handle
 	DebugTwoMin::Print(TEXT("Lock On Ability End"), FColor::Blue, 3);
 	EndLockOnTarget();
 	ResetMappingContext();
+	ResetCharacterMovement();
 	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
@@ -66,7 +71,7 @@ AActor* UTwoMinGA_LockOn_Player::FindLockOnTarget()
 	float CurDistance = FLT_MAX;
 	for (AActor* Target : LockOnTargetGroup)
 	{
-		if (IsLockOnCondition(Target, CurDistance) == false)
+		if (IsLockOnScreenToDistance(Target, CurDistance) == false)
 		{
 			continue;
 		}
@@ -81,6 +86,7 @@ void UTwoMinGA_LockOn_Player::CheckSphereOverTargetGroup()
 {
 	LockOnTargetGroup.Empty();
 
+	TArray<AActor*> EmptyLockOnTargetGroup;
 	const FVector Center = GetAvatarActorFromActorInfo()->GetActorLocation();
 	const TArray<AActor*> IgnoreActors;
 
@@ -97,11 +103,27 @@ void UTwoMinGA_LockOn_Player::CheckSphereOverTargetGroup()
 		ObjectTypes,
 		ATwoMinEnemyCharacter::StaticClass(),
 		IgnoreActors,
-		LockOnTargetGroup
+		EmptyLockOnTargetGroup
 	);
+
+	if (EmptyLockOnTargetGroup.IsEmpty())
+	{
+		return;
+	}
+	
+	for (AActor* Target : EmptyLockOnTargetGroup)
+	{
+		if (IsLockOnCondition(Target) == false)
+		{
+			continue;
+		}
+
+		LockOnTargetGroup.AddUnique(Target);
+	}
 }
 
-bool UTwoMinGA_LockOn_Player::IsLockOnCondition(const AActor* Target, float& ClosestDistance) const
+
+bool UTwoMinGA_LockOn_Player::IsLockOnCondition(const AActor* Target) const
 {
 	if (IsValid(Target) == false)
 	{
@@ -111,19 +133,24 @@ bool UTwoMinGA_LockOn_Player::IsLockOnCondition(const AActor* Target, float& Clo
 	// 1. 거리 만족
 	FVector PlayerLocation = GetAvatarActorFromActorInfo()->GetActorLocation();
 	FVector TargetLocation = Target->GetActorLocation();
-	float Distance = FVector::Dist(PlayerLocation, TargetLocation);
-	if (Distance > LockOnDistance)
+	if (IsLockOnDistance(PlayerLocation, TargetLocation) == false)
 	{
 		return false;
 	}
 
-	// 2. 각도 만족
 	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo());
 	if (!PlayerCharacter)
 	{
 		return false;
 	}
 	
+	FVector CameraLocation = PlayerCharacter->GetCamera()->GetComponentLocation();
+	if (IsLockOnLineTraceHit(CameraLocation, TargetLocation) == false)
+	{
+		return false;
+	}
+	
+	// 2. 각도 만족
 	FVector CameraForward = PlayerCharacter->GetCamera()->GetForwardVector();
 	CameraForward.Z = 0.f;
 	
@@ -138,19 +165,55 @@ bool UTwoMinGA_LockOn_Player::IsLockOnCondition(const AActor* Target, float& Clo
 	{
 		return false;
 	}
-
-	// 3. 화면 중앙과의 거리 순
-	int32 ScreenX, ScreenY;
-	ATwoMinPlayerController* PlayerController = PlayerCharacter->GetPlayerController();
-	PlayerController->GetViewportSize(ScreenX, ScreenY);
-	const FVector2D ScreenCenter(ScreenX / 2.f, ScreenY / 2.f);
 	
+	return true;
+}
+
+bool UTwoMinGA_LockOn_Player::IsLockOnDistance(const FVector& PlayerLocation, const FVector& TargetLocation) const
+{
+	const float Distance = FVector::Dist(PlayerLocation, TargetLocation);
+	return Distance <= LockOnDistance;
+}
+
+bool UTwoMinGA_LockOn_Player::IsLockOnLineTraceHit(FVector CameraLocation, FVector TargetLocation) const
+{
+	FHitResult HitResult;
+	const TArray<AActor*> IgnoreActors;
+	
+	bool IsHit = UKismetSystemLibrary::LineTraceSingle(
+		GetWorld(),
+		CameraLocation,
+		TargetLocation,
+		UEngineTypes::ConvertToTraceType(ECC_Visibility),
+		false,
+		IgnoreActors,
+		EDrawDebugTrace::None,
+		HitResult,
+		true
+	);
+
+	if (IsHit && HitResult.bBlockingHit)
+	{
+		ATwoMinEnemyCharacter* Enemy = Cast<ATwoMinEnemyCharacter>(HitResult.GetActor());
+		if (!Enemy)
+		{
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+// 3. 화면 중앙과의 거리 순
+bool UTwoMinGA_LockOn_Player::IsLockOnScreenToDistance(const AActor* Target, float& ClosestDistance) const
+{
+	FVector2D ScreenCenter;
 	FVector2D ScreenPos;
-	if (PlayerController->ProjectWorldLocationToScreen(Target->GetActorLocation(), ScreenPos) == false)
+	if (IsInScreenPos(Target, ScreenCenter, ScreenPos) == false)
 	{
 		return false;
 	}
-
+	
 	float DistToCenter = FVector2D::Distance(ScreenPos, ScreenCenter);
 	if (DistToCenter >= ClosestDistance)
 	{
@@ -158,6 +221,27 @@ bool UTwoMinGA_LockOn_Player::IsLockOnCondition(const AActor* Target, float& Clo
 	}
 
 	ClosestDistance = DistToCenter;
+	return true;
+}
+
+bool UTwoMinGA_LockOn_Player::IsInScreenPos(const AActor* Target, FVector2D& ScreenCenter, FVector2D& ScreenPos) const
+{
+	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo());
+	if (!PlayerCharacter)
+	{
+		return false;
+	}
+	
+	int32 ScreenX, ScreenY;
+	ATwoMinPlayerController* PlayerController = PlayerCharacter->GetPlayerController();
+	PlayerController->GetViewportSize(ScreenX, ScreenY);
+	ScreenCenter = FVector2D(ScreenX / 2.f, ScreenY / 2.f);
+
+	if (PlayerController->ProjectWorldLocationToScreen(Target->GetActorLocation(), ScreenPos) == false)
+	{
+		return false;
+	}
+	
 	return true;
 }
 
@@ -181,6 +265,13 @@ void UTwoMinGA_LockOn_Player::DrawLockOnWidget()
 void UTwoMinGA_LockOn_Player::SetTargetLockOnWidgetPosition()
 {
 	if (!LockOnTargetWidget || !LockOnTarget)
+	{
+		CustomCancelAbility();
+		return;
+	}
+
+	if (IsLockOnDistance(GetAvatarActorFromActorInfo()->GetActorLocation(),
+		LockOnTarget->GetActorLocation()) == false)
 	{
 		CustomCancelAbility();
 		return;
@@ -215,6 +306,17 @@ void UTwoMinGA_LockOn_Player::SetTargetLockOnWidgetPosition()
 	LockOnTargetWidget->SetPositionInViewport(ScreenPosition, false);
 }
 
+void UTwoMinGA_LockOn_Player::LockCharacterMovement()
+{
+	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo());
+	if (!PlayerCharacter)
+	{
+		return;
+	}
+
+	 PlayerCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
+}
+
 void UTwoMinGA_LockOn_Player::StartLockOnTickTask()
 {
 	LockOnTickTask = UTwoMinAT_LockOn_Player::CreateTickTask(this);
@@ -226,6 +328,23 @@ void UTwoMinGA_LockOn_Player::StartLockOnTickTask()
 
 	LockOnTickTask->OnLockOnTick.AddUniqueDynamic(this, &UTwoMinGA_LockOn_Player::UpdateLockOnTarget);
 	LockOnTickTask->ReadyForActivation();
+
+	LockOnSwitchTargetEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
+	this,
+	FGameplayTag::RequestGameplayTag("Player.Event.SwitchTarget"),
+	nullptr,
+	false,
+	false
+	);
+
+	if (!LockOnSwitchTargetEvent)
+	{
+		CustomCancelAbility();
+		return;
+	}
+
+	LockOnSwitchTargetEvent->EventReceived.AddUniqueDynamic(this, &UTwoMinGA_LockOn_Player::OnSwitchTarget);
+	LockOnSwitchTargetEvent->ReadyForActivation();
 }
 
 void UTwoMinGA_LockOn_Player::ChangeMappingContext()
@@ -241,7 +360,14 @@ void UTwoMinGA_LockOn_Player::ChangeMappingContext()
 
 void UTwoMinGA_LockOn_Player::UpdateLockOnTarget(float DeltaTime)
 {
-	if (LockOnTarget == nullptr)
+	if (!LockOnTarget || !CurrentActorInfo || !LockOnTickTask)
+	{
+		CustomCancelAbility();
+		return;
+	}
+
+	if (IsLockOnDistance(GetAvatarActorFromActorInfo()->GetActorLocation(),
+		LockOnTarget->GetActorLocation()) == false)
 	{
 		CustomCancelAbility();
 		return;
@@ -261,21 +387,100 @@ void UTwoMinGA_LockOn_Player::UpdateLockOnTarget(float DeltaTime)
 	// 1
 	GetActorInfo().PlayerController->SetControlRotation(FRotator(TargetRot.Pitch, TargetRot.Yaw, 0.f));
 
-	FRotator NewCharacterRot = TargetRot;
-	
-	if (bIsCharacterRotationLock == false)
-	{
-		const FRotator CharacterRot = GetAvatarActorFromActorInfo()->GetActorRotation();
-		if (FMath::IsNearlyEqual(CharacterRot.Yaw, NewCharacterRot.Yaw, 45.0f))
-		{
-			bIsCharacterRotationLock = true;
-		}
-		
-		NewCharacterRot = FMath::RInterpTo(CharacterRot,
-				FRotator(0.f, TargetRot.Yaw, 0.f), DeltaTime, LockOnCharacterRotationSpeed);
-	}
+	const FRotator CharacterRot = GetAvatarActorFromActorInfo()->GetActorRotation();
+	FRotator NewCharacterRot = FMath::RInterpTo(CharacterRot,
+		FRotator(0.f, TargetRot.Yaw, 0.f), DeltaTime, LockOnCharacterRotationSpeed);
 
 	GetAvatarActorFromActorInfo()->SetActorRotation(FRotator(0.f, NewCharacterRot.Yaw, 0.f));
+}
+
+void UTwoMinGA_LockOn_Player::OnSwitchTarget(FGameplayEventData InputEventData)
+{
+	FString Value = FString::Printf(TEXT("Switch Target %s"), *InputEventData.EventTag.ToString());
+	DebugTwoMin::Print(Value, FColor::Yellow, 4);
+	
+	CheckSphereOverTargetGroup();
+
+	if (LockOnTargetGroup.IsEmpty())
+	{
+		return;
+	}
+
+	TArray<AActor*> ActorsOnLeft;
+	TArray<AActor*> ActorsOnRight;
+	AActor* NewTargetToLock = nullptr;
+
+	OnSplitLeftRightTargetGroup(ActorsOnLeft, ActorsOnRight);
+
+	float ClosestDistance = FLT_MAX;
+	if (InputEventData.EventTag == TwoMinGameplayTag::Player_Event_SwitchTarget_Left)
+	{
+		for (AActor* Target : ActorsOnLeft)
+		{
+			if (IsLockOnScreenToDistance(Target, ClosestDistance) == false)
+			{
+				continue;
+			}
+
+			NewTargetToLock = Target;
+		}
+	}
+	else
+	{
+		for (AActor* Target : ActorsOnRight)
+		{
+			if (IsLockOnScreenToDistance(Target, ClosestDistance) == false)
+			{
+				continue;
+			}
+
+			NewTargetToLock = Target;
+		}
+	}
+
+	if (NewTargetToLock)
+	{
+		LockOnTarget = NewTargetToLock;
+	}
+}
+
+void UTwoMinGA_LockOn_Player::OnSplitLeftRightTargetGroup(TArray<AActor*>& ActorsOnLeft, TArray<AActor*>& ActorsOnRight)
+{
+	if (!LockOnTarget || LockOnTargetGroup.IsEmpty())
+	{
+		CustomCancelAbility();
+		return;	
+	}
+
+	ATwoMinPlayerController* PlayerController = Cast<ATwoMinPlayerController>(CurrentActorInfo->PlayerController);
+	if (!PlayerController)
+	{
+		return;
+	}
+
+	for (AActor* Target : LockOnTargetGroup)
+	{
+		if (!Target || Target == LockOnTarget)
+		{
+			continue;	
+		}
+
+		FVector2D ScreenCenter;
+		FVector2D ScreenPos;
+		if (IsInScreenPos(Target, ScreenCenter, ScreenPos) == false)
+		{
+			continue;
+		}
+
+		if (ScreenPos.X < ScreenCenter.X)
+		{
+			ActorsOnLeft.AddUnique(Target);
+		}
+		else
+		{
+			ActorsOnRight.AddUnique(Target);
+		}
+	}
 }
 
 void UTwoMinGA_LockOn_Player::EndLockOnTarget()
@@ -316,4 +521,15 @@ void UTwoMinGA_LockOn_Player::ResetMappingContext()
 	check(Subsystem);
 
 	Subsystem->RemoveMappingContext(LockOnInputMappingContext);
+}
+
+void UTwoMinGA_LockOn_Player::ResetCharacterMovement()
+{
+	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo());
+	if (!PlayerCharacter)
+	{
+		return;
+	}
+
+	PlayerCharacter->GetCharacterMovement()->bOrientRotationToMovement = true;
 }

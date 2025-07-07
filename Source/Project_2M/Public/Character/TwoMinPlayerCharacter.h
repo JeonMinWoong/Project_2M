@@ -105,9 +105,15 @@ private:
 	
 	UPROPERTY(VisibleAnywhere)
 	bool bIsRun = false;
+
+	UPROPERTY()
+	FVector2D SwitchDirection = FVector2D::ZeroVector;
 	
 	void Input_Move(const FInputActionValue& InputActionValue);
 	void Input_Look(const FInputActionValue& InputActionValue);
+	void Input_SwitchTargetTrigger(const FInputActionValue& InputActionValue);
+	void Input_SwitchTargetComplete(const FInputActionValue& InputActionValue);
+	
 	void Stoped(const FInputActionValue& InputActionValue);
 
 	void Input_ToggleRun(const FInputActionValue& InputActionValue);
