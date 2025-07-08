@@ -12,6 +12,7 @@ namespace TwoMinGameplayTag
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_LightAttack_OneHand);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_HeavyAttack_OneHand);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_SwitchTarget);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Roll);
 
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Toggle);		// Toggle
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Toggle_Run);
@@ -27,6 +28,7 @@ namespace TwoMinGameplayTag
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_LightAttack_OneHand);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_HeavyAttack_OneHand);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_LockOn);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Roll);
 
 	// Player Event Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_SwitchTarget_Left);
@@ -34,4 +36,7 @@ namespace TwoMinGameplayTag
 	
 	// Player State Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_State_LockOn);
+
+	// Shard State Tags
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shard_State_Invincible);
 }
