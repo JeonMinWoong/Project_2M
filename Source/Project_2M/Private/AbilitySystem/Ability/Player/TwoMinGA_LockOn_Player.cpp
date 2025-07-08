@@ -396,6 +396,13 @@ void UTwoMinGA_LockOn_Player::UpdateLockOnTarget(float DeltaTime)
 
 void UTwoMinGA_LockOn_Player::OnSwitchTarget(FGameplayEventData InputEventData)
 {
+	if (CurrentSwitchTime > GetWorld()->GetTimeSeconds())
+	{
+		return;
+	}
+
+	CurrentSwitchTime = GetWorld()->GetTimeSeconds() + LockOnSwitchTime;
+	
 	FString Value = FString::Printf(TEXT("Switch Target %s"), *InputEventData.EventTag.ToString());
 	DebugTwoMin::Print(Value, FColor::Yellow, 4);
 	
@@ -504,6 +511,7 @@ void UTwoMinGA_LockOn_Player::EndLockOnTarget()
 	}
 
 	bIsCharacterRotationLock = false;
+	CurrentSwitchTime = 0.f;
 }
 
 void UTwoMinGA_LockOn_Player::ResetMappingContext()

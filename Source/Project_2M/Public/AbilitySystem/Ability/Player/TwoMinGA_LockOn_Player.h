@@ -65,6 +65,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Settings")
 	float LockOnSwitchTime = 0.5f;
 
+	UPROPERTY()
+	float CurrentSwitchTime;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Settings|OffsetDistance")
 	float LockOnCameraOffsetDistance = 20.f;
 
