@@ -3,7 +3,9 @@
 
 #include "TwoMinFunctionLibrary.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "GenericTeamAgentInterface.h"
+#include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 
 bool UTwoMinFunctionLibrary::IsTargetPawnHostile(APawn* OwnerPawn, APawn* TargetPawn)
 {
@@ -16,4 +18,19 @@ bool UTwoMinFunctionLibrary::IsTargetPawnHostile(APawn* OwnerPawn, APawn* Target
 	}
 	
 	return false;
+}
+
+bool UTwoMinFunctionLibrary::HasGameplayTag(AActor* InActor, FGameplayTag InTag)
+{
+	if (!InActor) return false;
+
+	UTwoMinAbilitySystemComponent* ASC =
+		Cast<UTwoMinAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(InActor));
+	if (ASC)
+	{
+		return ASC->HasMatchingGameplayTag(InTag);
+	}
+
+	return false;
+	
 }

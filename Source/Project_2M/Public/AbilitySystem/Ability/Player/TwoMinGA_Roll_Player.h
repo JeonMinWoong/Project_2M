@@ -6,6 +6,7 @@
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
 #include "TwoMinGA_Roll_Player.generated.h"
 
+class ATwoMinPlayerCharacter;
 /**
  * 
  */
@@ -29,7 +30,12 @@ protected:
 	virtual bool bIsReTriggerSameAbility() const override;
 	
 	void StartRoll(const FGameplayAbilityActorInfo* ActorInfo);
+	void NormalRoll();
+	void LockRoll(ATwoMinPlayerCharacter* PlayerCharacter);
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Montages")
 	UAnimMontage* RollMontages;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attack|LockMontages")
+	TMap<int, UAnimMontage*> LockRollMontages;
 };

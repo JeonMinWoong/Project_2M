@@ -36,6 +36,7 @@ namespace TwoMinGameplayTag
 	
 	// Player State Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_State_LockOn);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_State_Rolling);
 
 	// Shard State Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shard_State_Invincible);

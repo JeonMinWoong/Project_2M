@@ -5,6 +5,7 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "TwoMinDebugHelper.h"
+#include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystem/Ability/PlayerTask/TwoMinAT_LockOn_Player.h"
@@ -375,6 +376,8 @@ void UTwoMinGA_LockOn_Player::UpdateLockOnTarget(float DeltaTime)
 
 	SetTargetLockOnWidgetPosition();
 
+	
+	
 	FRotator LookAtRot = UKismetMathLibrary::FindLookAtRotation(
 	GetAvatarActorFromActorInfo()->GetActorLocation(),
 	LockOnTarget->GetActorLocation());
@@ -387,6 +390,12 @@ void UTwoMinGA_LockOn_Player::UpdateLockOnTarget(float DeltaTime)
 	// 1
 	GetActorInfo().PlayerController->SetControlRotation(FRotator(TargetRot.Pitch, TargetRot.Yaw, 0.f));
 
+	if (UTwoMinFunctionLibrary::HasGameplayTag(GetAvatarActorFromActorInfo(), TwoMinGameplayTag::Player_State_Rolling))
+	{
+		DebugTwoMin::Print(TEXT("Roll !!!!!!!!"), FColor::Red, 4);
+		return;
+	}
+	
 	const FRotator CharacterRot = GetAvatarActorFromActorInfo()->GetActorRotation();
 	FRotator NewCharacterRot = FMath::RInterpTo(CharacterRot,
 		FRotator(0.f, TargetRot.Yaw, 0.f), DeltaTime, LockOnCharacterRotationSpeed);

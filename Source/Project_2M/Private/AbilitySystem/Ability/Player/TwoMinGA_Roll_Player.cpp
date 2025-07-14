@@ -4,6 +4,8 @@
 #include "AbilitySystem/Ability/Player/TwoMinGA_Roll_Player.h"
 
 #include "TwoMinDebugHelper.h"
+#include "TwoMinFunctionLibrary.h"
+#include "TwoMinGameplayTag.h"
 #include "Character/TwoMinPlayerCharacter.h"
 
 UTwoMinGA_Roll_Player::UTwoMinGA_Roll_Player()
@@ -39,16 +41,59 @@ bool UTwoMinGA_Roll_Player::bIsReTriggerSameAbility() const
 
 void UTwoMinGA_Roll_Player::StartRoll(const FGameplayAbilityActorInfo* ActorInfo)
 {
-	if (!RollMontages)
-	{
-		return;
-	}
-
 	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(ActorInfo->OwnerActor);
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->CancelInputToggle();
 	}
+
+	if (UTwoMinFunctionLibrary::HasGameplayTag(PlayerCharacter, TwoMinGameplayTag::Player_State_LockOn))
+	{
+		LockRoll(PlayerCharacter);
+		return;
+	}
 	
+	NormalRoll();
+}
+
+void UTwoMinGA_Roll_Player::NormalRoll()
+{
+	if (!RollMontages)
+	{
+		return;
+	}
+
 	PlayToAnimMontage(RollMontages);
+}
+
+void UTwoMinGA_Roll_Player::LockRoll(ATwoMinPlayerCharacter* PlayerCharacter)
+{
+	if (!PlayerCharacter) return;
+	
+	if (LockRollMontages.IsEmpty()) return;
+
+	FVector PlayerForward = PlayerCharacter->GetActorForwardVector().GetSafeNormal2D();
+	FVector InputDirection = PlayerCharacter->GetInputDirection().GetSafeNormal2D();
+	
+	float AngleRadians = FMath::Atan2(
+		FVector::CrossProduct(PlayerForward, InputDirection).Z,
+		FVector::DotProduct(PlayerForward, InputDirection)
+	);
+
+	int DirectionIndex = 0;
+	
+	float AngleDegrees = FMath::RadiansToDegrees(AngleRadians);
+	if (AngleDegrees >= -45.f && AngleDegrees < 45.f)
+		DirectionIndex = 0; // 앞
+	else if (AngleDegrees >= 45.f && AngleDegrees < 135.f)
+		DirectionIndex = 1; // 오른
+	else if (AngleDegrees >= -135.f && AngleDegrees < -45.f)
+		DirectionIndex = 2; // 왼
+	else if (AngleDegrees >= 135.f && AngleDegrees < 180.f)
+		DirectionIndex = 3; // 오른 뒤
+	else if (AngleDegrees > -180.f && AngleDegrees < -135.f)
+		DirectionIndex = 4; // 왼 뒤
+
+	DebugTwoMin::Print(FString::Printf(TEXT("%s"), *FString::SanitizeFloat(AngleDegrees)), FColor::Yellow, 3);
+	PlayToAnimMontage(LockRollMontages[DirectionIndex]);
 }

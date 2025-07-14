@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "TwoMinFunctionLibrary.generated.h"
 
+struct FGameplayTag;
 /**
  * 
  */
@@ -17,4 +18,7 @@ class PROJECT_2M_API UTwoMinFunctionLibrary : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION()
 	static bool IsTargetPawnHostile(APawn* OwnerPawn, APawn* TargetPawn);
+
+	UFUNCTION()
+	static bool HasGameplayTag(AActor* InActor, FGameplayTag InTag);
 };
