@@ -6,11 +6,17 @@
 #include "TwoMinDebugHelper.h"
 #include "Character/TwoMinPlayerCharacter.h"
 
+UTwoMinGA_Roll_Player::UTwoMinGA_Roll_Player()
+{
+	bRetriggerInstancedAbility = UTwoMinGA_Roll_Player::bIsReTriggerSameAbility();
+	AbilityInputType = ETwoAbilityInputType::ReTriggerable;
+}
+
 void UTwoMinGA_Roll_Player::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                             const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                             const FGameplayEventData* TriggerEventData)
 {
-	DebugTwoMin::Print(TEXT("Roll Ability Activated"), FColor::Green, 1);
+	//DebugTwoMin::Print(TEXT("Roll Ability Activated"), FColor::Green, 1);
 	
 	StartRoll(ActorInfo);
 	
@@ -21,9 +27,14 @@ void UTwoMinGA_Roll_Player::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
-	DebugTwoMin::Print(TEXT("Roll Ability End"), FColor::Blue, 2);
+	//DebugTwoMin::Print(TEXT("Roll Ability End"), FColor::Blue, 2);
 	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+bool UTwoMinGA_Roll_Player::bIsReTriggerSameAbility() const
+{
+	return true;
 }
 
 void UTwoMinGA_Roll_Player::StartRoll(const FGameplayAbilityActorInfo* ActorInfo)

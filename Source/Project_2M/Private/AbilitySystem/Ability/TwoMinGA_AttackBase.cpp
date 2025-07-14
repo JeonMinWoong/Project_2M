@@ -7,6 +7,13 @@
 #include "Abilities/Tasks/AbilityTask_WaitDelay.h"
 #include "Character/TwoMinPlayerCharacter.h"
 
+UTwoMinGA_AttackBase::UTwoMinGA_AttackBase()
+{
+	bRetriggerInstancedAbility = UTwoMinGA_AttackBase::bIsReTriggerSameAbility();
+	AbilityInputType = ETwoAbilityInputType::ReTriggerable;
+}
+
+
 void UTwoMinGA_AttackBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                            const FGameplayAbilityActorInfo* ActorInfo,
                                            const FGameplayAbilityActivationInfo ActivationInfo,
@@ -30,7 +37,7 @@ void UTwoMinGA_AttackBase::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 			Player->CancelInputToggle();
 		}
 		
-		bIsReTriggerAble = false;
+		//bIsReTriggerAble = false;
 		PlayToAnimMontage(MontageToPlay);
 	}
 
@@ -49,12 +56,6 @@ void UTwoMinGA_AttackBase::EndAbility(const FGameplayAbilitySpecHandle Handle,
 bool UTwoMinGA_AttackBase::bIsReTriggerSameAbility() const
 {
 	return MaxComboCount > 1;
-}
-
-UTwoMinGA_AttackBase::UTwoMinGA_AttackBase()
-{
-	bRetriggerInstancedAbility = UTwoMinGA_AttackBase::bIsReTriggerSameAbility();
-	AbilityInputType = ETwoAbilityInputType::ReTriggerable;
 }
 
 void UTwoMinGA_AttackBase::AddComboCount()

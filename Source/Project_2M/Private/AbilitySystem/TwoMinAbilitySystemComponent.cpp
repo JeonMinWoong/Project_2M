@@ -13,6 +13,8 @@ void UTwoMinAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& In
 {
 	if (!InInputTag.IsValid()) return;
 
+	if (CancelAndStartNextNewAction(InInputTag)) return;
+	
 	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
 		if (!AbilitySpec.DynamicAbilityTags.HasTagExact(InInputTag)) continue;
@@ -24,9 +26,10 @@ void UTwoMinAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& In
 		else
 		{
 			UTwoMinGameplayAbility* Ability = Cast<UTwoMinGameplayAbility>(AbilitySpec.Ability);
-			if (IsAbilityActive(Ability->GetClass()))
+			FGameplayTag AbilityTag = GetActiveAbilityTag(Ability->AbilityTags);
+			if (IsPlayingAbility(AbilityTag))
 			{
-				OnCancelAndReTriggerAbility(Ability, Ability->GetClass());
+				OnCancelAndReTriggerAbility(Ability, Ability->GetClass(), AbilityTag);
 			}
 			else
 			{
@@ -49,15 +52,43 @@ void UTwoMinAbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& I
 	}
 }
 
+bool UTwoMinAbilitySystemComponent::CancelAndStartNextNewAction(const FGameplayTag& InInputTag)
+{
+	if (UTwoMinGameplayAbility* PlayingAbility = GetPlayingAbility())
+	{
+		UTwoMinGameplayAbility* NewAbility = GetActiveAbilityInputTag(InInputTag);
+		if (PlayingAbility->IsPossibleCancelAbility(NewAbility))
+		{
+			DebugTwoMin::Print(FString::Printf(TEXT("New Ability: %s, Playing Ability: %s"),
+											   *NewAbility->GetName(), *PlayingAbility->GetName()), FColor::Red);
+			
+			UTwoMinGameplayAbility* CDOAbility =
+				Cast<UTwoMinGameplayAbility>(PlayingAbility->GetClass()->GetDefaultObject());
+			CancelAbility(CDOAbility);
+
+			FTimerDelegate Delegate;
+			Delegate.BindLambda([this, NewAbility]()
+			{
+				this->TryActivateAbilityByClass(NewAbility->GetClass());
+			});
+
+			this->GetWorld()->GetTimerManager().SetTimerForNextTick(Delegate);
+			return true;
+		}
+	}
+	
+	return false;
+}
+
 void UTwoMinAbilitySystemComponent::OnCancelAndReTriggerAbility(UTwoMinGameplayAbility* InAbilityCDO,
-	const TSubclassOf<UTwoMinGameplayAbility> InAbilityToReTrigger)
+	const TSubclassOf<UTwoMinGameplayAbility> InAbilityToReTrigger, const FGameplayTag& AbilityTag)
 {
  	if (!InAbilityToReTrigger)
 	{
 		return;
 	}
 
-	UTwoMinGameplayAbility* ReTriggerAbility = GetActiveAbility(InAbilityToReTrigger);
+	UTwoMinGameplayAbility* ReTriggerAbility = GetPlayingAbilityTag(AbilityTag);
 	if (ReTriggerAbility->GetAbilityInputType() == ETwoAbilityInputType::Only)
 	{
 		return;
@@ -98,12 +129,54 @@ void UTwoMinAbilitySystemComponent::GrantHeroWeaponAbilities(
 	}
 }
 
-UTwoMinGameplayAbility* UTwoMinAbilitySystemComponent::GetActiveAbility(
-	const TSubclassOf<UTwoMinGameplayAbility> AbilityClass)
+UTwoMinGameplayAbility* UTwoMinAbilitySystemComponent::GetPlayingAbility()
 {
 	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
-		if (AbilitySpec.IsActive() && AbilitySpec.Ability && AbilitySpec.Ability->GetClass() == AbilityClass)
+		if (AbilitySpec.IsActive() && AbilitySpec.Ability)
+		{
+			// CDO 가 없어서 정지가 안되는 듯.
+			if (UTwoMinGameplayAbility* TwoMinGameplayAbility = Cast<UTwoMinGameplayAbility>(AbilitySpec.GetPrimaryInstance()))
+			{
+				if (TwoMinGameplayAbility->GetActivationPolicy() != EToMinAbilityActivationPolicy::OnGiven)
+				{
+					return TwoMinGameplayAbility;
+				}
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+bool UTwoMinAbilitySystemComponent::IsPlayingAbility(const FGameplayTag& AbilityTag)
+{
+	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		if (AbilitySpec.Ability->AbilityTags.HasTagExact(AbilityTag) == false)
+		{
+			continue;
+		}
+		
+		if (AbilitySpec.IsActive() && AbilitySpec.Ability)
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+UTwoMinGameplayAbility* UTwoMinAbilitySystemComponent::GetPlayingAbilityTag(const FGameplayTag& AbilityTag)
+{
+	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		if (AbilitySpec.Ability->AbilityTags.HasTagExact(AbilityTag) == false)
+		{
+			continue;
+		}
+		
+		if (AbilitySpec.IsActive() && AbilitySpec.Ability)
 		{
 			if (UTwoMinGameplayAbility* FindAbility = Cast<UTwoMinGameplayAbility>(AbilitySpec.GetPrimaryInstance()))
 			{
@@ -115,15 +188,42 @@ UTwoMinGameplayAbility* UTwoMinAbilitySystemComponent::GetActiveAbility(
 	return nullptr;
 }
 
-bool UTwoMinAbilitySystemComponent::IsAbilityActive(const TSubclassOf<UTwoMinGameplayAbility> AbilityClass)
+FGameplayTag UTwoMinAbilitySystemComponent::GetActiveAbilityTag(FGameplayTagContainer GameplayTagContainer) const
+{
+	if (GameplayTagContainer.IsEmpty())
+	{
+		return FGameplayTag::EmptyTag;
+	}
+	
+	return GameplayTagContainer.First();
+}
+
+UTwoMinGameplayAbility* UTwoMinAbilitySystemComponent::GetActiveAbilityInputTag(const FGameplayTag& InInputTag)
 {
 	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
-		if (AbilitySpec.IsActive() && AbilitySpec.Ability && AbilitySpec.Ability->GetClass() == AbilityClass)
+		if (!AbilitySpec.DynamicAbilityTags.HasTagExact(InInputTag)) continue;
+
+		if (AbilitySpec.Ability)
 		{
-			return true;
+			return Cast<UTwoMinGameplayAbility>(AbilitySpec.GetPrimaryInstance());
 		}
 	}
-	
-	return false;
+
+	return nullptr;
+}
+
+UTwoMinGameplayAbility* UTwoMinAbilitySystemComponent::GetActiveAbility(const FGameplayTag& AbilityTag)
+{
+	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		if (AbilitySpec.Ability->AbilityTags.HasTagExact(AbilityTag) == false)
+		{
+			continue;
+		}
+
+		return Cast<UTwoMinGameplayAbility>(AbilitySpec.GetPrimaryInstance());
+	}
+
+	return nullptr;
 }

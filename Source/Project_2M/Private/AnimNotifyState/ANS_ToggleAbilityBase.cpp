@@ -14,7 +14,7 @@ void UANS_ToggleAbilityBase::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 {
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 	
-	if (!AbilityClass)
+	if (PlayingAbilityTag == FGameplayTag::EmptyTag)
 	{
 		return;
 	}
@@ -22,7 +22,7 @@ void UANS_ToggleAbilityBase::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnim
 	const ATwoMinBaseCharacter* Owner = Cast<ATwoMinBaseCharacter>(MeshComp->GetOwner());
 	if (!Owner) return;
 	
-	UTwoMinGameplayAbility* ActiveAbility = Owner->GetAbilitySystemComponent()->GetActiveAbility(AbilityClass);
+	UTwoMinGameplayAbility* ActiveAbility = Owner->GetAbilitySystemComponent()->GetPlayingAbilityTag(PlayingAbilityTag);
 	if (ActiveAbility)
 	{
 		StartToggleAbilityProcess(ActiveAbility);
@@ -40,7 +40,7 @@ void UANS_ToggleAbilityBase::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSe
 {
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 
-	if (!AbilityClass)
+	if (PlayingAbilityTag == FGameplayTag::EmptyTag)
 	{
 		return;
 	}
@@ -48,7 +48,7 @@ void UANS_ToggleAbilityBase::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSe
 	const ATwoMinBaseCharacter* Owner = Cast<ATwoMinBaseCharacter>(MeshComp->GetOwner());
 	if (!Owner) return;
 	
-	UTwoMinGameplayAbility* ActiveAbility = Owner->GetAbilitySystemComponent()->GetActiveAbility(AbilityClass);
+	UTwoMinGameplayAbility* ActiveAbility = Owner->GetAbilitySystemComponent()->GetPlayingAbilityTag(PlayingAbilityTag);
 	if (ActiveAbility)
 	{
 		EndToggleAbilityProcess(ActiveAbility);

@@ -22,8 +22,8 @@ void UANS_ApplyStateTag::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequ
 		ASC->AddLooseGameplayTag(StateTagToApply);
 	}
 
-	FString Value = FString::Printf(TEXT("Add State Tag : %s"), *StateTagToApply.ToString());
-	DebugTwoMin::Print(Value, FColor::Orange);
+	//FString Value = FString::Printf(TEXT("Add State Tag : %s"), *StateTagToApply.ToString());
+	//DebugTwoMin::Print(Value, FColor::Orange);
 	
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 }
@@ -43,7 +43,7 @@ void UANS_ApplyStateTag::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequen
 		ASC->RemoveLooseGameplayTag(StateTagToApply);
 	}
 
-	FString Value = FString::Printf(TEXT("End State Tag : %s"), *StateTagToApply.ToString());
-	DebugTwoMin::Print(Value, FColor::Orange);
+	//FString Value = FString::Printf(TEXT("End State Tag : %s"), *StateTagToApply.ToString());
+	//DebugTwoMin::Print(Value, FColor::Orange);
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 }

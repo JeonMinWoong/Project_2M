@@ -17,14 +17,23 @@ class PROJECT_2M_API UTwoMinAbilitySystemComponent : public UAbilitySystemCompon
 	GENERATED_BODY()
 
 public:
+	bool CancelAndStartNextNewAction(const FGameplayTag& InInputTag);
 	void OnAbilityInputPressed(const FGameplayTag& InInputTag);
 	void OnAbilityInputReleased(const FGameplayTag& InInputTag);
 
-	void OnCancelAndReTriggerAbility(UTwoMinGameplayAbility* InAbilityCDO, const TSubclassOf<UTwoMinGameplayAbility> InAbilityToReTrigger);
+	void OnCancelAndReTriggerAbility(UTwoMinGameplayAbility* InAbilityCDO,
+		const TSubclassOf<UTwoMinGameplayAbility> InAbilityToReTrigger, const FGameplayTag& AbilityTag);
 	
 	void GrantHeroWeaponAbilities(const TArray<FTwoMinPlayerAbilitySet>& InDefaultWeaponAbilities, int ApplyLevel,
 		TArray<FGameplayAbilitySpecHandle>& OutGrantedAbilitySpecHandles);
 
-	UTwoMinGameplayAbility* GetActiveAbility(const TSubclassOf<UTwoMinGameplayAbility> AbilityClass);
-	bool IsAbilityActive(const TSubclassOf<UTwoMinGameplayAbility> AbilityClass);
+	UTwoMinGameplayAbility* GetPlayingAbility();
+	bool IsPlayingAbility(const FGameplayTag& AbilityTag);
+	
+	UTwoMinGameplayAbility* GetPlayingAbilityTag(const FGameplayTag& AbilityTag);
+	FGameplayTag GetActiveAbilityTag(FGameplayTagContainer GameplayTagContainer) const;
+	UTwoMinGameplayAbility* GetActiveAbilityInputTag(const FGameplayTag& InInputTag);
+	
+	UTwoMinGameplayAbility* GetActiveAbility(const FGameplayTag& AbilityTag);
+	
 };

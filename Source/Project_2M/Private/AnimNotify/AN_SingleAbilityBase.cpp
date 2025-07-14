@@ -12,7 +12,7 @@ void UAN_SingleAbilityBase::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 {
 	Super::Notify(MeshComp, Animation, EventReference);
 
-	if (!AbilityClass)
+	if (AbilityTag == FGameplayTag::EmptyTag)
 	{
 		return;
 	}
@@ -20,7 +20,7 @@ void UAN_SingleAbilityBase::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 	const ATwoMinBaseCharacter* Owner = Cast<ATwoMinBaseCharacter>(MeshComp->GetOwner());
 	if (!Owner) return;
 	
-	UTwoMinGameplayAbility* ActiveAbility = Owner->GetAbilitySystemComponent()->GetActiveAbility(AbilityClass);
+	UTwoMinGameplayAbility* ActiveAbility = Owner->GetAbilitySystemComponent()->GetPlayingAbilityTag(AbilityTag);
 	if (ActiveAbility)
 	{
 		FinishAbilityProcess(ActiveAbility);

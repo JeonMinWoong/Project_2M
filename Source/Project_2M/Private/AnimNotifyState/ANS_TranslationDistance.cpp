@@ -3,24 +3,34 @@
 
 #include "AnimNotifyState/ANS_TranslationDistance.h"
 
+#include "MotionWarpingComponent.h"
+#include "Character/TwoMinBaseCharacter.h"
+
 void UANS_TranslationDistance::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
-	float TotalDuration, const FAnimNotifyEventReference& EventReference)
+                                           float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
-	bIsTranslation = false;
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 }
 
 void UANS_TranslationDistance::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
 	float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
 {
-	
-	
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
 }
 
 void UANS_TranslationDistance::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
 	const FAnimNotifyEventReference& EventReference)
 {
-	bIsTranslation = false;
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
+}
+
+void UANS_TranslationDistance::PlayMotionWarpingTargetLocation(ATwoMinBaseCharacter* Character, FVector TargetLocation)
+{
+	UMotionWarpingComponent* MotionWarpingComponent = Character->GetMotionWarpingComponent();
+	if (!MotionWarpingComponent)
+	{
+		return;
+	}
+
+	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocation(TEXT("TranslationDistance"), TargetLocation);
 }

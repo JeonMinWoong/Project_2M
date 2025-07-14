@@ -14,6 +14,9 @@ class PROJECT_2M_API UTwoMinGA_Roll_Player : public UTwoMinGameplayAbility
 {
 	GENERATED_BODY()
 
+public:
+	UTwoMinGA_Roll_Player();
+	
 protected:
 	//~ Begin UGameplayAbility Interface.
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -23,6 +26,8 @@ protected:
 		const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	//~ End UGameplayAbility Interface
 
+	virtual bool bIsReTriggerSameAbility() const override;
+	
 	void StartRoll(const FGameplayAbilityActorInfo* ActorInfo);
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Montages")

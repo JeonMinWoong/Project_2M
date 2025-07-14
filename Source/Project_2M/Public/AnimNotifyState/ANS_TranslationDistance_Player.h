@@ -3,21 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AnimNotifyState/BaseAnimNotifyState.h"
-#include "ANS_TranslationDistance.generated.h"
+#include "AnimNotifyState/ANS_TranslationDistance.h"
+#include "ANS_TranslationDistance_Player.generated.h"
 
-class ATwoMinBaseCharacter;
 /**
  * 
  */
 UCLASS()
-class PROJECT_2M_API UANS_TranslationDistance : public UBaseAnimNotifyState
+class PROJECT_2M_API UANS_TranslationDistance_Player : public UANS_TranslationDistance
 {
 	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditAnywhere, Category = "Setting")
-	float TranslationDistance;
 
 protected:
 	//~ Begin UAnimNotifyState Interface.
@@ -30,9 +25,4 @@ protected:
 	virtual void NotifyEnd(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation,
 		const FAnimNotifyEventReference& EventReference) override;
 	//~ End UAnimNotifyState Interface.
-
-	virtual void PlayMotionWarpingTargetLocation(ATwoMinBaseCharacter* Character, FVector TargetLocation);
-	
-	UPROPERTY()
-	bool bIsTranslation;
 };

@@ -26,6 +26,14 @@ void UTwoMinGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* Acto
 	}
 }
 
+void UTwoMinGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	const FGameplayEventData* TriggerEventData)
+{
+	bIsReTriggerAble = false;
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+}
+
 void UTwoMinGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
                                         const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                         bool bReplicateEndAbility, bool bWasCancelled)
@@ -39,6 +47,8 @@ void UTwoMinGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 			ActorInfo->AbilitySystemComponent->ClearAbility(Handle);
 		}
 	}
+
+	PossibleCancelAbilities.Empty();
 }
 
 bool UTwoMinGameplayAbility::bIsReTriggerSameAbility() const
@@ -73,4 +83,30 @@ void UTwoMinGameplayAbility::CustomCancelAbility()
 	CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(),
 		true);
 }
+
+void UTwoMinGameplayAbility::SetReTriggerActive(bool InIsReTriggerActive)
+{
+	bIsReTriggerAble = InIsReTriggerActive;
+}
+
+void UTwoMinGameplayAbility::AddPossibleCancelAbility(UTwoMinGameplayAbility* InAbility)
+{
+	PossibleCancelAbilities.AddUnique(InAbility);
+}
+
+void UTwoMinGameplayAbility::RemovePossibleCancelAbility(UTwoMinGameplayAbility* InAbility)
+{
+	if (PossibleCancelAbilities.IsEmpty())
+	{
+		return;
+	}
+
+	PossibleCancelAbilities.Remove(InAbility);
+}
+
+bool UTwoMinGameplayAbility::IsPossibleCancelAbility(UTwoMinGameplayAbility* InAbility) const
+{
+	return PossibleCancelAbilities.Contains(InAbility);
+}
+
 

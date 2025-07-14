@@ -31,10 +31,19 @@ class PROJECT_2M_API UTwoMinGameplayAbility : public UGameplayAbility
 
 public:
 	UTwoMinGameplayAbility();
+
+	void SetReTriggerActive(bool bIsReTriggerActive);
+
+	void AddPossibleCancelAbility(UTwoMinGameplayAbility* InAbility);
+	void RemovePossibleCancelAbility(UTwoMinGameplayAbility* InAbility);
+	bool IsPossibleCancelAbility(UTwoMinGameplayAbility* InAbility) const;
 	
 protected:
 	//~ Begin UGameplayAbility Interface.
 	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+			const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
@@ -58,7 +67,11 @@ private:
 	UFUNCTION()
 	void CustomEndAbility();
 
+	UPROPERTY()
+	TArray<UTwoMinGameplayAbility*> PossibleCancelAbilities;
+
 public:
 	FORCEINLINE ETwoAbilityInputType GetAbilityInputType() const { return AbilityInputType; }
+	FORCEINLINE EToMinAbilityActivationPolicy GetActivationPolicy() const { return AbilityActivationPolicy; }
 	FORCEINLINE bool IsReTriggerActive() const { return bIsReTriggerAble; }
 };

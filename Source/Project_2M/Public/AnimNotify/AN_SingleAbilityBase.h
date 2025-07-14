@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "AnimNotify/BaseAnimNotify.h"
 #include "AN_SingleAbilityBase.generated.h"
 
@@ -15,6 +16,10 @@ class PROJECT_2M_API UAN_SingleAbilityBase : public UBaseAnimNotify
 {
 	GENERATED_BODY()
 
+public:
+	UPROPERTY(EditAnywhere, Category = "AbilityTag")
+	FGameplayTag AbilityTag;
+	
 protected:
 	//~Begin UAnimNotify Interface.
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
@@ -22,8 +27,4 @@ protected:
 	//~End UAnimNotify Interface.
 
 	virtual void FinishAbilityProcess(UTwoMinGameplayAbility* InAbility);
-	
-private:
-	UPROPERTY(EditDefaultsOnly, Category = "AbilityClass", meta = (AllowPrivateAccess = "true"))
-	TSubclassOf<UTwoMinGameplayAbility> AbilityClass;
 };
