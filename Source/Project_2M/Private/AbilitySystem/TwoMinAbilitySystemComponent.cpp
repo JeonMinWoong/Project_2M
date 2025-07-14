@@ -6,7 +6,6 @@
 #include "TwoMinDebugHelper.h"
 #include "TwoMinGameplayTag.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
-#include "AbilitySystem/Ability/TwoMinGA_AttackBase.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 
 void UTwoMinAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InInputTag)
