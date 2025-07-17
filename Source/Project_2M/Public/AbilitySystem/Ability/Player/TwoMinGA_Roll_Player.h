@@ -32,6 +32,8 @@ protected:
 	void StartRoll(const FGameplayAbilityActorInfo* ActorInfo);
 	void NormalRoll();
 	void LockRoll(ATwoMinPlayerCharacter* PlayerCharacter);
+
+	void EndRoll(const FGameplayAbilityActorInfo* ActorInfo);
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Montages")
 	UAnimMontage* RollMontages;

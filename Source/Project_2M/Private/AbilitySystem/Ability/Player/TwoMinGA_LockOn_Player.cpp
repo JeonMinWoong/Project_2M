@@ -22,6 +22,11 @@
 #include "Widgets/TwoMinWidgetBase.h"
 
 
+AActor* UTwoMinGA_LockOn_Player::GetCurrentLockOnTarget() const
+{
+	return LockOnTarget;
+}
+
 void UTwoMinGA_LockOn_Player::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                               const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                               const FGameplayEventData* TriggerEventData)

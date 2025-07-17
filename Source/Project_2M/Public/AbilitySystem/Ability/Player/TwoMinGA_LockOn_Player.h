@@ -19,6 +19,9 @@ class PROJECT_2M_API UTwoMinGA_LockOn_Player : public UTwoMinGameplayAbility
 {
 	GENERATED_BODY()
 
+public:
+	AActor* GetCurrentLockOnTarget() const;
+	
 protected:
 	//~ Begin UGameplayAbility Interface.
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

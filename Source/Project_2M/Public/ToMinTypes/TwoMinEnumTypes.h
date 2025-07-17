@@ -9,3 +9,10 @@ enum class EToggleDamageType : uint8
 	CurrentEquippedWeapon_Right,
 	CurrentEquippedWeapon_All,
 };
+
+UENUM(BlueprintType)
+enum class ERotateDirectionType : uint8
+{
+	InputDirection = 0,
+	TargetDirection,
+};

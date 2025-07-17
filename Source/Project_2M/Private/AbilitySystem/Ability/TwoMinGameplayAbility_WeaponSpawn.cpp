@@ -5,6 +5,7 @@
 
 #include "EnhancedInputSubsystems.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
+#include "AnimInstances/Player/TwoMinPlayerLinkedAnimLayer.h"
 #include "Character/TwoMinBaseCharacter.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/Combat/BaseCombatComponent.h"
@@ -66,6 +67,11 @@ void UTwoMinGameplayAbility_WeaponSpawn::ActivateAbility(const FGameplayAbilityS
 							if (EnhancedInputLocalPlayerSubsystem)
 							{
 								const FTwoMinPlayerWeaponData& WeaponData = SpawnWeapon->GetWeaponData();
+
+								if (WeaponData.WeaponAnimLayerToLink)
+								{
+									Player->GetMesh()->LinkAnimClassLayers(WeaponData.WeaponAnimLayerToLink);	
+								}
 								
 								EnhancedInputLocalPlayerSubsystem->AddMappingContext(
 									WeaponData.WeaponInputMappingContext,

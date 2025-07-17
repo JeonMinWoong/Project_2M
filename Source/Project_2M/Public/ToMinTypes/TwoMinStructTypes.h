@@ -5,6 +5,7 @@
 
 #include "TwoMinStructTypes.generated.h"
 
+class UTwoMinPlayerLinkedAnimLayer;
 class UTwoMinGameplayAbility;
 class UInputMappingContext;
 
@@ -27,6 +28,9 @@ struct FTwoMinPlayerWeaponData
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UTwoMinPlayerLinkedAnimLayer> WeaponAnimLayerToLink;
+	
 	UPROPERTY(EditDefaultsOnly)
 	UInputMappingContext* WeaponInputMappingContext;
 
