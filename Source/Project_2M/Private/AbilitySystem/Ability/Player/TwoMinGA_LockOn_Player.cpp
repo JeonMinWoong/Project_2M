@@ -4,6 +4,7 @@
 #include "AbilitySystem/Ability/Player/TwoMinGA_LockOn_Player.h"
 
 #include "EnhancedInputSubsystems.h"
+#include "MotionWarpingComponent.h"
 #include "TwoMinDebugHelper.h"
 #include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
@@ -320,7 +321,8 @@ void UTwoMinGA_LockOn_Player::LockCharacterMovement()
 		return;
 	}
 
-	 PlayerCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
+	PlayerCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
+	PlayerCharacter->GetMotionWarpingComponent()->RemoveWarpTarget("RotationDirection");
 }
 
 void UTwoMinGA_LockOn_Player::StartLockOnTickTask()
@@ -380,8 +382,6 @@ void UTwoMinGA_LockOn_Player::UpdateLockOnTarget(float DeltaTime)
 	}
 
 	SetTargetLockOnWidgetPosition();
-
-	
 	
 	FRotator LookAtRot = UKismetMathLibrary::FindLookAtRotation(
 	GetAvatarActorFromActorInfo()->GetActorLocation(),

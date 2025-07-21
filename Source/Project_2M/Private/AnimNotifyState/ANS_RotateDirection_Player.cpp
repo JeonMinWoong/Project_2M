@@ -4,6 +4,7 @@
 #include "AnimNotifyState/ANS_RotateDirection_Player.h"
 
 #include "MotionWarpingComponent.h"
+#include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
@@ -56,6 +57,12 @@ void UANS_RotateDirection_Player::NotifyEnd(USkeletalMeshComponent* MeshComp, UA
 
 void UANS_RotateDirection_Player::CharacterToInputDirection(ATwoMinPlayerCharacter* PlayerCharacter)
 {
+	if (UTwoMinFunctionLibrary::HasGameplayTag(PlayerCharacter, TwoMinGameplayTag::Player_State_LockOn))
+	{
+		// Lock On 중 회전 하지 않음.
+		return; 
+	}
+	
 	FRotator CurrentRotation = PlayerCharacter->GetActorRotation();
 	CurrentRotation.Pitch = 0;
 	CurrentRotation.Roll = 0;
