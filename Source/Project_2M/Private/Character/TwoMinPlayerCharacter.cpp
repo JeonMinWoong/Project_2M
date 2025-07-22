@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "EnhancedInputSubsystems.h"
+#include "TwoMinFunctionLibrary.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Compnents/Combat/PlayerCombatComponent.h"
@@ -184,6 +185,11 @@ void ATwoMinPlayerCharacter::Stoped(const FInputActionValue& InputActionValue)
 
 void ATwoMinPlayerCharacter::Input_ToggleRun(const FInputActionValue& InputActionValue)
 {
+	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_LockOn))
+	{
+		return;
+	}
+	
 	if (bIsWalk == false)
 	{
 		return;

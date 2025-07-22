@@ -45,6 +45,11 @@ void UBaseCombatComponent::ToggleWeaponCollision(bool bShouldEnable, EToggleDama
 	// Todo : Enemy
 }
 
+UAutoTargetingComponent* UBaseCombatComponent::GetAutoTargetingComponent() const
+{
+	return nullptr;
+}
+
 void UBaseCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bShouldEnable, EToggleDamageType ToggleDamageType)
 {
 	TArray<ATwoMinWeaponBase*> WeaponToToggle = GetCharacterCurrentEquippedWeapon();

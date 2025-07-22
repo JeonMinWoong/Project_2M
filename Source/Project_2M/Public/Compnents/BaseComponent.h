@@ -7,7 +7,7 @@
 #include "BaseComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class PROJECT_2M_API UBaseComponent : public UActorComponent
 {
 	GENERATED_BODY()

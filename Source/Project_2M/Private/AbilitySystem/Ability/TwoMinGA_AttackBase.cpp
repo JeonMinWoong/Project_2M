@@ -6,6 +6,8 @@
 #include "TwoMinDebugHelper.h"
 #include "Abilities/Tasks/AbilityTask_WaitDelay.h"
 #include "Character/TwoMinPlayerCharacter.h"
+#include "Compnents/AutoTargetingComponent.h"
+#include "Compnents/Combat/BaseCombatComponent.h"
 
 UTwoMinGA_AttackBase::UTwoMinGA_AttackBase()
 {
@@ -35,6 +37,10 @@ void UTwoMinGA_AttackBase::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		if (Player)
 		{
 			Player->CancelInputToggle();
+			if (UAutoTargetingComponent* AutoTargeting = Player->GetCombatComponent()->GetAutoTargetingComponent())
+			{
+				AutoTargeting->StartAutoTargeting();
+			}
 		}
 		
 		//bIsReTriggerAble = false;

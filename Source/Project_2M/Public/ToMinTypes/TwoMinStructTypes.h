@@ -37,3 +37,15 @@ struct FTwoMinPlayerWeaponData
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FTwoMinPlayerAbilitySet> DefaultWeaponAbilities;
 };
+
+USTRUCT(BlueprintType)
+struct FTwoMinPlayerAutoTargetingData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float TargetingRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float TargetingAngle;
+};

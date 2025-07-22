@@ -8,6 +8,7 @@
 #include "ToMinTypes/TwoMinEnumTypes.h"
 #include "BaseCombatComponent.generated.h"
 
+class UAutoTargetingComponent;
 class ATwoMinWeaponBase;
 /**
  * 
@@ -24,6 +25,8 @@ public:
 	
 	void ToggleWeaponCollision(bool bShouldEnable, EToggleDamageType ToggleDamageType =
 		EToggleDamageType::None);
+	
+	virtual UAutoTargetingComponent* GetAutoTargetingComponent() const;
 
 protected:
 	virtual void ToggleCurrentEquippedWeaponCollision(bool bShouldEnable, EToggleDamageType ToggleDamageType);

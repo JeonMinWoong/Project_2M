@@ -321,6 +321,7 @@ void UTwoMinGA_LockOn_Player::LockCharacterMovement()
 		return;
 	}
 
+	PlayerCharacter->CancelInputToggle();
 	PlayerCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
 	PlayerCharacter->GetMotionWarpingComponent()->RemoveWarpTarget("RotationDirection");
 }

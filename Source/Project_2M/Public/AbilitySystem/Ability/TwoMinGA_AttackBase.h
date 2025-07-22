@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
+#include "ToMinTypes/TwoMinStructTypes.h"
 #include "TwoMinGA_AttackBase.generated.h"
 
+struct FTwoMinPlayerAutoTargetingData;
 /**
  * 
  */
@@ -43,5 +45,4 @@ private:
  
 	UPROPERTY()
 	int32 CurComboCount = 1;
-	
 };
