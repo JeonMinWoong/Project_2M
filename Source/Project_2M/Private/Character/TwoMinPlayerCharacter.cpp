@@ -9,6 +9,7 @@
 #include "TwoMinFunctionLibrary.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Compnents/AutoTargetingComponent.h"
 #include "Compnents/Combat/PlayerCombatComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Controller/TwoMinPlayerController.h"
@@ -57,6 +58,11 @@ UBaseCombatComponent* ATwoMinPlayerCharacter::GetCombatComponent() const
 ATwoMinPlayerController* ATwoMinPlayerCharacter::GetPlayerController() const
 {
 	return Cast<ATwoMinPlayerController>(GetController());
+}
+
+ATwoMinEnemyCharacter* ATwoMinPlayerCharacter::GetCurrentAutoTarget() const
+{
+	return GetCombatComponent()->GetAutoTargetingComponent()->GetCurrentTargetingActor();
 }
 
 void ATwoMinPlayerCharacter::CancelInputToggle()

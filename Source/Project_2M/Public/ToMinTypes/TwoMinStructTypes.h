@@ -48,4 +48,7 @@ struct FTwoMinPlayerAutoTargetingData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float TargetingAngle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float TargetingRotationSpeed;
 };

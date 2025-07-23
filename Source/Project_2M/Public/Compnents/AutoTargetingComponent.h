@@ -20,9 +20,13 @@ class PROJECT_2M_API UAutoTargetingComponent : public UBaseComponent
 
 public:
 	void StartAutoTargeting();
-
+	void EndAutoTargeting();
+	
 private:
-	ATwoMinEnemyCharacter* IsTargetingCondition(ATwoMinPlayerCharacter* PlayerCharacter, TArray<AActor*> Actors) const;
+	ATwoMinEnemyCharacter* IsTargetingCondition(ATwoMinPlayerCharacter* PlayerCharacter, TArray<AActor*> Actors,
+		const FVector& InputForward) const;
+
+	void DrawDebug(const FVector& StartLocation, const FVector& InputForward) const;
 	
 	UPROPERTY()
 	AActor* TargetingActor;
@@ -32,10 +36,14 @@ private:
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
 	bool bIsDebugTargetingRange;
-
+	
 	UPROPERTY()
 	ATwoMinEnemyCharacter* CurrentTargetingActor;
 
 	UPROPERTY(EditAnywhere)
 	FTwoMinPlayerAutoTargetingData TargetingData;
+
+public:
+	FORCEINLINE ATwoMinEnemyCharacter* GetCurrentTargetingActor() const { return CurrentTargetingActor; }
+	FORCEINLINE float GetTargetingRotationSpeed() const { return TargetingData.TargetingRotationSpeed; }
 };

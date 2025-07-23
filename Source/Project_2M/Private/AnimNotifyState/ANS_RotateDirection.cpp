@@ -33,7 +33,7 @@ void UANS_RotateDirection::PlayMotionWarpingRotator(ATwoMinBaseCharacter* Charac
 	{
 		return;
 	}
-
+	
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(TEXT("RotationDirection"),
 		Character->GetActorLocation(), TargetDRotator);
 }

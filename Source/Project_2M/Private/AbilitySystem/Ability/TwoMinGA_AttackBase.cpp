@@ -55,7 +55,15 @@ void UTwoMinGA_AttackBase::EndAbility(const FGameplayAbilitySpecHandle Handle,
                                       const FGameplayAbilityActivationInfo ActivationInfo,
                                       bool bReplicateEndAbility, bool bWasCancelled)
 {
-
+	ATwoMinPlayerCharacter* Player = Cast<ATwoMinPlayerCharacter>(ActorInfo->OwnerActor);
+	if (Player)
+	{
+		if (UAutoTargetingComponent* AutoTargeting = Player->GetCombatComponent()->GetAutoTargetingComponent())
+		{
+			AutoTargeting->EndAutoTargeting();
+		}
+	}
+	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 

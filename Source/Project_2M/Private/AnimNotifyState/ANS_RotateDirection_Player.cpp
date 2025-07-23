@@ -9,7 +9,10 @@
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
 #include "AbilitySystem/Ability/Player/TwoMinGA_LockOn_Player.h"
+#include "Character/TwoMinEnemyCharacter.h"
 #include "Character/TwoMinPlayerCharacter.h"
+#include "Compnents/AutoTargetingComponent.h"
+#include "Compnents/Combat/BaseCombatComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "ToMinTypes/TwoMinEnumTypes.h"
 
@@ -38,7 +41,19 @@ void UANS_RotateDirection_Player::NotifyTick(USkeletalMeshComponent* MeshComp, U
 	switch (RotateDirectionType)
 	{
 		case ERotateDirectionType::InputDirection:
-			CharacterToInputDirection(PlayerCharacter);
+			{
+				if (PlayerCharacter->GetCurrentAutoTarget())
+				{
+					const UAutoTargetingComponent* AutoTargetingComp =
+						PlayerCharacter->GetCombatComponent()->GetAutoTargetingComponent();
+					CharacterToTargeting(PlayerCharacter, AutoTargetingComp, FrameDeltaTime);
+				}
+				else
+				{
+					CharacterToInputDirection(PlayerCharacter);	
+				}
+			}
+		
 			break;
 		case ERotateDirectionType::TargetDirection:
 			CharacterToTargetDirection(PlayerCharacter, FrameDeltaTime);
@@ -99,34 +114,50 @@ void UANS_RotateDirection_Player::CharacterToInputDirection(ATwoMinPlayerCharact
 	}
 }
 
-void UANS_RotateDirection_Player::CharacterToTargetDirection(ATwoMinPlayerCharacter* PlayerCharacter, float FrameDeltaTime)
+void UANS_RotateDirection_Player::CharacterToTargetDirection(ATwoMinPlayerCharacter* PlayerCharacter,
+	float FrameDeltaTime)
 {
-	UMotionWarpingComponent* MotionWarpingComponent = PlayerCharacter->GetMotionWarpingComponent();
-	if (!MotionWarpingComponent)
-	{
-		return;
-	}
-	
-	UTwoMinGameplayAbility* Ability = PlayerCharacter->GetAbilitySystemComponent()->GetPlayingAbilityTag(TwoMinGameplayTag::Player_Ability_LockOn);
+	UTwoMinGameplayAbility* Ability =
+		PlayerCharacter->GetAbilitySystemComponent()->GetPlayingAbilityTag(TwoMinGameplayTag::Player_Ability_LockOn);
 	if (!Ability)
 	{
 		return;
 	}
-	
-	UTwoMinGA_LockOn_Player* LockOnAbility = Cast<UTwoMinGA_LockOn_Player>(Ability);
+
+	const UTwoMinGA_LockOn_Player* LockOnAbility = Cast<UTwoMinGA_LockOn_Player>(Ability);
 	if (!LockOnAbility)
 	{
 		return;
 	}
-	
-	AActor* Target = LockOnAbility->GetCurrentLockOnTarget();
+
+	const AActor* Target = LockOnAbility->GetCurrentLockOnTarget();
 	if (!Target)
 	{
 		return;
 	}
 
-	FRotator LockOnRotator = (Target->GetActorLocation() - PlayerCharacter->GetActorLocation()).Rotation();
-	FRotator NewCharacterRot = FMath::RInterpTo(PlayerCharacter->GetActorRotation(),
+	const FRotator LockOnRotator = (Target->GetActorLocation() - PlayerCharacter->GetActorLocation()).Rotation();
+	const FRotator NewCharacterRot = FMath::RInterpTo(PlayerCharacter->GetActorRotation(),
 	FRotator(0.f, LockOnRotator.Yaw, 0.f), FrameDeltaTime, 10);
+	
+	PlayerCharacter->SetActorRotation(NewCharacterRot);
+}
+
+void UANS_RotateDirection_Player::CharacterToTargeting(ATwoMinPlayerCharacter* PlayerCharacter,
+	const UAutoTargetingComponent* AutoTargetingComp, const float FrameDeltaTime)
+{
+	UMotionWarpingComponent* MotionWarpingComp = PlayerCharacter->GetMotionWarpingComponent();
+	if (!MotionWarpingComp) return;
+	
+	MotionWarpingComp->RemoveWarpTarget("RotationDirection");
+	
+	const AActor* Target = AutoTargetingComp->GetCurrentTargetingActor();
+	const float TargetingRotationSpeed = AutoTargetingComp->GetTargetingRotationSpeed();
+	if (!Target) return;
+
+	const FRotator TargetDirection = (Target->GetActorLocation() - PlayerCharacter->GetActorLocation()).Rotation();
+	const FRotator NewCharacterRot = FMath::RInterpTo(PlayerCharacter->GetActorRotation(),
+	FRotator(0.f, TargetDirection.Yaw, 0.f), FrameDeltaTime, TargetingRotationSpeed);
+	
 	PlayerCharacter->SetActorRotation(NewCharacterRot);
 }

@@ -7,6 +7,7 @@
 #include "ANS_RotateDirection_Player.generated.h"
 
 
+class UAutoTargetingComponent;
 enum class ERotateDirectionType : uint8;
 /**
  * 
@@ -37,6 +38,9 @@ protected:
 
 	void CharacterToInputDirection(ATwoMinPlayerCharacter* PlayerCharacter);
 	void CharacterToTargetDirection(ATwoMinPlayerCharacter* PlayerCharacter, float FrameDeltaTime);
+	void CharacterToTargeting(ATwoMinPlayerCharacter* PlayerCharacter, const UAutoTargetingComponent* AutoTargetingComp,
+		float FrameDeltaTime);
+	
 private:
 	UPROPERTY()
 	bool bIsRotation;

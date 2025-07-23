@@ -4,6 +4,7 @@
 #include "Compnents/AutoTargetingComponent.h"
 
 #include "TwoMinDebugHelper.h"
+#include "Camera/CameraComponent.h"
 #include "Character/TwoMinEnemyCharacter.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -17,10 +18,10 @@ void UAutoTargetingComponent::StartAutoTargeting()
 		return;
 	}
 
-	if (bIsDebugTargetingRange)
+	FVector InputForward = PlayerCharacter->GetInputDirection().GetSafeNormal();
+	if (InputForward.IsNearlyZero())
 	{
-		DrawDebugSphere(GetWorld(), PlayerCharacter->GetActorLocation(), TargetingData.TargetingRange,
-			32, FColor::Red, false,2.0f, 0, 2.0f);	
+		InputForward = PlayerCharacter->GetCamera()->GetForwardVector().GetSafeNormal2D();
 	}
 
 	TArray<AActor*> TargetingGroup;
@@ -36,7 +37,7 @@ void UAutoTargetingComponent::StartAutoTargeting()
 		TargetingGroup
 	);
 
-	CurrentTargetingActor = IsTargetingCondition(PlayerCharacter, TargetingGroup);
+	CurrentTargetingActor = IsTargetingCondition(PlayerCharacter, TargetingGroup, InputForward);
 
 	if (!CurrentTargetingActor)
 	{
@@ -48,13 +49,19 @@ void UAutoTargetingComponent::StartAutoTargeting()
 		FColor::Green, 0);
 }
 
-ATwoMinEnemyCharacter* UAutoTargetingComponent::IsTargetingCondition(ATwoMinPlayerCharacter* PlayerCharacter,
-	TArray<AActor*> Actors) const
+void UAutoTargetingComponent::EndAutoTargeting()
 {
+	CurrentTargetingActor = nullptr;
+	DebugTwoMin::Print(TEXT("End Auto Targeting"), FColor::Red, 1);
+}
 
-	FVector InputForward = PlayerCharacter->GetInputDirection();
+ATwoMinEnemyCharacter* UAutoTargetingComponent::IsTargetingCondition(ATwoMinPlayerCharacter* PlayerCharacter,
+                                                                     TArray<AActor*> Actors, const FVector& InputForward) const
+{
 	AActor* CheckTargetActor = nullptr;
 	float MaxDot = -1.0f;
+
+	DrawDebug(PlayerCharacter->GetActorLocation(), InputForward);
 	
 	for (AActor* Target : Actors)
 	{
@@ -62,14 +69,51 @@ ATwoMinEnemyCharacter* UAutoTargetingComponent::IsTargetingCondition(ATwoMinPlay
 
 		FVector ToTarget = (Target->GetActorLocation() - PlayerCharacter->GetActorLocation()).GetSafeNormal();
 		float Dot = FVector::DotProduct(InputForward, ToTarget);
+		float AngleDegrees = FMath::RadiansToDegrees(acosf(Dot));
 
+		// 특정 각도 안
+		if (AngleDegrees > TargetingData.TargetingAngle) continue;
+
+		// 각도가 최소 근사치보다 작으면 무시.
 		if (Dot <= MaxDot) continue;
-
+		
 		MaxDot = Dot;
 		CheckTargetActor = Target;
 	}
 
-	// Todo: 각도 체크
-
 	return Cast<ATwoMinEnemyCharacter>(CheckTargetActor);
+}
+
+
+
+void UAutoTargetingComponent::DrawDebug(const FVector& StartLocation, const FVector& InputForward) const
+{
+	if (bIsDebugTargetingRange == false) return;
+
+	DrawDebugSphere(GetWorld(), StartLocation, TargetingData.TargetingRange,32, FColor::Red,
+		false,2.0f, 0, 2.0f);	
+
+	FRotator InputRot = InputForward.Rotation();
+	float Dist = TargetingData.TargetingRange;
+	
+	// 입력 방향.
+	DrawDebugDirectionalArrow(GetWorld(), StartLocation, StartLocation + InputForward * Dist,
+		100.0f, FColor::Red, false, 2.0f, 0, 5.0f
+	);
+
+	FRotator LeftRot = InputRot;
+	LeftRot.Yaw -= TargetingData.TargetingAngle;
+	FVector LeftDir = LeftRot.Vector();
+	
+	DrawDebugDirectionalArrow(GetWorld(), StartLocation, StartLocation + LeftDir * Dist,
+		100.0f, FColor::Yellow, false, 2.0f, 0, 5.0f
+	);
+
+	FRotator RightRot = InputRot;
+	RightRot.Yaw += TargetingData.TargetingAngle;
+	FVector RightDir = RightRot.Vector();
+	
+	DrawDebugDirectionalArrow(GetWorld(), StartLocation, StartLocation + RightDir * Dist,
+		100.0f, FColor::Yellow, false, 2.0f, 0, 5.0f
+	);
 }
