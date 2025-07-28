@@ -27,6 +27,8 @@ private:
 		const FVector& InputForward) const;
 
 	void DrawDebug(const FVector& StartLocation, const FVector& InputForward) const;
+
+	int GetScoreCalculation(float CurrentValue, int MinValue) const;
 	
 	UPROPERTY()
 	AActor* TargetingActor;
@@ -46,4 +48,5 @@ private:
 public:
 	FORCEINLINE ATwoMinEnemyCharacter* GetCurrentTargetingActor() const { return CurrentTargetingActor; }
 	FORCEINLINE float GetTargetingRotationSpeed() const { return TargetingData.TargetingRotationSpeed; }
+	FORCEINLINE float GetTargetingRange() const { return TargetingData.TargetingRange; }
 };

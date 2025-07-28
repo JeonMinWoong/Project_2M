@@ -44,6 +44,9 @@ struct FTwoMinPlayerAutoTargetingData
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int TargetingTotalScore;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float TargetingRange;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -52,3 +55,16 @@ struct FTwoMinPlayerAutoTargetingData
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float TargetingRotationSpeed;
 };
+
+USTRUCT(BlueprintType)
+struct FTwoMinPlayerAttackApproachData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float ReachDistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float ApproachSpeed;
+};
+

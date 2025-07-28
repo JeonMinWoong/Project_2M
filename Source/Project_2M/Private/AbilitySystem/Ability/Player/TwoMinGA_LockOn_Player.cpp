@@ -324,6 +324,7 @@ void UTwoMinGA_LockOn_Player::LockCharacterMovement()
 	PlayerCharacter->CancelInputToggle();
 	PlayerCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
 	PlayerCharacter->GetMotionWarpingComponent()->RemoveWarpTarget("RotationDirection");
+	PlayerCharacter->GetMotionWarpingComponent()->RemoveWarpTarget("TranslationDistance");
 }
 
 void UTwoMinGA_LockOn_Player::StartLockOnTickTask()

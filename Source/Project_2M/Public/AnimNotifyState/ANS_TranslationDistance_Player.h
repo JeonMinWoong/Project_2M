@@ -4,8 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "AnimNotifyState/ANS_TranslationDistance.h"
+#include "ToMinTypes/TwoMinEnumTypes.h"
+#include "ToMinTypes/TwoMinStructTypes.h"
 #include "ANS_TranslationDistance_Player.generated.h"
 
+class UAutoTargetingComponent;
 /**
  * 
  */
@@ -14,15 +17,27 @@ class PROJECT_2M_API UANS_TranslationDistance_Player : public UANS_TranslationDi
 {
 	GENERATED_BODY()
 
+public:
+	UPROPERTY(EditAnywhere, Category = "Setting|Type")
+	ETranslationDistanceType TranslationDistanceType;
+
+	UPROPERTY(EditAnywhere, Category = "Setting|Data")
+	FTwoMinPlayerAttackApproachData AttackApproachData;
+	
 protected:
 	//~ Begin UAnimNotifyState Interface.
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration,
 	const FAnimNotifyEventReference& EventReference) override;
 	
 	virtual void NotifyTick(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float FrameDeltaTime,
-		const FAnimNotifyEventReference& EventReference) override;
+	                        const FAnimNotifyEventReference& EventReference) override;
 	
 	virtual void NotifyEnd(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation,
 		const FAnimNotifyEventReference& EventReference) override;
 	//~ End UAnimNotifyState Interface.
+
+	void CharacterToInputDistance(ATwoMinPlayerCharacter* PlayerCharacter);
+	void CharacterToAutoTargetingDistance(ATwoMinPlayerCharacter* PlayerCharacter,
+		const UAutoTargetingComponent* AutoTargetingComp, const float FrameDeltaTime);
+	AActor* GetLockOnTarget(const ATwoMinPlayerCharacter* PlayerCharacter);
 };

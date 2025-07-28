@@ -16,3 +16,10 @@ enum class ERotateDirectionType : uint8
 	InputDirection = 0,
 	TargetDirection,
 };
+
+UENUM(BlueprintType)
+enum class ETranslationDistanceType : uint8
+{
+	InputDistance = 0,	
+	TargetDistance,
+};

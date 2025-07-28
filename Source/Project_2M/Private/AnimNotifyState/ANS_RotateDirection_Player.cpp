@@ -117,24 +117,8 @@ void UANS_RotateDirection_Player::CharacterToInputDirection(ATwoMinPlayerCharact
 void UANS_RotateDirection_Player::CharacterToTargetDirection(ATwoMinPlayerCharacter* PlayerCharacter,
 	float FrameDeltaTime)
 {
-	UTwoMinGameplayAbility* Ability =
-		PlayerCharacter->GetAbilitySystemComponent()->GetPlayingAbilityTag(TwoMinGameplayTag::Player_Ability_LockOn);
-	if (!Ability)
-	{
-		return;
-	}
-
-	const UTwoMinGA_LockOn_Player* LockOnAbility = Cast<UTwoMinGA_LockOn_Player>(Ability);
-	if (!LockOnAbility)
-	{
-		return;
-	}
-
-	const AActor* Target = LockOnAbility->GetCurrentLockOnTarget();
-	if (!Target)
-	{
-		return;
-	}
+	const AActor* Target = GetLockOnTarget(PlayerCharacter);
+	if (!Target) return;
 
 	const FRotator LockOnRotator = (Target->GetActorLocation() - PlayerCharacter->GetActorLocation()).Rotation();
 	const FRotator NewCharacterRot = FMath::RInterpTo(PlayerCharacter->GetActorRotation(),
@@ -150,14 +134,44 @@ void UANS_RotateDirection_Player::CharacterToTargeting(ATwoMinPlayerCharacter* P
 	if (!MotionWarpingComp) return;
 	
 	MotionWarpingComp->RemoveWarpTarget("RotationDirection");
+
+	bool IsLockOnTarget =
+		UTwoMinFunctionLibrary::HasGameplayTag(PlayerCharacter, TwoMinGameplayTag::Player_State_LockOn);
 	
-	const AActor* Target = AutoTargetingComp->GetCurrentTargetingActor();
-	const float TargetingRotationSpeed = AutoTargetingComp->GetTargetingRotationSpeed();
+	const AActor* Target =
+		IsLockOnTarget ? GetLockOnTarget(PlayerCharacter) : AutoTargetingComp->GetCurrentTargetingActor();
+	
 	if (!Target) return;
+
+	const float TargetingRotationSpeed = AutoTargetingComp->GetTargetingRotationSpeed();
 
 	const FRotator TargetDirection = (Target->GetActorLocation() - PlayerCharacter->GetActorLocation()).Rotation();
 	const FRotator NewCharacterRot = FMath::RInterpTo(PlayerCharacter->GetActorRotation(),
 	FRotator(0.f, TargetDirection.Yaw, 0.f), FrameDeltaTime, TargetingRotationSpeed);
 	
 	PlayerCharacter->SetActorRotation(NewCharacterRot);
+}
+
+AActor* UANS_RotateDirection_Player::GetLockOnTarget(const ATwoMinPlayerCharacter* PlayerCharacter)
+{
+	UTwoMinGameplayAbility* Ability =
+		PlayerCharacter->GetAbilitySystemComponent()->GetPlayingAbilityTag(TwoMinGameplayTag::Player_Ability_LockOn);
+	if (!Ability)
+	{
+		return nullptr;
+	}
+
+	const UTwoMinGA_LockOn_Player* LockOnAbility = Cast<UTwoMinGA_LockOn_Player>(Ability);
+	if (!LockOnAbility)
+	{
+		return nullptr;
+	}
+
+	AActor* Target = LockOnAbility->GetCurrentLockOnTarget();
+	if (!Target)
+	{
+		return nullptr;
+	}
+
+	return Target;
 }

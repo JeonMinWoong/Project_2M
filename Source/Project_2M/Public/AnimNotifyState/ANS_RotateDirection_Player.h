@@ -40,7 +40,8 @@ protected:
 	void CharacterToTargetDirection(ATwoMinPlayerCharacter* PlayerCharacter, float FrameDeltaTime);
 	void CharacterToTargeting(ATwoMinPlayerCharacter* PlayerCharacter, const UAutoTargetingComponent* AutoTargetingComp,
 		float FrameDeltaTime);
-	
+	AActor* GetLockOnTarget(const ATwoMinPlayerCharacter* PlayerCharacter);
+
 private:
 	UPROPERTY()
 	bool bIsRotation;

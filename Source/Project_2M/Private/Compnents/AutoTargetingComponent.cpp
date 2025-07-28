@@ -59,8 +59,8 @@ ATwoMinEnemyCharacter* UAutoTargetingComponent::IsTargetingCondition(ATwoMinPlay
                                                                      TArray<AActor*> Actors, const FVector& InputForward) const
 {
 	AActor* CheckTargetActor = nullptr;
-	float MaxDot = -1.0f;
-
+	int TotalScore = 0;
+	
 	DrawDebug(PlayerCharacter->GetActorLocation(), InputForward);
 	
 	for (AActor* Target : Actors)
@@ -70,21 +70,22 @@ ATwoMinEnemyCharacter* UAutoTargetingComponent::IsTargetingCondition(ATwoMinPlay
 		FVector ToTarget = (Target->GetActorLocation() - PlayerCharacter->GetActorLocation()).GetSafeNormal();
 		float Dot = FVector::DotProduct(InputForward, ToTarget);
 		float AngleDegrees = FMath::RadiansToDegrees(acosf(Dot));
+		float Distance = FVector::Distance(PlayerCharacter->GetActorLocation(), Target->GetActorLocation());
 
 		// 특정 각도 안
 		if (AngleDegrees > TargetingData.TargetingAngle) continue;
-
-		// 각도가 최소 근사치보다 작으면 무시.
-		if (Dot <= MaxDot) continue;
 		
-		MaxDot = Dot;
+		int CurrentScore = GetScoreCalculation(AngleDegrees, TargetingData.TargetingAngle / 2);
+		CurrentScore += GetScoreCalculation(Distance, TargetingData.TargetingRange / 2);
+		
+		if (TotalScore > CurrentScore) continue;
+
+		TotalScore = CurrentScore;
 		CheckTargetActor = Target;
 	}
 
 	return Cast<ATwoMinEnemyCharacter>(CheckTargetActor);
 }
-
-
 
 void UAutoTargetingComponent::DrawDebug(const FVector& StartLocation, const FVector& InputForward) const
 {
@@ -116,4 +117,19 @@ void UAutoTargetingComponent::DrawDebug(const FVector& StartLocation, const FVec
 	DrawDebugDirectionalArrow(GetWorld(), StartLocation, StartLocation + RightDir * Dist,
 		100.0f, FColor::Yellow, false, 2.0f, 0, 5.0f
 	);
+}
+
+int UAutoTargetingComponent::GetScoreCalculation(const float CurrentValue, const int MinValue) const
+{
+	int MaxScore = TargetingData.TargetingTotalScore / 2;
+	
+	for (int ScoreIndex = MaxScore; ScoreIndex > 0; --ScoreIndex)
+	{
+		if (CurrentValue >= MinValue * ScoreIndex)
+		{
+			return MaxScore - ScoreIndex;
+		}
+	}
+	
+	return MaxScore;
 }
