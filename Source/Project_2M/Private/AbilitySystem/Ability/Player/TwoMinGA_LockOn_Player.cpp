@@ -376,6 +376,13 @@ void UTwoMinGA_LockOn_Player::UpdateLockOnTarget(float DeltaTime)
 		return;
 	}
 
+	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo());
+	if (PlayerCharacter->GetIsRunning())
+	{
+		CustomCancelAbility();	
+		return;
+	}
+
 	if (IsLockOnDistance(GetAvatarActorFromActorInfo()->GetActorLocation(),
 		LockOnTarget->GetActorLocation()) == false)
 	{

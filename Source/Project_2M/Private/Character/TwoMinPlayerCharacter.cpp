@@ -191,11 +191,6 @@ void ATwoMinPlayerCharacter::Stoped(const FInputActionValue& InputActionValue)
 
 void ATwoMinPlayerCharacter::Input_ToggleRun(const FInputActionValue& InputActionValue)
 {
-	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_LockOn))
-	{
-		return;
-	}
-	
 	if (bIsWalk == false)
 	{
 		return;
