@@ -6,6 +6,7 @@
 #include "AnimNotifyState/ANS_ToggleAbilityBase.h"
 #include "ANS_TA_CancelAndStartNewAction.generated.h"
 
+class ATwoMinBaseCharacter;
 /**
  * 
  */
@@ -21,5 +22,6 @@ public:
 protected:
 	virtual void StartToggleAbilityProcess(UTwoMinGameplayAbility* InAbility) override;
 	virtual void EndToggleAbilityProcess(UTwoMinGameplayAbility* InAbility) override;
-	
+	virtual void NewAbilityCustomStartProcess(const ATwoMinBaseCharacter* Owner, UTwoMinGameplayAbility* NewAbility);
+	virtual void NewAbilityCustomEndProcess(const ATwoMinBaseCharacter* Owner, UTwoMinGameplayAbility* NewAbility);
 };

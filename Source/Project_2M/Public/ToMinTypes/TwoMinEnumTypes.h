@@ -23,3 +23,10 @@ enum class ETranslationDistanceType : uint8
 	InputDistance = 0,	
 	TargetDistance,
 };
+
+UENUM(BlueprintType)
+enum class EHeavyAttackComboType : uint8
+{
+	None = 0,
+	MustBeLinkedToLightAttack,
+};

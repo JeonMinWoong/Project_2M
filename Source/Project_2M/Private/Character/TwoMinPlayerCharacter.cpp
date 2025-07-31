@@ -128,6 +128,20 @@ void ATwoMinPlayerCharacter::Input_Move(const FInputActionValue& InputActionValu
 {
 	const FVector2D MovementVector = InputActionValue.Get<FVector2D>();
 	const FRotator MovementRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
+
+	if (MovementVector.IsNearlyZero() == false)
+	{
+		if (MovePossibleCancelAbilityTags.IsEmpty() == false && MovePossibleCancelAbilityTags.Num() > 0)
+		{
+			FGameplayTagContainer CancelTagContainer;
+			for (FGameplayTag& CancelTag : MovePossibleCancelAbilityTags)
+			{
+				CancelTagContainer.AddTag(CancelTag);
+			}
+
+			AbilitySystemComponent->CancelAbilities(&CancelTagContainer);	
+		}
+	}
 	
 	if (MovementVector.Y != 0.f)
 	{

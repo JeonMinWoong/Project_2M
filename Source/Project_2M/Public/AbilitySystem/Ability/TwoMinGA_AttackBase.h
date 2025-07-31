@@ -24,6 +24,9 @@ public:
 	
 	UFUNCTION()
 	void ResetComboCount();
+
+	UFUNCTION()
+	void ConversionComboCount(const int32 InComboCount);
 	
 protected:
 	//~ Begin UGameplayAbility Interface.
@@ -35,6 +38,7 @@ protected:
 	//~ End UGameplayAbility Interface.
 
 	virtual bool bIsReTriggerSameAbility() const override;
+	virtual void CustomCancelAbility() override;
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Montages")

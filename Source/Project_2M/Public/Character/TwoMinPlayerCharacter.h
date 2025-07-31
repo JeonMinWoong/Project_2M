@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "TwoMinBaseCharacter.h"
 #include "TwoMinPlayerCharacter.generated.h"
 
@@ -97,7 +98,6 @@ private:
 	FRotator CharacterRotationRate = FRotator(0.f, 500.f, 0.f);
 
 #pragma region Input
-	
   	/** Inputs **/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="CharacterData", meta=(AllowPrivateAccess="true"))
 	UDataAsset_InputConfig* InputConfigDataAsset;
@@ -108,6 +108,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	bool bIsRun = false;
 
+	UPROPERTY()
+	TArray<FGameplayTag> MovePossibleCancelAbilityTags;
+	
 	UPROPERTY()
 	FVector2D SwitchDirection = FVector2D::ZeroVector;
 	
@@ -130,5 +133,11 @@ private:
 public:
 	FORCEINLINE bool GetIsRunning() const { return bIsRun; }
 	FORCEINLINE UCameraComponent* GetCamera() const { return CameraComponent; }
+
+	FORCEINLINE void AddMovePossibleCancelAbility(const FGameplayTag GameplayTag)
+	{ MovePossibleCancelAbilityTags.AddUnique(GameplayTag); }
+	
+	FORCEINLINE void RemoveMovePossibleCancelAbility(const FGameplayTag GameplayTag)
+	{ MovePossibleCancelAbilityTags.Remove(GameplayTag); }
 };
 

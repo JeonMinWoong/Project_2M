@@ -19,9 +19,8 @@ void UANS_TA_CancelAndStartNewAction::StartToggleAbilityProcess(UTwoMinGameplayA
 	if (!Owner) return;
 	
 	UTwoMinGameplayAbility* NewAbility = Owner->GetAbilitySystemComponent()->GetActiveAbility(NewAbilityTag);
+	NewAbilityCustomStartProcess(Owner, NewAbility);
 	InAbility->AddPossibleCancelAbility(NewAbility);
-
-	DebugTwoMin::Print(TEXT("공격 입력 가능"), FColor::Green);
 }
 
 void UANS_TA_CancelAndStartNewAction::EndToggleAbilityProcess(UTwoMinGameplayAbility* InAbility)
@@ -35,7 +34,18 @@ void UANS_TA_CancelAndStartNewAction::EndToggleAbilityProcess(UTwoMinGameplayAbi
 	if (!Owner) return;
 	
 	UTwoMinGameplayAbility* NewAbility = Owner->GetAbilitySystemComponent()->GetActiveAbility(NewAbilityTag);
+	NewAbilityCustomEndProcess(Owner, NewAbility);
 	InAbility->RemovePossibleCancelAbility(NewAbility);
+}
 
-	DebugTwoMin::Print(TEXT("공격 입력 불가능"), FColor::Green);
+void UANS_TA_CancelAndStartNewAction::NewAbilityCustomStartProcess(const ATwoMinBaseCharacter* Owner,
+	UTwoMinGameplayAbility* NewAbility)
+{
+	
+}
+
+void UANS_TA_CancelAndStartNewAction::NewAbilityCustomEndProcess(const ATwoMinBaseCharacter* Owner,
+	UTwoMinGameplayAbility* NewAbility)
+{
+	
 }

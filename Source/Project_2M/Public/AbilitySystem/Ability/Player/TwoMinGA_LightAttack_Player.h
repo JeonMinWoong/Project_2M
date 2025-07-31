@@ -13,5 +13,5 @@ UCLASS()
 class PROJECT_2M_API UTwoMinGA_LightAttack_Player : public UTwoMinGA_AttackBase
 {
 	GENERATED_BODY()
-	
+
 };

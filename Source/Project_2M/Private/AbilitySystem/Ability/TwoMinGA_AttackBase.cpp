@@ -21,16 +21,23 @@ void UTwoMinGA_AttackBase::ActivateAbility(const FGameplayAbilitySpecHandle Hand
                                            const FGameplayAbilityActivationInfo ActivationInfo,
                                            const FGameplayEventData* TriggerEventData)
 {
-	if (AttackMontages.IsEmpty()) return;
-
+	if (AttackMontages.IsEmpty())
+	{
+		CustomCancelAbility();
+		return;
+	}
+	
 	if (CurComboCount > MaxComboCount)
 	{
 		ResetComboCount();
 	}
 
-	if (!AttackMontages.Contains(CurComboCount)) return;
-
-
+	if (!AttackMontages.Contains(CurComboCount))
+	{
+		CustomCancelAbility();
+		return;
+	}
+	
 	if (UAnimMontage* MontageToPlay = AttackMontages[CurComboCount])
 	{
 		ATwoMinPlayerCharacter* Player = Cast<ATwoMinPlayerCharacter>(ActorInfo->OwnerActor);
@@ -72,6 +79,12 @@ bool UTwoMinGA_AttackBase::bIsReTriggerSameAbility() const
 	return MaxComboCount > 1;
 }
 
+void UTwoMinGA_AttackBase::CustomCancelAbility()
+{
+	Super::CustomCancelAbility();
+	ResetComboCount();
+}
+
 void UTwoMinGA_AttackBase::AddComboCount()
 {
 	CurComboCount++;
@@ -82,4 +95,9 @@ void UTwoMinGA_AttackBase::ResetComboCount()
 {
 	CurComboCount = 1;
 	bIsReTriggerAble = false;
+}
+
+void UTwoMinGA_AttackBase::ConversionComboCount(const int32 InComboCount)
+{
+	CurComboCount = InComboCount;
 }

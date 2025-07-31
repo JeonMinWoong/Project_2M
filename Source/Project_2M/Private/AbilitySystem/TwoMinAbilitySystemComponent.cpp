@@ -63,6 +63,7 @@ bool UTwoMinAbilitySystemComponent::CancelAndStartNextNewAction(const FGameplayT
 			
 			UTwoMinGameplayAbility* CDOAbility =
 				Cast<UTwoMinGameplayAbility>(PlayingAbility->GetClass()->GetDefaultObject());
+			PlayingAbility->CustomCancelAbility();
 			CancelAbility(CDOAbility);
 
 			FTimerDelegate Delegate;

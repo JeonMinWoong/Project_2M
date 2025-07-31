@@ -37,6 +37,7 @@ public:
 	void AddPossibleCancelAbility(UTwoMinGameplayAbility* InAbility);
 	void RemovePossibleCancelAbility(UTwoMinGameplayAbility* InAbility);
 	bool IsPossibleCancelAbility(UTwoMinGameplayAbility* InAbility) const;
+	virtual void CustomCancelAbility();
 	
 protected:
 	//~ Begin UGameplayAbility Interface.
@@ -52,7 +53,6 @@ protected:
 	virtual bool bIsReTriggerSameAbility() const;
 	
 	void PlayToAnimMontage(UAnimMontage* AnimMontage);
-	void CustomCancelAbility();
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AbilityPoicy")
 	EToMinAbilityActivationPolicy AbilityActivationPolicy = EToMinAbilityActivationPolicy::OnTriggered;
