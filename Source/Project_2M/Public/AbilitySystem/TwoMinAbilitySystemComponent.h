@@ -35,5 +35,9 @@ public:
 	UTwoMinGameplayAbility* GetActiveAbilityInputTag(const FGameplayTag& InInputTag);
 	
 	UTwoMinGameplayAbility* GetActiveAbility(const FGameplayTag& AbilityTag);
+
+	// Enemy 전용
+	UFUNCTION(BlueprintCallable, Category = "Warrior|Ability")
+	bool TryActivateAbilityByTag(FGameplayTag AbilityTagToActivate);
 	
 };

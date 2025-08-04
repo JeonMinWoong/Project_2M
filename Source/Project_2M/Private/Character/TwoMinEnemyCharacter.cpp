@@ -4,6 +4,7 @@
 #include "Character/TwoMinEnemyCharacter.h"
 
 #include "Compnents/Combat/EnemyCombatComponent.h"
+#include "DataAssets/StartUpData/DataAsset_StartUpDataBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 ATwoMinEnemyCharacter::ATwoMinEnemyCharacter()
@@ -26,4 +27,17 @@ ATwoMinEnemyCharacter::ATwoMinEnemyCharacter()
 UBaseCombatComponent* ATwoMinEnemyCharacter::GetCombatComponent() const
 {
 	return EnemyCombatComponent;
+}
+
+void ATwoMinEnemyCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (!CharacterStartUpData.IsNull())
+	{
+		if (UDataAsset_StartUpDataBase* LoadedData = CharacterStartUpData.LoadSynchronous())
+		{
+			LoadedData->GiveToAbilitySystemComponent(AbilitySystemComponent);
+		}
+	}
 }

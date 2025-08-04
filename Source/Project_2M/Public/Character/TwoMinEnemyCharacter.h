@@ -19,6 +19,11 @@ class PROJECT_2M_API ATwoMinEnemyCharacter : public ATwoMinBaseCharacter
 
 public:
 	virtual UBaseCombatComponent* GetCombatComponent() const override;
+
+protected:
+	//~ Begin APawn Interface.
+	virtual void PossessedBy(AController* NewController) override;
+	//~ End APawn Interface
 	
 private:
 	/** Components **/

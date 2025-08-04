@@ -37,6 +37,12 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_LockOn, "Player.State.LockOn");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Rolling, "Player.State.Rolling");
 
+	// Enemy Weapon Tags
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Weapon, "Enemy.Weapon");
+
+	// Enemy Ability Tags
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Melee, "Enemy.Ability.Melee");
+	
 	// Shard State Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shard_State_Invincible, "Shard.State.Invincible");
 }
