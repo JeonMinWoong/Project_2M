@@ -14,6 +14,9 @@ UCLASS()
 class PROJECT_2M_API UTwoMinGA_HeavyAttack_Player : public UTwoMinGA_AttackBase
 {
 	GENERATED_BODY()
+
+public:
+	virtual bool IsMustBeLikedToGameplayAbility() const;
 	
 protected:
 	//~ Begin UGameplayAbility Interface.

@@ -32,6 +32,8 @@ void UTwoMinAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& In
 			}
 			else
 			{
+				if (Ability->IsMustBeLikedToGameplayAbility()) return;
+				
 				TryActivateAbility(AbilitySpec.Handle);	
 			}
 		}

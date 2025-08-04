@@ -84,6 +84,11 @@ void UTwoMinGameplayAbility::CustomCancelAbility()
 		true);
 }
 
+bool UTwoMinGameplayAbility::IsMustBeLikedToGameplayAbility() const
+{
+	return false;
+}
+
 void UTwoMinGameplayAbility::SetReTriggerActive(bool InIsReTriggerActive)
 {
 	bIsReTriggerAble = InIsReTriggerActive;

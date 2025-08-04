@@ -38,6 +38,8 @@ public:
 	void RemovePossibleCancelAbility(UTwoMinGameplayAbility* InAbility);
 	bool IsPossibleCancelAbility(UTwoMinGameplayAbility* InAbility) const;
 	virtual void CustomCancelAbility();
+
+	virtual bool IsMustBeLikedToGameplayAbility() const;
 	
 protected:
 	//~ Begin UGameplayAbility Interface.

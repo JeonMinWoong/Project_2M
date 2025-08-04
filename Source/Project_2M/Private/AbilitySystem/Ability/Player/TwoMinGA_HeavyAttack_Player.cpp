@@ -7,28 +7,15 @@
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "Character/TwoMinPlayerCharacter.h"
 
-void UTwoMinGA_HeavyAttack_Player::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
-	const FGameplayEventData* TriggerEventData)
+bool UTwoMinGA_HeavyAttack_Player::IsMustBeLikedToGameplayAbility() const
 {
-	if (HeavyAttackComboType == EHeavyAttackComboType::MustBeLinkedToLightAttack)
-	{
-		// Todo: 강 공격 단일로 안되게 하기.
-		//
-		// ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(ActorInfo->OwnerActor);
-		// if (!PlayerCharacter)
-		// {
-		// 	CustomCancelAbility();
-		// 	return;
-		// }
-		//
-		// if (PlayerCharacter->GetAbilitySystemComponent()->IsPlayingAbility(MustBeLinkedTag) == false)
-		// {
-		// 	CustomCancelAbility();
-		// 	return;
-		// }
-	}
-	
+	return HeavyAttackComboType == EHeavyAttackComboType::MustBeLinkedToLightAttack;
+}
+
+void UTwoMinGA_HeavyAttack_Player::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+                                                   const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+                                                   const FGameplayEventData* TriggerEventData)
+{
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
