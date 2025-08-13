@@ -15,9 +15,9 @@ class PROJECT_2M_API ATwoMinEnemyCharacter : public ATwoMinBaseCharacter
 {
 	GENERATED_BODY()
 
-	ATwoMinEnemyCharacter();
-
 public:
+	ATwoMinEnemyCharacter();
+	
 	virtual UBaseCombatComponent* GetCombatComponent() const override;
 
 protected:

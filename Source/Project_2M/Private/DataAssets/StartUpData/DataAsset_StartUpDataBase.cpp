@@ -11,6 +11,7 @@ void UDataAsset_StartUpDataBase::GiveToAbilitySystemComponent(UTwoMinAbilitySyst
                                                               int32 ApplyLevel)
 {
 	GrantAbilities(ActivateOnGivenAbilities, InAscToGive, ApplyLevel);
+	GrantAbilities(ReactiveAbilities, InAscToGive, ApplyLevel);
 }
 
 void UDataAsset_StartUpDataBase::GrantAbilities(const TArray<TSubclassOf<UTwoMinGameplayAbility>>& InAbilitiesToGive,

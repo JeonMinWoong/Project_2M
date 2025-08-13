@@ -23,6 +23,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "StartUpData")
 	TArray<TSubclassOf<UTwoMinGameplayAbility>> ActivateOnGivenAbilities;
 
+	UPROPERTY(EditDefaultsOnly, Category = "StartUpData")
+	TArray<TSubclassOf<UTwoMinGameplayAbility>> ReactiveAbilities;
+	
 	void GrantAbilities(const TArray<TSubclassOf<UTwoMinGameplayAbility>>& InAbilitiesToGive,
 		UTwoMinAbilitySystemComponent* InAscToGive, int32 ApplyLevel = 1); 
 };

@@ -55,6 +55,9 @@ protected:
 	virtual bool bIsReTriggerSameAbility() const;
 	
 	void PlayToAnimMontage(UAnimMontage* AnimMontage);
+
+	UFUNCTION()
+	virtual void OnAttackGameplayEventReceived(FGameplayEventData Payload);  
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AbilityPoicy")
 	EToMinAbilityActivationPolicy AbilityActivationPolicy = EToMinAbilityActivationPolicy::OnTriggered;

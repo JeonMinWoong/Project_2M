@@ -41,18 +41,18 @@ void UAutoTargetingComponent::StartAutoTargeting()
 
 	if (!CurrentTargetingActor)
 	{
-		DebugTwoMin::Print(TEXT("Null Targeting Actor"), FColor::Red, 0);
+		//DebugTwoMin::Print(TEXT("Null Targeting Actor"), FColor::Red, 0);
 		return;
 	}
 
-	DebugTwoMin::Print(FString::Printf(TEXT("Target : %s"), *CurrentTargetingActor->GetActorLabel()),
-		FColor::Green, 0);
+	// DebugTwoMin::Print(FString::Printf(TEXT("Target : %s"), *CurrentTargetingActor->GetActorLabel()),
+	// 	FColor::Green, 0);
 }
 
 void UAutoTargetingComponent::EndAutoTargeting()
 {
 	CurrentTargetingActor = nullptr;
-	DebugTwoMin::Print(TEXT("End Auto Targeting"), FColor::Red, 1);
+	//DebugTwoMin::Print(TEXT("End Auto Targeting"), FColor::Red, 1);
 }
 
 ATwoMinEnemyCharacter* UAutoTargetingComponent::IsTargetingCondition(ATwoMinPlayerCharacter* PlayerCharacter,

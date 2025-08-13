@@ -15,14 +15,16 @@ ATwoMinWeaponBase::ATwoMinWeaponBase()
 
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>("WeaponMesh");
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	WeaponMesh->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	SetRootComponent(WeaponMesh);
-
+	
 	WeaponCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("WeaponCollisionBox"));
 	WeaponCollisionBox->SetupAttachment(GetRootComponent());
 	WeaponCollisionBox->SetBoxExtent(FVector(20.f));
 	WeaponCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WeaponCollisionBox->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnCollisionBoxBeginOverlap);
 	WeaponCollisionBox->OnComponentEndOverlap.AddUniqueDynamic(this, &ThisClass::OnCollisionBoxEndOverlap);
+	WeaponCollisionBox->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	
 }
 
@@ -32,7 +34,7 @@ FTwoMinPlayerWeaponData ATwoMinWeaponBase::GetWeaponData() const
 }
 
 void ATwoMinWeaponBase::OnCollisionBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	APawn* WeaponOwningPawn = GetInstigator<APawn>();
 
@@ -42,9 +44,6 @@ void ATwoMinWeaponBase::OnCollisionBoxBeginOverlap(UPrimitiveComponent* Overlapp
 	{
 		if (UTwoMinFunctionLibrary::IsTargetPawnHostile(WeaponOwningPawn, HitPawn))
 		{
-			FString HitPlayerName = FString::Printf(TEXT("Hit Pawn! : %s"), *HitPawn->GetActorNameOrLabel());
-			DebugTwoMin::Print(HitPlayerName, FColor::Green);
-
 			OnWeaponHitTarget.ExecuteIfBound(OtherActor);
 		}
 	}

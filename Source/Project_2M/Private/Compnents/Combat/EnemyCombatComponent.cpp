@@ -3,3 +3,7 @@
 
 #include "Compnents/Combat/EnemyCombatComponent.h"
 
+void UEnemyCombatComponent::OnHitTargetActor(AActor* HitActor)
+{
+	Super::OnHitTargetActor(HitActor);
+}

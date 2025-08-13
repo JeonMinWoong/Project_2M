@@ -15,10 +15,12 @@ class PROJECT_2M_API UPlayerCombatComponent : public UBaseCombatComponent
 {
 	GENERATED_BODY()
 
+public:
 	UPlayerCombatComponent();
 
-public:
+	virtual void OnHitTargetActor(AActor* HitActor) override;
 	virtual UAutoTargetingComponent* GetAutoTargetingComponent() const override;
+	
 private:
 	UPROPERTY(EditAnywhere)
 	UAutoTargetingComponent* AutoTargetComponent;

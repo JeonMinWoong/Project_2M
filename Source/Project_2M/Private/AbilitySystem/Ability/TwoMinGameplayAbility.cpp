@@ -3,10 +3,16 @@
 
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "TwoMinDebugHelper.h"
+#include "TwoMinGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "AbilitySystem/Ability/TwoMinGA_AttackBase.h"
+#include "AbilitySystem/Ability/Enemy/TwoMinEGA_AttackBase.h"
 #include "Camera/CameraComponent.h"
 #include "Character/TwoMinPlayerCharacter.h"
+#include "ToMinTypes/TwoMinStructTypes.h"
 
 UTwoMinGameplayAbility::UTwoMinGameplayAbility()
 {
@@ -69,6 +75,49 @@ void UTwoMinGameplayAbility::PlayToAnimMontage(UAnimMontage* AnimMontage)
 	Task->OnCancelled.AddDynamic(this, &ThisClass::CustomEndAbility);
 
 	Task->ReadyForActivation();
+}
+
+void UTwoMinGameplayAbility::OnAttackGameplayEventReceived(FGameplayEventData Payload)
+{
+	ATwoMinBaseCharacter* BaseCharacter = Cast<ATwoMinBaseCharacter>(Payload.Instigator);
+	if (!BaseCharacter) return;
+
+	const ECharacterType CharacterType = BaseCharacter->GetCharacterType();
+	if (CharacterType == ECharacterType::None) return;
+
+	UAttackPayloadObject* AttackPayload = NewObject<UAttackPayloadObject>(BaseCharacter);
+	
+	if (CharacterType == ECharacterType::Enemy)
+	{
+		//DebugTwoMin::Print(TEXT("Enemy Ability Event Received"), FColor::Red);
+
+		UTwoMinEGA_AttackBase* EnemyAttackBase = Cast<UTwoMinEGA_AttackBase>(this);
+		if (!EnemyAttackBase) return;
+
+		const FAttackInfoData& AttackInfoData = EnemyAttackBase->GetAttackInfoData();
+		AttackPayload->Data = AttackInfoData;
+	}
+	else if (CharacterType == ECharacterType::Player)
+	{
+		//DebugTwoMin::Print(TEXT("Player Ability Event Received"), FColor::Green);
+
+		UTwoMinGA_AttackBase* PlayerAttackBase = Cast<UTwoMinGA_AttackBase>(this);
+		if (!PlayerAttackBase) return;
+
+		const FAttackInfoData& AttackInfoData = PlayerAttackBase->GetAttackInfoData();
+		AttackPayload->Data = AttackInfoData;
+	}
+
+	AActor* TargetCharacter = Cast<AActor>(Payload.Target);
+	if (!TargetCharacter) return;
+	
+	Payload.OptionalObject = AttackPayload;
+	
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+		TargetCharacter,
+		TwoMinGameplayTag::Shared_Event_HitReact,
+		Payload
+	);
 }
 
 void UTwoMinGameplayAbility::CustomEndAbility()

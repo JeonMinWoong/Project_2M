@@ -2,9 +2,12 @@
 #pragma once
 
 #include "GameplayTagContainer.h"
+#include "TwoMinEnumTypes.h"
+#include "Abilities/GameplayAbilityTargetTypes.h"
 
 #include "TwoMinStructTypes.generated.h"
 
+enum class EHitType : uint8;
 class UTwoMinPlayerLinkedAnimLayer;
 class UTwoMinGameplayAbility;
 class UInputMappingContext;
@@ -68,3 +71,28 @@ struct FTwoMinPlayerAttackApproachData
 	float ApproachSpeed;
 };
 
+USTRUCT(BlueprintType)
+struct FAttackInfoData : public FGameplayAbilityTargetData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int HitDirectionNumber;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EHitType HitType = EHitType::Normal;
+
+	virtual UScriptStruct* GetScriptStruct() const override
+	{
+		return StaticStruct();
+	}
+};
+
+UCLASS(BlueprintType)
+class UAttackPayloadObject : public UObject
+{
+    GENERATED_BODY()
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
+    FAttackInfoData Data;
+};

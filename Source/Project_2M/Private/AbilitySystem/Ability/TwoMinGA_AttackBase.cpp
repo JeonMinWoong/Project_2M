@@ -5,6 +5,7 @@
 
 #include "TwoMinDebugHelper.h"
 #include "Abilities/Tasks/AbilityTask_WaitDelay.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/AutoTargetingComponent.h"
 #include "Compnents/Combat/BaseCombatComponent.h"
@@ -52,6 +53,12 @@ void UTwoMinGA_AttackBase::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		
 		//bIsReTriggerAble = false;
 		PlayToAnimMontage(MontageToPlay);
+
+		UAbilityTask_WaitGameplayEvent* Task = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
+			this, OnHitEventTag, nullptr, false, true);
+
+		Task->EventReceived.AddDynamic(this, &ThisClass::OnAttackGameplayEventReceived);
+		Task->ReadyForActivation();
 	}
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);

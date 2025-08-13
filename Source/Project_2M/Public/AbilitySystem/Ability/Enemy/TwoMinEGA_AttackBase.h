@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEnemyGameplayAbility.h"
+#include "ToMinTypes/TwoMinStructTypes.h"
 #include "TwoMinEGA_AttackBase.generated.h"
 
 /**
@@ -22,8 +23,20 @@ protected:
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	//~ End UGameplayAbility Interface.
-
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Attack|HitEventTag")
+	FGameplayTag OnHitEventTag;
+	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Montages")
 	UAnimMontage* AttackMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Attack|AttackInfoData")
+	FAttackInfoData AttackInfoData;
+	
+	// Dummy 전용
+	FVector StartLocation;
+
+public:
+	FORCEINLINE FAttackInfoData& GetAttackInfoData() { return AttackInfoData; }
 };

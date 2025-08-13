@@ -43,7 +43,14 @@ namespace TwoMinGameplayTag
 
 	// Enemy Ability Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Ability_Melee);
+
+	// Shard Ability Tags
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Ability_HitReact);
 	
+	// Shard Event Tags
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Event_MeleeHit)
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Event_HitReact)
+
 	// Shard State Tags
-	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shard_State_Invincible);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_State_Invincible);
 }

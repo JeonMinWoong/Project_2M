@@ -16,5 +16,12 @@ class PROJECT_2M_API ATwoMinEnemyAIController : public AAIController
 
 public:
 	ATwoMinEnemyAIController();
+
+protected:
+	virtual void OnPossess(APawn* InPawn) override;
+
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "AI|BehaviorTree")
+	UBehaviorTree* BehaviorTree;
 	
 };

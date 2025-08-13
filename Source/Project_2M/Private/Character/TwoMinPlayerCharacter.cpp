@@ -23,6 +23,9 @@
 ATwoMinPlayerCharacter::ATwoMinPlayerCharacter()
 {
 	GetCapsuleComponent()->InitCapsuleSize(CapsuleRadius, CapsuleHalfHeight);
+
+	GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Block);
 	
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -48,6 +51,7 @@ ATwoMinPlayerCharacter::ATwoMinPlayerCharacter()
 	PlayerCombatComponent = CreateDefaultSubobject<UPlayerCombatComponent>("PlayerCombatComponent");
 	
 	bIsRun = false;
+	CharacterType = ECharacterType::Player;
 }
 
 UBaseCombatComponent* ATwoMinPlayerCharacter::GetCombatComponent() const

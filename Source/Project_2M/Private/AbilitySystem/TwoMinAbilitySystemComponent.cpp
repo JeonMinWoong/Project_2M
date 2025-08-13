@@ -6,6 +6,8 @@
 #include "TwoMinDebugHelper.h"
 #include "TwoMinGameplayTag.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
+#include "Character/TwoMinEnemyCharacter.h"
+#include "Character/TwoMinEnemyDummy.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 
 void UTwoMinAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InInputTag)
@@ -235,10 +237,22 @@ bool UTwoMinAbilitySystemComponent::TryActivateAbilityByTag(FGameplayTag Ability
 	TArray<FGameplayAbilitySpec*> FoundAbilitySpecs;
 	GetActivatableGameplayAbilitySpecsByAllMatchingTags(AbilityTagToActivate.GetSingleTagContainer(), 
 		FoundAbilitySpecs);
-    
+
+	int32 AbilityIndex = 0;
+	if (ATwoMinEnemyDummy* EnemyDummy = Cast<ATwoMinEnemyDummy>(GetAvatarActor()))
+	{
+		AbilityIndex = EnemyDummy->GetAttackIndex();
+		if (AbilityIndex <= 0 || EnemyDummy->GetAutoAction() == false)
+		{
+			return false;
+		}
+	}
+	
 	if (!FoundAbilitySpecs.IsEmpty())
 	{
-		const int32 RandomAbilityIndex = FMath::RandRange(0, FoundAbilitySpecs.Num() - 1);
+		const int32 RandomAbilityIndex =
+			AbilityIndex != 0 ? FMath::Min(AbilityIndex - 1, FoundAbilitySpecs.Num() - 1) :
+			FMath::RandRange(0, FoundAbilitySpecs.Num() - 1);
 		const FGameplayAbilitySpec* SpecToActivate = FoundAbilitySpecs[RandomAbilityIndex];
     
 		if (!SpecToActivate->IsActive())

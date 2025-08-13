@@ -42,7 +42,14 @@ namespace TwoMinGameplayTag
 
 	// Enemy Ability Tags
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Melee, "Enemy.Ability.Melee");
+
+	// Shard Ability Tags
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_HitReact, "Shared.Ability.HitReact");
+	
+	// Shard Event Tags
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_MeleeHit, "Shared.Event.MeleeHit");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_HitReact, "Shared.Event.HitReact");
 	
 	// Shard State Tags
-	UE_DEFINE_GAMEPLAY_TAG(Shard_State_Invincible, "Shard.State.Invincible");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Invincible, "Shared.State.Invincible");
 }

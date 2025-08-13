@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "ToMinTypes/TwoMinEnumTypes.h"
 #include "TwoMinBaseCharacter.generated.h"
 
 class UMotionWarpingComponent;
@@ -19,7 +20,7 @@ public:
 	ATwoMinBaseCharacter();
 
 	virtual UBaseCombatComponent* GetCombatComponent() const;
-	
+
 protected:
 	//~ Begin APawn Interface.
 	virtual void PossessedBy(AController* NewController) override;
@@ -34,11 +35,16 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "MotionWarping")
 	UMotionWarpingComponent* MotionWarpingComponent;
 
-
+	UPROPERTY()
+	ECharacterType CharacterType;
+	
 public:
 	FORCEINLINE UTwoMinAbilitySystemComponent* GetAbilitySystemComponent() const
 	{ return AbilitySystemComponent; }
 
 	FORCEINLINE UMotionWarpingComponent* GetMotionWarpingComponent() const
 	{ return MotionWarpingComponent; }
+
+	FORCEINLINE ECharacterType GetCharacterType() const
+	{ return CharacterType; }
 };

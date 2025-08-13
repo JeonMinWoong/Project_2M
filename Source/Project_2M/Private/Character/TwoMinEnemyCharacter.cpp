@@ -4,6 +4,7 @@
 #include "Character/TwoMinEnemyCharacter.h"
 
 #include "Compnents/Combat/EnemyCombatComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "DataAssets/StartUpData/DataAsset_StartUpDataBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -22,6 +23,10 @@ ATwoMinEnemyCharacter::ATwoMinEnemyCharacter()
 	GetCharacterMovement()->BrakingDecelerationWalking = 1000.f; // 감속 속도
 
 	EnemyCombatComponent = CreateDefaultSubobject<UEnemyCombatComponent>("EnemyCombatComponent");
+	CharacterType = ECharacterType::Enemy;
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 }
 
 UBaseCombatComponent* ATwoMinEnemyCharacter::GetCombatComponent() const

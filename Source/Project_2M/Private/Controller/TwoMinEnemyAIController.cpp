@@ -7,3 +7,13 @@ ATwoMinEnemyAIController::ATwoMinEnemyAIController()
 {
 	AAIController::SetGenericTeamId(FGenericTeamId(1));
 }
+
+void ATwoMinEnemyAIController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	if (BehaviorTree)
+	{
+		RunBehaviorTree(BehaviorTree);
+	}
+}

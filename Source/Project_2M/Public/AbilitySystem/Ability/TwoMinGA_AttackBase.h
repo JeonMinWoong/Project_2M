@@ -40,13 +40,22 @@ protected:
 	virtual bool bIsReTriggerSameAbility() const override;
 	virtual void CustomCancelAbility() override;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "Attack|HitEventTag")
+	FGameplayTag OnHitEventTag;
+	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Montages")
 	TMap<int, UAnimMontage*> AttackMontages;
 
+	UPROPERTY(EditAnywhere, Category = "Attack|AttackInfoData")
+	TMap<int, FAttackInfoData> AttackInfosData;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Combo")
 	int32 MaxComboCount = 1;
- 
+	
 	UPROPERTY()
 	int32 CurComboCount = 1;
+
+public:
+	FORCEINLINE FAttackInfoData& GetAttackInfoData() { return AttackInfosData[CurComboCount]; }
 };

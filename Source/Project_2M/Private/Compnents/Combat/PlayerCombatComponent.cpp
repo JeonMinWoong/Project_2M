@@ -12,6 +12,11 @@ UPlayerCombatComponent::UPlayerCombatComponent()
 	AutoTargetComponent = CreateDefaultSubobject<UAutoTargetingComponent>(TEXT("AutoTargetComponent"));
 }
 
+void UPlayerCombatComponent::OnHitTargetActor(AActor* HitActor)
+{
+	Super::OnHitTargetActor(HitActor);
+}
+
 UAutoTargetingComponent* UPlayerCombatComponent::GetAutoTargetingComponent() const
 {
 	return AutoTargetComponent;

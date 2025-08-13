@@ -3,8 +3,10 @@
 
 #include "Compnents/Combat/BaseCombatComponent.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayTagContainer.h"
 #include "TwoMinDebugHelper.h"
+#include "TwoMinGameplayTag.h"
 #include "Components/BoxComponent.h"
 #include "Item/Weapon/TwoMinWeaponBase.h"
 
@@ -64,7 +66,7 @@ void UBaseCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bShouldEnab
 		{
 			if (Weapon->ToggleDamageType != ToggleDamageType)
 			{
-				return;
+				continue;
 			}
 		}
 		
@@ -82,7 +84,23 @@ void UBaseCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bShouldEnab
 
 void UBaseCombatComponent::OnHitTargetActor(AActor* HitActor)
 {
+	if (OverlappingActors.Contains(HitActor))
+	{
+		return;
+	}
+
+	OverlappingActors.AddUnique(HitActor);
+
+	FGameplayEventData Data;
 	
+	Data.Instigator = GetOwningPawn();
+	Data.Target = HitActor;
+
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+		GetOwningPawn(),
+		TwoMinGameplayTag::Shared_Event_MeleeHit,
+		Data
+	);
 }
 
 void UBaseCombatComponent::OnWeaponPulledFromTargetActor(AActor* InteractedActor)

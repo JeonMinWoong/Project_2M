@@ -13,5 +13,8 @@ UCLASS()
 class PROJECT_2M_API UEnemyCombatComponent : public UBaseCombatComponent
 {
 	GENERATED_BODY()
-	
+
+public:
+	virtual void OnHitTargetActor(AActor* HitActor) override;
+
 };
