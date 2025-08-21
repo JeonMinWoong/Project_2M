@@ -62,9 +62,6 @@ bool UTwoMinAbilitySystemComponent::CancelAndStartNextNewAction(const FGameplayT
 		UTwoMinGameplayAbility* NewAbility = GetActiveAbilityInputTag(InInputTag);
 		if (PlayingAbility->IsPossibleCancelAbility(NewAbility))
 		{
-			DebugTwoMin::Print(FString::Printf(TEXT("New Ability: %s, Playing Ability: %s"),
-											   *NewAbility->GetName(), *PlayingAbility->GetName()), FColor::Red);
-			
 			UTwoMinGameplayAbility* CDOAbility =
 				Cast<UTwoMinGameplayAbility>(PlayingAbility->GetClass()->GetDefaultObject());
 			PlayingAbility->CustomCancelAbility();

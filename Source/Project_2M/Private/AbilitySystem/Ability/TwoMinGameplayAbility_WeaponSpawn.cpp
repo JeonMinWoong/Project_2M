@@ -75,7 +75,7 @@ void UTwoMinGameplayAbility_WeaponSpawn::ActivateAbility(const FGameplayAbilityS
 								
 								EnhancedInputLocalPlayerSubsystem->AddMappingContext(
 									WeaponData.WeaponInputMappingContext,
-									1
+									0
 								);
 
 								TArray<FGameplayAbilitySpecHandle> GrantedAbilityHandles;

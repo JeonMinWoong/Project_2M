@@ -17,7 +17,8 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Toggle_Run, "InputTag.Toggle.Run");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Toggle_LockOn, "InputTag.Toggle.LockOn");
 
-	UE_DEFINE_GAMEPLAY_TAG(InputTag_MustBeHold, "InputTag,MustBeHold");
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_MustBeHold, "InputTag.MustBeHold");
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_MustBeHold_Guard, "InputTag.MustBeHold.Guard");
 
 	// Weapon Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Weapon_Sword, "Player.Weapon.Sword");
@@ -28,6 +29,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_HeavyAttack_OneHand, "Player.Ability.HeavyAttack.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_LockOn, "Player.Ability.LockOn");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_Roll, "Player.Ability.Roll");
+	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_Guard, "Player.Ability.Guard");
 
 	// Player Event Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_SwitchTarget_Left, "Player.Event.SwitchTarget.Left");
@@ -45,11 +47,16 @@ namespace TwoMinGameplayTag
 
 	// Shard Ability Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_HitReact, "Shared.Ability.HitReact");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_Guard, "Shared.Ability.Guard");
 	
 	// Shard Event Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_MeleeHit, "Shared.Event.MeleeHit");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_HitReact, "Shared.Event.HitReact");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_BeforeGuard, "Shared.Event.BeforeGuard");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_KeepGuard, "Shared.Event.KeepGuard");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_AfterGuard, "Shared.Event.AfterGuard");
 	
 	// Shard State Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Invincible, "Shared.State.Invincible");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Guarding, "Shared.State.Guarding");
 }

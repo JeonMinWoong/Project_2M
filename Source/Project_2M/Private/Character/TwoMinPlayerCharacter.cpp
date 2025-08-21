@@ -103,7 +103,7 @@ void ATwoMinPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	UEnhancedInputLocalPlayerSubsystem* Subsystem =
 		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
 
-	Subsystem->AddMappingContext(InputConfigDataAsset->DefaultMappingContext, 0);
+	Subsystem->AddMappingContext(InputConfigDataAsset->DefaultMappingContext, 1);
 	
 	UCharacterInputComponent* CharacterInputComponent = CastChecked<UCharacterInputComponent>(PlayerInputComponent);
 

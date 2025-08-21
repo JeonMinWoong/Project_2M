@@ -8,11 +8,14 @@
 #include "TwoMinDebugHelper.h"
 #include "TwoMinGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystem/Ability/TwoMinGA_AttackBase.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEGA_AttackBase.h"
 #include "Camera/CameraComponent.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
+
+class UAbilityTask_WaitGameplayEvent;
 
 UTwoMinGameplayAbility::UTwoMinGameplayAbility()
 {
@@ -62,19 +65,34 @@ bool UTwoMinGameplayAbility::bIsReTriggerSameAbility() const
 	return false;
 }
 
-void UTwoMinGameplayAbility::PlayToAnimMontage(UAnimMontage* AnimMontage)
+void UTwoMinGameplayAbility::PlayToAnimMontage(UAnimMontage* AnimMontage, FName StartSectionName)
 {
 	UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-		this, NAME_None, AnimMontage, 1.f, NAME_None, false
+		this, NAME_None, AnimMontage, 1.f, StartSectionName, false
 	);
 
 	if (!Task) return;
 	
-	Task->OnCompleted.AddDynamic(this, &ThisClass::CustomEndAbility);
-	Task->OnInterrupted.AddDynamic(this, &ThisClass::CustomEndAbility);
-	Task->OnCancelled.AddDynamic(this, &ThisClass::CustomEndAbility);
+	Task->OnCompleted.AddDynamic(this, &ThisClass::CustomCompleteAbility);
+	Task->OnInterrupted.AddDynamic(this, &ThisClass::CustomCompleteAbility);
+	Task->OnCancelled.AddDynamic(this, &ThisClass::CustomCompleteAbility);
 
 	Task->ReadyForActivation();
+}
+
+void UTwoMinGameplayAbility::WaitGameplayEvent(FGameplayTag EventTag)
+{
+	UAbilityTask_WaitGameplayEvent* EventTask =UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
+		this, EventTag, nullptr, false, false);
+
+	EventTask->EventReceived.AddDynamic(this, &ThisClass::CustomEventReceived);
+
+	EventTask->ReadyForActivation();
+}
+
+void UTwoMinGameplayAbility::CustomEventReceived(FGameplayEventData Payload)
+{
+	
 }
 
 void UTwoMinGameplayAbility::OnAttackGameplayEventReceived(FGameplayEventData Payload)
@@ -120,7 +138,7 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceived(FGameplayEventData Pa
 	);
 }
 
-void UTwoMinGameplayAbility::CustomEndAbility()
+void UTwoMinGameplayAbility::CustomCompleteAbility()
 {
 	bool bReplicateEndAbility = true;
 	bool bWasCancelled = false;

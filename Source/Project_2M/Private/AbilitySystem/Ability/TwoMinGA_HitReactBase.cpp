@@ -34,9 +34,7 @@ void UTwoMinGA_HitReactBase::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	int32 HitReactNumber = GetPlayHitReactMontageNumber(GetAvatarActorFromActorInfo(),
 		TriggerEventData->Instigator, AttackInfoData);
 	PlayToAnimMontage(HitReactMontages[HitReactNumber]);
-
-	DebugTwoMin::Print(FString::Printf(TEXT("Attacker : %s"), *TriggerEventData->Instigator->GetActorLabel()),
-		FColor::Green);
+	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 

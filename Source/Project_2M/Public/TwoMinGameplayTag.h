@@ -19,6 +19,7 @@ namespace TwoMinGameplayTag
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Toggle_LockOn);
 
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_MustBeHold);	// Hold
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_MustBeHold_Guard);
 
 	// Weapon Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Weapon_Sword);
@@ -33,6 +34,7 @@ namespace TwoMinGameplayTag
 	// Player Event Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_SwitchTarget_Left);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_SwitchTarget_Right);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_SwitchTarget_Right);
 	
 	// Player State Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_State_LockOn);
@@ -46,11 +48,16 @@ namespace TwoMinGameplayTag
 
 	// Shard Ability Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Ability_HitReact);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Ability_Guard);
 	
 	// Shard Event Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Event_MeleeHit)
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Event_HitReact)
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Event_BeforeGuard)
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Event_KeepGuard)
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Event_AfterGuard)
 
 	// Shard State Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_State_Invincible);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_State_Guarding);
 }

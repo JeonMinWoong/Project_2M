@@ -118,8 +118,6 @@ void UTwoMinGA_Roll_Player::LockRoll(ATwoMinPlayerCharacter* PlayerCharacter)
 	TargetRotator += FRotator(0.f, CorrectionAngle, 0.f);
 	PlayerCharacter->SetActorRotation(TargetRotator);
 	
-	DebugTwoMin::Print(FString::Printf(TEXT("%s, %s"),
-		*FString::SanitizeFloat(AngleDegrees), *TargetRotator.ToString()), FColor::Yellow, 3);
 	PlayToAnimMontage(LockRollMontages[DirectionIndex]);
 }
 
@@ -157,6 +155,4 @@ void UTwoMinGA_Roll_Player::EndRoll(const FGameplayAbilityActorInfo* ActorInfo)
 	
 	FRotator LockOnRotator = (Target->GetActorLocation() - PlayerCharacter->GetActorLocation()).GetSafeNormal().Rotation();
 	PlayerCharacter->SetActorRotation(LockOnRotator);
-	// MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(TEXT("LastRollDirection"),
-	// 	PlayerCharacter->GetActorLocation(), LockOnRotator);
 }

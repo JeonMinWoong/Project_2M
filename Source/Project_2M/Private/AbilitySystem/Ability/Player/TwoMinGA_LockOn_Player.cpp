@@ -32,17 +32,12 @@ void UTwoMinGA_LockOn_Player::ActivateAbility(const FGameplayAbilitySpecHandle H
                                               const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                               const FGameplayEventData* TriggerEventData)
 {
-	DebugTwoMin::Print(TEXT("Lock On Ability Activated"), FColor::Green, 1);
 	LockOnTarget = FindLockOnTarget();
 	if (!LockOnTarget)
 	{
-		DebugTwoMin::Print(TEXT("Lock On Target Null"), FColor::Red, 2);
 		CustomCancelAbility();
 		return;
 	}
-
-	FString TargetName = FString::Printf(TEXT("Lock On Target Name: %s"), *LockOnTarget->GetActorNameOrLabel());
-	DebugTwoMin::Print(TargetName, FColor::Green, 2);
 
 	DrawLockOnWidget();
 	SetTargetLockOnWidgetPosition();
@@ -57,7 +52,6 @@ void UTwoMinGA_LockOn_Player::EndAbility(const FGameplayAbilitySpecHandle Handle
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
-	DebugTwoMin::Print(TEXT("Lock On Ability End"), FColor::Blue, 3);
 	EndLockOnTarget();
 	ResetMappingContext();
 	ResetCharacterMovement();
@@ -406,7 +400,6 @@ void UTwoMinGA_LockOn_Player::UpdateLockOnTarget(float DeltaTime)
 
 	if (UTwoMinFunctionLibrary::HasGameplayTag(GetAvatarActorFromActorInfo(), TwoMinGameplayTag::Player_State_Rolling))
 	{
-		DebugTwoMin::Print(TEXT("Roll !!!!!!!!"), FColor::Red, 4);
 		return;
 	}
 	
@@ -425,9 +418,6 @@ void UTwoMinGA_LockOn_Player::OnSwitchTarget(FGameplayEventData InputEventData)
 	}
 
 	CurrentSwitchTime = GetWorld()->GetTimeSeconds() + LockOnSwitchTime;
-	
-	FString Value = FString::Printf(TEXT("Switch Target %s"), *InputEventData.EventTag.ToString());
-	DebugTwoMin::Print(Value, FColor::Yellow, 4);
 	
 	CheckSphereOverTargetGroup();
 

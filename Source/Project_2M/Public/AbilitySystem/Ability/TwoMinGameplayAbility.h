@@ -6,6 +6,8 @@
 #include "Abilities/GameplayAbility.h"
 #include "TwoMinGameplayAbility.generated.h"
 
+class FWaitGameplayEventDelegate;
+
 UENUM(BlueprintType)
 enum class EToMinAbilityActivationPolicy : uint8
 {
@@ -54,10 +56,17 @@ protected:
 
 	virtual bool bIsReTriggerSameAbility() const;
 	
-	void PlayToAnimMontage(UAnimMontage* AnimMontage);
+	void PlayToAnimMontage(UAnimMontage* AnimMontage, FName StartSectionName = NAME_None);
+	virtual void WaitGameplayEvent(FGameplayTag EventTag);
 
 	UFUNCTION()
+	virtual void CustomEventReceived(FGameplayEventData Payload);
+	
+	UFUNCTION()
 	virtual void OnAttackGameplayEventReceived(FGameplayEventData Payload);  
+
+	UFUNCTION()
+	virtual void CustomCompleteAbility();
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AbilityPoicy")
 	EToMinAbilityActivationPolicy AbilityActivationPolicy = EToMinAbilityActivationPolicy::OnTriggered;
@@ -67,10 +76,10 @@ protected:
 
 	UPROPERTY()
 	bool bIsReTriggerAble = false;
+
+
 	
 private:
-	UFUNCTION()
-	void CustomEndAbility();
 
 	UPROPERTY()
 	TArray<UTwoMinGameplayAbility*> PossibleCancelAbilities;
