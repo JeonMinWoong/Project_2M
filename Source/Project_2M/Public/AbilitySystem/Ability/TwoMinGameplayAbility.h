@@ -42,6 +42,7 @@ public:
 	virtual void CustomCancelAbility();
 
 	virtual bool IsMustBeLikedToGameplayAbility() const;
+	virtual bool IsPossibleMustBeHoldAbilityImmediatelyCancel() const;
 	
 protected:
 	//~ Begin UGameplayAbility Interface.
@@ -57,7 +58,8 @@ protected:
 	virtual bool bIsReTriggerSameAbility() const;
 	
 	void PlayToAnimMontage(UAnimMontage* AnimMontage, FName StartSectionName = NAME_None);
-	virtual void WaitGameplayEvent(FGameplayTag EventTag);
+	virtual void WaitGameplayEvent(FGameplayTag EventTag, bool bIsOnce = false);
+	
 
 	UFUNCTION()
 	virtual void CustomEventReceived(FGameplayEventData Payload);
@@ -67,6 +69,9 @@ protected:
 
 	UFUNCTION()
 	virtual void CustomCompleteAbility();
+
+	UFUNCTION()
+	virtual void CustomInterruptedAbility();
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AbilityPoicy")
 	EToMinAbilityActivationPolicy AbilityActivationPolicy = EToMinAbilityActivationPolicy::OnTriggered;
@@ -77,8 +82,6 @@ protected:
 	UPROPERTY()
 	bool bIsReTriggerAble = false;
 
-
-	
 private:
 
 	UPROPERTY()

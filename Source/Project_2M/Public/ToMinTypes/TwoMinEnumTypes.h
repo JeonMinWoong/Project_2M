@@ -47,3 +47,11 @@ enum class EHitType : uint8
 	Down,
 	Throw
 };
+
+UENUM(BlueprintType)
+enum class EAttackType : uint8
+{
+	Light = 0,
+	Heavy,
+	Ungaurdable
+};

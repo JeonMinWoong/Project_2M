@@ -6,13 +6,17 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "TwoMinDebugHelper.h"
+#include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "AbilitySystem/Ability/TwoMinGA_AttackBase.h"
+#include "AbilitySystem/Ability/TwoMinGA_GuardBase.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEGA_AttackBase.h"
 #include "Camera/CameraComponent.h"
 #include "Character/TwoMinPlayerCharacter.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 
 class UAbilityTask_WaitGameplayEvent;
@@ -74,16 +78,16 @@ void UTwoMinGameplayAbility::PlayToAnimMontage(UAnimMontage* AnimMontage, FName 
 	if (!Task) return;
 	
 	Task->OnCompleted.AddDynamic(this, &ThisClass::CustomCompleteAbility);
-	Task->OnInterrupted.AddDynamic(this, &ThisClass::CustomCompleteAbility);
+	Task->OnInterrupted.AddDynamic(this, &ThisClass::CustomInterruptedAbility);
 	Task->OnCancelled.AddDynamic(this, &ThisClass::CustomCompleteAbility);
 
 	Task->ReadyForActivation();
 }
 
-void UTwoMinGameplayAbility::WaitGameplayEvent(FGameplayTag EventTag)
+void UTwoMinGameplayAbility::WaitGameplayEvent(FGameplayTag EventTag, bool bIsOnce)
 {
 	UAbilityTask_WaitGameplayEvent* EventTask =UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
-		this, EventTag, nullptr, false, false);
+		this, EventTag, nullptr, bIsOnce, true);
 
 	EventTask->EventReceived.AddDynamic(this, &ThisClass::CustomEventReceived);
 
@@ -126,14 +130,29 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceived(FGameplayEventData Pa
 		AttackPayload->Data = AttackInfoData;
 	}
 
-	AActor* TargetCharacter = Cast<AActor>(Payload.Target);
+	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(Payload.Target);
 	if (!TargetCharacter) return;
 	
 	Payload.OptionalObject = AttackPayload;
-	
+
+	bool bIsTargetGuard =
+		UTwoMinFunctionLibrary::HasGameplayTag(TargetCharacter, TwoMinGameplayTag::Shared_State_Guarding);
+	if (bIsTargetGuard)
+	{
+  		UTwoMinGameplayAbility* Ability =
+			TargetCharacter->GetAbilitySystemComponent()->GetPlayingAbilityTag(TwoMinGameplayTag::Shared_Ability_Guard);
+		if (Ability)
+		{
+			if (UTwoMinGA_GuardBase* GuardAbility = Cast<UTwoMinGA_GuardBase>(Ability))
+			{
+				bIsTargetGuard = GuardAbility->IsGuardCondition(BaseCharacter, TargetCharacter);
+			}
+		}
+	}
+
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 		TargetCharacter,
-		TwoMinGameplayTag::Shared_Event_HitReact,
+		bIsTargetGuard ? TwoMinGameplayTag::Shared_Event_HitGuard : TwoMinGameplayTag::Shared_Event_HitReact,
 		Payload
 	);
 }
@@ -145,6 +164,12 @@ void UTwoMinGameplayAbility::CustomCompleteAbility()
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
+void UTwoMinGameplayAbility::CustomInterruptedAbility()
+{
+	CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(),
+		true);
+}
+
 void UTwoMinGameplayAbility::CustomCancelAbility()
 {
 	CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(),
@@ -152,6 +177,11 @@ void UTwoMinGameplayAbility::CustomCancelAbility()
 }
 
 bool UTwoMinGameplayAbility::IsMustBeLikedToGameplayAbility() const
+{
+	return false;
+}
+
+bool UTwoMinGameplayAbility::IsPossibleMustBeHoldAbilityImmediatelyCancel() const
 {
 	return false;
 }

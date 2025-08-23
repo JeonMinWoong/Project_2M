@@ -52,9 +52,7 @@ namespace TwoMinGameplayTag
 	// Shard Event Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_MeleeHit, "Shared.Event.MeleeHit");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_HitReact, "Shared.Event.HitReact");
-	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_BeforeGuard, "Shared.Event.BeforeGuard");
-	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_KeepGuard, "Shared.Event.KeepGuard");
-	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_AfterGuard, "Shared.Event.AfterGuard");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_HitGuard, "Shared.Event.HitGuard");
 	
 	// Shard State Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Invincible, "Shared.State.Invincible");

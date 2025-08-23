@@ -46,11 +46,17 @@ void UTwoMinAbilitySystemComponent::OnAbilityInputReleased(const FGameplayTag& I
 {
 	if (!InInputTag.IsValid() || !InInputTag.MatchesTag(TwoMinGameplayTag::InputTag_MustBeHold)) return;
 
-	for (const FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	for (FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
 	{
 		if (AbilitySpec.DynamicAbilityTags.HasTagExact(InInputTag) && AbilitySpec.IsActive())
 		{
-			CancelAbilityHandle(AbilitySpec.Handle);
+			UTwoMinGameplayAbility* Ability = Cast<UTwoMinGameplayAbility>(AbilitySpec.Ability);
+			if (Ability->IsPossibleMustBeHoldAbilityImmediatelyCancel())
+			{
+				CancelAbilityHandle(AbilitySpec.Handle);	
+			}
+
+			AbilitySpecInputReleased(AbilitySpec);
 		}
 	}
 }

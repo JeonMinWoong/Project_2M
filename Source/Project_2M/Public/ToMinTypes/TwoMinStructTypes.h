@@ -77,10 +77,13 @@ struct FAttackInfoData : public FGameplayAbilityTargetData
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int HitDirectionNumber;
-
+	EAttackType AttackType = EAttackType::Light;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	EHitType HitType = EHitType::Normal;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int HitDirectionNumber;
 
 	virtual UScriptStruct* GetScriptStruct() const override
 	{
@@ -92,6 +95,7 @@ UCLASS(BlueprintType)
 class UAttackPayloadObject : public UObject
 {
     GENERATED_BODY()
+	
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
     FAttackInfoData Data;
