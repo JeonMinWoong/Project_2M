@@ -72,6 +72,39 @@ struct FTwoMinPlayerAttackApproachData
 };
 
 USTRUCT(BlueprintType)
+struct FHitData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	EHitType HitType = EHitType::Normal;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float PushDistance = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float PushTime = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UCurveFloat* KnockBackCurve;
+};
+
+USTRUCT(BlueprintType)
+struct FGuardHitData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float PushDistance = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float PushTime = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UCurveFloat* KnockBackCurve;
+};
+
+USTRUCT(BlueprintType)
 struct FAttackInfoData : public FGameplayAbilityTargetData
 {
 	GENERATED_BODY()
@@ -80,7 +113,7 @@ struct FAttackInfoData : public FGameplayAbilityTargetData
 	EAttackType AttackType = EAttackType::Light;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	EHitType HitType = EHitType::Normal;
+	FHitData HitData;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int HitDirectionNumber;

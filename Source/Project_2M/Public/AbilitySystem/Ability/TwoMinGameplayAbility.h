@@ -6,6 +6,9 @@
 #include "Abilities/GameplayAbility.h"
 #include "TwoMinGameplayAbility.generated.h"
 
+class UMotionWarpingComponent;
+struct FAttackInfoData;
+class ATwoMinBaseCharacter;
 class FWaitGameplayEventDelegate;
 
 UENUM(BlueprintType)
@@ -60,7 +63,9 @@ protected:
 	void PlayToAnimMontage(UAnimMontage* AnimMontage, FName StartSectionName = NAME_None);
 	virtual void WaitGameplayEvent(FGameplayTag EventTag, bool bIsOnce = false);
 	
-
+	void OnStartKnockBack(AActor* OwnerActor, UAnimMontage* TargetMontage, const FVector& Direction,
+		const float PushDistance, const float EndTime, UCurveFloat* KnockBackCurve);
+	
 	UFUNCTION()
 	virtual void CustomEventReceived(FGameplayEventData Payload);
 	
@@ -84,6 +89,10 @@ protected:
 
 private:
 
+	bool CalcKnockbackTarget(ATwoMinBaseCharacter* Char, const FVector& Dir, float Distance, FVector& OutTarget);
+	void SetCurveRootMotion(UAnimMontage* TargetMontage, UMotionWarpingComponent* MW, const float StartTime,
+		const float EndTime, UCurveFloat* KnockBackCurve);
+	
 	UPROPERTY()
 	TArray<UTwoMinGameplayAbility*> PossibleCancelAbilities;
 

@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
+#include "ToMinTypes/TwoMinEnumTypes.h"
+#include "ToMinTypes/TwoMinStructTypes.h"
 #include "TwoMinGA_GuardBase.generated.h"
 
 class ATwoMinBaseCharacter;
@@ -60,6 +62,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Guard|Angle", meta=(ClampMin="0", ClampMax="180", UIMin="0", UIMax="90"))
 	float GuardAngle = 45.f;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Guard|KnockBack")
+	TMap<EAttackType, FGuardHitData> GuardHitDataMap;
+	
 	UPROPERTY()
 	bool bIsGuard = false;
 

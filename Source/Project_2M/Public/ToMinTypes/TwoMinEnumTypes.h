@@ -51,7 +51,8 @@ enum class EHitType : uint8
 UENUM(BlueprintType)
 enum class EAttackType : uint8
 {
-	Light = 0,
+	None = 0,
+	Light,
 	Heavy,
 	Ungaurdable
 };

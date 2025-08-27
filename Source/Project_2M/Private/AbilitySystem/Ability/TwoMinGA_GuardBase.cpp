@@ -4,8 +4,6 @@
 #include "AbilitySystem/Ability/TwoMinGA_GuardBase.h"
 
 #include "TwoMinDebugHelper.h"
-#include "TwoMinFunctionLibrary.h"
-#include "TwoMinGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
@@ -148,7 +146,8 @@ void UTwoMinGA_GuardBase::OnHitGuard(FGameplayEventData Payload)
 	}
 
 	ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(GetAvatarActorFromActorInfo());
-	if (!MyCharacter)
+	ATwoMinBaseCharacter* InstigatorCharacter = Cast<ATwoMinBaseCharacter>(Payload.Instigator);
+	if (!MyCharacter || !InstigatorCharacter)
 	{
 		CustomCancelAbility();
 		return;
@@ -170,12 +169,18 @@ void UTwoMinGA_GuardBase::OnHitGuard(FGameplayEventData Payload)
 		}
 	}
 	
-	bIsHitGuard = true;
 	const FAttackInfoData& AttackInfoData = AttackPayload->Data;
-	const int32 HitMontageNumber = FMath::Clamp(static_cast<int32>(AttackInfoData.AttackType), 0,
-		HitGuardAnimMontage.Num() - 1);
-
+	const FVector ToImpact = (InstigatorCharacter->GetActorLocation() - MyCharacter->GetActorLocation()).GetSafeNormal();
+	
+	bIsHitGuard = true;
 	bIsBreakGuard = AttackInfoData.AttackType == EAttackType::Ungaurdable;
+	
+	const int32 HitMontageNumber = FMath::Clamp(static_cast<int32>(AttackInfoData.AttackType) - 1, 0,
+		HitGuardAnimMontage.Num() - 1);
+  	const FGuardHitData& GuardHitData = GuardHitDataMap[AttackInfoData.AttackType];
+	
+	OnStartKnockBack(MyCharacter, HitGuardAnimMontage[HitMontageNumber], ToImpact, GuardHitData.PushDistance,
+		GuardHitData.PushTime, GuardHitData.KnockBackCurve);
 	
 	UAbilityTask_PlayMontageAndWait* Hit = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this, NAME_None, HitGuardAnimMontage[HitMontageNumber], 1.f,

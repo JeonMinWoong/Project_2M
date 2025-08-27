@@ -3,10 +3,10 @@
 
 #include "AbilitySystem/Ability/Enemy/TwoMinGA_HitReact_Enemy.h"
 
-int32 UTwoMinGA_HitReact_Enemy::GetPlayHitReactMontageNumber(const AActor* OwnerActor, const AActor* AttackerActor,
+int32 UTwoMinGA_HitReact_Enemy::GetPlayHitReactMontageNumber(const FVector OwnerForward, const FVector ToImpact,
 	const FAttackInfoData& AttackInfoData) const
 {
-	const int HitMontageNumber = Super::GetPlayHitReactMontageNumber(OwnerActor, AttackerActor, AttackInfoData);
+	const int HitMontageNumber = Super::GetPlayHitReactMontageNumber(OwnerForward, ToImpact, AttackInfoData);
 	if (!HitReactMontages.Contains(HitMontageNumber))
 	{
 		return 5; // Default Hit Montage Number

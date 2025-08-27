@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MotionWarpingComponent.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
 #include "TwoMinGA_HitReactBase.generated.h"
 
+class ATwoMinBaseCharacter;
 struct FAttackInfoData;
 /**
  * 
@@ -24,9 +26,9 @@ protected:
 		const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	//~ End UGameplayAbility Interface
 
-	virtual int32 GetPlayHitReactMontageNumber(const AActor* OwnerActor, const AActor* AttackerActor,
+	virtual int32 GetPlayHitReactMontageNumber(const FVector OwnerForward, const FVector ToImpact,
 		const FAttackInfoData& AttackInfoData) const;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "HitReact|Montages")
 	TMap<int32, UAnimMontage*> HitReactMontages;
 };

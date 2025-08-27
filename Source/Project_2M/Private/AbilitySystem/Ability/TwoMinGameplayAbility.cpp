@@ -5,7 +5,8 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "TwoMinDebugHelper.h"
+#include "MotionWarpingComponent.h"
+#include "RootMotionModifier_SkewWarp.h"
 #include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
@@ -14,9 +15,8 @@
 #include "AbilitySystem/Ability/TwoMinGA_AttackBase.h"
 #include "AbilitySystem/Ability/TwoMinGA_GuardBase.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEGA_AttackBase.h"
-#include "Camera/CameraComponent.h"
 #include "Character/TwoMinPlayerCharacter.h"
-#include "Kismet/KismetMathLibrary.h"
+#include "Components/CapsuleComponent.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 
 class UAbilityTask_WaitGameplayEvent;
@@ -92,6 +92,78 @@ void UTwoMinGameplayAbility::WaitGameplayEvent(FGameplayTag EventTag, bool bIsOn
 	EventTask->EventReceived.AddDynamic(this, &ThisClass::CustomEventReceived);
 
 	EventTask->ReadyForActivation();
+}
+
+void UTwoMinGameplayAbility::OnStartKnockBack(AActor* OwnerActor, UAnimMontage* TargetMontage, const FVector& Direction,
+	const float PushDistance, const float EndTime, UCurveFloat* KnockBackCurve)
+{
+	ATwoMinBaseCharacter* Character = Cast<ATwoMinBaseCharacter>(OwnerActor);
+	if (!Character) return;
+	
+	UMotionWarpingComponent* MW = Character->GetMotionWarpingComponent();
+	if (!MW) return;
+	
+	UAnimInstance* AnimInst = Character->GetMesh() ? Character->GetMesh()->GetAnimInstance() : nullptr;
+	if (!MW || !AnimInst) return;
+	
+	FVector Target;
+	CalcKnockbackTarget(Character, -Direction, PushDistance, Target);
+	Character->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocation(FName("KB_Target"), Target);
+
+	const float Pos = AnimInst->Montage_GetPosition(TargetMontage);
+	
+	SetCurveRootMotion(TargetMontage, MW, Pos, EndTime, KnockBackCurve);
+}
+
+bool UTwoMinGameplayAbility::CalcKnockbackTarget(ATwoMinBaseCharacter* Char, const FVector& Dir,
+	float Distance, FVector& OutTarget)
+{
+	const FVector Start = Char->GetActorLocation();
+	const FVector RawTarget = Start + Dir.GetSafeNormal2D() * Distance;
+	
+	float R, H;
+	Char->GetCapsuleComponent()->GetScaledCapsuleSize(R, H);
+	
+	FHitResult Hit;
+	FCollisionQueryParams Q(SCENE_QUERY_STAT(KBTrace), false, Char);
+
+	const bool bHit = Char->GetWorld()->SweepSingleByChannel(
+		Hit, Start, RawTarget, FQuat::Identity, ECC_Visibility,
+		FCollisionShape::MakeCapsule(R, H), Q);
+
+	if (bHit)
+	{
+		const float Safe = FMath::Max(0.f, (Hit.Location - Start).Size() - R - 1.f);
+		OutTarget = Start + Dir.GetSafeNormal2D() * Safe;
+	}
+	else
+	{
+		OutTarget = RawTarget;
+	}
+	
+	return true;
+}
+
+void UTwoMinGameplayAbility::SetCurveRootMotion(UAnimMontage* TargetMontage,UMotionWarpingComponent* MW,
+	const float StartTime, const float EndTime, UCurveFloat* KnockBackCurve)
+{
+	URootMotionModifier_SkewWarp* CurMod = NewObject<URootMotionModifier_SkewWarp>(MW,
+		URootMotionModifier_SkewWarp::StaticClass(), NAME_None, RF_Transient);
+	
+	const float MaxDuration = TargetMontage->GetPlayLength();
+	const float Duration = StartTime + EndTime;
+
+	CurMod->Animation = TargetMontage;
+	CurMod->WarpTargetName = FName("KB_Target");
+	CurMod->StartTime = StartTime;
+	CurMod->EndTime = FMath::Clamp(Duration, StartTime + 0.05f, MaxDuration);
+	CurMod->bWarpTranslation = true;
+	CurMod->bIgnoreZAxis = true;
+	CurMod->bWarpRotation = false;
+	CurMod->AddTranslationEasingFunc = EAlphaBlendOption::Custom;
+	CurMod->AddTranslationEasingCurve = KnockBackCurve;
+	
+	MW->AddModifier(CurMod);
 }
 
 void UTwoMinGameplayAbility::CustomEventReceived(FGameplayEventData Payload)

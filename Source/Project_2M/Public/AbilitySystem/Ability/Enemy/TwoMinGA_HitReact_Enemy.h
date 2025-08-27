@@ -15,6 +15,6 @@ class PROJECT_2M_API UTwoMinGA_HitReact_Enemy : public UTwoMinGA_HitReactBase
 	GENERATED_BODY()
 
 protected:
-	virtual int32 GetPlayHitReactMontageNumber(const AActor* OwnerActor, const AActor* AttackerActor,
+	virtual int32 GetPlayHitReactMontageNumber(const FVector OwnerForward, const FVector ToImpact,
 		const FAttackInfoData& AttackInfoData) const override;
 };
