@@ -92,6 +92,11 @@ void UTwoMinGA_AttackBase::CustomCancelAbility()
 	ResetComboCount();
 }
 
+TSubclassOf<UGameplayEffect> UTwoMinGA_AttackBase::GetAttackGameplayEffectClass() const
+{
+	return AttackGameplayEffectClass;
+}
+
 void UTwoMinGA_AttackBase::AddComboCount()
 {
 	CurComboCount++;

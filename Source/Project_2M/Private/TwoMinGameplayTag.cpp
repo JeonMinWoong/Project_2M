@@ -48,13 +48,25 @@ namespace TwoMinGameplayTag
 	// Shard Ability Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_HitReact, "Shared.Ability.HitReact");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_Guard, "Shared.Ability.Guard");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_Exhausted, "Shared.Ability.Exhausted");
+
+	// Shard SetByCaller
+	UE_DEFINE_GAMEPLAY_TAG(Shared_SetByCaller_BaseDamage, "Shared.SetByCaller.BaseDamage");
 	
 	// Shard Event Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_MeleeHit, "Shared.Event.MeleeHit");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_HitReact, "Shared.Event.HitReact");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_HitGuard, "Shared.Event.HitGuard");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_Exhausted, "Shared.Event.Exhausted");
 	
 	// Shard State Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Invincible, "Shared.State.Invincible");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_State_UnBreakAttack, "Shared.State.UnBreakAttack");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Guarding, "Shared.State.Guarding");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Exhausted, "Shared.State.Exhausted");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_State_StaminaNoRegen, "Shared.State.StaminaNoRegen");
+
+	// Data Tags
+	UE_DEFINE_GAMEPLAY_TAG(Data_Cost_Stamina_Enough, "Data.Cost.Stamina.Enough");
+	UE_DEFINE_GAMEPLAY_TAG(Data_Cost_Stamina_UnEnough, "Data.Cost.Stamina.UnEnough");
 }

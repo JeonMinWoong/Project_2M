@@ -13,5 +13,10 @@ UCLASS()
 class PROJECT_2M_API UTwoMinWidgetBase : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+protected:
+	virtual void NativeOnInitialized() override;
+
+	UFUNCTION()
+	virtual void SetCurrentHealthPercent(float Percent);
 };

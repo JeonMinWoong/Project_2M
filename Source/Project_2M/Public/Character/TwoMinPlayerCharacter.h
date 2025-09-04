@@ -7,6 +7,7 @@
 #include "TwoMinBaseCharacter.h"
 #include "TwoMinPlayerCharacter.generated.h"
 
+class UPlayerUIComponent;
 class ATwoMinEnemyCharacter;
 class ATwoMinPlayerController;
 struct FGameplayTag;
@@ -27,6 +28,9 @@ public:
 	ATwoMinPlayerCharacter();
 
 	virtual UBaseCombatComponent* GetCombatComponent() const override;
+	virtual UBaseUIComponent* GetBaseUIComponent() const override;
+	virtual UPlayerUIComponent* GetPlayerUIComponent() const override;
+	
 	ATwoMinPlayerController* GetPlayerController() const;
 	ATwoMinEnemyCharacter* GetCurrentAutoTarget() const;
 	
@@ -37,7 +41,8 @@ protected:
 	//~ Begin APawn Interface.
 	virtual void PossessedBy(AController* NewController) override;
 	//~ End APawn Interface
-	
+
+	virtual void BeginPlay() override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
 private:
@@ -50,6 +55,15 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UPlayerCombatComponent* PlayerCombatComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	UPlayerUIComponent* PlayerUIComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> HUDOverlayClass;
+
+	UPROPERTY()
+	UUserWidget* HUDOverlay;
 	
 	/** CharacterInfo **/
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|Capsule")

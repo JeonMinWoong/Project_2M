@@ -4,9 +4,11 @@
 #include "AbilitySystem/Ability/TwoMinGA_GuardBase.h"
 
 #include "TwoMinDebugHelper.h"
+#include "TwoMinGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
+#include "AbilitySystem/TwoMinAttributeSet.h"
 #include "Character/TwoMinBaseCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
@@ -35,7 +37,6 @@ void UTwoMinGA_GuardBase::ActivateAbility(const FGameplayAbilitySpecHandle Handl
                                           const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                           const FGameplayEventData* TriggerEventData)
 {
-	TwoMinDebugHelper::Print(TEXT("Guard Ability Activated"), FColor::Green);
 	bIsGuard = true;
 	
 	PlayToAnimMontage(GuardAnimMontage, FName("Guard_Start"));
@@ -56,8 +57,6 @@ void UTwoMinGA_GuardBase::EndAbility(const FGameplayAbilitySpecHandle Handle,
 {
 	if (IsActive() == false) return;
 	
-	TwoMinDebugHelper::Print(TEXT("Guard Ability Ended"), FColor::Red);
-	
   	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
@@ -65,7 +64,6 @@ void UTwoMinGA_GuardBase::CustomEventReceived(FGameplayEventData Payload)
 {
 	if (Payload.EventTag == BeforeGuardEventTag)
 	{
-  		TwoMinDebugHelper::Print(TEXT("Event Received: On Guard"), FColor::Blue);
 		ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(GetAvatarActorFromActorInfo());
 		if (!MyCharacter)
 		{
@@ -129,9 +127,48 @@ void UTwoMinGA_GuardBase::InputReleased(const FGameplayAbilitySpecHandle Handle,
 	MyCharacter->GetMesh()->GetAnimInstance()->Montage_JumpToSection(FName("Guard_End"), GuardAnimMontage);
 }
 
+float UTwoMinGA_GuardBase::CustomCalculationStaminaCost(const EAttackType AttackType) const
+{
+	if (!StaminaCostCurveTable || GuardStaminaCostNameMap.IsEmpty()) return 0.f;
+
+	int32 Level = GetAbilityLevel();
+	const FString& LevelString = FString::FromInt(Level);
+	const FRealCurve* Curve = StaminaCostCurveTable->FindCurve(GuardStaminaCostNameMap[AttackType], LevelString);
+	if (!Curve) return 0.f;
+	
+	const float StaminaCost = Curve->Eval(Level);
+	if (StaminaCost <= 0.f) return 0.f;
+
+	return StaminaCost;
+}
+
+void UTwoMinGA_GuardBase::CustomApplyCost(const EAttackType AttackType) const
+{
+	const float StaminaCost = CustomCalculationStaminaCost(AttackType);
+	const UGameplayEffect* CostGE = GetCostGameplayEffect();
+	if (!CostGE) return;
+	
+	UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
+	FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(
+		CostGE->GetClass(),
+		GetAbilityLevel(),
+		ASC->MakeEffectContext()
+	);
+
+	const float RemainStamina = ASC->GetNumericAttribute(UTwoMinAttributeSet::GetCurrentStaminaAttribute()) - StaminaCost;
+	
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Cost_Stamina_Enough, -StaminaCost);
+
+	ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+
+	if (RemainStamina < 0)
+	{
+		bIsEndAbilitySendToExhaustedEvent = true;
+	}
+}
+
 void UTwoMinGA_GuardBase::OnHitGuard(FGameplayEventData Payload)
 {
-	TwoMinDebugHelper::Print(TEXT("Hit Guard"), FColor::Orange);
 	if (!Payload.OptionalObject->IsValidLowLevel())
 	{
 		CustomCancelAbility();
@@ -173,14 +210,23 @@ void UTwoMinGA_GuardBase::OnHitGuard(FGameplayEventData Payload)
 	const FVector ToImpact = (InstigatorCharacter->GetActorLocation() - MyCharacter->GetActorLocation()).GetSafeNormal();
 	
 	bIsHitGuard = true;
-	bIsBreakGuard = AttackInfoData.AttackType == EAttackType::Ungaurdable;
+	CustomApplyCost(AttackInfoData.AttackType);
 	
-	const int32 HitMontageNumber = FMath::Clamp(static_cast<int32>(AttackInfoData.AttackType) - 1, 0,
-		HitGuardAnimMontage.Num() - 1);
-  	const FGuardHitData& GuardHitData = GuardHitDataMap[AttackInfoData.AttackType];
+	const int32 HitMontageNumber = GetHitMontageNumber(AttackInfoData);
+
+	const FGuardHitData& GuardHitData = GuardHitDataMap[AttackInfoData.AttackType];
+	float PushDistance = GuardHitData.PushDistance;
+	float PushTime = GuardHitData.PushTime;
+	UCurveFloat* PushCurve = GuardHitData.KnockBackCurve;
+	if (bIsEndAbilitySendToExhaustedEvent)
+	{
+		PushDistance = AttackInfoData.HitData.PushDistance;
+		PushTime = AttackInfoData.HitData.PushTime;
+		PushCurve = AttackInfoData.HitData.KnockBackCurve;
+	}
 	
-	OnStartKnockBack(MyCharacter, HitGuardAnimMontage[HitMontageNumber], ToImpact, GuardHitData.PushDistance,
-		GuardHitData.PushTime, GuardHitData.KnockBackCurve);
+	OnStartKnockBack(MyCharacter, HitGuardAnimMontage[HitMontageNumber], ToImpact, PushDistance,
+		PushTime, PushCurve);
 	
 	UAbilityTask_PlayMontageAndWait* Hit = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this, NAME_None, HitGuardAnimMontage[HitMontageNumber], 1.f,
@@ -194,6 +240,16 @@ void UTwoMinGA_GuardBase::OnHitGuard(FGameplayEventData Payload)
 	Hit->ReadyForActivation();
 }
 
+int UTwoMinGA_GuardBase::GetHitMontageNumber(const FAttackInfoData& AttackInfoData) const
+{
+	if (bIsEndAbilitySendToExhaustedEvent)
+	{
+		return HitGuardAnimMontage.Num() - 1;	
+	}
+	
+	return FMath::Clamp(static_cast<int32>(AttackInfoData.AttackType) - 1, 0,HitGuardAnimMontage.Num() - 1);
+}
+
 void UTwoMinGA_GuardBase::OnHitEnd()
 {
 	ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(GetAvatarActorFromActorInfo());
@@ -203,7 +259,7 @@ void UTwoMinGA_GuardBase::OnHitEnd()
 		return;
 	}
 
-	if (bIsGuard == false || bIsBreakGuard)
+	if (bIsGuard == false || bIsEndAbilitySendToExhaustedEvent)
 	{
 		CustomCancelAbility();
 		return;

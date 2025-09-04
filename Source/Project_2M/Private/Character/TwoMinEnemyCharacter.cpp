@@ -3,10 +3,14 @@
 
 #include "Character/TwoMinEnemyCharacter.h"
 
+#include "Blueprint/UserWidget.h"
 #include "Compnents/Combat/EnemyCombatComponent.h"
+#include "Compnents/UI/EnemyUIComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
 #include "DataAssets/StartUpData/DataAsset_StartUpDataBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Widgets/Enemy/TwoMinWidgetEnemy.h"
 
 ATwoMinEnemyCharacter::ATwoMinEnemyCharacter()
 {
@@ -23,6 +27,10 @@ ATwoMinEnemyCharacter::ATwoMinEnemyCharacter()
 	GetCharacterMovement()->BrakingDecelerationWalking = 1000.f; // 감속 속도
 
 	EnemyCombatComponent = CreateDefaultSubobject<UEnemyCombatComponent>("EnemyCombatComponent");
+	EnemyUIComponent = CreateDefaultSubobject<UEnemyUIComponent>("EnemyUIComponent");
+	EnemyHealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("EnemyHealthWidgetComponent");
+	EnemyHealthWidgetComponent->SetupAttachment(GetMesh());
+	
 	CharacterType = ECharacterType::Enemy;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
@@ -32,6 +40,16 @@ ATwoMinEnemyCharacter::ATwoMinEnemyCharacter()
 UBaseCombatComponent* ATwoMinEnemyCharacter::GetCombatComponent() const
 {
 	return EnemyCombatComponent;
+}
+
+UBaseUIComponent* ATwoMinEnemyCharacter::GetBaseUIComponent() const
+{
+	return EnemyUIComponent;
+}
+
+UEnemyUIComponent* ATwoMinEnemyCharacter::GetEnemyUIComponent() const
+{
+	return EnemyUIComponent;
 }
 
 void ATwoMinEnemyCharacter::PossessedBy(AController* NewController)
@@ -44,5 +62,15 @@ void ATwoMinEnemyCharacter::PossessedBy(AController* NewController)
 		{
 			LoadedData->GiveToAbilitySystemComponent(AbilitySystemComponent);
 		}
+	}
+}
+
+void ATwoMinEnemyCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (UTwoMinWidgetEnemy* HealthWidget = Cast<UTwoMinWidgetEnemy>(EnemyHealthWidgetComponent->GetUserWidgetObject()))
+	{
+		HealthWidget->InitEnemyIComponent(EnemyUIComponent);
 	}
 }

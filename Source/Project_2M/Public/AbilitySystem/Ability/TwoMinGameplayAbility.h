@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+#include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "TwoMinGameplayAbility.generated.h"
 
 class UMotionWarpingComponent;
@@ -58,6 +59,8 @@ protected:
 		const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	//~ End UGameplayAbility Interface
 
+	UTwoMinAbilitySystemComponent* GetTwoMinAbilitySystemComponentFromActorInfo() const;
+	
 	virtual bool bIsReTriggerSameAbility() const;
 	
 	void PlayToAnimMontage(UAnimMontage* AnimMontage, FName StartSectionName = NAME_None);
@@ -77,15 +80,40 @@ protected:
 
 	UFUNCTION()
 	virtual void CustomInterruptedAbility();
+
+	UFUNCTION()
+	virtual void DamageToEffectSpecHandle(TSubclassOf<UGameplayEffect> EffectClass, FGameplayEventData Payload,
+		bool bIsTargetGuard);
+
+	virtual TSubclassOf<UGameplayEffect> GetAttackGameplayEffectClass() const;
+
+	float CalculationStaminaCost() const;
+
+	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+		OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
+
+	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	                       const FGameplayAbilityActivationInfo ActivationInfo) const override;
+
+	void SendToExhaustedEvent() const;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AbilityPoicy")
 	EToMinAbilityActivationPolicy AbilityActivationPolicy = EToMinAbilityActivationPolicy::OnTriggered;
+	
+	UPROPERTY(EditDefaultsOnly, Category= "Cost")
+	UCurveTable* StaminaCostCurveTable;
 
+	UPROPERTY(EditDefaultsOnly, Category="CostName")
+	FName StaminaCostName;
+	
 	UPROPERTY()
 	ETwoAbilityInputType AbilityInputType = ETwoAbilityInputType::Only;
 
 	UPROPERTY()
 	bool bIsReTriggerAble = false;
+
+	UPROPERTY()
+	mutable bool bIsEndAbilitySendToExhaustedEvent = false;
 
 private:
 

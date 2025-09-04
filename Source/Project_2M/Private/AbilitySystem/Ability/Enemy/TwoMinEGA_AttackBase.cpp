@@ -45,3 +45,8 @@ void UTwoMinEGA_AttackBase::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
+
+TSubclassOf<UGameplayEffect> UTwoMinEGA_AttackBase::GetAttackGameplayEffectClass() const
+{
+	return AttackGameplayEffectClass;
+}

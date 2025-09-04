@@ -8,9 +8,11 @@
 #include "EnhancedInputSubsystems.h"
 #include "TwoMinFunctionLibrary.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "Compnents/AutoTargetingComponent.h"
 #include "Compnents/Combat/PlayerCombatComponent.h"
+#include "Compnents/UI/PlayerUIComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Controller/TwoMinPlayerController.h"
 #include "DataAssets/StartUpData/DataAsset_StartUpDataBase.h"
@@ -49,6 +51,7 @@ ATwoMinPlayerCharacter::ATwoMinPlayerCharacter()
 	GetCharacterMovement()->RotationRate = CharacterRotationRate;
 
 	PlayerCombatComponent = CreateDefaultSubobject<UPlayerCombatComponent>("PlayerCombatComponent");
+	PlayerUIComponent = CreateDefaultSubobject<UPlayerUIComponent>("PlayerUIComponent");
 	
 	bIsRun = false;
 	CharacterType = ECharacterType::Player;
@@ -57,6 +60,16 @@ ATwoMinPlayerCharacter::ATwoMinPlayerCharacter()
 UBaseCombatComponent* ATwoMinPlayerCharacter::GetCombatComponent() const
 {
 	return PlayerCombatComponent;
+}
+
+UBaseUIComponent* ATwoMinPlayerCharacter::GetBaseUIComponent() const
+{
+	return PlayerUIComponent;
+}
+
+UPlayerUIComponent* ATwoMinPlayerCharacter::GetPlayerUIComponent() const
+{
+	return PlayerUIComponent;
 }
 
 ATwoMinPlayerController* ATwoMinPlayerCharacter::GetPlayerController() const
@@ -90,6 +103,20 @@ void ATwoMinPlayerCharacter::PossessedBy(AController* NewController)
 		if (UDataAsset_StartUpDataBase* LoadedData = CharacterStartUpData.LoadSynchronous())
 		{
 			LoadedData->GiveToAbilitySystemComponent(AbilitySystemComponent);
+		}
+	}
+}
+
+void ATwoMinPlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (HUDOverlayClass)
+	{
+		HUDOverlay = CreateWidget<UUserWidget>(GetPlayerController(), HUDOverlayClass);
+		if (HUDOverlay)
+		{
+			HUDOverlay->AddToViewport();
 		}
 	}
 }
@@ -145,6 +172,11 @@ void ATwoMinPlayerCharacter::Input_Move(const FInputActionValue& InputActionValu
 
 			AbilitySystemComponent->CancelAbilities(&CancelTagContainer);	
 		}
+	}
+
+	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_Exhausted))
+	{
+		return;
 	}
 	
 	if (MovementVector.Y != 0.f)

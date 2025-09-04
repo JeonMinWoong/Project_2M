@@ -111,6 +111,9 @@ struct FAttackInfoData : public FGameplayAbilityTargetData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	EAttackType AttackType = EAttackType::Light;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float AttackDamage;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FHitData HitData;

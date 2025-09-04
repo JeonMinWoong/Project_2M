@@ -6,6 +6,7 @@
 #include "Character/TwoMinBaseCharacter.h"
 #include "TwoMinEnemyCharacter.generated.h"
 
+class UWidgetComponent;
 class UEnemyCombatComponent;
 /**
  * 
@@ -19,16 +20,26 @@ public:
 	ATwoMinEnemyCharacter();
 	
 	virtual UBaseCombatComponent* GetCombatComponent() const override;
+	virtual UBaseUIComponent* GetBaseUIComponent() const override;
+	virtual UEnemyUIComponent* GetEnemyUIComponent() const override;
 
 protected:
 	//~ Begin APawn Interface.
 	virtual void PossessedBy(AController* NewController) override;
 	//~ End APawn Interface
+
+	virtual void BeginPlay() override;
 	
 private:
 	/** Components **/
 	UPROPERTY(VisibleAnywhere)
 	UEnemyCombatComponent* EnemyCombatComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	UEnemyUIComponent* EnemyUIComponent;
+
+	UPROPERTY(VisibleAnywhere, Category= "UI")
+	UWidgetComponent* EnemyHealthWidgetComponent;
 	
 	/** CharacterInfo **/
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|CharacterMovement")

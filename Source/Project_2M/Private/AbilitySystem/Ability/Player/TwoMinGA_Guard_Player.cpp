@@ -5,6 +5,7 @@
 
 #include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
+#include "AbilitySystem/TwoMinAttributeSet.h"
 #include "Camera/CameraComponent.h"
 #include "Character/TwoMinPlayerCharacter.h"
 
@@ -24,4 +25,13 @@ void UTwoMinGA_Guard_Player::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	}
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+}
+
+bool UTwoMinGA_Guard_Player::CheckCost(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const
+{
+	UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
+	const float CurrentStamina = ASC->GetNumericAttribute(UTwoMinAttributeSet::GetCurrentStaminaAttribute());
+	const bool bIsEnoughStamina = CurrentStamina >= 0;
+	return bIsEnoughStamina;
 }

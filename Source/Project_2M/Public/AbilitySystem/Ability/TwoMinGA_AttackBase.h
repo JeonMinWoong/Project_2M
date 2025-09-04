@@ -42,6 +42,8 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|HitEventTag")
 	FGameplayTag OnHitEventTag;
+
+	virtual TSubclassOf<UGameplayEffect> GetAttackGameplayEffectClass() const override;
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Montages")
@@ -55,6 +57,9 @@ private:
 	
 	UPROPERTY()
 	int32 CurComboCount = 1;
+
+	UPROPERTY(EditAnywhere, Category = "Attack|GameplayEffect")
+	TSubclassOf<UGameplayEffect> AttackGameplayEffectClass;
 
 public:
 	FORCEINLINE FAttackInfoData& GetAttackInfoData() { return AttackInfosData[CurComboCount]; }

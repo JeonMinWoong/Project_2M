@@ -40,7 +40,16 @@ protected:
 	virtual void InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo) override;
 
+	float CustomCalculationStaminaCost(const EAttackType AttackType) const;
+	
+	virtual void CustomApplyCost(const EAttackType AttackType) const;
+
+	UPROPERTY(EditDefaultsOnly, Category = "GuardHit|Cost")
+	TMap<EAttackType, FName> GuardStaminaCostNameMap;
+	
 private:
+	int GetHitMontageNumber(const FAttackInfoData& AttackInfoData) const;
+	
 	UFUNCTION()
 	void OnHitGuard(FGameplayEventData Payload);
 
@@ -70,9 +79,6 @@ private:
 
 	UPROPERTY()
 	bool bIsHitGuard = false;
-
-	UPROPERTY()
-	bool bIsBreakGuard = false;
 	
 public:
 	FORCEINLINE float GetGuardAngle() const { return GuardAngle; }

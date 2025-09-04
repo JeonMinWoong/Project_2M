@@ -23,6 +23,8 @@ protected:
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 		const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	//~ End UGameplayAbility Interface.
+
+	virtual TSubclassOf<UGameplayEffect> GetAttackGameplayEffectClass() const override;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|HitEventTag")
 	FGameplayTag OnHitEventTag;
@@ -33,6 +35,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Attack|AttackInfoData")
 	FAttackInfoData AttackInfoData;
+
+	UPROPERTY(EditAnywhere, Category = "Attack|GameplayEffect")
+	TSubclassOf<UGameplayEffect> AttackGameplayEffectClass;
 	
 	// Dummy 전용
 	FVector StartLocation;

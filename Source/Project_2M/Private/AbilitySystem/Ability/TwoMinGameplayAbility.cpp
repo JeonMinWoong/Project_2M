@@ -5,13 +5,16 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "IPropertyTable.h"
 #include "MotionWarpingComponent.h"
 #include "RootMotionModifier_SkewWarp.h"
+#include "TwoMinDebugHelper.h"
 #include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
+#include "AbilitySystem/TwoMinAttributeSet.h"
 #include "AbilitySystem/Ability/TwoMinGA_AttackBase.h"
 #include "AbilitySystem/Ability/TwoMinGA_GuardBase.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEGA_AttackBase.h"
@@ -43,6 +46,14 @@ void UTwoMinGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
+	bIsEndAbilitySendToExhaustedEvent = false;
+	
+	if (!CommitAbility(Handle, ActorInfo, ActivationInfo))
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+		return;
+	}
+	
 	bIsReTriggerAble = false;
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
@@ -62,6 +73,16 @@ void UTwoMinGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	}
 
 	PossibleCancelAbilities.Empty();
+
+	if (bIsEndAbilitySendToExhaustedEvent)
+	{
+		SendToExhaustedEvent();	
+	}
+}
+
+UTwoMinAbilitySystemComponent* UTwoMinGameplayAbility::GetTwoMinAbilitySystemComponentFromActorInfo() const
+{
+	return Cast<UTwoMinAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent);
 }
 
 bool UTwoMinGameplayAbility::bIsReTriggerSameAbility() const
@@ -219,14 +240,15 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceived(FGameplayEventData Pa
 			{
 				bIsTargetGuard = GuardAbility->IsGuardCondition(BaseCharacter, TargetCharacter);
 			}
+
+			if (AttackPayload->Data.AttackType == EAttackType::Ungaurdable)
+			{
+				bIsTargetGuard = false;
+			}
 		}
 	}
 
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
-		TargetCharacter,
-		bIsTargetGuard ? TwoMinGameplayTag::Shared_Event_HitGuard : TwoMinGameplayTag::Shared_Event_HitReact,
-		Payload
-	);
+	DamageToEffectSpecHandle(GetAttackGameplayEffectClass(), Payload, bIsTargetGuard);
 }
 
 void UTwoMinGameplayAbility::CustomCompleteAbility()
@@ -240,6 +262,127 @@ void UTwoMinGameplayAbility::CustomInterruptedAbility()
 {
 	CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(),
 		true);
+}
+
+void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffect> EffectClass,
+	 FGameplayEventData Payload, bool bIsTargetGuard)
+{
+	if (!EffectClass) return;
+	
+	FGameplayEffectContextHandle ContextHandle = GetTwoMinAbilitySystemComponentFromActorInfo()->MakeEffectContext();
+	ContextHandle.SetAbility(this);
+	ContextHandle.AddSourceObject(GetAvatarActorFromActorInfo());
+	ContextHandle.AddInstigator(GetAvatarActorFromActorInfo(), GetAvatarActorFromActorInfo());
+
+	FGameplayEffectSpecHandle EffectSpecHandle = GetTwoMinAbilitySystemComponentFromActorInfo()->MakeOutgoingSpec(
+		EffectClass,
+		GetAbilityLevel(),
+		ContextHandle
+	);
+
+	const UAttackPayloadObject* AttackPayload = Cast<UAttackPayloadObject>(Payload.OptionalObject);
+	if (!AttackPayload)
+	{
+		return;
+	}
+	
+	EffectSpecHandle.Data->SetSetByCallerMagnitude(
+		TwoMinGameplayTag::Shared_SetByCaller_BaseDamage,
+		AttackPayload->Data.AttackDamage
+	);
+
+	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(Payload.Target);
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetCharacter);
+	
+	FActiveGameplayEffectHandle ResultEffectHandle =
+		GetTwoMinAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(
+		*EffectSpecHandle.Data,
+		TargetASC
+	);
+
+	if (!ResultEffectHandle.WasSuccessfullyApplied())
+	{
+		return;
+	}
+
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+		TargetCharacter,
+		bIsTargetGuard ? TwoMinGameplayTag::Shared_Event_HitGuard : TwoMinGameplayTag::Shared_Event_HitReact,
+		Payload
+	);
+}
+
+TSubclassOf<UGameplayEffect> UTwoMinGameplayAbility::GetAttackGameplayEffectClass() const
+{
+	return nullptr;
+}
+
+float UTwoMinGameplayAbility::CalculationStaminaCost() const
+{
+	if (!StaminaCostCurveTable || StaminaCostName.IsNone()) return 0.f;
+
+	int32 Level = GetAbilityLevel();
+	const FString& LevelString = FString::FromInt(Level);
+	const FRealCurve* Curve = StaminaCostCurveTable->FindCurve(StaminaCostName, LevelString);
+	if (!Curve) return 0.f;
+	
+	const float StaminaCost = Curve->Eval(Level);
+	if (StaminaCost <= 0.f) return 0.f;
+
+	return StaminaCost;
+}
+
+bool UTwoMinGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const
+{
+  	UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
+	const float CurrentStamina = ASC->GetNumericAttribute(UTwoMinAttributeSet::GetCurrentStaminaAttribute());
+	if (!StaminaCostCurveTable || StaminaCostName.IsNone())
+	{
+		return true;	
+	}
+	
+	const bool bIsEnoughStamina = CurrentStamina > 0;
+	return bIsEnoughStamina;
+}
+
+void UTwoMinGameplayAbility::ApplyCost(const FGameplayAbilitySpecHandle Handle,
+                                       const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
+{
+	const float StaminaCost = CalculationStaminaCost();
+	const UGameplayEffect* CostGE = GetCostGameplayEffect();
+	if (StaminaCost <= 0.f || !CostGE) return;
+
+	UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
+	if (!ASC) return;
+
+	FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(CostGE->GetClass(), GetAbilityLevel(),
+		ASC->MakeEffectContext());
+	
+	if (!Spec.IsValid()) return;
+
+	const float RemainStamina = ASC->GetNumericAttribute(UTwoMinAttributeSet::GetCurrentStaminaAttribute()) - StaminaCost;
+	
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Cost_Stamina_Enough, -StaminaCost);
+
+	ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+
+	if (RemainStamina < 0)
+	{
+		bIsEndAbilitySendToExhaustedEvent = true;
+	}
+}
+
+void UTwoMinGameplayAbility::SendToExhaustedEvent() const
+{
+	FGameplayEventData EventData;
+	EventData.Instigator = GetAvatarActorFromActorInfo();
+		
+	UTwoMinFunctionLibrary::SendToGameplayEffectEvent(
+		GetAvatarActorFromActorInfo(), 
+		TwoMinGameplayTag::Shared_Event_Exhausted,
+		EventData
+	);
 }
 
 void UTwoMinGameplayAbility::CustomCancelAbility()

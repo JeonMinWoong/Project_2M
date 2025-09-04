@@ -34,3 +34,13 @@ bool UTwoMinFunctionLibrary::HasGameplayTag(AActor* InActor, FGameplayTag InTag)
 	return false;
 	
 }
+
+void UTwoMinFunctionLibrary::SendToGameplayEffectEvent(AActor* InActor, FGameplayTag InEventTag,
+	const FGameplayEventData& InEventData)
+{
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+		InActor,
+		InEventTag,
+		InEventData
+	);
+}

@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "TwoMinFunctionLibrary.generated.h"
 
+struct FGameplayEventData;
 struct FGameplayTag;
 /**
  * 
@@ -21,4 +22,8 @@ public:
 
 	UFUNCTION()
 	static bool HasGameplayTag(AActor* InActor, FGameplayTag InTag);
+
+	UFUNCTION()
+	static void SendToGameplayEffectEvent(AActor* InActor, FGameplayTag InEventTag,
+		const FGameplayEventData& InEventData);
 };

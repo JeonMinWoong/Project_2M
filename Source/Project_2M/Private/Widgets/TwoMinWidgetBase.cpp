@@ -3,3 +3,12 @@
 
 #include "Widgets/TwoMinWidgetBase.h"
 
+void UTwoMinWidgetBase::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+}
+
+void UTwoMinWidgetBase::SetCurrentHealthPercent(float Percent)
+{
+	
+}

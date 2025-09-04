@@ -3,6 +3,7 @@
 
 #include "MotionWarpingComponent.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
+#include "AbilitySystem/TwoMinAttributeSet.h"
 
 ATwoMinBaseCharacter::ATwoMinBaseCharacter()
 {
@@ -13,10 +14,18 @@ ATwoMinBaseCharacter::ATwoMinBaseCharacter()
 
 	AbilitySystemComponent =
 		CreateDefaultSubobject<UTwoMinAbilitySystemComponent>(TEXT("ToMinAbilitySystemComponent"));
+
+	AttributeSetBase = CreateDefaultSubobject<UTwoMinAttributeSet>(TEXT("AttributeSetBase"));
+	
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 }
 
 UBaseCombatComponent* ATwoMinBaseCharacter::GetCombatComponent() const
+{
+	return nullptr;
+}
+
+UBaseUIComponent* ATwoMinBaseCharacter::GetBaseUIComponent() const
 {
 	return nullptr;
 }
