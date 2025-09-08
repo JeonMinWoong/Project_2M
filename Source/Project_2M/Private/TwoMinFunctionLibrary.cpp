@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GenericTeamAgentInterface.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
+#include "Character/TwoMinBaseCharacter.h"
 
 bool UTwoMinFunctionLibrary::IsTargetPawnHostile(APawn* OwnerPawn, APawn* TargetPawn)
 {
@@ -43,4 +44,17 @@ void UTwoMinFunctionLibrary::SendToGameplayEffectEvent(AActor* InActor, FGamepla
 		InEventTag,
 		InEventData
 	);
+}
+
+void UTwoMinFunctionLibrary::AddGameplayTagToActor(AActor* InActor, FGameplayTag TagToAdd)
+{
+	ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(InActor);
+	if (!MyCharacter) return;
+	UTwoMinAbilitySystemComponent* Asc = MyCharacter->GetAbilitySystemComponent();
+	if (!Asc) return;
+	
+	if (!Asc->HasMatchingGameplayTag(TagToAdd))
+	{
+		Asc->AddLooseGameplayTag(TagToAdd);
+	}
 }

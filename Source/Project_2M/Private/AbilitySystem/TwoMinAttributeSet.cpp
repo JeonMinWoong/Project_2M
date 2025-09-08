@@ -5,6 +5,8 @@
 
 #include "GameplayEffectExtension.h"
 #include "TwoMinDebugHelper.h"
+#include "TwoMinFunctionLibrary.h"
+#include "TwoMinGameplayTag.h"
 #include "Compnents/UI/BaseUIComponent.h"
 #include "Compnents/UI/PlayerUIComponent.h"
 #include "Interfaces/BaseUIInterface.h"
@@ -61,9 +63,12 @@ void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 
 		BaseUIComponent->OnCurrentHealthChanged.Broadcast(GetCurrentHealth()/GetMaxHealth());
 		
-		if (GetCurrentHealth() == 0.f)
+		if (GetCurrentHealth() <= 0.f)
 		{
-			TwoMinDebugHelper::Print(FString::Printf(TEXT("%s : Dead"), *GetOwningActor()->GetName()), FColor::Red);
+			UTwoMinFunctionLibrary::AddGameplayTagToActor(
+				Data.Target.GetAvatarActor(),
+				TwoMinGameplayTag::Shared_State_Death
+			);
 		}
 	}
 }

@@ -174,7 +174,8 @@ void ATwoMinPlayerCharacter::Input_Move(const FInputActionValue& InputActionValu
 		}
 	}
 
-	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_Exhausted))
+	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_Exhausted)
+		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_Death))
 	{
 		return;
 	}
@@ -197,6 +198,11 @@ void ATwoMinPlayerCharacter::Input_Move(const FInputActionValue& InputActionValu
 void ATwoMinPlayerCharacter::Input_Look(const FInputActionValue& InputActionValue)
 {
 	const FVector2D LookAxisVector = InputActionValue.Get<FVector2D>();
+
+	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_Death))
+	{
+		return;
+	}
 	
 	if (LookAxisVector.X != 0.f)
 	{

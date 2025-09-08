@@ -90,19 +90,22 @@ bool UTwoMinGameplayAbility::bIsReTriggerSameAbility() const
 	return false;
 }
 
-void UTwoMinGameplayAbility::PlayToAnimMontage(UAnimMontage* AnimMontage, FName StartSectionName)
+UAbilityTask_PlayMontageAndWait* UTwoMinGameplayAbility::PlayToAnimMontage(UAnimMontage* AnimMontage,
+	FName StartSectionName, bool bStopWhenAbilityEnds)
 {
 	UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
-		this, NAME_None, AnimMontage, 1.f, StartSectionName, false
+		this, NAME_None, AnimMontage, 1.f, StartSectionName, bStopWhenAbilityEnds
 	);
 
-	if (!Task) return;
+	if (!Task) return nullptr;
 	
 	Task->OnCompleted.AddDynamic(this, &ThisClass::CustomCompleteAbility);
 	Task->OnInterrupted.AddDynamic(this, &ThisClass::CustomInterruptedAbility);
 	Task->OnCancelled.AddDynamic(this, &ThisClass::CustomCompleteAbility);
 
 	Task->ReadyForActivation();
+
+	return Task;
 }
 
 void UTwoMinGameplayAbility::WaitGameplayEvent(FGameplayTag EventTag, bool bIsOnce)

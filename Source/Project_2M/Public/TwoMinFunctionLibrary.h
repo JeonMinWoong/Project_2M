@@ -26,4 +26,7 @@ public:
 	UFUNCTION()
 	static void SendToGameplayEffectEvent(AActor* InActor, FGameplayTag InEventTag,
 		const FGameplayEventData& InEventData);
+
+	UFUNCTION()
+	static void AddGameplayTagToActor(AActor* InActor, FGameplayTag TagToAdd);
 };

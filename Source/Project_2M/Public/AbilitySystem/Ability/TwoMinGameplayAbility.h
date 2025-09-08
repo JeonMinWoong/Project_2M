@@ -7,6 +7,7 @@
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "TwoMinGameplayAbility.generated.h"
 
+class UAbilityTask_PlayMontageAndWait;
 class UMotionWarpingComponent;
 struct FAttackInfoData;
 class ATwoMinBaseCharacter;
@@ -63,7 +64,8 @@ protected:
 	
 	virtual bool bIsReTriggerSameAbility() const;
 	
-	void PlayToAnimMontage(UAnimMontage* AnimMontage, FName StartSectionName = NAME_None);
+	UAbilityTask_PlayMontageAndWait* PlayToAnimMontage(UAnimMontage* AnimMontage, FName StartSectionName = NAME_None,
+		bool bStopWhenAbilityEnds = false);
 	virtual void WaitGameplayEvent(FGameplayTag EventTag, bool bIsOnce = false);
 	
 	void OnStartKnockBack(AActor* OwnerActor, UAnimMontage* TargetMontage, const FVector& Direction,
