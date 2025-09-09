@@ -4,8 +4,10 @@
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 
 #include "TwoMinGameplayTag.h"
+#include "AbilitySystem/TwoMinAttributeSet.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
 #include "Character/TwoMinEnemyDummy.h"
+#include "Character/TwoMinPlayerCharacter.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 
 void UTwoMinAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InInputTag)
@@ -263,4 +265,22 @@ bool UTwoMinAbilitySystemComponent::TryActivateAbilityByTag(FGameplayTag Ability
 	}
     	
 	return false;
+}
+
+void UTwoMinAbilitySystemComponent::GiveExperience(ATwoMinEnemyCharacter* InEnemyCharacter)
+{
+	UTwoMinAbilitySystemComponent* TargetASC = InEnemyCharacter->GetAbilitySystemComponent();
+	int32 GiveExperience = TargetASC->GetNumericAttribute(UTwoMinAttributeSet::GetGiveExperienceAttribute());
+
+	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActor());
+	if (!PlayerCharacter) return;
+	
+	FGameplayEffectSpecHandle Spec = MakeOutgoingSpec(
+		PlayerCharacter->GetExperienceGainEffect()->GetClass(),
+		1,
+		MakeEffectContext()
+	);
+
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Gain_Experience, GiveExperience);
+	ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
 }

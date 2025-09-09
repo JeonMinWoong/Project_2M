@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "TwoMinAbilitySystemComponent.generated.h"
 
+class ATwoMinEnemyCharacter;
 class UTwoMinGameplayAbility;
 struct FTwoMinPlayerAbilitySet;
 /**
@@ -37,7 +38,11 @@ public:
 	UTwoMinGameplayAbility* GetActiveAbility(const FGameplayTag& AbilityTag);
 
 	// Enemy 전용
-	UFUNCTION(BlueprintCallable, Category = "Warrior|Ability")
+	UFUNCTION(BlueprintCallable, Category = "Enemy|Ability")
 	bool TryActivateAbilityByTag(FGameplayTag AbilityTagToActivate);
-	
+
+
+	// Player 전용
+	UFUNCTION()
+	void GiveExperience(ATwoMinEnemyCharacter* InEnemyCharacter);
 };

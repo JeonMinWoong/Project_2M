@@ -58,3 +58,16 @@ void UTwoMinFunctionLibrary::AddGameplayTagToActor(AActor* InActor, FGameplayTag
 		Asc->AddLooseGameplayTag(TagToAdd);
 	}
 }
+
+void UTwoMinFunctionLibrary::RemoveGameplayTagToActor(AActor* InActor, FGameplayTag TagToAdd)
+{
+	ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(InActor);
+	if (!MyCharacter) return;
+	UTwoMinAbilitySystemComponent* Asc = MyCharacter->GetAbilitySystemComponent();
+	if (!Asc) return;
+	
+	if (Asc->HasMatchingGameplayTag(TagToAdd))
+	{
+		Asc->RemoveLooseGameplayTag(TagToAdd);
+	}
+}

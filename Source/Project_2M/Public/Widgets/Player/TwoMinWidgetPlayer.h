@@ -25,10 +25,16 @@ protected:
 
 	UFUNCTION()
 	void SetCurrentStaminaPercent(float Percent);
+
+	UFUNCTION()
+	void SetCurrentExperiencePercent(float Percent);
 private:
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* HealthBar;
 
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* StaminaBar;
+
+	UPROPERTY(meta=(BindWidget))
+	UProgressBar* ExperienceBar;
 };

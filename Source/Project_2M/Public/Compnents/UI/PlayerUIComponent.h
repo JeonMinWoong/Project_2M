@@ -17,4 +17,7 @@ class PROJECT_2M_API UPlayerUIComponent : public UBaseUIComponent
 public:
 	UPROPERTY()
 	FOnPercentChangedDelegate OnCurrentStaminaChanged;
+
+	UPROPERTY()
+	FOnPercentChangedDelegate OnCurrentExperienceChanged;
 };

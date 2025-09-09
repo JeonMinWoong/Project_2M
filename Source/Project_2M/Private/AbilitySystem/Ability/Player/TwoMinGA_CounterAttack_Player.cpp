@@ -1,0 +1,22 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "AbilitySystem/Ability/Player/TwoMinGA_CounterAttack_Player.h"
+
+#include "TwoMinDebugHelper.h"
+
+void UTwoMinGA_CounterAttack_Player::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+                                                     const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+                                                     const FGameplayEventData* TriggerEventData)
+{
+	TwoMinDebugHelper::Print(TEXT("Counter Attack Player ActivateAbility"));
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+}
+
+void UTwoMinGA_CounterAttack_Player::EndAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	bool bReplicateEndAbility, bool bWasCancelled)
+{
+	TwoMinDebugHelper::Print(TEXT("Counter Attack Player EndAbility"));
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}

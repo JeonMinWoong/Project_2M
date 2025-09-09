@@ -231,24 +231,32 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceived(FGameplayEventData Pa
 	
 	Payload.OptionalObject = AttackPayload;
 
-	bool bIsTargetGuard =
+	bool bIsTargetGuard = AttackPayload->Data.AttackType == EAttackType::Ungaurdable ? false :
 		UTwoMinFunctionLibrary::HasGameplayTag(TargetCharacter, TwoMinGameplayTag::Shared_State_Guarding);
-	if (bIsTargetGuard)
-	{
-  		UTwoMinGameplayAbility* Ability =
-			TargetCharacter->GetAbilitySystemComponent()->GetPlayingAbilityTag(TwoMinGameplayTag::Shared_Ability_Guard);
-		if (Ability)
-		{
-			if (UTwoMinGA_GuardBase* GuardAbility = Cast<UTwoMinGA_GuardBase>(Ability))
-			{
-				bIsTargetGuard = GuardAbility->IsGuardCondition(BaseCharacter, TargetCharacter);
-			}
+	bool bIsTargetPerfectGuard = AttackPayload->Data.AttackType == EAttackType::Ungaurdable ? false :
+		UTwoMinFunctionLibrary::HasGameplayTag(TargetCharacter, TwoMinGameplayTag::Shared_State_PerfectGuarding);
 
-			if (AttackPayload->Data.AttackType == EAttackType::Ungaurdable)
-			{
-				bIsTargetGuard = false;
-			}
+	UTwoMinGameplayAbility* Ability =
+		TargetCharacter->GetAbilitySystemComponent()->GetPlayingAbilityTag(TwoMinGameplayTag::Shared_Ability_Guard);
+	if (Ability)
+	{
+		if (UTwoMinGA_GuardBase* GuardAbility = Cast<UTwoMinGA_GuardBase>(Ability))
+		{
+			bool GuardSuccess = GuardAbility->IsGuardCondition(BaseCharacter, TargetCharacter);
+			bIsTargetGuard = bIsTargetGuard ? GuardSuccess : false;
+			bIsTargetPerfectGuard = bIsTargetPerfectGuard ? GuardSuccess : false;
 		}
+	}
+
+	if (bIsTargetPerfectGuard)
+	{
+		UTwoMinFunctionLibrary::SendToGameplayEffectEvent(
+			TargetCharacter,
+			TwoMinGameplayTag::Shared_Event_SuccessPerfectGuard,
+			Payload
+		);
+		
+		return;
 	}
 
 	DamageToEffectSpecHandle(GetAttackGameplayEffectClass(), Payload, bIsTargetGuard);

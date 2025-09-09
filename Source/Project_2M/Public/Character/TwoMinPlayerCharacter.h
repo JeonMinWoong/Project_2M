@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffect.h"
 #include "GameplayTagContainer.h"
 #include "TwoMinBaseCharacter.h"
 #include "TwoMinPlayerCharacter.generated.h"
 
+class UGameplayEffect;
 class UPlayerUIComponent;
 class ATwoMinEnemyCharacter;
 class ATwoMinPlayerController;
@@ -64,6 +66,10 @@ private:
 
 	UPROPERTY()
 	UUserWidget* HUDOverlay;
+
+	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Experience_Gain")
+	TSubclassOf<UGameplayEffect> ExperienceGainEffect;
+	
 	
 	/** CharacterInfo **/
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|Capsule")
@@ -153,5 +159,7 @@ public:
 	
 	FORCEINLINE void RemoveMovePossibleCancelAbility(const FGameplayTag GameplayTag)
 	{ MovePossibleCancelAbilityTags.Remove(GameplayTag); }
+
+	FORCEINLINE UGameplayEffect* GetExperienceGainEffect() const { return ExperienceGainEffect->GetDefaultObject<UGameplayEffect>(); }
 };
 

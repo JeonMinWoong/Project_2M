@@ -24,6 +24,7 @@ void UTwoMinWidgetPlayer::InitPlayerUIComponent(UPlayerUIComponent* HeroUICompon
 {
 	HeroUIComponent->OnCurrentHealthChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentHealthPercent);
 	HeroUIComponent->OnCurrentStaminaChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentStaminaPercent);
+	HeroUIComponent->OnCurrentExperienceChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentExperiencePercent);
 }
 
 void UTwoMinWidgetPlayer::SetCurrentHealthPercent(float Percent)
@@ -38,4 +39,11 @@ void UTwoMinWidgetPlayer::SetCurrentStaminaPercent(float Percent)
 	if (!StaminaBar) return;
 
 	StaminaBar->SetPercent(Percent);
+}
+
+void UTwoMinWidgetPlayer::SetCurrentExperiencePercent(float Percent)
+{
+	if (!ExperienceBar) return;
+
+	ExperienceBar->SetPercent(Percent);
 }

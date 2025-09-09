@@ -29,4 +29,7 @@ public:
 
 	UFUNCTION()
 	static void AddGameplayTagToActor(AActor* InActor, FGameplayTag TagToAdd);
+
+	UFUNCTION()
+	static void RemoveGameplayTagToActor(AActor* InActor, FGameplayTag TagToAdd);
 };

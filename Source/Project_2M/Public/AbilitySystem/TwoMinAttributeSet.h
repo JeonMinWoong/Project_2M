@@ -43,6 +43,14 @@ public:
 	FGameplayAttributeData CurrentStamina;
 	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, CurrentStamina)
 
+	UPROPERTY(BlueprintReadOnly, Category = "Experience")
+	FGameplayAttributeData MaxExperience;
+	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, MaxExperience)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Experience")
+	FGameplayAttributeData CurrentExperience;
+	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, CurrentExperience)
+	
 	UPROPERTY(BlueprintReadOnly, Category = "Damage")
 	FGameplayAttributeData AttackPower;
 	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, AttackPower)
@@ -54,6 +62,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Damage")
 	FGameplayAttributeData DamageTo;
 	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, DamageTo)
+
+	UPROPERTY(BlueprintReadOnly, Category = "GiveExperience")
+	FGameplayAttributeData GiveExperience;
+	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, GiveExperience)
 
 private:
 	TWeakInterfacePtr<IBaseUIInterface> CachedBaseUInterface;

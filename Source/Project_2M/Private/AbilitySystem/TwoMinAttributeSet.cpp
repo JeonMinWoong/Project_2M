@@ -15,11 +15,19 @@ UTwoMinAttributeSet::UTwoMinAttributeSet()
 {
 	InitMaxHealth(1.f);
 	InitCurrentHealth(1.f);
+	
 	InitMaxStamina(1.f);
 	InitCurrentStamina(1.f);
+	
+	InitMaxExperience(1.f);
+	InitCurrentExperience(0.f);
+	
 	InitAttackPower(1.f);
 	InitDefensePower(1.f);
+	
 	InitDamageTo(1.f);
+
+	InitGiveExperience(1.f);
 }
 
 void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
@@ -46,10 +54,44 @@ void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 
 		SetCurrentStamina(NewCurrentStamina);
 
+		if (GetCurrentStamina() == GetMaxStamina())
+		{
+			UTwoMinFunctionLibrary::AddGameplayTagToActor(
+				Data.Target.GetOwnerActor(),
+				TwoMinGameplayTag::Shared_State_FullStamina
+			);
+		}
+		else
+		{
+			UTwoMinFunctionLibrary::RemoveGameplayTagToActor(
+				Data.Target.GetOwnerActor(),
+				TwoMinGameplayTag::Shared_State_FullStamina
+			);
+		}
+		
 		if (UPlayerUIComponent* PlayerUIComponent = CachedBaseUInterface->GetPlayerUIComponent())
 		{
 			PlayerUIComponent->OnCurrentStaminaChanged.Broadcast(GetCurrentStamina()/GetMaxStamina());	
 		}
+	}
+
+	if (Data.EvaluatedData.Attribute == GetCurrentExperienceAttribute())
+	{
+		const float NewCurrentExperience = FMath::Clamp(GetCurrentExperience(), 0.f, GetMaxExperience());
+
+		SetCurrentExperience(NewCurrentExperience);
+
+		if (UPlayerUIComponent* PlayerUIComponent = CachedBaseUInterface->GetPlayerUIComponent())
+		{
+			PlayerUIComponent->OnCurrentExperienceChanged.Broadcast(GetCurrentExperience()/GetMaxExperience());	
+		}
+	}
+
+	if (Data.EvaluatedData.Attribute == GetGiveExperienceAttribute())
+	{
+		const float NewGiveExperience = GetGiveExperience();
+
+		SetGiveExperience(NewGiveExperience);
 	}
 
 	if (Data.EvaluatedData.Attribute == GetDamageToAttribute())
@@ -65,9 +107,17 @@ void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 		
 		if (GetCurrentHealth() <= 0.f)
 		{
-			UTwoMinFunctionLibrary::AddGameplayTagToActor(
+			AActor* Instigator = Data.EffectSpec.GetEffectContext().GetInstigator();
+			if (!Instigator) return;
+
+			FGameplayEventData Payload;
+			Payload.Instigator = Instigator;
+			Payload.Target = Data.Target.GetAvatarActor();
+			
+			UTwoMinFunctionLibrary::SendToGameplayEffectEvent(
 				Data.Target.GetAvatarActor(),
-				TwoMinGameplayTag::Shared_State_Death
+				TwoMinGameplayTag::Shared_Event_Death,
+				Payload
 			);
 		}
 	}
