@@ -299,7 +299,7 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 	
 	EffectSpecHandle.Data->SetSetByCallerMagnitude(
 		TwoMinGameplayTag::Shared_SetByCaller_BaseDamage,
-		AttackPayload->Data.AttackDamage
+		AttackPayload->Data.AttackDamageCoef
 	);
 
 	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(Payload.Target);

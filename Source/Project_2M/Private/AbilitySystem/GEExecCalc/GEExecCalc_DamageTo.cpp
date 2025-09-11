@@ -63,12 +63,12 @@ void UGEExecCalc_DamageTo::Execute_Implementation(const FGameplayEffectCustomExe
 
 	SourceAttackPower = bIsNoneDamage ? 0.f : SourceAttackPower;
 
-	float BaseDamage = 0.f;
+	float AttackDamageCoef = 0.f;
 	for (const TPair<FGameplayTag, float>& TagMagnitude : EffectSpec.SetByCallerTagMagnitudes)
 	{
 		if (TagMagnitude.Key.MatchesTagExact(TwoMinGameplayTag::Shared_SetByCaller_BaseDamage))
 		{
-			BaseDamage = bIsNoneDamage ? 0 : TagMagnitude.Value;
+			AttackDamageCoef = bIsNoneDamage ? 0 : TagMagnitude.Value;
 		}
 	}
 
@@ -87,18 +87,23 @@ void UGEExecCalc_DamageTo::Execute_Implementation(const FGameplayEffectCustomExe
 	);
 	
 
-	const float FinalDamageDone = (BaseDamage + SourceAttackPower) - TargetDefensePower;
+	const float TotalAttackDamage = SourceAttackPower * AttackDamageCoef;
+	float TargetDefenseCorrection = SourceAttackPower / (SourceAttackPower + TargetDefensePower) * 100;
+	TargetDefenseCorrection = FMath::RoundToInt32(TargetDefenseCorrection) * 0.01f;
 	
-	if (FinalDamageDone > 0.f)
+	int32 FinalDamageDone = FMath::RoundToInt32(TotalAttackDamage * TargetDefenseCorrection);
+	if (FinalDamageDone < 1)
 	{
-		OutExecutionOutput.AddOutputModifier(
+		FinalDamageDone = 1;
+	}
+	
+	OutExecutionOutput.AddOutputModifier(
 			FGameplayModifierEvaluatedData(
 				GetTwoMinDamageCapture().DamageToProperty,
 				EGameplayModOp::Override,
 				FinalDamageDone
 			)
 		);
-	}
 }
 
 bool UGEExecCalc_DamageTo::HasStateTag(const UAbilitySystemComponent* TargetASC,
