@@ -94,6 +94,11 @@ FVector ATwoMinPlayerCharacter::GetInputDirection() const
 	return GetLastMovementInputVector();
 }
 
+void ATwoMinPlayerCharacter::PlayerLevelUp(int32 NewLevel)
+{
+	CharacterStartUpData->StartUpDataLevelUp(AbilitySystemComponent, NewLevel);
+}
+
 void ATwoMinPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);

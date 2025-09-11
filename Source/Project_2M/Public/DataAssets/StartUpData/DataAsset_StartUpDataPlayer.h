@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ActiveGameplayEffectHandle.h"
 #include "DataAssets/StartUpData/DataAsset_StartUpDataBase.h"
 #include "DataAsset_StartUpDataPlayer.generated.h"
 
@@ -18,6 +19,8 @@ class PROJECT_2M_API UDataAsset_StartUpDataPlayer : public UDataAsset_StartUpDat
 public:
 	virtual void GiveToAbilitySystemComponent(UTwoMinAbilitySystemComponent* InAscToGive,
 		int32 ApplyLevel = 1) override;
+
+	virtual void StartUpDataLevelUp(UTwoMinAbilitySystemComponent* InAscToGive, int32 NewLevel) override;
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "StartUpData", meta = (TitleProperty = "InputTag"))

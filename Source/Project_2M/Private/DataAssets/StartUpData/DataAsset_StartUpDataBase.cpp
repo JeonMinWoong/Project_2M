@@ -3,6 +3,7 @@
 
 #include "DataAssets/StartUpData/DataAsset_StartUpDataBase.h"
 
+#include "TwoMinGameplayTag.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
 
@@ -20,17 +21,28 @@ void UDataAsset_StartUpDataBase::GiveToAbilitySystemComponent(UTwoMinAbilitySyst
 			if (!EffectClass) continue;
 
 			const UGameplayEffect* EffectCdo = EffectClass->GetDefaultObject<UGameplayEffect>();
-			InAscToGive->ApplyGameplayEffectToSelf(
+			FActiveGameplayEffectHandle H = InAscToGive->ApplyGameplayEffectToSelf(
 				EffectCdo,
 				ApplyLevel,
 				InAscToGive->MakeEffectContext()
 			);
+
+			const FGameplayTagContainer& GameplayTagContainer = EffectCdo->GetAssetTags();
+			if (GameplayTagContainer.HasTagExact(TwoMinGameplayTag::GE_Player_Stats))
+			{
+				StartUpDataEffectHandles.Add(H);
+			}
 		}
 	}
 }
 
+void UDataAsset_StartUpDataBase::StartUpDataLevelUp(UTwoMinAbilitySystemComponent* InAscToGive, int32 NewLevel)
+{
+	
+}
+
 void UDataAsset_StartUpDataBase::GrantAbilities(const TArray<TSubclassOf<UTwoMinGameplayAbility>>& InAbilitiesToGive,
-	UTwoMinAbilitySystemComponent* InAscToGive, int32 ApplyLevel)
+                                                UTwoMinAbilitySystemComponent* InAscToGive, int32 ApplyLevel)
 {
 	if (InAbilitiesToGive.IsEmpty()) return;
 

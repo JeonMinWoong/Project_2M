@@ -7,12 +7,16 @@
 #include "TwoMinDebugHelper.h"
 #include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
+#include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/UI/BaseUIComponent.h"
 #include "Compnents/UI/PlayerUIComponent.h"
 #include "Interfaces/BaseUIInterface.h"
 
 UTwoMinAttributeSet::UTwoMinAttributeSet()
 {
+	InitMaxLevel(30.f);
+	InitCurrentLevel(1.f);
+	
 	InitMaxHealth(1.f);
 	InitCurrentHealth(1.f);
 	
@@ -27,7 +31,7 @@ UTwoMinAttributeSet::UTwoMinAttributeSet()
 	
 	InitDamageTo(1.f);
 
-	InitGiveExperience(1.f);
+	InitGiveExperience(0);
 }
 
 void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
@@ -77,13 +81,35 @@ void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 
 	if (Data.EvaluatedData.Attribute == GetCurrentExperienceAttribute())
 	{
-		const float NewCurrentExperience = FMath::Clamp(GetCurrentExperience(), 0.f, GetMaxExperience());
+		bool bIsLevelUp = false;
+		float NewCurrentExperience = GetCurrentExperience();
+		
+		int32 NewCurrentLevel = GetCurrentLevel();
+		int32 NewLevel = FMath::Clamp(NewCurrentLevel, 1, GetMaxLevel());
+		
+		ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(Data.Target.GetAvatarActor());
+		if (PlayerCharacter)
+		{
+			while (NewLevel < GetMaxLevel() && NewCurrentExperience >= NeedToExperienceValue(PlayerCharacter, NewLevel))
+			{
+				NewCurrentExperience -= NeedToExperienceValue(PlayerCharacter, NewLevel);
+				NewLevel++;
+			}
 
-		SetCurrentExperience(NewCurrentExperience);
-
+			SetCurrentLevel(NewLevel);
+			SetCurrentExperience(NewCurrentExperience);
+			bIsLevelUp = NewLevel > NewCurrentLevel;
+		}
+		
 		if (UPlayerUIComponent* PlayerUIComponent = CachedBaseUInterface->GetPlayerUIComponent())
 		{
-			PlayerUIComponent->OnCurrentExperienceChanged.Broadcast(GetCurrentExperience()/GetMaxExperience());	
+			PlayerUIComponent->OnCurrentExperienceChanged.Broadcast(GetCurrentExperience()/GetMaxExperience());
+			PlayerUIComponent->OnCurrentLevelChanged.Broadcast(GetCurrentLevel());
+		}
+
+		if (bIsLevelUp)
+		{
+			PlayerCharacter->PlayerLevelUp(NewLevel);	
 		}
 	}
 
@@ -121,4 +147,12 @@ void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 			);
 		}
 	}
+}
+
+int32 UTwoMinAttributeSet::NeedToExperienceValue(ATwoMinPlayerCharacter* PlayerCharacter, int32 InCurrentLevel) const
+{
+	UCurveTable* CurveTable = PlayerCharacter->GetNeedToLevelUp_ExperienceCurveTable();
+	const FRealCurve* Curve = CurveTable->FindCurve(FName("Player.MaxExperience"), TEXT("NeedToExperienceValue"));
+	const int32 NeedToExperience = Curve->Eval(InCurrentLevel);
+	return NeedToExperience;
 }

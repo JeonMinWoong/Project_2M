@@ -38,6 +38,7 @@ public:
 	
 	void CancelInputToggle();
 	FVector GetInputDirection() const;
+	void PlayerLevelUp(int32 NewLevel);
 	
 protected:
 	//~ Begin APawn Interface.
@@ -69,7 +70,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Experience_Gain")
 	TSubclassOf<UGameplayEffect> ExperienceGainEffect;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category = "CurveTable|NeedToLevelUp_Experience")
+	UCurveTable* NeedToLevelUp_ExperienceCurveTable;
 	
 	/** CharacterInfo **/
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|Capsule")
@@ -160,6 +163,10 @@ public:
 	FORCEINLINE void RemoveMovePossibleCancelAbility(const FGameplayTag GameplayTag)
 	{ MovePossibleCancelAbilityTags.Remove(GameplayTag); }
 
-	FORCEINLINE UGameplayEffect* GetExperienceGainEffect() const { return ExperienceGainEffect->GetDefaultObject<UGameplayEffect>(); }
+	FORCEINLINE UGameplayEffect* GetExperienceGainEffect() const
+	{ return ExperienceGainEffect->GetDefaultObject<UGameplayEffect>(); }
+
+	FORCEINLINE UCurveTable* GetNeedToLevelUp_ExperienceCurveTable() const
+	{ return NeedToLevelUp_ExperienceCurveTable; }
 };
 

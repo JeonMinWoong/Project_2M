@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "DataAsset_StartUpDataBase.generated.h"
 
+struct FActiveGameplayEffectHandle;
 class UGameplayEffect;
 class UTwoMinAbilitySystemComponent;
 class UTwoMinGameplayAbility;
@@ -19,6 +20,7 @@ class PROJECT_2M_API UDataAsset_StartUpDataBase : public UDataAsset
 
 public:
 	virtual void GiveToAbilitySystemComponent(UTwoMinAbilitySystemComponent* InAscToGive, int32 ApplyLevel = 1);
+	virtual void StartUpDataLevelUp(UTwoMinAbilitySystemComponent* InAscToGive, int32 NewLevel);
 	
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "StartUpData")
@@ -31,5 +33,8 @@ protected:
 	TArray<TSubclassOf<UGameplayEffect>> StartUpGameplayEffects;
 	
 	void GrantAbilities(const TArray<TSubclassOf<UTwoMinGameplayAbility>>& InAbilitiesToGive,
-		UTwoMinAbilitySystemComponent* InAscToGive, int32 ApplyLevel = 1); 
+		UTwoMinAbilitySystemComponent* InAscToGive, int32 ApplyLevel = 1);
+	
+	UPROPERTY()
+	TArray<FActiveGameplayEffectHandle> StartUpDataEffectHandles; 
 };

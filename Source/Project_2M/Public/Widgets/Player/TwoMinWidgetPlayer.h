@@ -6,6 +6,7 @@
 #include "Widgets/TwoMinWidgetBase.h"
 #include "TwoMinWidgetPlayer.generated.h"
 
+class UTextBlock;
 class UProgressBar;
 class UPlayerUIComponent;
 /**
@@ -28,6 +29,9 @@ protected:
 
 	UFUNCTION()
 	void SetCurrentExperiencePercent(float Percent);
+
+	UFUNCTION()
+	void SetCurrentLevelValue(int32 InCurrentLevel);
 private:
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* HealthBar;
@@ -37,4 +41,7 @@ private:
 
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* ExperienceBar;
+
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* LevelText;
 };

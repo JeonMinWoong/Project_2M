@@ -81,4 +81,8 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Data_Cost_Stamina_Enough, "Data.Cost.Stamina.Enough");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Cost_Stamina_UnEnough, "Data.Cost.Stamina.UnEnough");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Gain_Experience, "Data.Gain.Experience");
+
+	// GameplayEffect Tags
+	UE_DEFINE_GAMEPLAY_TAG(GE_Player_Stats, "GE.Player.Stats");
+	
 }

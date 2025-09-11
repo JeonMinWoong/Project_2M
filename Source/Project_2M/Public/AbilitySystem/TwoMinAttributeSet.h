@@ -13,6 +13,7 @@ GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+class ATwoMinPlayerCharacter;
 class IBaseUIInterface;
 /**
  * 
@@ -26,6 +27,14 @@ public:
 	UTwoMinAttributeSet();
 
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData &Data) override;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Level")
+	FGameplayAttributeData MaxLevel;
+	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, MaxLevel)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Level")
+	FGameplayAttributeData CurrentLevel;
+	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, CurrentLevel)
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Health")
 	FGameplayAttributeData MaxHealth;
@@ -68,5 +77,7 @@ public:
 	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, GiveExperience)
 
 private:
+	int32 NeedToExperienceValue(ATwoMinPlayerCharacter* PlayerCharacter, int32 InCurrentLevel) const;
+	
 	TWeakInterfacePtr<IBaseUIInterface> CachedBaseUInterface;
 };

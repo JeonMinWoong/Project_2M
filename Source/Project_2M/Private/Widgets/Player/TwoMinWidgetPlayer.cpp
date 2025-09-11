@@ -5,6 +5,7 @@
 
 #include "Compnents/UI/PlayerUIComponent.h"
 #include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 #include "Interfaces/BaseUIInterface.h"
 
 void UTwoMinWidgetPlayer::NativeOnInitialized()
@@ -25,6 +26,7 @@ void UTwoMinWidgetPlayer::InitPlayerUIComponent(UPlayerUIComponent* HeroUICompon
 	HeroUIComponent->OnCurrentHealthChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentHealthPercent);
 	HeroUIComponent->OnCurrentStaminaChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentStaminaPercent);
 	HeroUIComponent->OnCurrentExperienceChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentExperiencePercent);
+	HeroUIComponent->OnCurrentLevelChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentLevelValue);
 }
 
 void UTwoMinWidgetPlayer::SetCurrentHealthPercent(float Percent)
@@ -46,4 +48,11 @@ void UTwoMinWidgetPlayer::SetCurrentExperiencePercent(float Percent)
 	if (!ExperienceBar) return;
 
 	ExperienceBar->SetPercent(Percent);
+}
+
+void UTwoMinWidgetPlayer::SetCurrentLevelValue(int32 InCurrentLevel)
+{
+	if (!LevelText) return;
+	
+	LevelText->SetText(FText::AsNumber(InCurrentLevel));
 }

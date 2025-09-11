@@ -82,5 +82,8 @@ namespace TwoMinGameplayTag
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Data_Cost_Stamina_Enough);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Data_Cost_Stamina_UnEnough);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Data_Gain_Experience);
+
+	// GameplayEffect Tags
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(GE_Player_Stats);
 	
 }
