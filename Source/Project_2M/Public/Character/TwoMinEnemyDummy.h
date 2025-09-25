@@ -13,6 +13,12 @@ UCLASS()
 class PROJECT_2M_API ATwoMinEnemyDummy : public ATwoMinEnemyCharacter
 {
 	GENERATED_BODY()
+
+public:
+	ATwoMinEnemyDummy();
+
+protected:
+	virtual void BeginPlay() override;
 	
 private:
 	UPROPERTY(EditAnywhere, Category = "AttackIndex")
@@ -20,6 +26,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "AutoAction")
 	bool bAutoAction = false;
+
+	UPROPERTY(VisibleAnywhere, Category= "UI")
+	UWidgetComponent* AIStateWidgetComponent;
 	
 public:
 	FORCEINLINE int32 GetAttackIndex() const { return AttackIndex; }

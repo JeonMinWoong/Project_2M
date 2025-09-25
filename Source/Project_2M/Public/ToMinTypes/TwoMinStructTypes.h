@@ -136,3 +136,15 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
     FAttackInfoData Data;
 };
+
+USTRUCT(BlueprintType)
+struct FEnemyAIData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float DetectRadius = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float PushTime = 0.0f;
+};

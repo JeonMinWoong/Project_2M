@@ -3,8 +3,10 @@
 
 #include "Widgets/Enemy/TwoMinWidgetEnemy.h"
 
+#include "Character/TwoMinEnemyDummy.h"
 #include "Compnents/UI/EnemyUIComponent.h"
 #include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 #include "Interfaces/BaseUIInterface.h"
 
 void UTwoMinWidgetEnemy::NativeOnInitialized()

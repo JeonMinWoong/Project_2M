@@ -13,5 +13,7 @@ UCLASS()
 class PROJECT_2M_API UEnemyUIComponent : public UBaseUIComponent
 {
 	GENERATED_BODY()
-	
+
+public:
+	FOnStringChangeDelegate OnEnemyStateChanged;
 };

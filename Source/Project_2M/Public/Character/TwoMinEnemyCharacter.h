@@ -29,14 +29,14 @@ protected:
 	//~ End APawn Interface
 
 	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere)
+	UEnemyUIComponent* EnemyUIComponent;
 	
 private:
 	/** Components **/
 	UPROPERTY(VisibleAnywhere)
 	UEnemyCombatComponent* EnemyCombatComponent;
-
-	UPROPERTY(VisibleAnywhere)
-	UEnemyUIComponent* EnemyUIComponent;
 
 	UPROPERTY(VisibleAnywhere, Category= "UI")
 	UWidgetComponent* EnemyHealthWidgetComponent;

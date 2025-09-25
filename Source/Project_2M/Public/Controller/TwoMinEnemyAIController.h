@@ -4,8 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Perception/AIPerceptionTypes.h"
+#include "ToMinTypes/TwoMinEnumTypes.h"
 #include "TwoMinEnemyAIController.generated.h"
 
+class UAISenseConfig_Sight;
+enum class EEnemyFSM_State : uint8;
 /**
  * 
  */
@@ -16,12 +20,23 @@ class PROJECT_2M_API ATwoMinEnemyAIController : public AAIController
 
 public:
 	ATwoMinEnemyAIController();
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
 private:
+	UFUNCTION()
+	void OnEnemyPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+	
 	UPROPERTY(EditDefaultsOnly, Category = "AI|BehaviorTree")
 	UBehaviorTree* BehaviorTree;
+
+	UPROPERTY(VisibleAnywhere)
+	UAIPerceptionComponent* EnemyPerceptionComponent;
+
+	UPROPERTY(EditAnywhere)
+	UAISenseConfig_Sight* AISenseConfig_Sight;
+
 	
 };

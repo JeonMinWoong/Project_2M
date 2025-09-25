@@ -4,34 +4,29 @@
 
 #include "CoreMinimal.h"
 #include "Widgets/TwoMinWidgetBase.h"
-#include "TwoMinWidgetEnemy.generated.h"
+#include "TwoMinWidgetDummy.generated.h"
 
-class UTextBlock;
-class UProgressBar;
 class UEnemyUIComponent;
+class UTextBlock;
 /**
  * 
  */
 UCLASS()
-class PROJECT_2M_API UTwoMinWidgetEnemy : public UTwoMinWidgetBase
+class PROJECT_2M_API UTwoMinWidgetDummy : public UTwoMinWidgetBase
 {
 	GENERATED_BODY()
 
 public:
 	void InitEnemyIComponent(UEnemyUIComponent* EnemyUIComponent);
-	
+
 protected:
 	virtual void NativeOnInitialized() override;
-
-	virtual void SetCurrentHealthPercent(float Percent) override;
-	
-	UFUNCTION()
-	void OffHealthBar();
-
-	UPROPERTY(EditDefaultsOnly)
-	float HealthBarHiddenTime = 3.f;
 	
 private:
+	UFUNCTION()
+	void SetAIStateString(const FString& InStateString);
+	
 	UPROPERTY(meta=(BindWidget))
-	UProgressBar* HealthBar;
+	UTextBlock* AIStateText;
+
 };
