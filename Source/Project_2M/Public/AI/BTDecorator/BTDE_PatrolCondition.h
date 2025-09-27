@@ -3,24 +3,23 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BTDecorator_Enemy.h"
 #include "BehaviorTree/BTDecorator.h"
-#include "BTDecorator_DetectCondition.generated.h"
+#include "BTDE_PatrolCondition.generated.h"
 
+class ATargetPoint;
 /**
  * 
  */
 UCLASS()
-class PROJECT_2M_API UBTDecorator_DetectCondition : public UBTDecorator
+class PROJECT_2M_API UBTDE_PatrolCondition : public UBTDecorator_Enemy
 {
 	GENERATED_BODY()
 
 public:
-	UBTDecorator_DetectCondition();
+	UBTDE_PatrolCondition();
 
 protected:
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
-
-private:
-	UPROPERTY(EditAnywhere, Category = "DetectRadius")
-	float DetectRadius;
+	
 };

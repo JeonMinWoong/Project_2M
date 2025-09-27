@@ -7,6 +7,7 @@
 
 #include "TwoMinStructTypes.generated.h"
 
+class ATargetPoint;
 enum class EHitType : uint8;
 class UTwoMinPlayerLinkedAnimLayer;
 class UTwoMinGameplayAbility;
@@ -147,4 +148,16 @@ struct FEnemyAIData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float PushTime = 0.0f;
+};
+
+USTRUCT(BlueprintType)
+struct FEnemyAIPatrolData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ATargetPoint* PatrolPoint;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float WaitTime = 0.0f;
 };

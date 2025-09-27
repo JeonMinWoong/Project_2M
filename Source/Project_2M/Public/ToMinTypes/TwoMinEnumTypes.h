@@ -56,3 +56,10 @@ enum class EAttackType : uint8
 	Heavy,
 	Ungaurdable
 };
+
+UENUM(BlueprintType)
+enum class EPatrolPathMode : uint8
+{
+	Loop,
+	PingPong
+};

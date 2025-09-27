@@ -67,13 +67,13 @@ void ATwoMinEnemyAIController::OnEnemyPerceptionUpdated(AActor* Actor, FAIStimul
 	
 	if (Stimulus.WasSuccessfullySensed())
 	{
-		BB->SetValueAsObject(BBKeys::TargetActor, Actor);
+		BB->SetValueAsObject(TwoMinBBKeys::TargetActor, Actor);
 		return;
 	}
 
-	AActor* Cur = Cast<AActor>(BB->GetValueAsObject(BBKeys::TargetActor));
+	AActor* Cur = Cast<AActor>(BB->GetValueAsObject(TwoMinBBKeys::TargetActor));
 	if (!Stimulus.WasSuccessfullySensed() && Cur)
 	{
-		BB->ClearValue(BBKeys::TargetActor);
+		BB->ClearValue(TwoMinBBKeys::TargetActor);
 	}
 }

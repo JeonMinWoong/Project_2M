@@ -1,19 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AI/BTTask/BTTask_AIStateChecker.h"
+#include "AI/BTTask/BTTE_AIStateChecker.h"
 
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/TwoMinEnemyCharacter.h"
 #include "Compnents/UI/EnemyUIComponent.h"
 
-UBTTask_AIStateChecker::UBTTask_AIStateChecker()
+UBTTE_AIStateChecker::UBTTE_AIStateChecker()
 {
 	NodeName = TEXT("AI State Checker");
 }
 
-EBTNodeResult::Type UBTTask_AIStateChecker::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTE_AIStateChecker::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	AAIController* AI = OwnerComp.GetAIOwner();
 	if (!AI) return EBTNodeResult::Failed;

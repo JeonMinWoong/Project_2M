@@ -1,14 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AI/BTService/BTService_GetDistToTarget.h"
+#include "AI/BTService/BTSE_GetDistToTarget.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/TwoMinBaseCharacter.h"
 #include "Controller/TwoMinEnemyAIController.h"
 
 
-void UBTService_GetDistToTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+void UBTSE_GetDistToTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 

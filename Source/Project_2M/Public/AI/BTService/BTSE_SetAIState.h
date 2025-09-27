@@ -3,14 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BTService_Enemy.h"
 #include "BehaviorTree/BTService.h"
-#include "BTService_SetAIState.generated.h"
+#include "BTSE_SetAIState.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROJECT_2M_API UBTService_SetAIState : public UBTService
+class PROJECT_2M_API UBTSE_SetAIState : public UBTService_Enemy
 {
 	GENERATED_BODY()
 
