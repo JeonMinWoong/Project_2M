@@ -20,6 +20,7 @@ ATwoMinEnemyAIController::ATwoMinEnemyAIController()
 	AISenseConfig_Sight->SightRadius = 5000.f;
 	AISenseConfig_Sight->LoseSightRadius = 6000.f;
 	AISenseConfig_Sight->PeripheralVisionAngleDegrees = 180.f;
+	AISenseConfig_Sight->AutoSuccessRangeFromLastSeenLocation = 0.f;
 
 	EnemyPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("EnemyPerceptionComponent");
 	EnemyPerceptionComponent->ConfigureSense(*AISenseConfig_Sight);

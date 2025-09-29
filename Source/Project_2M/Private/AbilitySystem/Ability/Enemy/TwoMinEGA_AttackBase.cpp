@@ -38,9 +38,13 @@ void UTwoMinEGA_AttackBase::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
 
+	
 	if(ATwoMinEnemyDummy* Dummy = Cast<ATwoMinEnemyDummy>(GetAvatarActorFromActorInfo()))
 	{
-		Dummy->SetActorLocation(StartLocation);
+		if (Dummy->GetResetAttackLocation())
+		{
+			Dummy->SetActorLocation(StartLocation);	
+		}
 	}
 	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);

@@ -41,4 +41,10 @@ private:
 
 	UPROPERTY()
 	TMap<FGameplayTag, ATwoMinWeaponBase*> CharacterCarriedWeaponMap;
+
+	bool IsAlive = true;
+	
+public:
+	FORCEINLINE bool GetIsAlive() const { return IsAlive; }
+	FORCEINLINE void SetIsAlive(bool bInIsAlive) { IsAlive = bInIsAlive; }
 };

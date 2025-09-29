@@ -8,6 +8,7 @@
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "EnemyCombatComponent.generated.h"
 
+class ATwoMinBaseCharacter;
 /**
  * 
  */
@@ -24,6 +25,12 @@ public:
 	
 	virtual void OnHitTargetActor(AActor* HitActor) override;
 
+#pragma region Battle
+	
+#pragma endregion
+	
+#pragma region Patrol
+	
 	int32 GetNextPatrolPointIndex();
 
 	void ResetPatrolPoint();
@@ -33,8 +40,22 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PatrolMode")
 	EPatrolPathMode PatrolPathMode = EPatrolPathMode::Loop;
+
+	UPROPERTY(VisibleAnywhere)
+	bool bIsPrevPatrolPoint = false;
+	
+#pragma endregion
 	
 private:
+
+#pragma region Battle
+
+	bool bIsBattlePossible = false;
+	
+#pragma endregion
+	
+#pragma region Patrol
+	
 	UFUNCTION()
 	void PatrolWaitPoint();
 	
@@ -47,10 +68,15 @@ private:
 	bool bPingPongForward = true;
 	bool bIsPatrolPointArrivedWait = false;
 	float CurrentPatrolPointArrivedWaitTime = 0.f;
-
+	
+#pragma endregion
 	
 public:
+	FORCEINLINE bool IsBattlePossible() const { return bIsBattlePossible; }
+	FORCEINLINE void SetIsBattlePossible(bool InIsBattlePossible) { bIsBattlePossible = InIsBattlePossible; }
+	
 	FORCEINLINE bool IsPatrol() const { return bIsPatrol; }
 	FORCEINLINE void SetIsPatrol(bool InIsPatrol) { bIsPatrol = InIsPatrol; }
 	FORCEINLINE int32 GetCurrentPatrolPointIndex() const { return CurrentPatrolPointIndex; }
+	FORCEINLINE void ResetCurrentPatrolPointIndex() { CurrentPatrolPointIndex = 0; }
 };

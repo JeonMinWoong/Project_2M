@@ -36,13 +36,33 @@ EBTNodeResult::Type UBTTE_SelectPatrolPoint::ExecuteTask(UBehaviorTreeComponent&
 		{
 			EnemyCombatComponent->ResetPatrolPoint();
 		}
+		else
+		{
+			// TODO: Detect -> Patrol
+			if (EnemyCombatComponent->IsBattlePossible())
+			{
+				EnemyCombatComponent->bIsPrevPatrolPoint = true;
+				EnemyCombatComponent->SetIsPatrol(false);
+			}
+		}
 		
 		return EBTNodeResult::Failed;
 	}
+
+	if (EnemyCombatComponent->bIsPrevPatrolPoint)
+	{
+		EnemyCombatComponent->bIsPrevPatrolPoint = false;
+		EnemyCombatComponent->ResetCurrentPatrolPointIndex();
+		BB->SetValueAsVector(TwoMinBBKeys::PatrolPoint,
+		EnemyCombatComponent->PatrolPoints[0].PatrolPoint->GetActorLocation());
+	}
+	else
+	{
+		int32 NextPoint = EnemyCombatComponent->GetNextPatrolPointIndex();
+		BB->SetValueAsVector(TwoMinBBKeys::PatrolPoint,
+			EnemyCombatComponent->PatrolPoints[NextPoint].PatrolPoint->GetActorLocation());	
+	}
 	
-	int32 NextPoint = EnemyCombatComponent->GetNextPatrolPointIndex();
-	BB->SetValueAsVector(TwoMinBBKeys::PatrolPoint,
-		EnemyCombatComponent->PatrolPoints[NextPoint].PatrolPoint->GetActorLocation());
 	return EBTNodeResult::Succeeded;
 }
 

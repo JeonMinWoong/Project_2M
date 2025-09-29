@@ -15,6 +15,10 @@ class PROJECT_2M_API UANS_RotateDirection : public UBaseAnimNotifyState
 {
 	GENERATED_BODY()
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RotateSpeed")
+	float LockTargetRotateSpeed = 10.f;
+	
 protected:
 	//~ Begin UAnimNotifyState Interface.
 	virtual void NotifyBegin(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float TotalDuration,
@@ -27,5 +31,12 @@ protected:
 		const FAnimNotifyEventReference& EventReference) override;
 	//~ End UAnimNotifyState Interface.
 
+	virtual void CharacterToTargetDirection(ATwoMinBaseCharacter* MyActor, float FrameDeltaTime);
+	virtual AActor* GetLockOnTarget(ATwoMinBaseCharacter* MyActor);
+	
 	virtual void PlayMotionWarpingRotator(ATwoMinBaseCharacter* Character, FRotator TargetDRotator);
+
+	UPROPERTY()
+	bool bIsRotation;
+	
 };

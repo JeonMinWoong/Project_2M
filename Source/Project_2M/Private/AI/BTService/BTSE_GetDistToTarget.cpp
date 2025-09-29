@@ -5,6 +5,7 @@
 
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/TwoMinBaseCharacter.h"
+#include "Character/TwoMinEnemyCharacter.h"
 #include "Controller/TwoMinEnemyAIController.h"
 
 
@@ -12,8 +13,8 @@ void UBTSE_GetDistToTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
-	AActor* MyActor = Cast<AActor>(OwnerComp.GetAIOwner());
-	if (!MyActor) return;
+	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(OwnerComp.GetAIOwner()->GetPawn());
+	if (!EnemyCharacter) return;
 
 	UBlackboardComponent* BB = OwnerComp.GetBlackboardComponent();
 	if (!BB) return;
@@ -23,6 +24,6 @@ void UBTSE_GetDistToTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 	
 	ATwoMinBaseCharacter* TargetActor = Cast<ATwoMinBaseCharacter>(ActorObject);
 
-	float DistToTarget = FVector::Dist(MyActor->GetActorLocation(), TargetActor->GetActorLocation());
+	float DistToTarget = FVector::Dist(EnemyCharacter->GetActorLocation(), TargetActor->GetActorLocation());
 	BB->SetValueAsFloat(OutTargetActorKey.SelectedKeyName, DistToTarget);
 }

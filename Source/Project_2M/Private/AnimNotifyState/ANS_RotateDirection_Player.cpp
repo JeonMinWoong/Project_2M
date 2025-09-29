@@ -16,14 +16,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "ToMinTypes/TwoMinEnumTypes.h"
 
-
-void UANS_RotateDirection_Player::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
-                                              float TotalDuration, const FAnimNotifyEventReference& EventReference)
-{
-	bIsRotation = false;
-	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
-}
-
 void UANS_RotateDirection_Player::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                              float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
 {
@@ -61,13 +53,6 @@ void UANS_RotateDirection_Player::NotifyTick(USkeletalMeshComponent* MeshComp, U
 	}
 	
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
-}
-
-void UANS_RotateDirection_Player::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
-	const FAnimNotifyEventReference& EventReference)
-{
-	bIsRotation = false;
-	Super::NotifyEnd(MeshComp, Animation, EventReference);
 }
 
 void UANS_RotateDirection_Player::CharacterToInputDirection(ATwoMinPlayerCharacter* PlayerCharacter)
@@ -114,19 +99,6 @@ void UANS_RotateDirection_Player::CharacterToInputDirection(ATwoMinPlayerCharact
 	}
 }
 
-void UANS_RotateDirection_Player::CharacterToTargetDirection(ATwoMinPlayerCharacter* PlayerCharacter,
-	float FrameDeltaTime)
-{
-	const AActor* Target = GetLockOnTarget(PlayerCharacter);
-	if (!Target) return;
-
-	const FRotator LockOnRotator = (Target->GetActorLocation() - PlayerCharacter->GetActorLocation()).Rotation();
-	const FRotator NewCharacterRot = FMath::RInterpTo(PlayerCharacter->GetActorRotation(),
-	FRotator(0.f, LockOnRotator.Yaw, 0.f), FrameDeltaTime, 10);
-	
-	PlayerCharacter->SetActorRotation(NewCharacterRot);
-}
-
 void UANS_RotateDirection_Player::CharacterToTargeting(ATwoMinPlayerCharacter* PlayerCharacter,
 	const UAutoTargetingComponent* AutoTargetingComp, const float FrameDeltaTime)
 {
@@ -152,10 +124,10 @@ void UANS_RotateDirection_Player::CharacterToTargeting(ATwoMinPlayerCharacter* P
 	PlayerCharacter->SetActorRotation(NewCharacterRot);
 }
 
-AActor* UANS_RotateDirection_Player::GetLockOnTarget(const ATwoMinPlayerCharacter* PlayerCharacter)
+AActor* UANS_RotateDirection_Player::GetLockOnTarget(ATwoMinBaseCharacter* MyActor)
 {
 	UTwoMinGameplayAbility* Ability =
-		PlayerCharacter->GetAbilitySystemComponent()->GetPlayingAbilityTag(TwoMinGameplayTag::Player_Ability_LockOn);
+		MyActor->GetAbilitySystemComponent()->GetPlayingAbilityTag(TwoMinGameplayTag::Player_Ability_LockOn);
 	if (!Ability)
 	{
 		return nullptr;

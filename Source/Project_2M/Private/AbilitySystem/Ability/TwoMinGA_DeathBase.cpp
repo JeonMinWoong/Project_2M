@@ -42,6 +42,19 @@ void UTwoMinGA_DeathBase::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
+void UTwoMinGA_DeathBase::EndAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	bool bReplicateEndAbility, bool bWasCancelled)
+{
+	ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(GetAvatarActorFromActorInfo());
+	if (MyCharacter)
+	{
+		MyCharacter->GetCombatComponent()->SetIsAlive(false);
+	}
+	
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
 int32 UTwoMinGA_DeathBase::GetDeathMontageNumber() const
 {
 	return UTwoMinFunctionLibrary::HasGameplayTag(

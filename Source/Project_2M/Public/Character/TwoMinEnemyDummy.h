@@ -27,10 +27,14 @@ private:
 	UPROPERTY(EditAnywhere, Category = "AutoAction")
 	bool bAutoAction = false;
 
+	UPROPERTY(EditAnywhere, Category = "AutoAction")
+	bool bResetAttackLocation = false;
+	
 	UPROPERTY(VisibleAnywhere, Category= "UI")
 	UWidgetComponent* AIStateWidgetComponent;
 	
 public:
 	FORCEINLINE int32 GetAttackIndex() const { return AttackIndex; }
 	FORCEINLINE bool GetAutoAction() const { return bAutoAction; }
+	FORCEINLINE bool GetResetAttackLocation() const { return bResetAttackLocation; }
 };

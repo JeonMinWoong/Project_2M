@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTService.h"
+#include "Compnents/Combat/EnemyCombatComponent.h"
 #include "BTService_Enemy.generated.h"
 
 /**
@@ -13,5 +14,9 @@ UCLASS()
 class PROJECT_2M_API UBTService_Enemy : public UBTService
 {
 	GENERATED_BODY()
+
+protected:
+	UBlackboardComponent* GetBlackboardComponent(UBehaviorTreeComponent& OwnerComp) const;
 	
+	UEnemyCombatComponent* GetEnemyCombatComponent(UBehaviorTreeComponent& OwnerComp) const;
 };

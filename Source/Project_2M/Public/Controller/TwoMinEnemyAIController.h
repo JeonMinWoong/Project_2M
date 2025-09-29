@@ -9,7 +9,7 @@
 #include "TwoMinEnemyAIController.generated.h"
 
 class UAISenseConfig_Sight;
-enum class EEnemyFSM_State : uint8;
+
 /**
  * 
  */

@@ -73,6 +73,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_StaminaNoRegen, "Shared.State.StaminaNoRegen");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_FullStamina, "Shared.State.FullStamina");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Throwing, "Shared.State.Throwing");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Hitting, "Shared.State.Hitting");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Death, "Shared.State.Death");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_PerfectGuarding, "Shared.State.PerfectGuarding");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_SuccessPerfectGuarding, "Shared.State.SuccessPerfectGuarding");
