@@ -35,5 +35,23 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="AnimData|Locomotion")
 	float LocomotionDirection;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="AnimData|Locomotion")
+	bool bIsPossibleBreaker;
+	
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="AnimData|Locomotion")
+	bool bShouldEnterBreakerState;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="AnimData|Locomotion")
+	float EnterBreakerStateThreshold = 5.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="AnimData|Locomotion")
+	float EnterIdleStateThreshold = 5.f;
+	
+	float IdleElapsedTime;
+	float IdleBreakerElapsedTime;
+
+private:
+	void UpdateIdleElapsedTime(float DeltaSeconds);
 	
 };

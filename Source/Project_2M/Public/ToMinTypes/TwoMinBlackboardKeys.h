@@ -9,4 +9,5 @@ namespace TwoMinBBKeys
 	static const FName AIState				= TEXT("AIState");
 	static const FName PatrolPoint			= TEXT("PatrolPoint");
 	static const FName BattleTarget			= TEXT("BattleTarget");
+	static const FName BattleMovePoint		= TEXT("BattleMovePoint");
 }

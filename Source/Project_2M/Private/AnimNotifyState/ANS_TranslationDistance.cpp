@@ -9,6 +9,7 @@
 void UANS_TranslationDistance::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                            float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {
+	bIsTranslation = false;
 	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
 }
 
@@ -21,6 +22,7 @@ void UANS_TranslationDistance::NotifyTick(USkeletalMeshComponent* MeshComp, UAni
 void UANS_TranslationDistance::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
 	const FAnimNotifyEventReference& EventReference)
 {
+	bIsTranslation = false;
 	Super::NotifyEnd(MeshComp, Animation, EventReference);
 }
 

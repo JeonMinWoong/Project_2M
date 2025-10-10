@@ -15,13 +15,6 @@
 
 class UTwoMinGA_LockOn_Player;
 
-void UANS_TranslationDistance_Player::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
-                                                  float TotalDuration, const FAnimNotifyEventReference& EventReference)
-{
-	bIsTranslation = false;
-	Super::NotifyBegin(MeshComp, Animation, TotalDuration, EventReference);
-}
-
 void UANS_TranslationDistance_Player::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                                  float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
 {
@@ -60,13 +53,6 @@ void UANS_TranslationDistance_Player::NotifyTick(USkeletalMeshComponent* MeshCom
 	}
 	
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
-}
-
-void UANS_TranslationDistance_Player::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
-	const FAnimNotifyEventReference& EventReference)
-{
-	bIsTranslation = false;
-	Super::NotifyEnd(MeshComp, Animation, EventReference);
 }
 
 void UANS_TranslationDistance_Player::CharacterToInputDistance(ATwoMinPlayerCharacter* PlayerCharacter)

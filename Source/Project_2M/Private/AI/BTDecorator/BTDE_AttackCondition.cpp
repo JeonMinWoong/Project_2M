@@ -3,8 +3,11 @@
 
 #include "AI/BTDecorator/BTDE_AttackCondition.h"
 
+#include "TwoMinFunctionLibrary.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/TwoMinBaseCharacter.h"
+#include "Character/TwoMinEnemyCharacter.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "ToMinTypes/TwoMinBlackboardKeys.h"
 
 bool UBTDE_AttackCondition::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
@@ -20,8 +23,40 @@ bool UBTDE_AttackCondition::CalculateRawConditionValue(UBehaviorTreeComponent& O
 
 	UEnemyCombatComponent* EnemyCombatComponent = GetEnemyCombatComponent(OwnerComp);
 	if (!EnemyCombatComponent) return false;
-	
-	float DistToBattleTarget = FVector::Dist(EnemyCombatComponent->GetOwner()->GetActorLocation(),
-		BattleTarget->GetActorLocation());
-	return DistToBattleTarget <= MinAttackRange;
+	return IsAllCondition(EnemyCombatComponent->GetOwner(), BattleTarget);
 }
+
+bool UBTDE_AttackCondition::CheckAttackRange(const AActor* MyActor, const AActor* TargetActor) const
+{
+	float DistToBattleTarget = FVector::Dist(MyActor->GetActorLocation(),
+		TargetActor->GetActorLocation());
+	
+	return MinAttackRange < DistToBattleTarget && DistToBattleTarget <= MaxAttackRange;
+}
+
+bool UBTDE_AttackCondition::CheckTargetAngle(const AActor* MyActor, const AActor* TargetActor) const
+{
+	FVector MyForward = MyActor->GetActorForwardVector();
+	FVector TargetLocation = (TargetActor->GetActorLocation() - MyActor->GetActorLocation()).GetSafeNormal2D();
+	float AngleDeg = UKismetMathLibrary::DegAcos(FVector::DotProduct(MyForward, TargetLocation));
+
+	return AngleDeg <= TargetAngle;
+}
+
+bool UBTDE_AttackCondition::CheckAbilityCooldown(AActor* MyActor) const
+{
+	if (AbilityCooldownTag == FGameplayTag::EmptyTag)
+	{
+		return true;
+	}
+	
+	return UTwoMinFunctionLibrary::HasGameplayTag(MyActor, AbilityCooldownTag) == false;
+}
+
+bool UBTDE_AttackCondition::IsAllCondition(const AActor* MyActor, const AActor* TargetActor) const
+{
+	return CheckAttackRange(MyActor, TargetActor) && CheckTargetAngle(MyActor, TargetActor)
+		&& CheckAbilityCooldown(const_cast<AActor*>(MyActor));
+}
+
+

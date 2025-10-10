@@ -73,6 +73,18 @@ struct FTwoMinPlayerAttackApproachData
 };
 
 USTRUCT(BlueprintType)
+struct FTwoMinEnemyAttackApproachData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float ReachDistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float ApproachSpeed;
+};
+
+USTRUCT(BlueprintType)
 struct FHitData
 {
 	GENERATED_BODY()

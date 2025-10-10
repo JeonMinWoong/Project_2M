@@ -7,6 +7,7 @@
 #include "Character/TwoMinBaseCharacter.h"
 #include "ToMinTypes/TwoMinBlackboardKeys.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 UBTDE_BattleMoveCondition::UBTDE_BattleMoveCondition()
 {
@@ -27,7 +28,23 @@ bool UBTDE_BattleMoveCondition::CalculateRawConditionValue(UBehaviorTreeComponen
 	UEnemyCombatComponent* EnemyCombatComponent = GetEnemyCombatComponent(OwnerComp);
 	if (!EnemyCombatComponent) return false;
 	
-	float DistToBattleTarget = FVector::Dist(EnemyCombatComponent->GetOwner()->GetActorLocation(),
-		BattleTarget->GetActorLocation());
-	return DistToBattleTarget <= MaxAttackRange && DistToBattleTarget > MinAttackRange;
+	return CheckAttackRange(EnemyCombatComponent->GetOwner(), BattleTarget) && 
+		CheckTargetAngle(EnemyCombatComponent->GetOwner(), BattleTarget);
+}
+
+bool UBTDE_BattleMoveCondition::CheckAttackRange(const AActor* MyActor, const AActor* TargetActor) const
+{
+	float DistToBattleTarget = FVector::Dist(MyActor->GetActorLocation(),
+		TargetActor->GetActorLocation());
+	
+	return MinAttackRange < DistToBattleTarget && DistToBattleTarget <= MaxAttackRange;
+}
+
+bool UBTDE_BattleMoveCondition::CheckTargetAngle(const AActor* MyActor, const AActor* TargetActor) const
+{
+	FVector MyForward = MyActor->GetActorForwardVector();
+	FVector TargetLocation = (TargetActor->GetActorLocation() - MyActor->GetActorLocation()).GetSafeNormal2D();
+	float AngleDeg = UKismetMathLibrary::DegAcos(FVector::DotProduct(MyForward, TargetLocation));
+
+	return AngleDeg <= TargetAngle;
 }

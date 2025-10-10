@@ -6,7 +6,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/TwoMinEnemyCharacter.h"
 #include "Controller/TwoMinEnemyAIController.h"
-#include "ToMinTypes/TwoMinBlackboardKeys.h"
+
 
 void UANS_RotateDirection_Enemy::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                             float FrameDeltaTime, const FAnimNotifyEventReference& EventReference)
@@ -29,7 +29,7 @@ AActor* UANS_RotateDirection_Enemy::GetLockOnTarget(ATwoMinBaseCharacter* MyActo
 	ATwoMinEnemyAIController* AIController = Cast<ATwoMinEnemyAIController>(EnemyCharacter->GetController());
 	if (!AIController) return nullptr;
 
-	UObject* Object = AIController->GetBlackboardComponent()->GetValueAsObject(TwoMinBBKeys::BattleTarget);
+	UObject* Object = AIController->GetBlackboardComponent()->GetValueAsObject(BlackboardKeyName);
 	if (!Object) return nullptr;
 
 	ATwoMinBaseCharacter* Target = Cast<ATwoMinBaseCharacter>(Object);

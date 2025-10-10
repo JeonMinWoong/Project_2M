@@ -21,4 +21,8 @@ protected:
 	//~ End UAnimNotifyState Interface.
 
 	virtual AActor* GetLockOnTarget(ATwoMinBaseCharacter* MyActor) override;
+
+private:
+	UPROPERTY(EditAnywhere, Category = "BBKey")
+	FName BlackboardKeyName = NAME_None;
 };

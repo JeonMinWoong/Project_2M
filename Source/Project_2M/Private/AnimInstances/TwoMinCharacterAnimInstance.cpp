@@ -4,7 +4,11 @@
 #include "AnimInstances/TwoMinCharacterAnimInstance.h"
 
 #include "KismetAnimationLibrary.h"
+#include "TwoMinGameplayTag.h"
 #include "Character/TwoMinBaseCharacter.h"
+#include "Character/TwoMinEnemyCharacter.h"
+#include "Compnents/Combat/BaseCombatComponent.h"
+#include "Compnents/Combat/EnemyCombatComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 void UTwoMinCharacterAnimInstance::NativeInitializeAnimation()
@@ -24,4 +28,48 @@ void UTwoMinCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 	bHasAcceleration = OwningMovementComponent->GetCurrentAcceleration().SizeSquared2D() > 0.f;
 	LocomotionDirection = UKismetAnimationLibrary::CalculateDirection(OwningCharacter->GetVelocity(),
 		OwningCharacter->GetActorRotation());
+	
+	UpdateIdleElapsedTime(DeltaSeconds);
+}
+
+void UTwoMinCharacterAnimInstance::UpdateIdleElapsedTime(float DeltaSeconds)
+{
+	if (bIsPossibleBreaker == false) return;
+	
+	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(OwningCharacter);
+	if (!EnemyCharacter) return;
+	
+	if (UEnemyCombatComponent* EnemyCombatComponent =
+		Cast<UEnemyCombatComponent>(EnemyCharacter->GetCombatComponent()))
+	{
+		if (EnemyCombatComponent->IsBattlePossible())
+		{
+			IdleElapsedTime = 0.f;
+			IdleBreakerElapsedTime = 0.f;
+			bShouldEnterBreakerState = false;
+			return;
+		}
+	}
+	
+	if (GroundSpeed > 0)
+	{
+		IdleElapsedTime = 0.f;
+		IdleBreakerElapsedTime = 0.f;
+		bShouldEnterBreakerState = false;
+	}
+	else
+	{
+		IdleElapsedTime += DeltaSeconds;
+		bShouldEnterBreakerState = (IdleElapsedTime >= EnterBreakerStateThreshold);
+		if (bShouldEnterBreakerState)
+		{
+			IdleBreakerElapsedTime += DeltaSeconds;
+			if (IdleBreakerElapsedTime >= EnterIdleStateThreshold)
+			{
+				IdleElapsedTime = 0.f;
+				IdleBreakerElapsedTime = 0.f;
+				bShouldEnterBreakerState = false;
+			}
+		}
+	}
 }

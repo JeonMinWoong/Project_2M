@@ -46,7 +46,16 @@ namespace TwoMinGameplayTag
 
 	// Enemy Ability Tags
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Melee, "Enemy.Ability.Melee");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Melee_1, "Enemy.Ability.Melee.1");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Melee_2, "Enemy.Ability.Melee.2");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Melee_3, "Enemy.Ability.Melee.3");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Detect, "Enemy.Ability.Detect");
 
+	// Enemy Cooldown Tags
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Melee_1, "Enemy.Cooldown.Ability.Melee.1");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Melee_2, "Enemy.Cooldown.Ability.Melee.2");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Melee_3, "Enemy.Cooldown.Ability.Melee.3");
+	
 	// Shard Ability Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_HitReact, "Shared.Ability.HitReact");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_Guard, "Shared.Ability.Guard");

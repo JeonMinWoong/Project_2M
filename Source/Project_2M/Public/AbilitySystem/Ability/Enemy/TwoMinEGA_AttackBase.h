@@ -15,6 +15,13 @@ class PROJECT_2M_API UTwoMinEGA_AttackBase : public UTwoMinEnemyGameplayAbility
 {
 	GENERATED_BODY()
 
+public:
+	UFUNCTION()
+	void AddComboCount();
+	
+	UFUNCTION()
+	void ResetComboCount();
+	
 protected:
 	//~ Begin UGameplayAbility Interface.
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -34,7 +41,13 @@ private:
 	UAnimMontage* AttackMontage;
 
 	UPROPERTY(EditAnywhere, Category = "Attack|AttackInfoData")
-	FAttackInfoData AttackInfoData;
+	TMap<int, FAttackInfoData> AttackInfosData;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Attack|Combo")
+	int32 MaxComboCount = 1;
+	
+	UPROPERTY()
+	int32 CurComboCount = 1;
 
 	UPROPERTY(EditAnywhere, Category = "Attack|GameplayEffect")
 	TSubclassOf<UGameplayEffect> AttackGameplayEffectClass;
@@ -43,5 +56,5 @@ private:
 	FVector StartLocation;
 
 public:
-	FORCEINLINE FAttackInfoData& GetAttackInfoData() { return AttackInfoData; }
+	FORCEINLINE FAttackInfoData& GetAttackInfoData() { return AttackInfosData[CurComboCount]; }
 };

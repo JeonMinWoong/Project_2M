@@ -7,6 +7,16 @@
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Character/TwoMinEnemyDummy.h"
 
+void UTwoMinEGA_AttackBase::AddComboCount()
+{
+	CurComboCount = FMath::Clamp(CurComboCount + 1, 1, MaxComboCount);
+}
+
+void UTwoMinEGA_AttackBase::ResetComboCount()
+{
+	CurComboCount = 1;
+}
+
 void UTwoMinEGA_AttackBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                             const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                             const FGameplayEventData* TriggerEventData)
@@ -46,7 +56,8 @@ void UTwoMinEGA_AttackBase::EndAbility(const FGameplayAbilitySpecHandle Handle,
 			Dummy->SetActorLocation(StartLocation);	
 		}
 	}
-	
+
+	ResetComboCount();
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
