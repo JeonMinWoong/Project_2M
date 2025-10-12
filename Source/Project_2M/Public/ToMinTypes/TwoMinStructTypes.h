@@ -118,6 +118,30 @@ struct FGuardHitData
 };
 
 USTRUCT(BlueprintType)
+struct FHitStopAttackerData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float AttackerDelay_Hit = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float AttackerDelay_Guard = 0.0f;
+};
+
+USTRUCT(BlueprintType)
+struct FHitStopVictimData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float VictimDelay_Hit = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float VictimDelay_Guard = 0.0f;
+};
+
+USTRUCT(BlueprintType)
 struct FAttackInfoData : public FGameplayAbilityTargetData
 {
 	GENERATED_BODY()
@@ -130,6 +154,12 @@ struct FAttackInfoData : public FGameplayAbilityTargetData
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FHitData HitData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FHitStopAttackerData HitStopAttackerData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FHitStopVictimData HitStopVictimData;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int HitDirectionNumber;

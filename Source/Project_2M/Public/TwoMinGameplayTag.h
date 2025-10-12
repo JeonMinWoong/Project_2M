@@ -87,6 +87,7 @@ namespace TwoMinGameplayTag
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_State_Death)
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_State_PerfectGuarding)
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_State_SuccessPerfectGuarding);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_State_SuperArmor);
 
 	// Data Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Data_Cost_Stamina_Enough);

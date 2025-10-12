@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
+#include "ToMinTypes/TwoMinStructTypes.h"
 #include "TwoMinGameplayAbility.generated.h"
 
 class UAbilityTask_PlayMontageAndWait;
@@ -87,6 +88,8 @@ protected:
 	virtual void DamageToEffectSpecHandle(TSubclassOf<UGameplayEffect> EffectClass, FGameplayEventData Payload,
 		bool bIsTargetGuard);
 
+	void HitStopProcess(const AActor* HitStopCharacter, const float HitStopDelay);
+	
 	virtual TSubclassOf<UGameplayEffect> GetAttackGameplayEffectClass() const;
 
 	float CalculationStaminaCost() const;

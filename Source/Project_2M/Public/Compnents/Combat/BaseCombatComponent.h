@@ -28,6 +28,8 @@ public:
 	
 	virtual UAutoTargetingComponent* GetAutoTargetingComponent() const;
 
+	void ClearOverlappingActors();
+	
 protected:
 	virtual void ToggleCurrentEquippedWeaponCollision(bool bShouldEnable, EToggleDamageType ToggleDamageType);
 

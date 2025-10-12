@@ -52,6 +52,11 @@ UAutoTargetingComponent* UBaseCombatComponent::GetAutoTargetingComponent() const
 	return nullptr;
 }
 
+void UBaseCombatComponent::ClearOverlappingActors()
+{
+	OverlappingActors.Empty();
+}
+
 void UBaseCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bShouldEnable, EToggleDamageType ToggleDamageType)
 {
 	TArray<ATwoMinWeaponBase*> WeaponToToggle = GetCharacterCurrentEquippedWeapon();
@@ -77,7 +82,6 @@ void UBaseCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bShouldEnab
 		else
 		{
 			Weapon->GetWeaponCollisionBox()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			OverlappingActors.Empty();
 		}
 	}
 }

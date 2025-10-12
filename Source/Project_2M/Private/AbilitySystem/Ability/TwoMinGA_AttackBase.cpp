@@ -76,6 +76,8 @@ void UTwoMinGA_AttackBase::EndAbility(const FGameplayAbilitySpecHandle Handle,
 		{
 			AutoTargeting->EndAutoTargeting();
 		}
+
+		Player->GetCombatComponent()->ClearOverlappingActors();
 	}
 	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);

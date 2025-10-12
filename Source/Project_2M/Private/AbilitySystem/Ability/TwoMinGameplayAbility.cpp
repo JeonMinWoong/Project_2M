@@ -5,10 +5,8 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "IPropertyTable.h"
 #include "MotionWarpingComponent.h"
 #include "RootMotionModifier_SkewWarp.h"
-#include "TwoMinDebugHelper.h"
 #include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
@@ -276,7 +274,7 @@ void UTwoMinGameplayAbility::CustomInterruptedAbility()
 }
 
 void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffect> EffectClass,
-	 FGameplayEventData Payload, bool bIsTargetGuard)
+                                                      FGameplayEventData Payload, bool bIsTargetGuard)
 {
 	if (!EffectClass) return;
 	
@@ -321,6 +319,38 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 		bIsTargetGuard ? TwoMinGameplayTag::Shared_Event_HitGuard : TwoMinGameplayTag::Shared_Event_HitReact,
 		Payload
 	);
+
+	const float HitStopAttackerDelay = bIsTargetGuard ?
+		AttackPayload->Data.HitStopAttackerData.AttackerDelay_Guard :
+		AttackPayload->Data.HitStopAttackerData.AttackerDelay_Hit;
+	
+	const float HitStopVictimDelay = bIsTargetGuard ?
+		AttackPayload->Data.HitStopVictimData.VictimDelay_Guard :
+		AttackPayload->Data.HitStopVictimData.VictimDelay_Hit;
+	
+	HitStopProcess(Payload.Instigator, HitStopAttackerDelay);
+	HitStopProcess(TargetCharacter, HitStopVictimDelay);
+}
+
+void UTwoMinGameplayAbility::HitStopProcess(const AActor* HitStopCharacter, const float HitStopDelay)
+{
+	// todo: 해야함.
+	const ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(HitStopCharacter);
+	if (!HitStopCharacter) return;
+	
+	UAnimInstance* TargetAnimInstance = TargetCharacter->GetMesh()->GetAnimInstance();
+	if (!TargetAnimInstance) return;
+	if (HitStopDelay <= 0.f) return;
+
+	UAnimMontage* TargetMontage = TargetAnimInstance->GetCurrentActiveMontage();
+	TargetAnimInstance->Montage_Pause(TargetMontage);
+	
+	FTimerHandle TargetTimerHandle;
+	TargetCharacter->GetWorldTimerManager().SetTimer(TargetTimerHandle,
+		[TargetAnimInstance, TargetMontage]()
+	{
+			TargetAnimInstance->Montage_Resume(TargetMontage);
+	}, HitStopDelay, false);
 }
 
 TSubclassOf<UGameplayEffect> UTwoMinGameplayAbility::GetAttackGameplayEffectClass() const

@@ -86,6 +86,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Death, "Shared.State.Death");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_PerfectGuarding, "Shared.State.PerfectGuarding");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_SuccessPerfectGuarding, "Shared.State.SuccessPerfectGuarding");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_State_SuperArmor, "Shared.State.SuperArmor");
 
 	// Data Tags
 	UE_DEFINE_GAMEPLAY_TAG(Data_Cost_Stamina_Enough, "Data.Cost.Stamina.Enough");

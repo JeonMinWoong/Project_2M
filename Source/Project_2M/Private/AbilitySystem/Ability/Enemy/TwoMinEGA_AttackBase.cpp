@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Character/TwoMinEnemyDummy.h"
+#include "Compnents/Combat/BaseCombatComponent.h"
 
 void UTwoMinEGA_AttackBase::AddComboCount()
 {
@@ -57,6 +58,11 @@ void UTwoMinEGA_AttackBase::EndAbility(const FGameplayAbilitySpecHandle Handle,
 		}
 	}
 
+	if (ATwoMinEnemyCharacter* Enemy = Cast<ATwoMinEnemyCharacter>(GetAvatarActorFromActorInfo()))
+	{
+		Enemy->GetCombatComponent()->ClearOverlappingActors();
+	}
+	
 	ResetComboCount();
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
