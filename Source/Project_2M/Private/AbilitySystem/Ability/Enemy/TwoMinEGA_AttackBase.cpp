@@ -11,6 +11,10 @@
 void UTwoMinEGA_AttackBase::AddComboCount()
 {
 	CurComboCount = FMath::Clamp(CurComboCount + 1, 1, MaxComboCount);
+	if (ATwoMinEnemyCharacter* Enemy = Cast<ATwoMinEnemyCharacter>(GetAvatarActorFromActorInfo()))
+	{
+		Enemy->GetCombatComponent()->ClearOverlappingActors();
+	}
 }
 
 void UTwoMinEGA_AttackBase::ResetComboCount()
