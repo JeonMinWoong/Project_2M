@@ -88,7 +88,7 @@ protected:
 	virtual void DamageToEffectSpecHandle(TSubclassOf<UGameplayEffect> EffectClass, FGameplayEventData Payload,
 		bool bIsTargetGuard);
 
-	void HitStopProcess(const AActor* HitStopCharacter, const float HitStopDelay);
+	void HitStopProcess(AActor* HitStopCharacter, const float HitStopDelay);
 	
 	virtual TSubclassOf<UGameplayEffect> GetAttackGameplayEffectClass() const;
 

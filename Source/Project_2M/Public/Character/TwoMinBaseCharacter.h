@@ -23,6 +23,8 @@ public:
 
 	virtual UBaseCombatComponent* GetCombatComponent() const;
 	virtual UBaseUIComponent* GetBaseUIComponent() const override;
+
+	FTimerHandle HitStopTimerHandle;
 	
 protected:
 	//~ Begin APawn Interface.

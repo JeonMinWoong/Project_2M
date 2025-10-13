@@ -328,14 +328,13 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 		AttackPayload->Data.HitStopVictimData.VictimDelay_Guard :
 		AttackPayload->Data.HitStopVictimData.VictimDelay_Hit;
 	
-	HitStopProcess(Payload.Instigator, HitStopAttackerDelay);
+	HitStopProcess(Payload.Instigator->GetInstigator(), HitStopAttackerDelay);
 	HitStopProcess(TargetCharacter, HitStopVictimDelay);
 }
 
-void UTwoMinGameplayAbility::HitStopProcess(const AActor* HitStopCharacter, const float HitStopDelay)
+void UTwoMinGameplayAbility::HitStopProcess(AActor* HitStopCharacter, const float HitStopDelay)
 {
-	// todo: 해야함.
-	const ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(HitStopCharacter);
+	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(HitStopCharacter);
 	if (!HitStopCharacter) return;
 	
 	UAnimInstance* TargetAnimInstance = TargetCharacter->GetMesh()->GetAnimInstance();
@@ -345,8 +344,13 @@ void UTwoMinGameplayAbility::HitStopProcess(const AActor* HitStopCharacter, cons
 	UAnimMontage* TargetMontage = TargetAnimInstance->GetCurrentActiveMontage();
 	TargetAnimInstance->Montage_Pause(TargetMontage);
 	
-	FTimerHandle TargetTimerHandle;
-	TargetCharacter->GetWorldTimerManager().SetTimer(TargetTimerHandle,
+	FTimerManager& TimerManager = TargetCharacter->GetWorldTimerManager();
+	if (TimerManager.IsTimerActive(TargetCharacter->HitStopTimerHandle))
+	{
+		TimerManager.ClearTimer(TargetCharacter->HitStopTimerHandle);
+	}
+	
+	TargetCharacter->GetWorldTimerManager().SetTimer(TargetCharacter->HitStopTimerHandle,
 		[TargetAnimInstance, TargetMontage]()
 	{
 			TargetAnimInstance->Montage_Resume(TargetMontage);
