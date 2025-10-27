@@ -5,11 +5,13 @@
 
 #include "TwoMinDebugHelper.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Navigation/CrowdFollowingComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "ToMinTypes/TwoMinBlackboardKeys.h"
 
-ATwoMinEnemyAIController::ATwoMinEnemyAIController()
+ATwoMinEnemyAIController::ATwoMinEnemyAIController(const FObjectInitializer& ObjectInitializer)
+: Super(ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>("PathFollowingComponent"))
 {
 	AAIController::SetGenericTeamId(FGenericTeamId(1));
 
@@ -40,6 +42,20 @@ ETeamAttitude::Type ATwoMinEnemyAIController::GetTeamAttitudeTowards(const AActo
 	}
 
 	return ETeamAttitude::Friendly;
+}
+
+void ATwoMinEnemyAIController::BeginPlay()
+{
+	Super::BeginPlay();
+	if (UCrowdFollowingComponent* CrowdComp = Cast<UCrowdFollowingComponent>(GetPathFollowingComponent()))
+	{
+		CrowdComp->SetCrowdSimulationState(ECrowdSimulationState::Enabled);
+		CrowdComp->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::High);
+
+		CrowdComp->SetAvoidanceGroup(1);
+		CrowdComp->SetGroupsToAvoid(1);
+		CrowdComp->SetCrowdCollisionQueryRange(CollisionQueryRange);
+	}
 }
 
 void ATwoMinEnemyAIController::OnPossess(APawn* InPawn)

@@ -29,7 +29,18 @@ void UTwoMinCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 	LocomotionDirection = UKismetAnimationLibrary::CalculateDirection(OwningCharacter->GetVelocity(),
 		OwningCharacter->GetActorRotation());
 	
+	UpdateBattlePossible();
 	UpdateIdleElapsedTime(DeltaSeconds);
+}
+
+void UTwoMinCharacterAnimInstance::UpdateBattlePossible()
+{
+	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(OwningCharacter);
+	if (!EnemyCharacter) return;
+	UEnemyCombatComponent* EnemyCombatComponent = Cast<UEnemyCombatComponent>(EnemyCharacter->GetCombatComponent());
+	if (!EnemyCombatComponent) return;
+	
+	bIsBattlePossible = EnemyCombatComponent->IsBattlePossible();
 }
 
 void UTwoMinCharacterAnimInstance::UpdateIdleElapsedTime(float DeltaSeconds)
@@ -39,16 +50,12 @@ void UTwoMinCharacterAnimInstance::UpdateIdleElapsedTime(float DeltaSeconds)
 	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(OwningCharacter);
 	if (!EnemyCharacter) return;
 	
-	if (UEnemyCombatComponent* EnemyCombatComponent =
-		Cast<UEnemyCombatComponent>(EnemyCharacter->GetCombatComponent()))
+	if (bIsBattlePossible)
 	{
-		if (EnemyCombatComponent->IsBattlePossible())
-		{
-			IdleElapsedTime = 0.f;
-			IdleBreakerElapsedTime = 0.f;
-			bShouldEnterBreakerState = false;
-			return;
-		}
+		IdleElapsedTime = 0.f;
+		IdleBreakerElapsedTime = 0.f;
+		bShouldEnterBreakerState = false;
+		return;
 	}
 	
 	if (GroundSpeed > 0)

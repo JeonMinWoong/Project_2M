@@ -19,10 +19,11 @@ class PROJECT_2M_API ATwoMinEnemyAIController : public AAIController
 	GENERATED_BODY()
 
 public:
-	ATwoMinEnemyAIController();
+	ATwoMinEnemyAIController(const FObjectInitializer& ObjectInitializer);
 	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
 protected:
+	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
 
 private:
@@ -38,5 +39,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	UAISenseConfig_Sight* AISenseConfig_Sight;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Detour Crowd Avoidance Config")
+	float CollisionQueryRange = 150.f;
 	
 };

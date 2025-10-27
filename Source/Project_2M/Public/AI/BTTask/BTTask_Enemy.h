@@ -17,6 +17,7 @@ class PROJECT_2M_API UBTTask_Enemy : public UBTTaskNode
 
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
-
+	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+	
 	UEnemyCombatComponent* GetEnemyCombatComponent(UBehaviorTreeComponent& OwnerComp) const;
 };

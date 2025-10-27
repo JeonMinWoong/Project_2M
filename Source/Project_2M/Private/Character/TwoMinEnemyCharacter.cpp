@@ -68,7 +68,7 @@ void ATwoMinEnemyCharacter::PossessedBy(AController* NewController)
 void ATwoMinEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	if (UTwoMinWidgetEnemy* HealthWidget = Cast<UTwoMinWidgetEnemy>(EnemyHealthWidgetComponent->GetUserWidgetObject()))
 	{
 		HealthWidget->InitEnemyIComponent(EnemyUIComponent);

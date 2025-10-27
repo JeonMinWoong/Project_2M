@@ -47,11 +47,15 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="AnimData|Locomotion")
 	float EnterIdleStateThreshold = 5.f;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="AnimData|Locomotion")
+	bool bIsBattlePossible;
 	
 	float IdleElapsedTime;
 	float IdleBreakerElapsedTime;
 
 private:
+	void UpdateBattlePossible();
 	void UpdateIdleElapsedTime(float DeltaSeconds);
 	
 };

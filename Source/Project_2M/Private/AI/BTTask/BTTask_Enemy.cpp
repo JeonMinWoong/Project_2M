@@ -12,6 +12,11 @@ EBTNodeResult::Type UBTTask_Enemy::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	return EBTNodeResult::Succeeded;
 }
 
+void UBTTask_Enemy::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
+}
+
 UEnemyCombatComponent* UBTTask_Enemy::GetEnemyCombatComponent(UBehaviorTreeComponent& OwnerComp) const
 {
 	AAIController* AI = OwnerComp.GetAIOwner();
