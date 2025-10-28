@@ -63,3 +63,17 @@ enum class EPatrolPathMode : uint8
 	Loop,
 	PingPong
 };
+
+
+UENUM(BlueprintType)
+enum class EProjectileType : uint8
+{
+	Normal,
+	Homing,
+};
+
+UENUM(BlueprintType)
+enum class EProjectilePierceType : uint8
+{
+	NonPiercing,
+};
