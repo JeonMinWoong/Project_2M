@@ -77,3 +77,10 @@ enum class EProjectilePierceType : uint8
 {
 	NonPiercing,
 };
+
+UENUM(BlueprintType)
+enum class EAttackRangeType : uint8
+{
+	Melee,
+	Range
+};

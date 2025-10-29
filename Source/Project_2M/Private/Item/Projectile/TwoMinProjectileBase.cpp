@@ -7,6 +7,7 @@
 #include "Abilities/GameplayAbilityTypes.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
+#include "AbilitySystem/Ability/TwoMinGA_GuardBase.h"
 #include "Character/TwoMinBaseCharacter.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -36,7 +37,7 @@ void ATwoMinProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult)
 {
 	APawn* HitPawn = Cast<APawn>(OtherActor);
-	APawn* OwnerPawn = GetInstigator();
+	APawn* OwnerPawn = Cast<APawn>(GetOwner());
 	if (!OwnerPawn)
 	{
 		Destroy();
@@ -45,6 +46,11 @@ void ATwoMinProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 	
 	if (!HitPawn || UTwoMinFunctionLibrary::IsTargetPawnHostile(OwnerPawn, HitPawn) == false)
 	{
+		if (HitPawn == OwnerPawn)
+		{
+			return;
+		}
+		
 		Destroy();
 		return;
 	}
@@ -53,11 +59,44 @@ void ATwoMinProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 	EventData.Instigator = OwnerPawn;
 	EventData.Target = HitPawn;
 
-	HandleApplyProjectileDamage(HitPawn, EventData);
+	ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(OwnerPawn);
+	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(HitPawn);
+	if (!MyCharacter || !TargetCharacter) return;
+	
+	bool bIsTargetGuard = ProjectileAttackInfoData.AttackType == EAttackType::Ungaurdable ? false :
+			UTwoMinFunctionLibrary::HasGameplayTag(TargetCharacter, TwoMinGameplayTag::Shared_State_Guarding);
+	bool bIsTargetPerfectGuard = ProjectileAttackInfoData.AttackType == EAttackType::Ungaurdable ? false :
+		UTwoMinFunctionLibrary::HasGameplayTag(TargetCharacter, TwoMinGameplayTag::Shared_State_PerfectGuarding);
+
+	UTwoMinGameplayAbility* Ability =
+		TargetCharacter->GetAbilitySystemComponent()->GetPlayingAbilityTag(TwoMinGameplayTag::Shared_Ability_Guard);
+	if (Ability)
+	{
+		if (UTwoMinGA_GuardBase* GuardAbility = Cast<UTwoMinGA_GuardBase>(Ability))
+		{
+			bool GuardSuccess = GuardAbility->IsGuardCondition(MyCharacter, TargetCharacter);
+			bIsTargetGuard = bIsTargetGuard ? GuardSuccess : false;
+			bIsTargetPerfectGuard = bIsTargetPerfectGuard ? GuardSuccess : false;
+		}
+	}
+
+	if (bIsTargetPerfectGuard)
+	{
+		UTwoMinFunctionLibrary::SendToGameplayEffectEvent(
+			TargetCharacter,
+			TwoMinGameplayTag::Shared_Event_SuccessPerfectGuard,
+			EventData
+		);
+		
+		return;
+	}
+	
+	HandleApplyProjectileDamage(HitPawn, EventData, bIsTargetGuard);
 	Destroy();
 }
 
-void ATwoMinProjectileBase::HandleApplyProjectileDamage(APawn* HitPawn, FGameplayEventData& PayLoad) const
+void ATwoMinProjectileBase::HandleApplyProjectileDamage(APawn* HitPawn, FGameplayEventData& PayLoad,
+	bool bIsTargetGuard) const
 {
 	ATwoMinBaseCharacter* BaseCharacter = Cast<ATwoMinBaseCharacter>(PayLoad.Instigator);
 	ATwoMinBaseCharacter* OtherCharacter = Cast<ATwoMinBaseCharacter>(PayLoad.Target);
@@ -80,9 +119,14 @@ void ATwoMinProjectileBase::HandleApplyProjectileDamage(APawn* HitPawn, FGamepla
 	);
 	
 	EffectSpecHandle.Data->SetSetByCallerMagnitude(
-			TwoMinGameplayTag::Shared_SetByCaller_BaseDamage,
-			AttackPayload->Data.AttackDamageCoef
-		);
+		TwoMinGameplayTag::Shared_SetByCaller_BaseDamage,
+		AttackPayload->Data.AttackDamageCoef
+	);
+
+	EffectSpecHandle.Data->SetSetByCallerMagnitude(
+		TwoMinGameplayTag::Shared_SetByCaller_GaurdSuccess,
+		bIsTargetGuard ? 1 : 0
+	);
 	
 	FActiveGameplayEffectHandle ResultEffectHandle =
 		TwoMinASC->ApplyGameplayEffectSpecToTarget(
@@ -97,7 +141,7 @@ void ATwoMinProjectileBase::HandleApplyProjectileDamage(APawn* HitPawn, FGamepla
 	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 		HitPawn,
-		TwoMinGameplayTag::Shared_Event_HitReact,
+		bIsTargetGuard ? TwoMinGameplayTag::Shared_Event_HitGuard : TwoMinGameplayTag::Shared_Event_HitReact,
 		PayLoad
 	);
 }

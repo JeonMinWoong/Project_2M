@@ -22,7 +22,7 @@ bool UTwoMinGA_GuardBase::IsPossibleMustBeHoldAbilityImmediatelyCancel() const
 
 bool UTwoMinGA_GuardBase::IsGuardCondition(const ATwoMinBaseCharacter* Attacker, const ATwoMinBaseCharacter* Target) const
 {
-	const FVector ToTarget = (Attacker->GetActorLocation() - Target->GetActorLocation()).GetSafeNormal2D();
+   	const FVector ToTarget = (Attacker->GetActorLocation() - Target->GetActorLocation()).GetSafeNormal2D();
 	const FVector TargetForward = Target->GetActorForwardVector().GetSafeNormal2D();
 	const float Angle = UKismetMathLibrary::DegAcos(FVector::DotProduct(ToTarget, TargetForward));
 	if (Angle > GuardAngle)

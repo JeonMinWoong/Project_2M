@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEnemyGameplayAbility.h"
+#include "Item/Projectile/TwoMinProjectileBase.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "TwoMinEGA_AttackBase.generated.h"
 
@@ -32,9 +33,29 @@ protected:
 	//~ End UGameplayAbility Interface.
 
 	virtual TSubclassOf<UGameplayEffect> GetAttackGameplayEffectClass() const override;
+
+	UPROPERTY(EditDefaultsOnly, Category= "AttackTypeSetting")
+	EAttackRangeType AttackRangeType = EAttackRangeType::Melee;
+
+#pragma region Melee
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Attack|HitEventTag")
+	UPROPERTY(EditDefaultsOnly, Category = "Attack|Melee")
 	FGameplayTag OnHitEventTag;
+
+#pragma endregion
+
+#pragma region Range
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Attack|Range")
+	FGameplayTag OnShootEventTag;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attack|Range")
+	TSubclassOf<ATwoMinProjectileBase> Projectile;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attack|Range")
+	FName ShootSocketName;
+	
+#pragma endregion
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Montages")
@@ -57,4 +78,7 @@ private:
 
 public:
 	FORCEINLINE FAttackInfoData& GetAttackInfoData() { return AttackInfosData[CurComboCount]; }
+	FORCEINLINE TSubclassOf<ATwoMinProjectileBase> GetProjectile() const { return Projectile; }
+	FORCEINLINE FName GetShootSocketName() const { return ShootSocketName; }
+
 };

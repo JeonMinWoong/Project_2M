@@ -76,8 +76,11 @@ protected:
 	virtual void CustomEventReceived(FGameplayEventData Payload);
 	
 	UFUNCTION()
-	virtual void OnAttackGameplayEventReceived(FGameplayEventData Payload);  
+	virtual void OnAttackGameplayEventReceivedByMelee(FGameplayEventData Payload);  
 
+	UFUNCTION()
+	virtual void OnAttackGameplayEventReceivedByRange(FGameplayEventData Payload);
+	
 	UFUNCTION()
 	virtual void CustomCompleteAbility();
 

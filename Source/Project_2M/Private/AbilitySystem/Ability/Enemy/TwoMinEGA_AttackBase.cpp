@@ -32,18 +32,34 @@ void UTwoMinEGA_AttackBase::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		return;
 	}
 	
-	if(ATwoMinEnemyDummy* Dummy = Cast<ATwoMinEnemyDummy>(GetAvatarActorFromActorInfo()))
+	if (ATwoMinEnemyDummy* Dummy = Cast<ATwoMinEnemyDummy>(GetAvatarActorFromActorInfo()))
 	{
 		StartLocation = Dummy->GetActorLocation();
 	}
 
 	PlayToAnimMontage(AttackMontage);
 
-	UAbilityTask_WaitGameplayEvent* Task = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
+	switch (AttackRangeType)
+	{
+	case EAttackRangeType::Melee:
+		{
+			UAbilityTask_WaitGameplayEvent* Task = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
 	this, OnHitEventTag, nullptr, false, true);
 
-	Task->EventReceived.AddDynamic(this, &ThisClass::OnAttackGameplayEventReceived);
-	Task->ReadyForActivation();
+			Task->EventReceived.AddDynamic(this, &ThisClass::OnAttackGameplayEventReceivedByMelee);
+			Task->ReadyForActivation();
+		}
+		break;
+	case EAttackRangeType::Range:
+		{
+			UAbilityTask_WaitGameplayEvent* Task = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
+this, OnShootEventTag, nullptr, false, true);
+
+			Task->EventReceived.AddDynamic(this, &ThisClass::OnAttackGameplayEventReceivedByRange);
+			Task->ReadyForActivation();
+		}
+		break;
+	}
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }

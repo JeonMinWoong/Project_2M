@@ -193,7 +193,7 @@ void UTwoMinGameplayAbility::CustomEventReceived(FGameplayEventData Payload)
 	
 }
 
-void UTwoMinGameplayAbility::OnAttackGameplayEventReceived(FGameplayEventData Payload)
+void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByMelee(FGameplayEventData Payload)
 {
 	ATwoMinBaseCharacter* BaseCharacter = Cast<ATwoMinBaseCharacter>(Payload.Instigator);
 	if (!BaseCharacter) return;
@@ -260,6 +260,68 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceived(FGameplayEventData Pa
 	DamageToEffectSpecHandle(GetAttackGameplayEffectClass(), Payload, bIsTargetGuard);
 }
 
+void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByRange(FGameplayEventData Payload)
+{
+	ATwoMinBaseCharacter* BaseCharacter = Cast<ATwoMinBaseCharacter>(Payload.Instigator);
+	if (!BaseCharacter) return;
+
+	const ECharacterType CharacterType = BaseCharacter->GetCharacterType();
+	if (CharacterType == ECharacterType::None) return;
+
+	UAttackPayloadObject* AttackPayload = NewObject<UAttackPayloadObject>(BaseCharacter);
+	TSubclassOf<ATwoMinProjectileBase> ProjectileBase = nullptr;
+	FName SocketName = NAME_None;
+	
+	if (CharacterType == ECharacterType::Enemy)
+	{
+		//DebugTwoMin::Print(TEXT("Enemy Ability Event Received"), FColor::Red);
+
+		UTwoMinEGA_AttackBase* EnemyAttackBase = Cast<UTwoMinEGA_AttackBase>(this);
+		if (!EnemyAttackBase) return;
+		
+		const FAttackInfoData& AttackInfoData = EnemyAttackBase->GetAttackInfoData();
+		AttackPayload->Data = AttackInfoData;
+
+		ProjectileBase = EnemyAttackBase->GetProjectile();
+		SocketName = EnemyAttackBase->GetShootSocketName();
+	}
+	else if (CharacterType == ECharacterType::Player)
+	{
+		//DebugTwoMin::Print(TEXT("Player Ability Event Received"), FColor::Green);
+
+		UTwoMinGA_AttackBase* PlayerAttackBase = Cast<UTwoMinGA_AttackBase>(this);
+		if (!PlayerAttackBase) return;
+
+		const FAttackInfoData& AttackInfoData = PlayerAttackBase->GetAttackInfoData();
+		AttackPayload->Data = AttackInfoData;
+
+		//ProjectileBase = PlayerAttackBase->GetProjectile();
+	}
+	
+	if (!ProjectileBase || SocketName.IsNone()) return;
+	
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = BaseCharacter;
+	
+	FVector SpawnLocation = BaseCharacter->GetMesh()->GetSocketLocation(SocketName);
+	FRotator SpawnRotation = BaseCharacter->GetActorRotation();
+
+	ATwoMinProjectileBase* Projectile = GetWorld()->SpawnActor<ATwoMinProjectileBase>(
+		ProjectileBase,
+		SpawnLocation,
+		SpawnRotation,
+		SpawnParams
+	);
+
+	if (Projectile)
+	{
+		Projectile->SetProjectileAttackInfoData(AttackPayload->Data);
+		Projectile->SetActiveAbilityTag(AbilityTags.First());
+		Projectile->SetProjectileAttackGameplayEffectClass(GetAttackGameplayEffectClass());
+		Projectile->SetActiveAbilityLevel(GetAbilityLevel());
+	}
+}
+
 void UTwoMinGameplayAbility::CustomCompleteAbility()
 {
 	bool bReplicateEndAbility = true;
@@ -298,6 +360,11 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 	EffectSpecHandle.Data->SetSetByCallerMagnitude(
 		TwoMinGameplayTag::Shared_SetByCaller_BaseDamage,
 		AttackPayload->Data.AttackDamageCoef
+	);
+
+	EffectSpecHandle.Data->SetSetByCallerMagnitude(
+		TwoMinGameplayTag::Shared_SetByCaller_GaurdSuccess,
+		bIsTargetGuard ? 1 : 0
 	);
 
 	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(Payload.Target);

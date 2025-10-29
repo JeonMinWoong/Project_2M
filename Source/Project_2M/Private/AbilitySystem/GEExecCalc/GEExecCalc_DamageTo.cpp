@@ -52,7 +52,6 @@ void UGEExecCalc_DamageTo::Execute_Implementation(const FGameplayEffectCustomExe
 	bool bIsUnBreakAttack = HasStateTag(ExecutionParams.GetSourceAbilitySystemComponent(), SourceUnBreakAttackTag);
 	bool bIsInvincible = HasStateTag(ExecutionParams.GetTargetAbilitySystemComponent(), TargetInvincibleStateTag);
 	bool bIsGuard = HasStateTag(ExecutionParams.GetTargetAbilitySystemComponent(), TargetGuardStateTag);
-	bool bIsNoneDamage = bIsInvincible ? true : bIsGuard && bIsUnBreakAttack == false;
 	
 	float SourceAttackPower = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
@@ -61,17 +60,25 @@ void UGEExecCalc_DamageTo::Execute_Implementation(const FGameplayEffectCustomExe
 		 SourceAttackPower
 	);
 
-	SourceAttackPower = bIsNoneDamage ? 0.f : SourceAttackPower;
-
-	float AttackDamageCoef = 0.f;
+	float BeforeAttackDamageCoef = 0.f;
 	for (const TPair<FGameplayTag, float>& TagMagnitude : EffectSpec.SetByCallerTagMagnitudes)
 	{
 		if (TagMagnitude.Key.MatchesTagExact(TwoMinGameplayTag::Shared_SetByCaller_BaseDamage))
 		{
-			AttackDamageCoef = bIsNoneDamage ? 0 : TagMagnitude.Value;
+			BeforeAttackDamageCoef = TagMagnitude.Value;
+		}
+
+		if (TagMagnitude.Key.MatchesTagExact(TwoMinGameplayTag::Shared_SetByCaller_GaurdSuccess))
+		{
+			bIsGuard = TagMagnitude.Value > 0 ? bIsGuard : false; 
 		}
 	}
 
+	bool bIsNoneDamage = bIsInvincible ? true : bIsGuard && bIsUnBreakAttack == false;
+	
+	SourceAttackPower = bIsNoneDamage ? 0.f : SourceAttackPower;
+	float AttackDamageCoef = bIsNoneDamage ? 0 : BeforeAttackDamageCoef;
+	
 	float TargetDefensePower = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		GetTwoMinDamageCapture().DefensePowerDef,

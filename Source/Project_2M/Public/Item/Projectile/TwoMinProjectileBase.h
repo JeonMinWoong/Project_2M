@@ -24,7 +24,7 @@ protected:
 	virtual void OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult);
 	
-	void HandleApplyProjectileDamage(APawn* InHitPawn, FGameplayEventData& InPayLoad) const;
+	void HandleApplyProjectileDamage(APawn* InHitPawn, FGameplayEventData& InPayLoad, bool bIsTargetGuard) const;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
 	UBoxComponent* ProjectileCollisionBox;

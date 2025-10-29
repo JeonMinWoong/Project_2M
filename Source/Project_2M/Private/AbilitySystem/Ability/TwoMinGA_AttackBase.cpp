@@ -57,7 +57,7 @@ void UTwoMinGA_AttackBase::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		UAbilityTask_WaitGameplayEvent* Task = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
 			this, OnHitEventTag, nullptr, false, true);
 
-		Task->EventReceived.AddDynamic(this, &ThisClass::OnAttackGameplayEventReceived);
+		Task->EventReceived.AddDynamic(this, &ThisClass::OnAttackGameplayEventReceivedByMelee);
 		Task->ReadyForActivation();
 	}
 

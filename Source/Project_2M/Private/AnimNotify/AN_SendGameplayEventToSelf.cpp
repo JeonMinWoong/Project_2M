@@ -12,11 +12,14 @@ void UAN_SendGameplayEventToSelf::Notify(USkeletalMeshComponent* MeshComp, UAnim
 {
 	ATwoMinBaseCharacter* BaseCharacter = Cast<ATwoMinBaseCharacter>(MeshComp->GetOwner());
 	if (!BaseCharacter) return;
+
+	FGameplayEventData EventData;
+	EventData.Instigator = MeshComp->GetOwner();
 	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 		BaseCharacter,
 		EventTag,
-		FGameplayEventData()
+		EventData
 	);
 	
 	Super::Notify(MeshComp, Animation, EventReference);
