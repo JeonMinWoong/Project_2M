@@ -24,9 +24,6 @@ UEnemyCombatComponent* UBTTask_Enemy::GetEnemyCombatComponent(UBehaviorTreeCompo
 
 	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(AI->GetPawn());
 	if (!EnemyCharacter) return nullptr;
-
-	UBlackboardComponent* BB = OwnerComp.GetBlackboardComponent();
-	if (!BB) return nullptr;
 	
 	UEnemyCombatComponent* EnemyCombatComponent =
 		Cast<UEnemyCombatComponent>(EnemyCharacter->GetCombatComponent());

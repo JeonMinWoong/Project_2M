@@ -5,6 +5,7 @@
 
 #include "AIController.h"
 #include "TwoMinFunctionLibrary.h"
+#include "Compnents/Combat/EnemyCombatComponent.h"
 
 UBTTE_AttackMoveWait::UBTTE_AttackMoveWait()
 {
@@ -43,20 +44,11 @@ void UBTTE_AttackMoveWait::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 
 bool UBTTE_AttackMoveWait::CanAttackMoveWait(UBehaviorTreeComponent& OwnerComp) const
 {
-	AActor* MyActor = Cast<AActor>(OwnerComp.GetAIOwner()->GetPawn());
-	if (CheckAttackCooldownTags.IsEmpty())
-	{
-		return false;
-	}
+	UEnemyCombatComponent* EnemyCombatComponent = GetEnemyCombatComponent(OwnerComp);
+	if (!EnemyCombatComponent) return false;
 
-	bool bCanAttack = false;
-	for (auto CheckAttackCooldownTag : CheckAttackCooldownTags)
-	{
-		if (UTwoMinFunctionLibrary::HasGameplayTag(MyActor, CheckAttackCooldownTag) == false)
-		{
-			bCanAttack = true;
-		}
-	}
+	AActor* MyActor = EnemyCombatComponent->GetOwner();
+	if (!MyActor) return false;
 	
-	return bCanAttack;
+	return EnemyCombatComponent->IsEvenOneAttackCooldown();
 }

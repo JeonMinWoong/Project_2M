@@ -23,40 +23,5 @@ bool UBTDE_AttackCondition::CalculateRawConditionValue(UBehaviorTreeComponent& O
 
 	UEnemyCombatComponent* EnemyCombatComponent = GetEnemyCombatComponent(OwnerComp);
 	if (!EnemyCombatComponent) return false;
-	return IsAllCondition(EnemyCombatComponent->GetOwner(), BattleTarget);
+	return EnemyCombatComponent->IsAttackCondition(BattleTarget, AttackConditionIndex);
 }
-
-bool UBTDE_AttackCondition::CheckAttackRange(const AActor* MyActor, const AActor* TargetActor) const
-{
-	float DistToBattleTarget = FVector::Dist(MyActor->GetActorLocation(),
-		TargetActor->GetActorLocation());
-	
-	return MinAttackRange < DistToBattleTarget && DistToBattleTarget <= MaxAttackRange;
-}
-
-bool UBTDE_AttackCondition::CheckTargetAngle(const AActor* MyActor, const AActor* TargetActor) const
-{
-	FVector MyForward = MyActor->GetActorForwardVector();
-	FVector TargetLocation = (TargetActor->GetActorLocation() - MyActor->GetActorLocation()).GetSafeNormal2D();
-	float AngleDeg = UKismetMathLibrary::DegAcos(FVector::DotProduct(MyForward, TargetLocation));
-
-	return AngleDeg <= TargetAngle;
-}
-
-bool UBTDE_AttackCondition::CheckAbilityCooldown(AActor* MyActor) const
-{
-	if (AbilityCooldownTag == FGameplayTag::EmptyTag)
-	{
-		return true;
-	}
-	
-	return UTwoMinFunctionLibrary::HasGameplayTag(MyActor, AbilityCooldownTag) == false;
-}
-
-bool UBTDE_AttackCondition::IsAllCondition(const AActor* MyActor, const AActor* TargetActor) const
-{
-	return CheckAttackRange(MyActor, TargetActor) && CheckTargetAngle(MyActor, TargetActor)
-		&& CheckAbilityCooldown(const_cast<AActor*>(MyActor));
-}
-
-

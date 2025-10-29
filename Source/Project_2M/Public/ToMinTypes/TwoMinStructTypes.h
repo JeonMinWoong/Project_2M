@@ -203,3 +203,21 @@ struct FEnemyAIPatrolData
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float WaitTime = 0.0f;
 };
+
+USTRUCT(BlueprintType)
+struct FEnemyAIAttackConditionData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float MinAttackRange;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float MaxAttackRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ClampMin = "0.0", ClampMax = "180.0"))
+	float TargetAngle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FGameplayTag AbilityCooldownTag;
+};

@@ -4,21 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "AI/BTDecorator/BTDecorator_Enemy.h"
-#include "BTDE_AttackCondition.generated.h"
+#include "BTDE_TopBattleMoveCondition.generated.h"
 
-class ATwoMinEnemyCharacter;
 /**
  * 
  */
 UCLASS()
-class PROJECT_2M_API UBTDE_AttackCondition : public UBTDecorator_Enemy
+class PROJECT_2M_API UBTDE_TopBattleMoveCondition : public UBTDecorator_Enemy
 {
 	GENERATED_BODY()
 
+public:
+	UBTDE_TopBattleMoveCondition();
+
 protected:
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
-
-private:
-	UPROPERTY(EditAnywhere, Category = "AttackConditionIndex")
-	int AttackConditionIndex = 0;
+	
 };

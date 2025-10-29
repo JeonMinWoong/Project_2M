@@ -26,6 +26,12 @@ public:
 	virtual void OnHitTargetActor(AActor* HitActor) override;
 
 #pragma region Battle
+	bool IsAttackCondition(const AActor* TargetActor, int AttackConditionIndex) const;
+	bool IsEvenOneAttackCondition(const AActor* TargetActor) const;
+	bool IsEvenOneAttackCooldown();
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Battle|AttackConditions")
+	TMap<int, FEnemyAIAttackConditionData> AttackConditions;
 	
 #pragma endregion
 	

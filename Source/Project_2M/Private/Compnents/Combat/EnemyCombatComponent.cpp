@@ -3,6 +3,9 @@
 
 #include "Compnents/Combat/EnemyCombatComponent.h"
 
+#include "TwoMinFunctionLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
+
 
 UEnemyCombatComponent::UEnemyCombatComponent()
 {
@@ -22,6 +25,78 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* HitActor)
 {
 	Super::OnHitTargetActor(HitActor);
 }
+
+bool UEnemyCombatComponent::IsAttackCondition(const AActor* TargetActor, int AttackConditionIndex) const
+{
+	if (AttackConditions.IsEmpty() || !AttackConditions.Contains(AttackConditionIndex)) return false;
+	
+	AActor* MyActor = GetOwner();
+	if (!MyActor) return false;
+	
+	FEnemyAIAttackConditionData AttackCondition = AttackConditions[AttackConditionIndex];
+	float DistToBattleTarget = FVector::Dist(MyActor->GetActorLocation(), TargetActor->GetActorLocation());
+	
+	if (AttackCondition.MinAttackRange > DistToBattleTarget || DistToBattleTarget >= AttackCondition.MaxAttackRange)
+	{
+		return false;
+	}
+
+	FVector MyForward = MyActor->GetActorForwardVector();
+	FVector TargetLocation = (TargetActor->GetActorLocation() - MyActor->GetActorLocation()).GetSafeNormal2D();
+	float AngleDeg = UKismetMathLibrary::DegAcos(FVector::DotProduct(MyForward, TargetLocation));
+
+	if (AngleDeg > AttackCondition.TargetAngle)
+	{
+		return false;
+	}
+
+	if (AttackCondition.AbilityCooldownTag == FGameplayTag::EmptyTag)
+	{
+		return true;
+	}
+	
+	return UTwoMinFunctionLibrary::HasGameplayTag(MyActor, AttackCondition.AbilityCooldownTag) == false;
+}
+
+bool UEnemyCombatComponent::IsEvenOneAttackCondition(const AActor* TargetActor) const
+{
+	AActor* MyActor = GetOwner();
+	if (!MyActor) return false;
+	
+	if (AttackConditions.IsEmpty()) return false;
+	
+	bool bIsEvenOne = false;
+	for (const auto AttackConditionData : AttackConditions)
+	{
+		if (IsAttackCondition(TargetActor, AttackConditionData.Key))
+		{
+			bIsEvenOne = true;
+		}
+	}
+
+	return bIsEvenOne;
+}
+
+
+bool UEnemyCombatComponent::IsEvenOneAttackCooldown()
+{
+	AActor* MyActor = GetOwner();
+	if (!MyActor) return false;
+	
+	if (AttackConditions.IsEmpty()) return false;
+	
+	bool bCanAttack = false;
+	for (const auto AttackConditionData : AttackConditions)
+	{
+		if (UTwoMinFunctionLibrary::HasGameplayTag(MyActor, AttackConditionData.Value.AbilityCooldownTag) == false)
+		{
+			bCanAttack = true;
+		}
+	}
+
+	return bCanAttack;
+}
+
 
 int32 UEnemyCombatComponent::GetNextPatrolPointIndex()
 {

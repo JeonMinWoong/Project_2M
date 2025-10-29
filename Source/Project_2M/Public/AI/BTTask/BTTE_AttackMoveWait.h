@@ -30,9 +30,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "AttackMoveWait", meta = (ClampMin = 0))
 	float MaxRange;
-	
-	UPROPERTY(EditAnywhere, Category = "AttackMoveWait")
-	FGameplayTagContainer CheckAttackCooldownTags;
 
 	float TotalWaitTime;
 	float ElapsedTime;
