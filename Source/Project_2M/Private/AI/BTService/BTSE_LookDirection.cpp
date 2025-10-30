@@ -42,8 +42,6 @@ void UBTSE_LookDirection::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	{
 		const FRotator LookAtRot = UKismetMathLibrary::FindLookAtRotation(OwningPawn->GetActorLocation(),
 			TargetActor->GetActorLocation());
-		const FRotator TargetRot = FMath::RInterpTo(OwningPawn->GetActorRotation(), LookAtRot,
-			DeltaSeconds, RotationSpeed);
-		OwningPawn->SetActorRotation(TargetRot);
+		OwningPawn->SetActorRotation(LookAtRot);
 	}
 }
