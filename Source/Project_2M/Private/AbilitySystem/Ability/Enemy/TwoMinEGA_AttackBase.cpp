@@ -4,6 +4,7 @@
 #include "AbilitySystem/Ability/Enemy/TwoMinEGA_AttackBase.h"
 
 #include "AbilitySystemComponent.h"
+#include "TwoMinGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Character/TwoMinEnemyDummy.h"
 #include "Compnents/Combat/BaseCombatComponent.h"
@@ -60,6 +61,13 @@ this, OnShootEventTag, nullptr, false, true);
 		}
 		break;
 	}
+
+	UAbilityTask_WaitGameplayEvent* ResetTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
+	this, TwoMinGameplayTag::Shared_Event_ResetAttackCount, nullptr, false,
+	true);
+
+	ResetTask->EventReceived.AddDynamic(this, &ThisClass::OnResetAttackCountGameplayEffectReceive);
+	ResetTask->ReadyForActivation();
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
@@ -85,6 +93,11 @@ void UTwoMinEGA_AttackBase::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	
 	ResetComboCount();
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+void UTwoMinEGA_AttackBase::OnResetAttackCountGameplayEffectReceive(FGameplayEventData Payload)
+{
+	ResetComboCount();
 }
 
 TSubclassOf<UGameplayEffect> UTwoMinEGA_AttackBase::GetAttackGameplayEffectClass() const

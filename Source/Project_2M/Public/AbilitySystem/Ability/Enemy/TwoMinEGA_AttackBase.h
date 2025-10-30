@@ -32,6 +32,8 @@ protected:
 		const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	//~ End UGameplayAbility Interface.
 
+	virtual void OnResetAttackCountGameplayEffectReceive(FGameplayEventData Payload) override;
+
 	virtual TSubclassOf<UGameplayEffect> GetAttackGameplayEffectClass() const override;
 
 	UPROPERTY(EditDefaultsOnly, Category= "AttackTypeSetting")

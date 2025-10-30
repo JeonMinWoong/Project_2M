@@ -324,6 +324,11 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByRange(FGameplayEvent
 	}
 }
 
+void UTwoMinGameplayAbility::OnResetAttackCountGameplayEffectReceive(FGameplayEventData Payload)
+{
+	
+}
+
 void UTwoMinGameplayAbility::CustomCompleteAbility()
 {
 	bool bReplicateEndAbility = true;

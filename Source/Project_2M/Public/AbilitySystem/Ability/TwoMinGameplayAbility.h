@@ -80,6 +80,9 @@ protected:
 
 	UFUNCTION()
 	virtual void OnAttackGameplayEventReceivedByRange(FGameplayEventData Payload);
+
+	UFUNCTION()
+	virtual void OnResetAttackCountGameplayEffectReceive(FGameplayEventData Payload);
 	
 	UFUNCTION()
 	virtual void CustomCompleteAbility();

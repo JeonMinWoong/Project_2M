@@ -4,6 +4,8 @@
 #include "AbilitySystem/Ability/TwoMinGA_HitReactBase.h"
 
 #include "MotionWarpingComponent.h"
+#include "TwoMinFunctionLibrary.h"
+#include "TwoMinGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_ApplyRootMotionMoveToForce.h"
 #include "Character/TwoMinBaseCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -60,6 +62,17 @@ void UTwoMinGA_HitReactBase::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	Character->GetMotionWarpingComponent()->RemoveWarpTarget(FName("KB_Target"));
 	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+void UTwoMinGA_HitReactBase::PreActivate(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	FOnGameplayAbilityEnded::FDelegate* OnGameplayAbilityEndedDelegate, const FGameplayEventData* TriggerEventData)
+{
+	FGameplayEventData EventData;
+	UTwoMinFunctionLibrary::SendToGameplayEffectEvent(GetAvatarActorFromActorInfo(),
+		TwoMinGameplayTag::Shared_Event_ResetAttackCount, EventData);
+	
+	Super::PreActivate(Handle, ActorInfo, ActivationInfo, OnGameplayAbilityEndedDelegate, TriggerEventData);
 }
 
 int32 UTwoMinGA_HitReactBase::GetPlayHitReactMontageNumber(const FVector OwnerForward, const FVector ToImpact,

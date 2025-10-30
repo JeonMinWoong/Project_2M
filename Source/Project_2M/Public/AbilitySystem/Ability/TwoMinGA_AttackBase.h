@@ -40,6 +40,8 @@ protected:
 	virtual bool bIsReTriggerSameAbility() const override;
 	virtual void CustomCancelAbility() override;
 	
+	virtual void OnResetAttackCountGameplayEffectReceive(FGameplayEventData Payload) override;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|HitEventTag")
 	FGameplayTag OnHitEventTag;
 

@@ -83,6 +83,7 @@ namespace TwoMinGameplayTag
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Event_SuccessPerfectGuard);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Event_Death);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Event_SpawnProjectile);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Event_ResetAttackCount);
 
 	// Shard State Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_State_Invincible);

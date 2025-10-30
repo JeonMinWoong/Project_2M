@@ -4,6 +4,7 @@
 #include "AbilitySystem/Ability/TwoMinGA_AttackBase.h"
 
 #include "TwoMinDebugHelper.h"
+#include "TwoMinGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_WaitDelay.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Character/TwoMinPlayerCharacter.h"
@@ -59,6 +60,13 @@ void UTwoMinGA_AttackBase::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 		Task->EventReceived.AddDynamic(this, &ThisClass::OnAttackGameplayEventReceivedByMelee);
 		Task->ReadyForActivation();
+
+		UAbilityTask_WaitGameplayEvent* ResetTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
+	this, TwoMinGameplayTag::Shared_Event_ResetAttackCount, nullptr, false,
+	true);
+
+		ResetTask->EventReceived.AddDynamic(this, &ThisClass::OnResetAttackCountGameplayEffectReceive);
+		ResetTask->ReadyForActivation();
 	}
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
@@ -91,6 +99,11 @@ bool UTwoMinGA_AttackBase::bIsReTriggerSameAbility() const
 void UTwoMinGA_AttackBase::CustomCancelAbility()
 {
 	Super::CustomCancelAbility();
+	ResetComboCount();
+}
+
+void UTwoMinGA_AttackBase::OnResetAttackCountGameplayEffectReceive(FGameplayEventData Payload)
+{
 	ResetComboCount();
 }
 
