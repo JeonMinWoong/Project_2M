@@ -127,10 +127,12 @@ void UTwoMinGameplayAbility::OnStartKnockBack(AActor* OwnerActor, UAnimMontage* 
 	
 	UAnimInstance* AnimInst = Character->GetMesh() ? Character->GetMesh()->GetAnimInstance() : nullptr;
 	if (!MW || !AnimInst) return;
+
+	MW->RemoveWarpTarget(FName("KB_Target"));
 	
 	FVector Target;
 	CalcKnockbackTarget(Character, -Direction, PushDistance, Target);
-	Character->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocation(FName("KB_Target"), Target);
+	MW->AddOrUpdateWarpTargetFromLocation(FName("KB_Target"), Target);
 
 	const float Pos = AnimInst->Montage_GetPosition(TargetMontage);
 	

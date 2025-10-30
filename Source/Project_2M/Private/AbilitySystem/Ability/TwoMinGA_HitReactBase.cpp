@@ -44,10 +44,10 @@ void UTwoMinGA_HitReactBase::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	const FVector OwnerForward = MyCharacter->GetActorForwardVector();
 	const FVector ToImpact = (InstigatorCharacter->GetActorLocation() - MyCharacter->GetActorLocation()).GetSafeNormal();
 	const int32 HitReactNumber = GetPlayHitReactMontageNumber(OwnerForward, ToImpact, AttackInfoData);
-
-	OnStartKnockBack(MyCharacter, HitReactMontages[HitReactNumber], ToImpact, AttackInfoData.HitData.PushDistance,
-		AttackInfoData.HitData.PushTime, AttackInfoData.HitData.KnockBackCurve);
+	
 	PlayToAnimMontage(HitReactMontages[HitReactNumber]);
+	OnStartKnockBack(MyCharacter, HitReactMontages[HitReactNumber], ToImpact, AttackInfoData.HitData.PushDistance,
+			AttackInfoData.HitData.PushTime, AttackInfoData.HitData.KnockBackCurve);
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
