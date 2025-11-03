@@ -35,7 +35,11 @@ void UTwoMinGA_HitReactBase::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	}
 
 	ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(GetAvatarActorFromActorInfo());
-	ATwoMinBaseCharacter* InstigatorCharacter = Cast<ATwoMinBaseCharacter>(TriggerEventData->Instigator);
+
+	AActor* InstigatorActor = const_cast<AActor*>(TriggerEventData->Instigator.Get());
+	if (!InstigatorActor) return;
+	
+	ATwoMinBaseCharacter* InstigatorCharacter = Cast<ATwoMinBaseCharacter>(InstigatorActor);
 	if (!MyCharacter || !InstigatorCharacter)
 	{
 		CustomCancelAbility();

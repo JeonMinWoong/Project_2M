@@ -197,7 +197,11 @@ void UTwoMinGameplayAbility::CustomEventReceived(FGameplayEventData Payload)
 
 void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByMelee(FGameplayEventData Payload)
 {
-	ATwoMinBaseCharacter* BaseCharacter = Cast<ATwoMinBaseCharacter>(Payload.Instigator);
+	AActor* InstigatorActor = const_cast<AActor*>(Payload.Instigator.Get());
+	AActor* TargetActor = const_cast<AActor*>(Payload.Target.Get());
+	if (!InstigatorActor || !TargetActor) return;
+	
+	ATwoMinBaseCharacter* BaseCharacter = Cast<ATwoMinBaseCharacter>(InstigatorActor);
 	if (!BaseCharacter) return;
 
 	const ECharacterType CharacterType = BaseCharacter->GetCharacterType();
@@ -226,7 +230,7 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByMelee(FGameplayEvent
 		AttackPayload->Data = AttackInfoData;
 	}
 
-	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(Payload.Target);
+	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(TargetActor);
 	if (!TargetCharacter) return;
 	
 	Payload.OptionalObject = AttackPayload;
@@ -264,7 +268,10 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByMelee(FGameplayEvent
 
 void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByRange(FGameplayEventData Payload)
 {
-	ATwoMinBaseCharacter* BaseCharacter = Cast<ATwoMinBaseCharacter>(Payload.Instigator);
+	AActor* InstigatorActor = const_cast<AActor*>(Payload.Instigator.Get());
+	if (!InstigatorActor) return;
+	
+	ATwoMinBaseCharacter* BaseCharacter = Cast<ATwoMinBaseCharacter>(InstigatorActor);
 	if (!BaseCharacter) return;
 
 	const ECharacterType CharacterType = BaseCharacter->GetCharacterType();
@@ -374,7 +381,10 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 		bIsTargetGuard ? 1 : 0
 	);
 
-	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(Payload.Target);
+	AActor* TargetActor = const_cast<AActor*>(Payload.Target.Get());
+	if (!TargetActor) return;
+	
+	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(TargetActor);
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetCharacter);
 	
 	FActiveGameplayEffectHandle ResultEffectHandle =

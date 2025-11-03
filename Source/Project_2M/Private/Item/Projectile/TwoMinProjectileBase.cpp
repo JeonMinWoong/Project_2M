@@ -98,8 +98,12 @@ void ATwoMinProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 void ATwoMinProjectileBase::HandleApplyProjectileDamage(APawn* HitPawn, FGameplayEventData& PayLoad,
 	bool bIsTargetGuard) const
 {
-	ATwoMinBaseCharacter* BaseCharacter = Cast<ATwoMinBaseCharacter>(PayLoad.Instigator);
-	ATwoMinBaseCharacter* OtherCharacter = Cast<ATwoMinBaseCharacter>(PayLoad.Target);
+	AActor* MyActor = const_cast<AActor*>(PayLoad.Instigator.Get());
+	AActor* TargetActor = const_cast<AActor*>(PayLoad.Target.Get());
+	if (!MyActor || !TargetActor) return;
+	
+	ATwoMinBaseCharacter* BaseCharacter = Cast<ATwoMinBaseCharacter>(MyActor);
+	ATwoMinBaseCharacter* OtherCharacter = Cast<ATwoMinBaseCharacter>(TargetActor);
 	UAttackPayloadObject* AttackPayload = NewObject<UAttackPayloadObject>(BaseCharacter);
 	AttackPayload->Data = ProjectileAttackInfoData;
 	

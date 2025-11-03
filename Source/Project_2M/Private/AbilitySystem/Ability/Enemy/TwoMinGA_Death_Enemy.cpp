@@ -10,7 +10,10 @@ void UTwoMinGA_Death_Enemy::ActivateAbility(const FGameplayAbilitySpecHandle Han
                                             const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                             const FGameplayEventData* TriggerEventData)
 {
-	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(TriggerEventData->Instigator);
+	AActor* InstigatorActor = const_cast<AActor*>(TriggerEventData->Instigator.Get());
+	if (!InstigatorActor) return;
+	
+	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(InstigatorActor);
 	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(GetAvatarActorFromActorInfo());
 	if (PlayerCharacter && EnemyCharacter)
 	{

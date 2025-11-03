@@ -183,7 +183,11 @@ void UTwoMinGA_GuardBase::OnHitGuard(FGameplayEventData Payload)
 	}
 
 	ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(GetAvatarActorFromActorInfo());
-	ATwoMinBaseCharacter* InstigatorCharacter = Cast<ATwoMinBaseCharacter>(Payload.Instigator);
+
+	AActor* InstigatorActor = const_cast<AActor*>(Payload.Instigator.Get());
+	if (!InstigatorActor) return;
+	
+	ATwoMinBaseCharacter* InstigatorCharacter = Cast<ATwoMinBaseCharacter>(InstigatorActor);
 	if (!MyCharacter || !InstigatorCharacter)
 	{
 		CustomCancelAbility();
