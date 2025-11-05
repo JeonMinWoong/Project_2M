@@ -12,20 +12,22 @@ void UTwoMinEGA_DetectBase::ActivateAbility(const FGameplayAbilitySpecHandle Han
                                            const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                            const FGameplayEventData* TriggerEventData)
 {
-	if (!DetectAnimMontage)
-	{
-		CustomCancelAbility();
-		return;
-	}
-	
-	PlayToAnimMontage(DetectAnimMontage);
-
 	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(ActorInfo->OwnerActor);
 	UEnemyCombatComponent* EnemyCombatComponent = Cast<UEnemyCombatComponent>(EnemyCharacter->GetCombatComponent());
 	if (EnemyCombatComponent)
 	{
 		EnemyCombatComponent->SetIsBattlePossible(true);
 		EnemyCombatComponent->SetIsEquip(true);
+	}
+
+	if (DetectAnimMontage)
+	{
+		PlayToAnimMontage(DetectAnimMontage);
+	}
+	else
+	{
+		// 애니메이션이 없을 경우도 있다. ex) 궁수 : 즉시 종료.
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 	}
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);

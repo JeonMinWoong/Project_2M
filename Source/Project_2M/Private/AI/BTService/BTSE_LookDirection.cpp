@@ -46,8 +46,5 @@ void UBTSE_LookDirection::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	FRotator(0.f, LookAtRot.Yaw, 0.f), DeltaSeconds, RotationSpeed);
 		
 		OwningPawn->SetActorRotation(NewCharacterRot);
-		//
-		// TwoMinDebugHelper::Print(
-		// 	FString::Printf(TEXT("Value: %.2f"), OwningPawn->GetActorRotation().Yaw), FColor::Green);
 	}
 }
