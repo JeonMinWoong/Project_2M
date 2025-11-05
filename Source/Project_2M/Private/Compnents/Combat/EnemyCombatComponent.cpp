@@ -28,17 +28,18 @@ void UEnemyCombatComponent::OnHitTargetActor(AActor* HitActor)
 
 bool UEnemyCombatComponent::IsAttackCondition(const AActor* TargetActor, int AttackConditionIndex) const
 {
-	if (AttackConditions.IsEmpty() || !AttackConditions.Contains(AttackConditionIndex)) return false;
+	bool bIsSuccessful = false;
+	if (AttackConditions.IsEmpty() || !AttackConditions.Contains(AttackConditionIndex)) return bIsSuccessful;
 	
 	AActor* MyActor = GetOwner();
-	if (!MyActor) return false;
+	if (!MyActor) return bIsSuccessful;
 	
 	FEnemyAIAttackConditionData AttackCondition = AttackConditions[AttackConditionIndex];
 	float DistToBattleTarget = FVector::Dist(MyActor->GetActorLocation(), TargetActor->GetActorLocation());
 	
 	if (AttackCondition.MinAttackRange > DistToBattleTarget || DistToBattleTarget >= AttackCondition.MaxAttackRange)
 	{
-		return false;
+		return bIsSuccessful;
 	}
 
 	FVector MyForward = MyActor->GetActorForwardVector();
@@ -47,15 +48,31 @@ bool UEnemyCombatComponent::IsAttackCondition(const AActor* TargetActor, int Att
 
 	if (AngleDeg > AttackCondition.TargetAngle)
 	{
-		return false;
+		return bIsSuccessful;
 	}
 
 	if (AttackCondition.AbilityCooldownTag == FGameplayTag::EmptyTag)
 	{
-		return true;
+		bIsSuccessful = true;
 	}
-	
-	return UTwoMinFunctionLibrary::HasGameplayTag(MyActor, AttackCondition.AbilityCooldownTag) == false;
+	else
+	{
+		bIsSuccessful = UTwoMinFunctionLibrary::HasGameplayTag(MyActor, AttackCondition.AbilityCooldownTag) == false;
+	}
+
+	if (AttackCondition.ShouldNotExistTag != FGameplayTag::EmptyTag)
+	{
+		bIsSuccessful = bIsSuccessful ?
+		UTwoMinFunctionLibrary::HasGameplayTag(MyActor, AttackCondition.ShouldNotExistTag) == false : false;
+	}
+
+	if (AttackCondition.ShouldExistTag == FGameplayTag::EmptyTag)
+	{
+		return bIsSuccessful;
+	}
+
+	bIsSuccessful = bIsSuccessful ? UTwoMinFunctionLibrary::HasGameplayTag(MyActor, AttackCondition.ShouldExistTag) : false;
+	return bIsSuccessful;
 }
 
 bool UEnemyCombatComponent::IsEvenOneAttackCondition(const AActor* TargetActor) const

@@ -220,4 +220,10 @@ struct FEnemyAIAttackConditionData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FGameplayTag AbilityCooldownTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FGameplayTag ShouldNotExistTag;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FGameplayTag ShouldExistTag;
 };

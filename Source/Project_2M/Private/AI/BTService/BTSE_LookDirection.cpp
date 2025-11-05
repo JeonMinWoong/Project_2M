@@ -4,6 +4,7 @@
 #include "AI/BTService/BTSE_LookDirection.h"
 
 #include "AIController.h"
+#include "TwoMinDebugHelper.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -40,8 +41,13 @@ void UBTSE_LookDirection::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 
 	if (OwningPawn && TargetActor)
 	{
-		const FRotator LookAtRot = UKismetMathLibrary::FindLookAtRotation(OwningPawn->GetActorLocation(),
-			TargetActor->GetActorLocation());
-		OwningPawn->SetActorRotation(LookAtRot);
+		const FRotator LookAtRot = (TargetActor->GetActorLocation() - OwningPawn->GetActorLocation()).Rotation();
+		const FRotator NewCharacterRot = FMath::RInterpTo(OwningPawn->GetActorRotation(),
+	FRotator(0.f, LookAtRot.Yaw, 0.f), DeltaSeconds, RotationSpeed);
+		
+		OwningPawn->SetActorRotation(NewCharacterRot);
+		//
+		// TwoMinDebugHelper::Print(
+		// 	FString::Printf(TEXT("Value: %.2f"), OwningPawn->GetActorRotation().Yaw), FColor::Green);
 	}
 }

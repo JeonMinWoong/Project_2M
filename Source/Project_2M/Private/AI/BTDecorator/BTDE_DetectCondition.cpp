@@ -21,5 +21,8 @@ bool UBTDE_DetectCondition::CalculateRawConditionValue(UBehaviorTreeComponent& O
 	if (!TargetObj) return false;
 
 	const float DistToTarget = BB->GetValueAsFloat(TwoMinBBKeys::DistToTarget);
-	return DetectRadius >= DistToTarget;
+	UEnemyCombatComponent* CombatComponent = GetEnemyCombatComponent(OwnerComp);
+	if (!CombatComponent) return false;
+	
+	return DetectRadius >= DistToTarget && CombatComponent->IsBattlePossible() == false && CombatComponent->IsEquip() == false;
 }

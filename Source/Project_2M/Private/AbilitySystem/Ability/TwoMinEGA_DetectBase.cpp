@@ -19,6 +19,15 @@ void UTwoMinEGA_DetectBase::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	}
 	
 	PlayToAnimMontage(DetectAnimMontage);
+
+	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(ActorInfo->OwnerActor);
+	UEnemyCombatComponent* EnemyCombatComponent = Cast<UEnemyCombatComponent>(EnemyCharacter->GetCombatComponent());
+	if (EnemyCombatComponent)
+	{
+		EnemyCombatComponent->SetIsBattlePossible(true);
+		EnemyCombatComponent->SetIsEquip(true);
+	}
+	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
@@ -26,12 +35,5 @@ void UTwoMinEGA_DetectBase::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
-	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(ActorInfo->OwnerActor);
-	UEnemyCombatComponent* EnemyCombatComponent = Cast<UEnemyCombatComponent>(EnemyCharacter->GetCombatComponent());
-	if (EnemyCombatComponent)
-	{
-		EnemyCombatComponent->SetIsBattlePossible(true);	
-	}
-	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }

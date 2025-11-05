@@ -59,6 +59,15 @@ private:
 	bool bIsBattlePossible = false;
 	
 #pragma endregion
+
+#pragma region Detect
+
+	UPROPERTY(EditAnywhere, Category = "WeaponEquipPossible")
+	bool bIsEquipPossible = false;
+	
+	bool bIsEquip = false;
+	
+#pragma endregion
 	
 #pragma region Patrol
 	
@@ -80,6 +89,13 @@ private:
 public:
 	FORCEINLINE bool IsBattlePossible() const { return bIsBattlePossible; }
 	FORCEINLINE void SetIsBattlePossible(bool InIsBattlePossible) { bIsBattlePossible = InIsBattlePossible; }
+	
+	FORCEINLINE bool IsEquip() const { return bIsEquipPossible ? bIsEquip : false; }
+	FORCEINLINE void SetIsEquip(bool InIsEquip)
+	{
+		if (bIsEquipPossible == false)return;
+		bIsEquip = InIsEquip;
+	}
 	
 	FORCEINLINE bool IsPatrol() const { return bIsPatrol; }
 	FORCEINLINE void SetIsPatrol(bool InIsPatrol) { bIsPatrol = InIsPatrol; }

@@ -49,6 +49,11 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Melee_1, "Enemy.Ability.Melee.1");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Melee_2, "Enemy.Ability.Melee.2");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Melee_3, "Enemy.Ability.Melee.3");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Melee_4, "Enemy.Ability.Melee.4");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Melee_5, "Enemy.Ability.Melee.5");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Melee_6, "Enemy.Ability.Melee.6");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Melee_100, "Enemy.Ability.Melee.100");
+	
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Range, "Enemy.Ability.Range");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Range_1, "Enemy.Ability.Range.1");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Range_2, "Enemy.Ability.Range.2");
@@ -59,9 +64,17 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Melee_1, "Enemy.Cooldown.Ability.Melee.1");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Melee_2, "Enemy.Cooldown.Ability.Melee.2");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Melee_3, "Enemy.Cooldown.Ability.Melee.3");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Melee_4, "Enemy.Cooldown.Ability.Melee.4");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Melee_5, "Enemy.Cooldown.Ability.Melee.5");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Melee_6, "Enemy.Cooldown.Ability.Melee.6");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Melee_100, "Enemy.Cooldown.Ability.Melee.100");
+	
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Range_1, "Enemy.Cooldown.Ability.Range.1");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Range_2, "Enemy.Cooldown.Ability.Range.2");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Range_3, "Enemy.Cooldown.Ability.Range.3");
+
+	// Enemy State Tags
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_Running, "Enemy.State.Running");
 	
 	// Shard Ability Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_HitReact, "Shared.Ability.HitReact");
