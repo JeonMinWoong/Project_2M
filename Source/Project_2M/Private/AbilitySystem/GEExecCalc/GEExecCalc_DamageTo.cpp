@@ -12,12 +12,14 @@ struct FTwoMinDamageCapture
 	DECLARE_ATTRIBUTE_CAPTUREDEF(AttackPower)
 	DECLARE_ATTRIBUTE_CAPTUREDEF(DefensePower)
 	DECLARE_ATTRIBUTE_CAPTUREDEF(DamageTo)
+	DECLARE_ATTRIBUTE_CAPTUREDEF(GroggyTo)
 
 	FTwoMinDamageCapture()
 	{
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UTwoMinAttributeSet, AttackPower, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UTwoMinAttributeSet, DefensePower, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UTwoMinAttributeSet, DamageTo, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UTwoMinAttributeSet, GroggyTo, Target, false);
 	}
 };
 
@@ -32,10 +34,12 @@ UGEExecCalc_DamageTo::UGEExecCalc_DamageTo()
 	RelevantAttributesToCapture.Add(GetTwoMinDamageCapture().AttackPowerDef);
 	RelevantAttributesToCapture.Add(GetTwoMinDamageCapture().DefensePowerDef);
 	RelevantAttributesToCapture.Add(GetTwoMinDamageCapture().DamageToDef);
+	RelevantAttributesToCapture.Add(GetTwoMinDamageCapture().GroggyToDef);
 
 	SourceUnBreakAttackTag = TwoMinGameplayTag::Shared_State_UnBreakAttack;
 	TargetGuardStateTag = TwoMinGameplayTag::Shared_State_Guarding;
 	TargetInvincibleStateTag = TwoMinGameplayTag::Shared_State_Invincible;
+	TargetGroggyStateTag = TwoMinGameplayTag::Enemy_State_Groggy;
 }
 
 void UGEExecCalc_DamageTo::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -52,6 +56,7 @@ void UGEExecCalc_DamageTo::Execute_Implementation(const FGameplayEffectCustomExe
 	bool bIsUnBreakAttack = HasStateTag(ExecutionParams.GetSourceAbilitySystemComponent(), SourceUnBreakAttackTag);
 	bool bIsInvincible = HasStateTag(ExecutionParams.GetTargetAbilitySystemComponent(), TargetInvincibleStateTag);
 	bool bIsGuard = HasStateTag(ExecutionParams.GetTargetAbilitySystemComponent(), TargetGuardStateTag);
+	bool bIsGroggy = HasStateTag(ExecutionParams.GetTargetAbilitySystemComponent(), TargetGroggyStateTag);
 	
 	float SourceAttackPower = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
@@ -61,6 +66,7 @@ void UGEExecCalc_DamageTo::Execute_Implementation(const FGameplayEffectCustomExe
 	);
 
 	float BeforeAttackDamageCoef = 0.f;
+	float GroggyAmount = 0.f;
 	for (const TPair<FGameplayTag, float>& TagMagnitude : EffectSpec.SetByCallerTagMagnitudes)
 	{
 		if (TagMagnitude.Key.MatchesTagExact(TwoMinGameplayTag::Shared_SetByCaller_BaseDamage))
@@ -71,6 +77,11 @@ void UGEExecCalc_DamageTo::Execute_Implementation(const FGameplayEffectCustomExe
 		if (TagMagnitude.Key.MatchesTagExact(TwoMinGameplayTag::Shared_SetByCaller_GaurdSuccess))
 		{
 			bIsGuard = TagMagnitude.Value > 0 ? bIsGuard : false; 
+		}
+
+		if (TagMagnitude.Key.MatchesTagExact(TwoMinGameplayTag::Shared_SetByCaller_GroggyAmount))
+		{
+			GroggyAmount = bIsGroggy ? 0 : TagMagnitude.Value;
 		}
 	}
 
@@ -110,7 +121,18 @@ void UGEExecCalc_DamageTo::Execute_Implementation(const FGameplayEffectCustomExe
 				EGameplayModOp::Override,
 				FinalDamageDone
 			)
-		);
+	);
+
+	if (GroggyAmount != 0.f)
+	{
+		OutExecutionOutput.AddOutputModifier(
+				FGameplayModifierEvaluatedData(
+					GetTwoMinDamageCapture().GroggyToProperty,
+					EGameplayModOp::Override,
+					GroggyAmount
+				)
+		);	
+	}
 }
 
 bool UGEExecCalc_DamageTo::HasStateTag(const UAbilitySystemComponent* TargetASC,

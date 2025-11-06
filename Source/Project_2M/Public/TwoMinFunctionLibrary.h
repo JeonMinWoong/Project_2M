@@ -32,4 +32,7 @@ public:
 
 	UFUNCTION()
 	static void RemoveGameplayTagToActor(AActor* InActor, FGameplayTag TagToAdd);
+
+	UFUNCTION()
+	static float AttackTypeChangeToAmount(EAttackType AttackType);
 };

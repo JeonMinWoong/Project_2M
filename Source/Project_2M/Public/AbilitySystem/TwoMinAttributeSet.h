@@ -76,6 +76,22 @@ public:
 	FGameplayAttributeData GiveExperience;
 	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, GiveExperience)
 
+	UPROPERTY(BlueprintReadOnly, Category = "Groggy")
+	FGameplayAttributeData MaxGroggy;
+	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, MaxGroggy)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Groggy")
+	FGameplayAttributeData CurrentGroggy;
+	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, CurrentGroggy)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Groggy")
+	FGameplayAttributeData GroggyTo;
+	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, GroggyTo)
+
+	UPROPERTY(BlueprintReadOnly, Category = "Groggy")
+	FGameplayAttributeData DecreaseGroggyDelay;
+	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, DecreaseGroggyDelay)
+
 private:
 	int32 NeedToExperienceValue(ATwoMinPlayerCharacter* PlayerCharacter, int32 InCurrentLevel) const;
 	

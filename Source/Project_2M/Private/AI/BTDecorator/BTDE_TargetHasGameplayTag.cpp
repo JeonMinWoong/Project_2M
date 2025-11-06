@@ -20,6 +20,14 @@ bool UBTDE_TargetHasGameplayTag::CalculateRawConditionValue(UBehaviorTreeCompone
 
 	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(AIController->GetPawn());
 	if (!EnemyCharacter) return false;
+
+	for (auto CheckTag : StopTags)
+	{
+		if (UTwoMinFunctionLibrary::HasGameplayTag(EnemyCharacter, CheckTag))
+		{
+			return true;
+		}
+	}
 	
-	return UTwoMinFunctionLibrary::HasGameplayTag(EnemyCharacter, RequiredTag);
+	return false;
 }

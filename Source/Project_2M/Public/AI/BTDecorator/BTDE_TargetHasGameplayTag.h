@@ -22,6 +22,7 @@ protected:
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const;
 
 private:
-	UPROPERTY(EditAnywhere, Category = "CheckTag")
-	FGameplayTag RequiredTag;
+	UPROPERTY(EditAnywhere, Category = "StopTags")
+	FGameplayTagContainer StopTags;
+	
 };

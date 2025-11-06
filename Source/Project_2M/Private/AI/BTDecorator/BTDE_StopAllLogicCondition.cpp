@@ -4,6 +4,7 @@
 #include "AI/BTDecorator/BTDE_StopAllLogicCondition.h"
 
 #include "AIController.h"
+#include "TwoMinFunctionLibrary.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/TwoMinBaseCharacter.h"
 #include "ToMinTypes/TwoMinBlackboardKeys.h"

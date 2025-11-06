@@ -31,4 +31,7 @@ private:
 
 	UPROPERTY()
 	FGameplayTag TargetInvincibleStateTag;
+
+	UPROPERTY()
+	FGameplayTag TargetGroggyStateTag;
 };

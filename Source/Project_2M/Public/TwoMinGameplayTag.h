@@ -60,6 +60,7 @@ namespace TwoMinGameplayTag
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Ability_Range_2);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Ability_Range_3);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Ability_Detect);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Ability_Groggy);
 
 	// Enemy Cooldown Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Cooldown_Ability_Melee_1);
@@ -74,8 +75,13 @@ namespace TwoMinGameplayTag
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Cooldown_Ability_Range_2);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Cooldown_Ability_Range_3);
 
+	// Enemy Event Tag
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Event_Groggy);
+	
 	// Enemy State Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_State_Running);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_State_Groggy);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_State_DecreaseGroggy);
 	
 	// Shard Ability Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Ability_HitReact);
@@ -87,6 +93,7 @@ namespace TwoMinGameplayTag
 	// Shard SetByCaller
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_SetByCaller_BaseDamage);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_SetByCaller_GaurdSuccess);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_SetByCaller_GroggyAmount);
 	
 	// Shard Event Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Shared_Event_MeleeHit)

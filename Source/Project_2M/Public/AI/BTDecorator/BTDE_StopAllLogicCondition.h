@@ -16,4 +16,5 @@ class PROJECT_2M_API UBTDE_StopAllLogicCondition : public UBTDecorator_Enemy
 	
 protected:
 	virtual bool CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const override;
+	
 };

@@ -32,6 +32,11 @@ UTwoMinAttributeSet::UTwoMinAttributeSet()
 	InitDamageTo(1.f);
 
 	InitGiveExperience(0);
+
+	InitMaxGroggy(1.f);
+	InitCurrentGroggy(0.f);
+	InitGroggyTo(0.f);
+	InitDecreaseGroggyDelay(1.f);
 }
 
 void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
@@ -120,6 +125,13 @@ void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 		SetGiveExperience(NewGiveExperience);
 	}
 
+	if (Data.EvaluatedData.Attribute == GetCurrentGroggyAttribute())
+	{
+		const float NewCurrentGroggy = FMath::Clamp(GetCurrentGroggy(), 0.f, GetMaxGroggy());
+
+		SetCurrentGroggy(NewCurrentGroggy);
+	}
+
 	if (Data.EvaluatedData.Attribute == GetDamageToAttribute())
 	{
 		const float OldHealth = GetCurrentHealth();
@@ -145,6 +157,34 @@ void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 				TwoMinGameplayTag::Shared_Event_Death,
 				Payload
 			);
+		}
+	}
+
+	if (Data.EvaluatedData.Attribute == GetGroggyToAttribute())
+	{
+		const float OldGroggy = GetCurrentGroggy();
+		const float GroggyToValue = GetGroggyTo();
+
+		const float NewCurrentGroggy = FMath::Clamp(OldGroggy + GroggyToValue, 0.f, GetMaxGroggy());
+
+		SetCurrentGroggy(NewCurrentGroggy);
+
+		if (GetCurrentGroggy() >= GetMaxGroggy())
+		{
+			AActor* Instigator = Data.EffectSpec.GetEffectContext().GetInstigator();
+			if (!Instigator) return;
+
+			FGameplayEventData Payload;
+			Payload.Instigator = Instigator;
+			Payload.Target = Data.Target.GetAvatarActor();
+			
+			UTwoMinFunctionLibrary::SendToGameplayEffectEvent(
+				Data.Target.GetAvatarActor(),
+				TwoMinGameplayTag::Enemy_Event_Groggy,
+				Payload
+			);
+
+			SetCurrentGroggy(0);
 		}
 	}
 }

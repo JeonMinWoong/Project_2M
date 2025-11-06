@@ -381,6 +381,18 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 		bIsTargetGuard ? 1 : 0
 	);
 
+	AActor* InstigatorActor = const_cast<AActor*>(Payload.Instigator.Get());
+	if (!InstigatorActor) return;
+	
+	if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(InstigatorActor))
+	{
+		EffectSpecHandle.Data->SetSetByCallerMagnitude(
+			TwoMinGameplayTag::Shared_SetByCaller_GroggyAmount,
+			UTwoMinFunctionLibrary::AttackTypeChangeToAmount(AttackPayload->Data.AttackType)
+		);
+	}
+	
+
 	AActor* TargetActor = const_cast<AActor*>(Payload.Target.Get());
 	if (!TargetActor) return;
 	

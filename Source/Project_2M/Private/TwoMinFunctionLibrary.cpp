@@ -71,3 +71,16 @@ void UTwoMinFunctionLibrary::RemoveGameplayTagToActor(AActor* InActor, FGameplay
 		Asc->RemoveLooseGameplayTag(TagToAdd);
 	}
 }
+
+float UTwoMinFunctionLibrary::AttackTypeChangeToAmount(EAttackType AttackType)
+{
+	switch (AttackType)
+	{
+	case EAttackType::Light:
+		return 10;
+	case EAttackType::Heavy:
+		return 20;
+	default:
+		return 0;
+	}
+}

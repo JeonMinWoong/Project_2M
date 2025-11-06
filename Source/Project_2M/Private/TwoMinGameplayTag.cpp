@@ -59,6 +59,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Range_2, "Enemy.Ability.Range.2");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Range_3, "Enemy.Ability.Range.3");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Detect, "Enemy.Ability.Detect");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Groggy, "Enemy.Ability.Groggy");
 
 	// Enemy Cooldown Tags
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Melee_1, "Enemy.Cooldown.Ability.Melee.1");
@@ -73,8 +74,13 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Range_2, "Enemy.Cooldown.Ability.Range.2");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Range_3, "Enemy.Cooldown.Ability.Range.3");
 
+	// Enemy Event Tag
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Event_Groggy, "Enemy.Event.Groggy");
+	
 	// Enemy State Tags
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_Running, "Enemy.State.Running");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_Groggy, "Enemy.State.Groggy");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_DecreaseGroggy, "Enemy.State.DecreaseGroggy");
 	
 	// Shard Ability Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_HitReact, "Shared.Ability.HitReact");
@@ -86,6 +92,7 @@ namespace TwoMinGameplayTag
 	// Shard SetByCaller
 	UE_DEFINE_GAMEPLAY_TAG(Shared_SetByCaller_BaseDamage, "Shared.SetByCaller.BaseDamage");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_SetByCaller_GaurdSuccess, "Shared.SetByCaller.GuardSuccess");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_SetByCaller_GroggyAmount, "Shared.SetByCaller.GroggyAmount");
 	
 	// Shard Event Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_MeleeHit, "Shared.Event.MeleeHit");

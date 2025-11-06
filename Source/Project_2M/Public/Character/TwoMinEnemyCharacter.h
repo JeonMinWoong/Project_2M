@@ -23,6 +23,8 @@ public:
 	virtual UBaseUIComponent* GetBaseUIComponent() const override;
 	virtual UEnemyUIComponent* GetEnemyUIComponent() const override;
 
+	FTimerHandle DecreaseGroggyTimerHandle;
+	
 protected:
 	//~ Begin APawn Interface.
 	virtual void PossessedBy(AController* NewController) override;
