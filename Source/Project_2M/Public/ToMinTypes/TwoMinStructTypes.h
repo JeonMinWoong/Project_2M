@@ -61,6 +61,27 @@ struct FTwoMinPlayerAutoTargetingData
 };
 
 USTRUCT(BlueprintType)
+struct FExecutionData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int ExecutionTotalScore;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float ExecutionRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float ExecutionFrontAngle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float ExecutionBackAngle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float ExecutionDistance;
+};
+
+USTRUCT(BlueprintType)
 struct FTwoMinPlayerAttackApproachData
 {
 	GENERATED_BODY()
@@ -146,22 +167,27 @@ struct FAttackInfoData : public FGameplayAbilityTargetData
 {
 	GENERATED_BODY()
 
+	FAttackInfoData() : AttackType(), AttackDamageCoef(), HitData(), HitDirectionNumber(0) {}
+	
+	FAttackInfoData(EAttackType InAttackType, float InAttackDamageCoef) : AttackType(InAttackType),
+	 AttackDamageCoef(InAttackDamageCoef), HitData(), HitDirectionNumber(0) { }
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	EAttackType AttackType = EAttackType::Light;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float AttackDamageCoef;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(EditCondition="AttackType != EAttackType::Execution"))
 	FHitData HitData;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(EditCondition="AttackType != EAttackType::Execution"))
 	FHitStopAttackerData HitStopAttackerData;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(EditCondition="AttackType != EAttackType::Execution"))
 	FHitStopVictimData HitStopVictimData;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(EditCondition="AttackType != EAttackType::Execution"))
 	int HitDirectionNumber;
 
 	virtual UScriptStruct* GetScriptStruct() const override
@@ -226,4 +252,36 @@ struct FEnemyAIAttackConditionData
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FGameplayTag ShouldExistTag;
+};
+
+
+USTRUCT(BlueprintType)
+struct FExecutionInfoData : public FGameplayAbilityTargetData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
+	TMap<int32, FAttackInfoData> AttackInfosData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
+	float SnapSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
+	float SnapMaxDuration;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
+	float SnapDistance;
+};
+
+UCLASS(BlueprintType)
+class UExecutionPayloadObject : public UObject
+{
+	GENERATED_BODY()
+	
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
+	bool bIsExecutionForward;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
+	int32 ExecutionNumber;
 };

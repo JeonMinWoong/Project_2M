@@ -52,6 +52,11 @@ UAutoTargetingComponent* UBaseCombatComponent::GetAutoTargetingComponent() const
 	return nullptr;
 }
 
+UExecutionComponent* UBaseCombatComponent::GetExecutionComponent() const
+{
+	return nullptr;
+}
+
 void UBaseCombatComponent::ClearOverlappingActors()
 {
 	OverlappingActors.Empty();

@@ -23,7 +23,8 @@ public:
 
 	virtual UBaseCombatComponent* GetCombatComponent() const;
 	virtual UBaseUIComponent* GetBaseUIComponent() const override;
-
+	virtual void DeathProcess();
+	
 	FTimerHandle HitStopTimerHandle;
 	
 protected:
@@ -43,6 +44,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "MotionWarping")
 	UMotionWarpingComponent* MotionWarpingComponent;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Death")
+	float RemoveDelay;
+	
 	UPROPERTY()
 	ECharacterType CharacterType;
 	

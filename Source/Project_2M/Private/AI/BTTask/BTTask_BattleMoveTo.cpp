@@ -35,8 +35,11 @@ void UBTTask_BattleMoveTo::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 
 	AActor* TargetActor = Cast<AActor>(Object);
 	if (!TargetActor) return;
-	
-	if (EnemyCombatComponent->IsEvenOneAttackCondition(TargetActor) == false) return;
 
+	bool bIsStopBattleMove =
+		EnemyCombatComponent->IsStopBattleMoveGameplayContainer() ||
+			EnemyCombatComponent->IsEvenOneAttackCondition(TargetActor);
+	if (bIsStopBattleMove == false) return;
+	
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 }

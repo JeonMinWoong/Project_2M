@@ -54,7 +54,8 @@ enum class EAttackType : uint8
 	None = 0,
 	Light,
 	Heavy,
-	Ungaurdable
+	Ungaurdable,
+	Execution,
 };
 
 UENUM(BlueprintType)
@@ -84,3 +85,13 @@ enum class EAttackRangeType : uint8
 	Melee,
 	Range
 };
+
+UENUM(BlueprintType)
+enum class EMonsterType : uint8
+{
+	Practice,
+	Normal,
+	Elite,
+	Boss,
+};
+

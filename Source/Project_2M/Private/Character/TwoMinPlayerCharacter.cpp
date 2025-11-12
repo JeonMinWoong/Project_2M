@@ -208,6 +208,11 @@ void ATwoMinPlayerCharacter::Input_Look(const FInputActionValue& InputActionValu
 	{
 		return;
 	}
+
+	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_Execution_Caster))
+	{
+		return;
+	}
 	
 	if (LookAxisVector.X != 0.f)
 	{

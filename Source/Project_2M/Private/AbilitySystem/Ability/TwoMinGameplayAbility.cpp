@@ -14,9 +14,12 @@
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "AbilitySystem/TwoMinAttributeSet.h"
 #include "AbilitySystem/Ability/TwoMinGA_AttackBase.h"
+#include "AbilitySystem/Ability/TwoMinGA_ExecutionCaster.h"
 #include "AbilitySystem/Ability/TwoMinGA_GuardBase.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEGA_AttackBase.h"
 #include "Character/TwoMinPlayerCharacter.h"
+#include "Compnents/ExecutionComponent.h"
+#include "Compnents/Combat/BaseCombatComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 
@@ -331,6 +334,43 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByRange(FGameplayEvent
 	}
 }
 
+void UTwoMinGameplayAbility::OnExecutionGameplayEventReceive(FGameplayEventData Payload)
+{
+	AActor* InstigatorActor = const_cast<AActor*>(Payload.Instigator.Get());
+	if (!InstigatorActor) return;
+	
+	ATwoMinBaseCharacter* BaseCharacter = Cast<ATwoMinBaseCharacter>(InstigatorActor);
+	if (!BaseCharacter) return;
+
+	UBaseCombatComponent* CombatComponent = BaseCharacter->GetCombatComponent();
+	if (!CombatComponent)return;
+
+	UExecutionComponent* ExecutionComponent = CombatComponent->GetExecutionComponent();
+	if (!ExecutionComponent) return;
+
+	ATwoMinBaseCharacter* ExecutionTarget = ExecutionComponent->GetExecutionTarget();
+	
+	if (!ExecutionTarget) return;
+	UAttackPayloadObject* AttackPayload = NewObject<UAttackPayloadObject>(BaseCharacter);
+	if (!AttackPayload) return;
+	
+	UTwoMinGA_ExecutionCaster* CasterExecution = Cast<UTwoMinGA_ExecutionCaster>(this);
+	if (!CasterExecution) return;
+
+	const FAttackInfoData& AttackInfoData = CasterExecution->GetAttackInfoData();
+	AttackPayload->Data = AttackInfoData;
+	
+	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(ExecutionTarget);
+	if (!TargetCharacter) return;
+	
+	Payload.OptionalObject = AttackPayload;
+	Payload.Target = ExecutionTarget;
+	
+	DamageToEffectSpecHandle(GetAttackGameplayEffectClass(), Payload, false, true);
+
+	CasterExecution->AddComboCount(Payload);
+}
+
 void UTwoMinGameplayAbility::OnResetAttackCountGameplayEffectReceive(FGameplayEventData Payload)
 {
 	
@@ -350,7 +390,7 @@ void UTwoMinGameplayAbility::CustomInterruptedAbility()
 }
 
 void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffect> EffectClass,
-                                                      FGameplayEventData Payload, bool bIsTargetGuard)
+	FGameplayEventData Payload, bool bIsTargetGuard, bool bIsExecution)
 {
 	if (!EffectClass) return;
 	
@@ -372,19 +412,25 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 	}
 	
 	EffectSpecHandle.Data->SetSetByCallerMagnitude(
+		bIsExecution ?
+		TwoMinGameplayTag::Shared_SetByCaller_ExecutionDamage :
 		TwoMinGameplayTag::Shared_SetByCaller_BaseDamage,
 		AttackPayload->Data.AttackDamageCoef
 	);
 
-	EffectSpecHandle.Data->SetSetByCallerMagnitude(
-		TwoMinGameplayTag::Shared_SetByCaller_GaurdSuccess,
-		bIsTargetGuard ? 1 : 0
-	);
+	if (bIsExecution == false)
+	{
+		EffectSpecHandle.Data->SetSetByCallerMagnitude(
+			TwoMinGameplayTag::Shared_SetByCaller_GaurdSuccess,
+			bIsTargetGuard ? 1 : 0
+		);	
+	}
 
 	AActor* InstigatorActor = const_cast<AActor*>(Payload.Instigator.Get());
 	if (!InstigatorActor) return;
-	
-	if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(InstigatorActor))
+
+	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(InstigatorActor);
+	if (bIsExecution == false && PlayerCharacter)
 	{
 		EffectSpecHandle.Data->SetSetByCallerMagnitude(
 			TwoMinGameplayTag::Shared_SetByCaller_GroggyAmount,
@@ -392,7 +438,6 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 		);
 	}
 	
-
 	AActor* TargetActor = const_cast<AActor*>(Payload.Target.Get());
 	if (!TargetActor) return;
 	
@@ -410,6 +455,11 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 		return;
 	}
 
+	if (bIsExecution)
+	{
+		return;
+	}
+	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 		TargetCharacter,
 		bIsTargetGuard ? TwoMinGameplayTag::Shared_Event_HitGuard : TwoMinGameplayTag::Shared_Event_HitReact,

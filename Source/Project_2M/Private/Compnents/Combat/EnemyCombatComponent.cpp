@@ -114,6 +114,20 @@ bool UEnemyCombatComponent::IsEvenOneAttackCooldown()
 	return bCanAttack;
 }
 
+bool UEnemyCombatComponent::IsStopBattleMoveGameplayContainer()
+{
+	bool bHasStopBattle = false;
+	for (auto GameplayTag : StopBattleTags)
+	{
+		if (UTwoMinFunctionLibrary::HasGameplayTag(GetOwner(), GameplayTag))
+		{
+			bHasStopBattle = true;
+		}
+	}
+	
+	return bHasStopBattle;
+}
+
 
 int32 UEnemyCombatComponent::GetNextPatrolPointIndex()
 {

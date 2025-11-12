@@ -82,6 +82,9 @@ protected:
 	virtual void OnAttackGameplayEventReceivedByRange(FGameplayEventData Payload);
 
 	UFUNCTION()
+	virtual void OnExecutionGameplayEventReceive(FGameplayEventData Payload);
+	
+	UFUNCTION()
 	virtual void OnResetAttackCountGameplayEffectReceive(FGameplayEventData Payload);
 	
 	UFUNCTION()
@@ -92,7 +95,7 @@ protected:
 
 	UFUNCTION()
 	virtual void DamageToEffectSpecHandle(TSubclassOf<UGameplayEffect> EffectClass, FGameplayEventData Payload,
-		bool bIsTargetGuard);
+		bool bIsTargetGuard, bool bIsExecution = false);
 
 	void HitStopProcess(AActor* HitStopCharacter, const float HitStopDelay);
 	

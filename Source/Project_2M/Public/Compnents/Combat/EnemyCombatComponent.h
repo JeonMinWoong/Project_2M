@@ -29,9 +29,13 @@ public:
 	bool IsAttackCondition(const AActor* TargetActor, int AttackConditionIndex) const;
 	bool IsEvenOneAttackCondition(const AActor* TargetActor) const;
 	bool IsEvenOneAttackCooldown();
+	bool IsStopBattleMoveGameplayContainer();
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Battle|AttackConditions")
 	TMap<int, FEnemyAIAttackConditionData> AttackConditions;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Battle|StopBattleMoveTags")
+	FGameplayTagContainer StopBattleTags;
 	
 #pragma endregion
 	

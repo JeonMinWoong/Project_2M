@@ -12,7 +12,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
-ATwoMinProjectileBase::ATwoMinProjectileBase()
+ATwoMinProjectileBase::ATwoMinProjectileBase() : ProjectileAttackInfoData()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -23,7 +23,7 @@ ATwoMinProjectileBase::ATwoMinProjectileBase()
 	ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
 	ProjectileCollisionBox->OnComponentHit.AddUniqueDynamic(this, &ThisClass::OnProjectileHit);
 	SetRootComponent(ProjectileCollisionBox);
-	
+
 	ProjectileMovementComp = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComp"));
 	ProjectileMovementComp->InitialSpeed = InitialSpeed;
 	ProjectileMovementComp->MaxSpeed = MaxSpeed;
@@ -34,7 +34,7 @@ ATwoMinProjectileBase::ATwoMinProjectileBase()
 }
 
 void ATwoMinProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult)
+                                            UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult)
 {
 	APawn* HitPawn = Cast<APawn>(OtherActor);
 	APawn* OwnerPawn = Cast<APawn>(GetOwner());

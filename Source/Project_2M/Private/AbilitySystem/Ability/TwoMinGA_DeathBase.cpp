@@ -8,11 +8,6 @@
 #include "TwoMinGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Character/TwoMinBaseCharacter.h"
-#include "Compnents/Combat/BaseCombatComponent.h"
-#include "Compnents/UI/BaseUIComponent.h"
-#include "Components/CapsuleComponent.h"
-#include "Item/Weapon/TwoMinWeaponBase.h"
-#include "ToMinTypes/TwoMinStructTypes.h"
 
 void UTwoMinGA_DeathBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                           const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
@@ -46,12 +41,6 @@ void UTwoMinGA_DeathBase::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
-	ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(GetAvatarActorFromActorInfo());
-	if (MyCharacter)
-	{
-		MyCharacter->GetCombatComponent()->SetIsAlive(false);
-	}
-	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
@@ -66,27 +55,7 @@ void UTwoMinGA_DeathBase::CustomBlendOutAbility()
 {
 	if (ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(GetAvatarActorFromActorInfo()))
 	{
-		MyCharacter->GetMesh()->bPauseAnims = true;
-		
-		MyCharacter->GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		MyCharacter->GetBaseUIComponent()->RemoveFromRoot();
-
-		TArray<ATwoMinWeaponBase*> WeaponBases = MyCharacter->GetCombatComponent()->GetCharacterCurrentEquippedWeapon();
-		for (ATwoMinWeaponBase* WeaponBase : WeaponBases)
-		{
-			if (WeaponBase)
-			{
-				if (RemoveDelay >= 0)
-				{
-					WeaponBase->SetLifeSpan(RemoveDelay);	
-				}
-			}
-		}
-		
-		if (RemoveDelay >= 0)
-		{
-			MyCharacter->SetLifeSpan(RemoveDelay);	
-		}
+		MyCharacter->DeathProcess();
 	}
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);

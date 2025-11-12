@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Character/TwoMinEnemyCharacter.h"
+#include "Compnents/ExecutionComponent.h"
 #include "Compnents/Combat/BaseCombatComponent.h"
 #include "PlayerCombatComponent.generated.h"
 
@@ -20,8 +22,13 @@ public:
 
 	virtual void OnHitTargetActor(AActor* HitActor) override;
 	virtual UAutoTargetingComponent* GetAutoTargetingComponent() const override;
+	virtual UExecutionComponent* GetExecutionComponent() const override;
 	
 private:
 	UPROPERTY(EditAnywhere)
 	UAutoTargetingComponent* AutoTargetComponent;
+	
+	UPROPERTY(EditAnywhere)
+	UExecutionComponent* ExecutionComponent;
+	
 };

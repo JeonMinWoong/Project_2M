@@ -44,9 +44,15 @@ private:
 	UWidgetComponent* EnemyHealthWidgetComponent;
 	
 	/** CharacterInfo **/
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|MonsterType")
+	EMonsterType MonsterType = EMonsterType::Normal;
+
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|CharacterMovement")
 	float MaxWalkSpeed = 300.f;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|CharacterMovement")
 	FRotator CharacterRotationRate = FRotator(0.f, 500.f, 0.f);
+
+public:
+	EMonsterType GetMonsterType() const { return MonsterType; };
 };

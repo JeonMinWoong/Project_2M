@@ -8,6 +8,7 @@
 #include "ToMinTypes/TwoMinEnumTypes.h"
 #include "BaseCombatComponent.generated.h"
 
+class UExecutionComponent;
 class UAutoTargetingComponent;
 class ATwoMinWeaponBase;
 /**
@@ -27,7 +28,7 @@ public:
 		EToggleDamageType::None);
 	
 	virtual UAutoTargetingComponent* GetAutoTargetingComponent() const;
-
+	virtual UExecutionComponent* GetExecutionComponent() const;
 	void ClearOverlappingActors();
 	
 protected:

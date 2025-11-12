@@ -66,12 +66,18 @@ void UGEExecCalc_DamageTo::Execute_Implementation(const FGameplayEffectCustomExe
 	);
 
 	float BeforeAttackDamageCoef = 0.f;
+	float BeforeExecutionAttackDamageCoef = 0.f;
 	float GroggyAmount = 0.f;
 	for (const TPair<FGameplayTag, float>& TagMagnitude : EffectSpec.SetByCallerTagMagnitudes)
 	{
 		if (TagMagnitude.Key.MatchesTagExact(TwoMinGameplayTag::Shared_SetByCaller_BaseDamage))
 		{
 			BeforeAttackDamageCoef = TagMagnitude.Value;
+		}
+
+		if (TagMagnitude.Key.MatchesTagExact(TwoMinGameplayTag::Shared_SetByCaller_ExecutionDamage))
+		{
+			BeforeExecutionAttackDamageCoef = TagMagnitude.Value;
 		}
 
 		if (TagMagnitude.Key.MatchesTagExact(TwoMinGameplayTag::Shared_SetByCaller_GaurdSuccess))
@@ -86,9 +92,11 @@ void UGEExecCalc_DamageTo::Execute_Implementation(const FGameplayEffectCustomExe
 	}
 
 	bool bIsNoneDamage = bIsInvincible ? true : bIsGuard && bIsUnBreakAttack == false;
+	bIsNoneDamage = BeforeExecutionAttackDamageCoef > 0 ? false : bIsNoneDamage;
 	
 	SourceAttackPower = bIsNoneDamage ? 0.f : SourceAttackPower;
-	float AttackDamageCoef = bIsNoneDamage ? 0 : BeforeAttackDamageCoef;
+	float AttackDamageCoef = bIsNoneDamage ? 0 :
+	BeforeExecutionAttackDamageCoef > 0 ? BeforeExecutionAttackDamageCoef : BeforeAttackDamageCoef;
 	
 	float TargetDefensePower = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(

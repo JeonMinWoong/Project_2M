@@ -13,6 +13,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_CounterAttack_OneHand, "InputTag.CounterAttack.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_SwitchTarget, "InputTag.SwitchTarget");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Roll, "InputTag.Roll");
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_Execution_OneHand, "InputTag.Execution.OneHand");
 
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Toggle, "InputTag.Toggle");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Toggle_Run, "InputTag.Toggle.Run");
@@ -88,9 +89,12 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_Exhausted, "Shared.Ability.Exhausted");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_Death, "Shared.Ability.Death");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_PerfectGuard, "Shared.Ability.PerfectGuard");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_Execution_Caster, "Shared.Ability.Execution.Caster");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_Execution_Target, "Shared.Ability.Execution.Target");
 
 	// Shard SetByCaller
 	UE_DEFINE_GAMEPLAY_TAG(Shared_SetByCaller_BaseDamage, "Shared.SetByCaller.BaseDamage");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_SetByCaller_ExecutionDamage, "Shared.SetByCaller.ExecutionDamage");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_SetByCaller_GaurdSuccess, "Shared.SetByCaller.GuardSuccess");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_SetByCaller_GroggyAmount, "Shared.SetByCaller.GroggyAmount");
 	
@@ -103,6 +107,9 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_Death, "Shared.Event.Death");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_SpawnProjectile, "Shared.Event.SpawnProjectile");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_ResetAttackCount, "Shared.Event.ResetAttackCount");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_Execution_Caster, "Shared.Event.Execution.Caster");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_Execution_Target, "Shared.Event.Execution.Target");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_Execution_Death, "Shared.Event.Execution.Death");
 	
 	// Shard State Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Invincible, "Shared.State.Invincible");
@@ -116,7 +123,11 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Death, "Shared.State.Death");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_PerfectGuarding, "Shared.State.PerfectGuarding");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_SuccessPerfectGuarding, "Shared.State.SuccessPerfectGuarding");
-	UE_DEFINE_GAMEPLAY_TAG(Shared_State_SuperArmor, "Shared.State.SuperArmor");
+	
+	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Execution_Caster, "Shared.State.Execution.Caster");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Execution_Target, "Shared.State.Execution.Target");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_State_PossibleExecution, "Shared.State.PossibleExecution");
+	
 
 	// Data Tags
 	UE_DEFINE_GAMEPLAY_TAG(Data_Cost_Stamina_Enough, "Data.Cost.Stamina.Enough");
