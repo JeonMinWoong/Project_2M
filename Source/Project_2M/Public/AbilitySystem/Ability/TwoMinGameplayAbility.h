@@ -103,6 +103,8 @@ protected:
 
 	float CalculationStaminaCost() const;
 
+	virtual float AddStaminaCost() const;
+
 	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 		OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 

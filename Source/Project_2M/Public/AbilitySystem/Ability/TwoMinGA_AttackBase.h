@@ -45,14 +45,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|HitEventTag")
 	FGameplayTag OnHitEventTag;
 
+	UPROPERTY(EditAnywhere, Category = "Attack|AttackInfoData")
+	TMap<int, FAttackInfoData> AttackInfosData;
+	
 	virtual TSubclassOf<UGameplayEffect> GetAttackGameplayEffectClass() const override;
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Montages")
 	TMap<int, UAnimMontage*> AttackMontages;
-
-	UPROPERTY(EditAnywhere, Category = "Attack|AttackInfoData")
-	TMap<int, FAttackInfoData> AttackInfosData;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Combo")
 	int32 MaxComboCount = 1;
@@ -64,5 +64,5 @@ private:
 	TSubclassOf<UGameplayEffect> AttackGameplayEffectClass;
 
 public:
-	FORCEINLINE FAttackInfoData& GetAttackInfoData() { return AttackInfosData[CurComboCount]; }
+	FORCEINLINE virtual FAttackInfoData& GetAttackInfoData() { return AttackInfosData[CurComboCount]; }
 };

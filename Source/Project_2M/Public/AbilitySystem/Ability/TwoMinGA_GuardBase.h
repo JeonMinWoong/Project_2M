@@ -18,8 +18,6 @@ class PROJECT_2M_API UTwoMinGA_GuardBase : public UTwoMinGameplayAbility
 	GENERATED_BODY()
 
 public:
-	virtual bool IsPossibleMustBeHoldAbilityImmediatelyCancel() const;
-
 	bool IsGuardCondition(const ATwoMinBaseCharacter* Attacker, const ATwoMinBaseCharacter* Target) const;
 	
 protected:

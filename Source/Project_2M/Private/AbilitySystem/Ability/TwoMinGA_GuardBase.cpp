@@ -15,11 +15,6 @@
 
 class UAbilityTask_WaitGameplayEvent;
 
-bool UTwoMinGA_GuardBase::IsPossibleMustBeHoldAbilityImmediatelyCancel() const
-{
-	return false;
-}
-
 bool UTwoMinGA_GuardBase::IsGuardCondition(const ATwoMinBaseCharacter* Attacker, const ATwoMinBaseCharacter* Target) const
 {
    	const FVector ToTarget = (Attacker->GetActorLocation() - Target->GetActorLocation()).GetSafeNormal2D();

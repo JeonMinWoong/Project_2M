@@ -520,11 +520,16 @@ float UTwoMinGameplayAbility::CalculationStaminaCost() const
 	const float StaminaCost = Curve->Eval(Level);
 	if (StaminaCost <= 0.f) return 0.f;
 
-	return StaminaCost;
+	return StaminaCost + AddStaminaCost();
+}
+
+float UTwoMinGameplayAbility::AddStaminaCost() const
+{
+	return 0.f;
 }
 
 bool UTwoMinGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const
+                                       const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const
 {
   	UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
 	const float CurrentStamina = ASC->GetNumericAttribute(UTwoMinAttributeSet::GetCurrentStaminaAttribute());

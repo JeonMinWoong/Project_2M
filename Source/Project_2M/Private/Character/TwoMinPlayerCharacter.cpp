@@ -8,6 +8,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "TwoMinFunctionLibrary.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
+#include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "Compnents/AutoTargetingComponent.h"
@@ -173,8 +174,12 @@ void ATwoMinPlayerCharacter::Input_Move(const FInputActionValue& InputActionValu
 			for (FGameplayTag& CancelTag : MovePossibleCancelAbilityTags)
 			{
 				CancelTagContainer.AddTag(CancelTag);
+				if (UTwoMinGameplayAbility* Ability = AbilitySystemComponent->GetPlayingAbilityTag(CancelTag))
+				{
+					Ability->CustomCancelAbility();
+				}
 			}
-
+			
 			AbilitySystemComponent->CancelAbilities(&CancelTagContainer);	
 		}
 	}
