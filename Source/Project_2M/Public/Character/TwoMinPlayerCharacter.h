@@ -6,6 +6,7 @@
 #include "GameplayEffect.h"
 #include "GameplayTagContainer.h"
 #include "TwoMinBaseCharacter.h"
+#include "TwoMinFunctionLibrary.h"
 #include "TwoMinPlayerCharacter.generated.h"
 
 class UGameplayEffect;
@@ -128,9 +129,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	bool bIsWalk = false;
 	
-	UPROPERTY(VisibleAnywhere)
-	bool bIsRun = false;
-
 	UPROPERTY()
 	TArray<FGameplayTag> MovePossibleCancelAbilityTags;
 	
@@ -144,7 +142,7 @@ private:
 	
 	void Stoped(const FInputActionValue& InputActionValue);
 
-	void Input_ToggleRun(const FInputActionValue& InputActionValue);
+	void Input_OnRun(const FInputActionValue& InputActionValue);
 
 	bool IsUsingGamepad() const;
 
@@ -154,7 +152,7 @@ private:
 #pragma endregion
 
 public:
-	FORCEINLINE bool GetIsRunning() const { return bIsRun; }
+	bool GetIsRunning();
 	FORCEINLINE UCameraComponent* GetCamera() const { return CameraComponent; }
 
 	FORCEINLINE void AddMovePossibleCancelAbility(const FGameplayTag GameplayTag)

@@ -54,7 +54,6 @@ ATwoMinPlayerCharacter::ATwoMinPlayerCharacter()
 	PlayerCombatComponent = CreateDefaultSubobject<UPlayerCombatComponent>("PlayerCombatComponent");
 	PlayerUIComponent = CreateDefaultSubobject<UPlayerUIComponent>("PlayerUIComponent");
 	
-	bIsRun = false;
 	CharacterType = ECharacterType::Player;
 }
 
@@ -86,7 +85,7 @@ ATwoMinEnemyCharacter* ATwoMinPlayerCharacter::GetCurrentAutoTarget() const
 void ATwoMinPlayerCharacter::CancelInputToggle()
 {
 	bIsWalk = false;
-	bIsRun = false;
+	UTwoMinFunctionLibrary::RemoveGameplayTagToActor(this, TwoMinGameplayTag::Player_State_Running);
 	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
 }
 
@@ -154,8 +153,11 @@ void ATwoMinPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_SwitchTarget,
 	ETriggerEvent::Completed, this, &ThisClass::Input_SwitchTargetComplete);
 
-	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_Toggle_Run,
-		ETriggerEvent::Started, this, &ThisClass::Input_ToggleRun);
+	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_MustBeHold_Run,
+		ETriggerEvent::Triggered, this, &ThisClass::Input_OnRun);
+
+	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_MustBeHold_Run,
+	ETriggerEvent::Completed, this, &ThisClass::Stoped);
 
 	CharacterInputComponent->BindAbilityInputAction(InputConfigDataAsset, this,
 			&ThisClass::Input_AbilityInputPressed, &ThisClass::Input_AbilityInputReleased);
@@ -256,19 +258,19 @@ void ATwoMinPlayerCharacter::Input_SwitchTargetComplete(const FInputActionValue&
 void ATwoMinPlayerCharacter::Stoped(const FInputActionValue& InputActionValue)
 {
 	bIsWalk = false;
-	bIsRun = false;
+	UTwoMinFunctionLibrary::RemoveGameplayTagToActor(this, TwoMinGameplayTag::Player_State_Running);
 	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
 }
 
-void ATwoMinPlayerCharacter::Input_ToggleRun(const FInputActionValue& InputActionValue)
+void ATwoMinPlayerCharacter::Input_OnRun(const FInputActionValue& InputActionValue)
 {
-	if (bIsWalk == false)
+	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_Attacking))
 	{
 		return;
 	}
 	
-	bIsRun = !bIsRun;
-	GetCharacterMovement()->MaxWalkSpeed = bIsRun ? MaxRunSpeed : MaxWalkSpeed;
+	UTwoMinFunctionLibrary::AddGameplayTagToActor(this, TwoMinGameplayTag::Player_State_Running);
+	GetCharacterMovement()->MaxWalkSpeed = MaxRunSpeed;
 }
 
 bool ATwoMinPlayerCharacter::IsUsingGamepad() const
@@ -297,4 +299,9 @@ void ATwoMinPlayerCharacter::Input_AbilityInputPressed(FGameplayTag InInputTag)
 void ATwoMinPlayerCharacter::Input_AbilityInputReleased(FGameplayTag InInputTag)
 {
 	AbilitySystemComponent->OnAbilityInputReleased(InInputTag);
+}
+
+bool ATwoMinPlayerCharacter::GetIsRunning()
+{
+	return UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_Running);
 }
