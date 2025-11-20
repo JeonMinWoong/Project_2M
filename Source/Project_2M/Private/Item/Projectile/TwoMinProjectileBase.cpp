@@ -2,6 +2,7 @@
 #include "Item/Projectile/TwoMinProjectileBase.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "NiagaraFunctionLibrary.h"
 #include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "Abilities/GameplayAbilityTypes.h"
@@ -11,10 +12,12 @@
 #include "Character/TwoMinBaseCharacter.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/KismetArrayLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
-ATwoMinProjectileBase::ATwoMinProjectileBase() : ProjectileAttackInfoData()
+ATwoMinProjectileBase::ATwoMinProjectileBase()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	ProjectileCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("ProjectileCollisionBox"));
 	ProjectileCollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -29,8 +32,101 @@ ATwoMinProjectileBase::ATwoMinProjectileBase() : ProjectileAttackInfoData()
 	ProjectileMovementComp->MaxSpeed = MaxSpeed;
 	ProjectileMovementComp->Velocity = FVector(1.f, 0.f, 0.f);
 	ProjectileMovementComp->ProjectileGravityScale = 0.f;
+}
 
-	InitialLifeSpan = LifeTime;
+void ATwoMinProjectileBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	SetLifeSpan(LifeTime);
+	IgnoreActors.Emplace(GetOwner());
+}
+
+void ATwoMinProjectileBase::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (CurHoverTime < HoverTime)
+	{
+		CurHoverTime += DeltaSeconds;
+		ProjectileMovementComp->InitialSpeed = 0;
+		ProjectileMovementComp->MaxSpeed = 0;
+		ProjectileMovementComp->Velocity = FVector(0.f, 0.f, 0.f);
+		return;
+	}
+
+	if (bIsHoverOut == false)
+	{
+		bIsHoverOut = true;
+		ProjectileMovementComp->InitialSpeed = InitialSpeed;
+		ProjectileMovementComp->MaxSpeed = MaxSpeed;
+		FVector ToTarget = GetActorForwardVector() * ProjectileMovementComp->InitialSpeed;
+		ProjectileMovementComp->Velocity = ToTarget;
+		return;
+	}
+
+	if (ProjectileType == EProjectileType::Homing)
+	{
+		HomingTick(DeltaSeconds);
+	}
+}
+
+void ATwoMinProjectileBase::HomingTick(float DeltaSeconds)
+{
+	if (bIsHomingStart == false)
+	{
+		CurHomingActivationDelay += DeltaSeconds;
+		if (CurHomingActivationDelay >= HomingActivationDelay)
+		{
+			bIsHomingStart = true;
+		}
+	}
+	else
+	{
+		CurHomingRetargetInterval += DeltaSeconds;
+		if (CurHomingRetargetInterval >= HomingRetargetInterval)
+		{
+			CurHomingRetargetInterval = 0;
+			HomingTarget = UpdateHomingTarget();
+		}
+
+		if (HomingTarget)
+		{
+			FVector ToTarget = (HomingTarget->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+			FVector NewVelocity = FMath::VInterpTo(
+				ProjectileMovementComp->Velocity,
+				ToTarget * HomingAccelerationMagnitude,
+				DeltaSeconds,
+				2.f
+			);
+
+			ProjectileMovementComp->Velocity = NewVelocity;
+			SetActorRotation(NewVelocity.Rotation());
+		}
+	}
+}
+
+AActor* ATwoMinProjectileBase::UpdateHomingTarget()
+{
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	TArray<AActor*> EmptyLockOnTargetGroup;
+	
+	bool IsFindActor = UKismetSystemLibrary::SphereOverlapActors(
+		GetWorld(),
+		GetActorLocation(),
+		HomingRange,
+		ObjectTypes,
+		ATwoMinBaseCharacter::StaticClass(),
+		IgnoreActors,
+		EmptyLockOnTargetGroup
+	);
+
+	if (IsFindActor == false)
+	{
+		return nullptr;
+	}
+	
+	return EmptyLockOnTargetGroup[0];
 }
 
 void ATwoMinProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
@@ -90,13 +186,14 @@ void ATwoMinProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 		
 		return;
 	}
-	
+
+	OnHitPlayEffect(HitResult);
 	HandleApplyProjectileDamage(HitPawn, EventData, bIsTargetGuard);
 	Destroy();
 }
 
 void ATwoMinProjectileBase::HandleApplyProjectileDamage(APawn* HitPawn, FGameplayEventData& PayLoad,
-	bool bIsTargetGuard) const
+                                                        bool bIsTargetGuard) const
 {
 	AActor* MyActor = const_cast<AActor*>(PayLoad.Instigator.Get());
 	AActor* TargetActor = const_cast<AActor*>(PayLoad.Target.Get());
@@ -106,8 +203,13 @@ void ATwoMinProjectileBase::HandleApplyProjectileDamage(APawn* HitPawn, FGamepla
 	ATwoMinBaseCharacter* OtherCharacter = Cast<ATwoMinBaseCharacter>(TargetActor);
 	UAttackPayloadObject* AttackPayload = NewObject<UAttackPayloadObject>(BaseCharacter);
 	AttackPayload->Data = ProjectileAttackInfoData;
-	
 	PayLoad.OptionalObject = AttackPayload;
+
+	UProjectilePayloadObject* ProjectilePayloadObject = NewObject<UProjectilePayloadObject>(BaseCharacter);
+	const FProjectileInfoData ProjectileInfoData = FProjectileInfoData(GetActorLocation());
+	ProjectilePayloadObject->Data = ProjectileInfoData;
+	PayLoad.OptionalObject2 = ProjectilePayloadObject;
+	
 	UTwoMinAbilitySystemComponent* TwoMinASC = BaseCharacter->GetAbilitySystemComponent();
 	if (!TwoMinASC) return;
 	
@@ -148,4 +250,40 @@ void ATwoMinProjectileBase::HandleApplyProjectileDamage(APawn* HitPawn, FGamepla
 		bIsTargetGuard ? TwoMinGameplayTag::Shared_Event_HitGuard : TwoMinGameplayTag::Shared_Event_HitReact,
 		PayLoad
 	);
+}
+
+void ATwoMinProjectileBase::OnHitPlayEffect(const FHitResult& HitResult)
+{
+	bIsHit = true;
+	PlayImpactEffect(HitResult);
+}
+
+void ATwoMinProjectileBase::PlayImpactEffect(const FHitResult& HitResult) const
+{
+	if (ImpactEffect)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			GetWorld(),
+			ImpactEffect,
+			HitResult.ImpactPoint,
+			HitResult.ImpactNormal.Rotation()
+		);
+	}
+}
+
+void ATwoMinProjectileBase::Destroyed()
+{
+	Super::Destroyed();
+
+	if (bIsHit)
+	{
+		return;
+	}
+	
+	// 여기서 이펙트 스폰
+	FHitResult HitResult;
+	HitResult.ImpactPoint = GetActorLocation();
+	HitResult.ImpactNormal = GetActorLocation();
+	
+	PlayImpactEffect(HitResult);
 }

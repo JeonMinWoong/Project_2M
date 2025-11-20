@@ -22,7 +22,7 @@ public class Project_2M : ModuleRules
 			"MotionWarping",
 		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "MotionWarping" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "MotionWarping", "Niagara" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

@@ -48,7 +48,14 @@ void UTwoMinGA_HitReactBase::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	
 	const FAttackInfoData& AttackInfoData = AttackPayload->Data;
 	const FVector OwnerForward = MyCharacter->GetActorForwardVector();
-	const FVector ToImpact = (InstigatorCharacter->GetActorLocation() - MyCharacter->GetActorLocation()).GetSafeNormal();
+	FVector HitPos = InstigatorCharacter->GetActorLocation();
+	if (const UProjectilePayloadObject* ProjectilePayload =
+		Cast<UProjectilePayloadObject>(TriggerEventData->OptionalObject2))
+	{
+		HitPos = ProjectilePayload->Data.ProjectileHitPos;
+	}
+	
+	const FVector ToImpact = (HitPos - MyCharacter->GetActorLocation()).GetSafeNormal();
 	const int32 HitReactNumber = GetPlayHitReactMontageNumber(OwnerForward, ToImpact, AttackInfoData);
 	
 	PlayToAnimMontage(HitReactMontages[HitReactNumber]);

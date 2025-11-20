@@ -206,7 +206,13 @@ void UTwoMinGA_GuardBase::OnHitGuard(FGameplayEventData Payload)
 	}
 	
 	const FAttackInfoData& AttackInfoData = AttackPayload->Data;
-	const FVector ToImpact = (InstigatorCharacter->GetActorLocation() - MyCharacter->GetActorLocation()).GetSafeNormal();
+	FVector HitPos = InstigatorCharacter->GetActorLocation();
+	if (const UProjectilePayloadObject* ProjectilePayload = Cast<UProjectilePayloadObject>(Payload.OptionalObject2))
+	{
+		HitPos = ProjectilePayload->Data.ProjectileHitPos;
+	}
+	
+	const FVector ToImpact = (HitPos - MyCharacter->GetActorLocation()).GetSafeNormal();
 	
 	bIsHitGuard = true;
 	CustomApplyCost(AttackInfoData.AttackType);

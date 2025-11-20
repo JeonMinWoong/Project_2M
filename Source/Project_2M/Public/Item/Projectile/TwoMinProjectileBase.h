@@ -7,6 +7,7 @@
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "TwoMinProjectileBase.generated.h"
 
+class UNiagaraSystem;
 class UProjectileMovementComponent;
 class UBoxComponent;
 
@@ -18,13 +19,20 @@ class PROJECT_2M_API ATwoMinProjectileBase : public AActor
 public:
 	ATwoMinProjectileBase();
 
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 protected:
+	void HomingTick(float DeltaSeconds);
+	AActor* UpdateHomingTarget();
 	
 	UFUNCTION()
 	virtual void OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult);
 	
 	void HandleApplyProjectileDamage(APawn* InHitPawn, FGameplayEventData& InPayLoad, bool bIsTargetGuard) const;
+	void OnHitPlayEffect(const FHitResult& HitResult);
+	void PlayImpactEffect(const FHitResult& HitResult) const;
+	virtual void Destroyed() override;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
 	UBoxComponent* ProjectileCollisionBox;
@@ -37,6 +45,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
 	EProjectilePierceType ProjectilePierceType = EProjectilePierceType::NonPiercing;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Effect")
+	UNiagaraSystem* ImpactEffect;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails")
 	float InitialSpeed = 900.f;
@@ -47,31 +58,39 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails")
 	float LifeTime = 2.5f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails")
+	float HoverTime = 0;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
-		meta = (EditCondition = "bIsHoming"))
+		meta = (EditCondition = "ProjectileType != EProjectileType::Normal"))
 	AActor* HomingTarget = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
-			meta = (EditCondition = "bIsHoming"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
+		meta = (EditCondition = "ProjectileType != EProjectileType::Normal"))
+	float HomingRange = 0.f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
+		meta = (EditCondition = "ProjectileType != EProjectileType::Normal"))
 	float HomingActivationDelay = 0.f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
-			meta = (EditCondition = "bIsHoming"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
+		meta = (EditCondition = "ProjectileType != EProjectileType::Normal"))
 	float HomingRetargetInterval = 0.2f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
-			meta = (EditCondition = "bIsHoming"))
-	float HomingChaseTime = 5.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
+		meta = (EditCondition = "ProjectileType != EProjectileType::Normal"))
+	float HomingAccelerationMagnitude = 450.f;
 	
-	bool bIsHoming = false;
+	bool bIsHit = false;
+	float CurHoverTime = 0.f;
+	bool bIsHoverOut = false;
+
+	UPROPERTY()
+	TArray<AActor*> IgnoreActors;
 	
-#if WITH_EDITOR
-	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override
-	{
-		Super::PostEditChangeProperty(PropertyChangedEvent);
-		bIsHoming = (ProjectileType == EProjectileType::Homing);
-	}
-#endif
+	bool bIsHomingStart = false;
+	float CurHomingActivationDelay = 0.f;
+	float CurHomingRetargetInterval = 0.f;
 	
 private:
 	FAttackInfoData ProjectileAttackInfoData;

@@ -207,6 +207,29 @@ public:
 };
 
 USTRUCT(BlueprintType)
+struct FProjectileInfoData : public FGameplayAbilityTargetData
+{
+	GENERATED_BODY()
+
+	FProjectileInfoData() : ProjectileHitPos() {}
+	
+	FProjectileInfoData(const FVector& NewHitPos) : ProjectileHitPos(NewHitPos) {}
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FVector ProjectileHitPos;
+};
+
+UCLASS(BlueprintType)
+class UProjectilePayloadObject : public UObject
+{
+	GENERATED_BODY()
+	
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
+	FProjectileInfoData Data;
+};
+
+USTRUCT(BlueprintType)
 struct FEnemyAIData
 {
 	GENERATED_BODY()

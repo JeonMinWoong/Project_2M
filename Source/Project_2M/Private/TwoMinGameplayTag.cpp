@@ -131,12 +131,12 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Death, "Shared.State.Death");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_PerfectGuarding, "Shared.State.PerfectGuarding");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_SuccessPerfectGuarding, "Shared.State.SuccessPerfectGuarding");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_State_SuperArmor, "Shared.State.SuperArmor");
 	
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Execution_Caster, "Shared.State.Execution.Caster");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Execution_Target, "Shared.State.Execution.Target");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_PossibleExecution, "Shared.State.PossibleExecution");
 	
-
 	// Data Tags
 	UE_DEFINE_GAMEPLAY_TAG(Data_Cost_Stamina_Enough, "Data.Cost.Stamina.Enough");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Cost_Stamina_UnEnough, "Data.Cost.Stamina.UnEnough");
