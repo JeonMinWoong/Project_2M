@@ -93,6 +93,8 @@ namespace TwoMinGameplayTag
 	
 	// Shard Ability Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_HitReact, "Shared.Ability.HitReact");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_HitReactDown, "Shared.Ability.HitReactDown");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_HitReactThrow, "Shared.Ability.HitReactThrow");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_Guard, "Shared.Ability.Guard");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_Exhausted, "Shared.Ability.Exhausted");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_Death, "Shared.Ability.Death");
@@ -109,6 +111,8 @@ namespace TwoMinGameplayTag
 	// Shard Event Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_MeleeHit, "Shared.Event.MeleeHit");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_HitReact, "Shared.Event.HitReact");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_HitReactDown, "Shared.Event.HitReactDown");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_HitReactThrow, "Shared.Event.HitReactThrow");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_HitGuard, "Shared.Event.HitGuard");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_Exhausted, "Shared.Event.Exhausted");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_SuccessPerfectGuard, "Shared.Event.SuccessPerfectGuard");
@@ -128,6 +132,8 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_FullStamina, "Shared.State.FullStamina");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Throwing, "Shared.State.Throwing");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Hitting, "Shared.State.Hitting");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_State_HitDowning, "Shared.State.HitDowning");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_State_HitThrowing, "Shared.State.HitThrowing");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Death, "Shared.State.Death");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_PerfectGuarding, "Shared.State.PerfectGuarding");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_SuccessPerfectGuarding, "Shared.State.SuccessPerfectGuarding");

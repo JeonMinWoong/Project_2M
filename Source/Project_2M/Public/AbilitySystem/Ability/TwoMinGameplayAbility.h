@@ -94,9 +94,14 @@ protected:
 	virtual void CustomInterruptedAbility();
 
 	UFUNCTION()
+	virtual void CustomOnBlendOutAbility();
+
+	UFUNCTION()
 	virtual void DamageToEffectSpecHandle(TSubclassOf<UGameplayEffect> EffectClass, FGameplayEventData Payload,
 		bool bIsTargetGuard, bool bIsExecution = false);
 
+	FGameplayTag GetHitGameplayEffectTag(bool bIsTargetGuard, EHitType HitType);
+	
 	void HitStopProcess(AActor* HitStopCharacter, const float HitStopDelay);
 	
 	virtual TSubclassOf<UGameplayEffect> GetAttackGameplayEffectClass() const;

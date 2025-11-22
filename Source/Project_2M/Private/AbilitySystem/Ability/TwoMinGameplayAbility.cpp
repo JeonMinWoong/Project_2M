@@ -389,6 +389,12 @@ void UTwoMinGameplayAbility::CustomInterruptedAbility()
 		true);
 }
 
+void UTwoMinGameplayAbility::CustomOnBlendOutAbility()
+{
+	CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(),
+		true);
+}
+
 void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffect> EffectClass,
 	FGameplayEventData Payload, bool bIsTargetGuard, bool bIsExecution)
 {
@@ -462,7 +468,7 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 		TargetCharacter,
-		bIsTargetGuard ? TwoMinGameplayTag::Shared_Event_HitGuard : TwoMinGameplayTag::Shared_Event_HitReact,
+		GetHitGameplayEffectTag(bIsTargetGuard, AttackPayload->Data.HitData.HitType),
 		Payload
 	);
 
@@ -476,6 +482,24 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 	
 	HitStopProcess(Payload.Instigator->GetInstigator(), HitStopAttackerDelay);
 	HitStopProcess(TargetCharacter, HitStopVictimDelay);
+}
+
+FGameplayTag UTwoMinGameplayAbility::GetHitGameplayEffectTag(bool bIsTargetGuard, EHitType HitType)
+{
+	if (bIsTargetGuard)
+	{
+		return TwoMinGameplayTag::Shared_Event_HitGuard;
+	}
+
+	switch (HitType)
+	{
+	case EHitType::Down:
+		return TwoMinGameplayTag::Shared_Event_HitReactDown;
+	case EHitType::Throw:
+		return TwoMinGameplayTag::Shared_Event_HitReactThrow;
+	default:
+		return TwoMinGameplayTag::Shared_Event_HitReact;
+	}
 }
 
 void UTwoMinGameplayAbility::HitStopProcess(AActor* HitStopCharacter, const float HitStopDelay)

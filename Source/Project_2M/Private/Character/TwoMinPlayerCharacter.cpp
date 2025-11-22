@@ -187,6 +187,8 @@ void ATwoMinPlayerCharacter::Input_Move(const FInputActionValue& InputActionValu
 	}
 
 	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_Exhausted)
+		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitDowning)
+		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitThrowing)
 		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_Death))
 	{
 		return;
@@ -293,11 +295,23 @@ bool ATwoMinPlayerCharacter::IsUsingGamepad() const
 
 void ATwoMinPlayerCharacter::Input_AbilityInputPressed(FGameplayTag InInputTag)
 {
+	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitDowning)
+		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitThrowing))
+	{
+		return;
+	}
+	
 	AbilitySystemComponent->OnAbilityInputPressed(InInputTag);
 }
 
 void ATwoMinPlayerCharacter::Input_AbilityInputReleased(FGameplayTag InInputTag)
 {
+	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitDowning)
+		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitThrowing))
+	{
+		return;
+	}
+	
 	AbilitySystemComponent->OnAbilityInputReleased(InInputTag);
 }
 
