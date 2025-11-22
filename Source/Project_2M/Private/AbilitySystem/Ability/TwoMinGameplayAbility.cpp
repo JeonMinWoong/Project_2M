@@ -502,6 +502,45 @@ FGameplayTag UTwoMinGameplayAbility::GetHitGameplayEffectTag(bool bIsTargetGuard
 	}
 }
 
+void UTwoMinGameplayAbility::LookDirectionHitPos(const FGameplayEventData* TriggerEventData)
+{
+	if (!TriggerEventData->OptionalObject->IsValidLowLevel())
+	{
+		CustomCancelAbility();
+		return;
+	}
+
+	const UAttackPayloadObject* AttackPayload = Cast<UAttackPayloadObject>(TriggerEventData->OptionalObject);
+	if (!AttackPayload)
+	{
+		CustomCancelAbility();
+		return;
+	}
+
+	ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(GetAvatarActorFromActorInfo());
+
+	AActor* InstigatorActor = const_cast<AActor*>(TriggerEventData->Instigator.Get());
+	if (!InstigatorActor) return;
+	
+	ATwoMinBaseCharacter* InstigatorCharacter = Cast<ATwoMinBaseCharacter>(InstigatorActor);
+	if (!MyCharacter || !InstigatorCharacter)
+	{
+		CustomCancelAbility();
+		return;
+	}
+
+	FVector HitPos = InstigatorCharacter->GetActorLocation();
+	if (const UProjectilePayloadObject* ProjectilePayload =
+		Cast<UProjectilePayloadObject>(TriggerEventData->OptionalObject2))
+	{
+		HitPos = ProjectilePayload->Data.ProjectileHitPos;
+	}
+
+	FRotator LookDirection = (HitPos - MyCharacter->GetActorLocation()).GetSafeNormal().Rotation();
+	FRotator MyRotator = MyCharacter->GetActorRotation();
+	MyCharacter->SetActorRotation(FRotator(MyRotator.Pitch, LookDirection.Yaw, MyRotator.Roll));
+}
+
 void UTwoMinGameplayAbility::HitStopProcess(AActor* HitStopCharacter, const float HitStopDelay)
 {
 	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(HitStopCharacter);

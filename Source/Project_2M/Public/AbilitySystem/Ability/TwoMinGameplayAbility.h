@@ -101,6 +101,8 @@ protected:
 		bool bIsTargetGuard, bool bIsExecution = false);
 
 	FGameplayTag GetHitGameplayEffectTag(bool bIsTargetGuard, EHitType HitType);
+
+	void LookDirectionHitPos(const FGameplayEventData* TriggerEventData);
 	
 	void HitStopProcess(AActor* HitStopCharacter, const float HitStopDelay);
 	

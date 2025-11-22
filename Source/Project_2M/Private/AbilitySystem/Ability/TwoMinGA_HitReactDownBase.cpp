@@ -8,8 +8,8 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 
 void UTwoMinGA_HitReactDownBase::PreActivate(const FGameplayAbilitySpecHandle Handle,
-                                             const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
-                                             FOnGameplayAbilityEnded::FDelegate* OnGameplayAbilityEndedDelegate, const FGameplayEventData* TriggerEventData)
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	FOnGameplayAbilityEnded::FDelegate* OnGameplayAbilityEndedDelegate, const FGameplayEventData* TriggerEventData)
 {
 	FGameplayEventData EventData;
 	UTwoMinFunctionLibrary::SendToGameplayEffectEvent(GetAvatarActorFromActorInfo(),
@@ -27,7 +27,8 @@ void UTwoMinGA_HitReactDownBase::ActivateAbility(const FGameplayAbilitySpecHandl
 		CustomCancelAbility();
 		return;
 	}
-	
+
+	LookDirectionHitPos(TriggerEventData);
 	UAbilityTask_PlayMontageAndWait* Task = PlayToAnimMontage(HitReactDownMontages);
 	Task->OnBlendOut.AddDynamic(this, &ThisClass::CustomOnBlendOutAbility);
 	
