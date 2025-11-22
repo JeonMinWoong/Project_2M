@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/TwoMinBaseCharacter.h"
+#include "Components/WidgetComponent.h"
 #include "TwoMinEnemyCharacter.generated.h"
 
 class UWidgetComponent;
@@ -18,7 +19,8 @@ class PROJECT_2M_API ATwoMinEnemyCharacter : public ATwoMinBaseCharacter
 
 public:
 	ATwoMinEnemyCharacter();
-	
+
+	virtual void Tick(float DeltaSeconds) override;
 	virtual UBaseCombatComponent* GetCombatComponent() const override;
 	virtual UBaseUIComponent* GetBaseUIComponent() const override;
 	virtual UEnemyUIComponent* GetEnemyUIComponent() const override;
@@ -42,6 +44,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category= "UI")
 	UWidgetComponent* EnemyHealthWidgetComponent;
+
+	UPROPERTY(VisibleAnywhere, Category= "UI")
+	UWidgetComponent* EnemyExecutionWidgetComponent;
 	
 	/** CharacterInfo **/
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|MonsterType")
@@ -55,4 +60,6 @@ private:
 
 public:
 	EMonsterType GetMonsterType() const { return MonsterType; };
+
+	FORCEINLINE void EnableExecutionWidget(bool bIsEnable) const { EnemyExecutionWidgetComponent->SetVisibility(bIsEnable); }
 };

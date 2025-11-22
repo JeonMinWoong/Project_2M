@@ -11,9 +11,6 @@
 
 ATwoMinBaseCharacter::ATwoMinBaseCharacter()
 {
-	PrimaryActorTick.bCanEverTick = false;
-	PrimaryActorTick.bStartWithTickEnabled = false;
-
 	GetMesh()->bReceivesDecals = false;
 
 	AbilitySystemComponent =

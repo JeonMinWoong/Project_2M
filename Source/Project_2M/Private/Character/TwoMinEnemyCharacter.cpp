@@ -15,6 +15,7 @@
 ATwoMinEnemyCharacter::ATwoMinEnemyCharacter()
 {
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	PrimaryActorTick.bCanEverTick = true;
 
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
@@ -30,11 +31,26 @@ ATwoMinEnemyCharacter::ATwoMinEnemyCharacter()
 	EnemyUIComponent = CreateDefaultSubobject<UEnemyUIComponent>("EnemyUIComponent");
 	EnemyHealthWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("EnemyHealthWidgetComponent");
 	EnemyHealthWidgetComponent->SetupAttachment(GetMesh());
+
+	EnemyExecutionWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("EnemyExecutionWidgetComponent");
+	EnemyExecutionWidgetComponent->SetupAttachment(GetMesh());
 	
 	CharacterType = ECharacterType::Enemy;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+}
+
+void ATwoMinEnemyCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	if (!EnemyExecutionWidgetComponent || EnemyExecutionWidgetComponent->IsVisible() == false) return;
+
+	EnemyExecutionWidgetComponent->SetWorldRotation(
+		(GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation() - 
+		 EnemyExecutionWidgetComponent->GetComponentLocation()).Rotation()
+	);
 }
 
 UBaseCombatComponent* ATwoMinEnemyCharacter::GetCombatComponent() const
