@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Widgets/TwoMinWidgetBase.h"
+#include "Widgets/TwoMinCharacterWidgetBase.h"
 #include "TwoMinWidgetEnemy.generated.h"
 
 class UTextBlock;
@@ -13,7 +13,7 @@ class UEnemyUIComponent;
  * 
  */
 UCLASS()
-class PROJECT_2M_API UTwoMinWidgetEnemy : public UTwoMinWidgetBase
+class PROJECT_2M_API UTwoMinWidgetEnemy : public UTwoMinCharacterWidgetBase
 {
 	GENERATED_BODY()
 

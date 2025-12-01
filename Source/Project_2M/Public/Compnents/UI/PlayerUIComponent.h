@@ -4,7 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Compnents/UI/BaseUIComponent.h"
+#include "ToMinTypes/TwoMinStructTypes.h"
 #include "PlayerUIComponent.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPossiblePickUpItem, bool, bIsPossiblePickUp);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemPickUpSlot, int32, SaveAllItemCount, TArray<FItemPickUpEntry>&, ItemList);
 
 /**
  * 
@@ -23,4 +27,10 @@ public:
 
 	UPROPERTY()
 	FOnIntChangedDelegate OnCurrentLevelChanged;
+
+	UPROPERTY()
+	FOnPossiblePickUpItem OnPossiblePickUpItem;
+	
+	UPROPERTY()
+	FOnItemPickUpSlot OnItemPickUpSlot;
 };

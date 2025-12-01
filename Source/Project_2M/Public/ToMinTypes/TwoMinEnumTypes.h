@@ -95,3 +95,13 @@ enum class EMonsterType : uint8
 	Boss,
 };
 
+UENUM(BlueprintType)
+enum class EItemType : uint8
+{
+	None = 0,
+	Equipment,
+	Consume,
+	Etc,
+	Unknown,
+};
+

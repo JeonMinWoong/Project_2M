@@ -33,6 +33,11 @@ void UTwoMinGA_DeathBase::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		return;
 	}
 
+	if (ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(GetAvatarActorFromActorInfo()))
+	{
+		MyCharacter->BeforeDeathProcess();
+	}
+	
 	AnimTask->OnBlendOut.AddDynamic(this, &UTwoMinGA_DeathBase::CustomBlendOutAbility);
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
@@ -55,7 +60,7 @@ void UTwoMinGA_DeathBase::CustomBlendOutAbility()
 {
 	if (ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(GetAvatarActorFromActorInfo()))
 	{
-		MyCharacter->DeathProcess();
+		MyCharacter->AfterDeathProcess();
 	}
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);

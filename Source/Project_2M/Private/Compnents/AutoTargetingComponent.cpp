@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Character/TwoMinEnemyCharacter.h"
 #include "Character/TwoMinPlayerCharacter.h"
+#include "Compnents/Combat/BaseCombatComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 
@@ -66,6 +67,9 @@ ATwoMinEnemyCharacter* UAutoTargetingComponent::IsTargetingCondition(ATwoMinPlay
 	for (AActor* Target : Actors)
 	{
 		if (!Target) continue;
+		ATwoMinBaseCharacter* Character = Cast<ATwoMinBaseCharacter>(Target);
+		if (!Character) continue;
+		if (Character->GetCombatComponent()->GetIsAlive() == false) continue;
 
 		FVector ToTarget = (Target->GetActorLocation() - PlayerCharacter->GetActorLocation()).GetSafeNormal();
 		float Dot = FVector::DotProduct(InputForward, ToTarget);

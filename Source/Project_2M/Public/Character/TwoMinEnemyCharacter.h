@@ -7,6 +7,8 @@
 #include "Components/WidgetComponent.h"
 #include "TwoMinEnemyCharacter.generated.h"
 
+class ATwoMinPickUpItemBase;
+class UItemDropComponent;
 class UWidgetComponent;
 class UEnemyCombatComponent;
 /**
@@ -24,7 +26,9 @@ public:
 	virtual UBaseCombatComponent* GetCombatComponent() const override;
 	virtual UBaseUIComponent* GetBaseUIComponent() const override;
 	virtual UEnemyUIComponent* GetEnemyUIComponent() const override;
-
+	virtual void BeforeDeathProcess() override;
+	virtual void AfterDeathProcess() override;
+	
 	FTimerHandle DecreaseGroggyTimerHandle;
 	
 protected:
@@ -42,6 +46,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UEnemyCombatComponent* EnemyCombatComponent;
 
+	UPROPERTY(VisibleAnywhere)
+	UItemDropComponent* ItemDropComponent;
+	
 	UPROPERTY(VisibleAnywhere, Category= "UI")
 	UWidgetComponent* EnemyHealthWidgetComponent;
 
@@ -57,6 +64,9 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|CharacterMovement")
 	FRotator CharacterRotationRate = FRotator(0.f, 500.f, 0.f);
+
+	UPROPERTY(EditDefaultsOnly, Category = "ItemDropClass")
+	TSubclassOf<ATwoMinPickUpItemBase> ItemDropClass; 
 
 public:
 	EMonsterType GetMonsterType() const { return MonsterType; };

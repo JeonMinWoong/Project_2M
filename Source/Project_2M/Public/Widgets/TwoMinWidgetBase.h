@@ -17,6 +17,4 @@ class PROJECT_2M_API UTwoMinWidgetBase : public UUserWidget
 protected:
 	virtual void NativeOnInitialized() override;
 
-	UFUNCTION()
-	virtual void SetCurrentHealthPercent(float Percent);
 };

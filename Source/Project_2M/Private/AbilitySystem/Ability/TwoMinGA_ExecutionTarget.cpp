@@ -84,8 +84,10 @@ void UTwoMinGA_ExecutionTarget::OnExecutionDeathGameplayEventReceive(FGameplayEv
 	UTwoMinAbilitySystemComponent* TargetASC = MyCharacter->GetAbilitySystemComponent();
 	float CurrentHealth = TargetASC->GetNumericAttribute(UTwoMinAttributeSet::GetCurrentHealthAttribute());
 	if (CurrentHealth > 0.0f) return;
+
+	MyCharacter->BeforeDeathProcess();
+	MyCharacter->AfterDeathProcess();
 	
-	MyCharacter->DeathProcess();
 	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(ExecutionCaster);
 	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(MyCharacter);
 	if (!PlayerCharacter || !EnemyCharacter) return;

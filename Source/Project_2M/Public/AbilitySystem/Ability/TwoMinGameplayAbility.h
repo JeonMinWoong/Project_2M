@@ -66,7 +66,7 @@ protected:
 	virtual bool bIsReTriggerSameAbility() const;
 	
 	UAbilityTask_PlayMontageAndWait* PlayToAnimMontage(UAnimMontage* AnimMontage, FName StartSectionName = NAME_None,
-		bool bStopWhenAbilityEnds = false);
+		bool bStopWhenAbilityEnds = false, bool bIsBlendOutCancel = false);
 	virtual void WaitGameplayEvent(FGameplayTag EventTag, bool bIsOnce = false);
 	
 	void OnStartKnockBack(AActor* OwnerActor, UAnimMontage* TargetMontage, const FVector& Direction,
@@ -89,7 +89,7 @@ protected:
 	
 	UFUNCTION()
 	virtual void CustomCompleteAbility();
-
+	
 	UFUNCTION()
 	virtual void CustomInterruptedAbility();
 

@@ -7,6 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "TwoMinDebugHelper.h"
 #include "TwoMinGameplayTag.h"
+#include "Character/TwoMinBaseCharacter.h"
 #include "Components/BoxComponent.h"
 #include "Item/Weapon/TwoMinWeaponBase.h"
 
@@ -93,10 +94,10 @@ void UBaseCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bShouldEnab
 
 void UBaseCombatComponent::OnHitTargetActor(AActor* HitActor)
 {
-	if (OverlappingActors.Contains(HitActor))
-	{
-		return;
-	}
+	ATwoMinBaseCharacter* Character = Cast<ATwoMinBaseCharacter>(HitActor);
+	if (!Character) return;
+	if (Character->GetCombatComponent()->GetIsAlive() == false) return;
+	if (OverlappingActors.Contains(HitActor)) return;
 
 	OverlappingActors.AddUnique(HitActor);
 

@@ -15,6 +15,7 @@
 #include "Camera/CameraComponent.h"
 #include "Character/TwoMinEnemyCharacter.h"
 #include "Character/TwoMinPlayerCharacter.h"
+#include "Compnents/Combat/BaseCombatComponent.h"
 #include "Components/SizeBox.h"
 #include "Controller/TwoMinPlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -365,6 +366,19 @@ void UTwoMinGA_LockOn_Player::ChangeMappingContext()
 void UTwoMinGA_LockOn_Player::UpdateLockOnTarget(float DeltaTime)
 {
 	if (!LockOnTarget || !CurrentActorInfo || !LockOnTickTask)
+	{
+		CustomCancelAbility();
+		return;
+	}
+
+	ATwoMinEnemyCharacter* EnemyLockOnTarget = Cast<ATwoMinEnemyCharacter>(LockOnTarget);
+	if (!EnemyLockOnTarget)
+	{
+		CustomCancelAbility();
+		return;
+	}
+
+	if (EnemyLockOnTarget->GetCombatComponent()->GetIsAlive() == false)
 	{
 		CustomCancelAbility();
 		return;

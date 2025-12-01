@@ -12,6 +12,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
 #include "Compnents/AutoTargetingComponent.h"
+#include "Compnents/InventoryComponent.h"
 #include "Compnents/Combat/PlayerCombatComponent.h"
 #include "Compnents/UI/PlayerUIComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -53,6 +54,7 @@ ATwoMinPlayerCharacter::ATwoMinPlayerCharacter()
 
 	PlayerCombatComponent = CreateDefaultSubobject<UPlayerCombatComponent>("PlayerCombatComponent");
 	PlayerUIComponent = CreateDefaultSubobject<UPlayerUIComponent>("PlayerUIComponent");
+	InventoryComponent = CreateDefaultSubobject<UInventoryComponent>("InventoryComponent");
 	
 	CharacterType = ECharacterType::Player;
 }
@@ -80,6 +82,11 @@ ATwoMinPlayerController* ATwoMinPlayerCharacter::GetPlayerController() const
 ATwoMinEnemyCharacter* ATwoMinPlayerCharacter::GetCurrentAutoTarget() const
 {
 	return GetCombatComponent()->GetAutoTargetingComponent()->GetCurrentTargetingActor();
+}
+
+UInventoryComponent* ATwoMinPlayerCharacter::GetInventoryComponent() const
+{
+	return InventoryComponent;
 }
 
 void ATwoMinPlayerCharacter::CancelInputToggle()
@@ -161,6 +168,9 @@ void ATwoMinPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 
 	CharacterInputComponent->BindAbilityInputAction(InputConfigDataAsset, this,
 			&ThisClass::Input_AbilityInputPressed, &ThisClass::Input_AbilityInputReleased);
+
+	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_ItemPickUp,
+	ETriggerEvent::Started, this, &ThisClass::Input_PickUpTrigger);
 }
 
 void ATwoMinPlayerCharacter::Input_Move(const FInputActionValue& InputActionValue)
@@ -313,6 +323,25 @@ void ATwoMinPlayerCharacter::Input_AbilityInputReleased(FGameplayTag InInputTag)
 	}
 	
 	AbilitySystemComponent->OnAbilityInputReleased(InInputTag);
+}
+
+void ATwoMinPlayerCharacter::Input_PickUpTrigger(const FInputActionValue& InputActionValue)
+{
+	for (auto GameplayTag : IgnoreTagContainer)
+	{
+		if (UTwoMinFunctionLibrary::HasGameplayTag(this, GameplayTag))
+		{
+			return;
+		}
+	}
+	
+	FGameplayEventData EventData;
+	
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+		this,
+		TwoMinGameplayTag::Player_Event_ItemPickUp,
+		EventData
+	);
 }
 
 bool ATwoMinPlayerCharacter::GetIsRunning()

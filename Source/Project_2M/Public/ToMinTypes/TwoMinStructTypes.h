@@ -7,6 +7,7 @@
 
 #include "TwoMinStructTypes.generated.h"
 
+class UImage;
 class ATargetPoint;
 enum class EHitType : uint8;
 class UTwoMinPlayerLinkedAnimLayer;
@@ -307,4 +308,120 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
 	int32 ExecutionNumber;
+};
+
+USTRUCT(BlueprintType)
+struct FItemDropData : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemDrop|DropOwner")
+	FName ItemDropOwner;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemDrop|ID")
+	int32 ItemID;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemDrop|Weight")
+	float Weight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemDrop|MinDropRange")
+	int32 MinDropRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemDrop|MaxCount")
+	int32 MaxDropRangeCount;
+};
+
+USTRUCT(BlueprintType)
+struct FItemData : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FItemData|ID")
+	int32 ItemID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FItemData|Name")
+	FString ItemName;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FItemData|Type")
+	EItemType ItemType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FItemData|CurrentCount")
+	int32 CurrentCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FItemData|MaxCount")
+	int32 MaxCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FItemData|SellPrice")
+	int32 SellPrice;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FItemData|BuyPrice")
+	int32 BuyPrice;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemDrop|ItemTexture")
+	UTexture2D* ItemTexture;
+};
+
+USTRUCT(BlueprintType)
+struct FItemEquipmentData : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Base")
+	FItemData ItemDataBase;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Equipment|AP")
+	int32 AttackPower;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Equipment|DP")
+	int32 DefensePower;
+};
+
+USTRUCT(BlueprintType)
+struct FItemConsumeData : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Base")
+	FItemData ItemDataBase;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Consume|CP")
+	int32 ConsumePower;
+};
+
+USTRUCT(BlueprintType)
+struct FItemEtcData : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Base")
+	FItemData ItemDataBase;
+	
+};
+
+USTRUCT(BlueprintType)
+struct FItemInstance
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemID")
+	int32 ItemID;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "HoldCount")
+	int32 HoldCount;
+	
+};
+
+USTRUCT(BlueprintType)
+struct FItemPickUpEntry
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite)
+	FString ItemName;
+
+	UPROPERTY(BlueprintReadWrite)
+	int32 ItemCount;
+	
+	UPROPERTY(BlueprintReadWrite)
+	UTexture2D* ItemTexture;
 };

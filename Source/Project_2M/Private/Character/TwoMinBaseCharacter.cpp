@@ -31,13 +31,18 @@ UBaseUIComponent* ATwoMinBaseCharacter::GetBaseUIComponent() const
 	return nullptr;
 }
 
-void ATwoMinBaseCharacter::DeathProcess()
+void ATwoMinBaseCharacter::BeforeDeathProcess()
+{
+	GetCombatComponent()->SetIsAlive(false);
+	GetBaseUIComponent()->RemoveFromRoot();
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+
+void ATwoMinBaseCharacter::AfterDeathProcess()
 {
 	GetMesh()->bPauseAnims = true;
-		
-	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	GetBaseUIComponent()->RemoveFromRoot();
-
+	
 	TArray<ATwoMinWeaponBase*> WeaponBases = GetCombatComponent()->GetCharacterCurrentEquippedWeapon();
 	for (ATwoMinWeaponBase* WeaponBase : WeaponBases)
 	{
@@ -54,8 +59,6 @@ void ATwoMinBaseCharacter::DeathProcess()
 	{
 		SetLifeSpan(RemoveDelay);	
 	}
-
-	GetCombatComponent()->SetIsAlive(false);
 }
 
 void ATwoMinBaseCharacter::PossessedBy(AController* NewController)

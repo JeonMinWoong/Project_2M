@@ -9,6 +9,7 @@
 #include "TwoMinFunctionLibrary.h"
 #include "TwoMinPlayerCharacter.generated.h"
 
+class UInventoryComponent;
 class UGameplayEffect;
 class UPlayerUIComponent;
 class ATwoMinEnemyCharacter;
@@ -36,6 +37,7 @@ public:
 	
 	ATwoMinPlayerController* GetPlayerController() const;
 	ATwoMinEnemyCharacter* GetCurrentAutoTarget() const;
+	UInventoryComponent* GetInventoryComponent() const;
 	
 	void CancelInputToggle();
 	FVector GetInputDirection() const;
@@ -74,6 +76,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "CurveTable|NeedToLevelUp_Experience")
 	UCurveTable* NeedToLevelUp_ExperienceCurveTable;
+
+	UPROPERTY(VisibleAnywhere)
+	UInventoryComponent* InventoryComponent;
 	
 	/** CharacterInfo **/
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|Capsule")
@@ -148,6 +153,11 @@ private:
 
 	void Input_AbilityInputPressed(FGameplayTag InInputTag);
 	void Input_AbilityInputReleased(FGameplayTag InInputTag);
+
+	void Input_PickUpTrigger(const FInputActionValue& InputActionValue);
+
+	UPROPERTY(EditDefaultsOnly, Category= "IgnoreTag_ItemPickUpTrigger")
+	FGameplayTagContainer IgnoreTagContainer;
 	
 #pragma endregion
 

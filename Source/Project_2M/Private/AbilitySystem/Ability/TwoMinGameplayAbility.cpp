@@ -92,7 +92,7 @@ bool UTwoMinGameplayAbility::bIsReTriggerSameAbility() const
 }
 
 UAbilityTask_PlayMontageAndWait* UTwoMinGameplayAbility::PlayToAnimMontage(UAnimMontage* AnimMontage,
-	FName StartSectionName, bool bStopWhenAbilityEnds)
+	FName StartSectionName, bool bStopWhenAbilityEnds, bool bIsBlendOutCancel)
 {
 	UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this, NAME_None, AnimMontage, 1.f, StartSectionName, bStopWhenAbilityEnds
@@ -103,6 +103,11 @@ UAbilityTask_PlayMontageAndWait* UTwoMinGameplayAbility::PlayToAnimMontage(UAnim
 	Task->OnCompleted.AddDynamic(this, &ThisClass::CustomCompleteAbility);
 	Task->OnInterrupted.AddDynamic(this, &ThisClass::CustomInterruptedAbility);
 	Task->OnCancelled.AddDynamic(this, &ThisClass::CustomCompleteAbility);
+
+	if (bIsBlendOutCancel)
+	{
+		Task->OnBlendOut.AddDynamic(this, &ThisClass::CustomOnBlendOutAbility);	
+	}
 
 	Task->ReadyForActivation();
 

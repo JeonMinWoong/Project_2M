@@ -51,8 +51,7 @@ void UTwoMinGA_AttackBase::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 				AutoTargeting->StartAutoTargeting();
 			}
 		}
-
-		TwoMinDebugHelper::Print(FString::Printf(TEXT("CurComboCount: %d"), CurComboCount), FColor::Yellow);
+		
 		//bIsReTriggerAble = false;
 		PlayToAnimMontage(MontageToPlay);
 

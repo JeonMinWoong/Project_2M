@@ -14,6 +14,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_RunAttack_OneHand, "InputTag.RunAttack.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_SwitchTarget, "InputTag.SwitchTarget");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Roll, "InputTag.Roll");
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_ItemPickUp, "InputTag.ItemPickUp");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Execution_OneHand, "InputTag.Execution.OneHand");
 
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Toggle, "InputTag.Toggle");
@@ -36,12 +37,14 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_RunAttack_OneHand, "Player.Ability.RunAttack.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_LockOn, "Player.Ability.LockOn");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_Roll, "Player.Ability.Roll");
+	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_ItemPickUp, "Player.Ability.ItemPickUp");
 
 	// Player Event Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_SwitchTarget_Left, "Player.Event.SwitchTarget.Left");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_SwitchTarget_Right, "Player.Event.SwitchTarget.Right");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_ChargingUp, "Player.Event.ChargingUp");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_ChargingEnd, "Player.Event.ChargingEnd");
+	UE_DEFINE_GAMEPLAY_TAG(Player_Event_ItemPickUp, "Player.Event.ItemPickUp");
 	
 	// Player State Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Running, "Player.State.Running");
@@ -49,6 +52,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Rolling, "Player.State.Rolling");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Charging, "Player.State.Charging");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Attacking, "Player.State.Attacking");
+	UE_DEFINE_GAMEPLAY_TAG(Player_State_ItemPickUp, "Player.State.ItemPickUp");
 
 	// Enemy Weapon Tags
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Weapon, "Enemy.Weapon");

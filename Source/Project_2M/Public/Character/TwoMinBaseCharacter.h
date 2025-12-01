@@ -23,7 +23,8 @@ public:
 
 	virtual UBaseCombatComponent* GetCombatComponent() const;
 	virtual UBaseUIComponent* GetBaseUIComponent() const override;
-	virtual void DeathProcess();
+	virtual void BeforeDeathProcess();
+	virtual void AfterDeathProcess();
 	
 	FTimerHandle HitStopTimerHandle;
 	

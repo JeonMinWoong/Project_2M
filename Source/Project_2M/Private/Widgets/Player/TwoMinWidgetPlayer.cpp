@@ -7,6 +7,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "Interfaces/BaseUIInterface.h"
+#include "Widgets/TwoMinWidget_ItemPickUpWindow.h"
 
 void UTwoMinWidgetPlayer::NativeOnInitialized()
 {
@@ -27,6 +28,9 @@ void UTwoMinWidgetPlayer::InitPlayerUIComponent(UPlayerUIComponent* HeroUICompon
 	HeroUIComponent->OnCurrentStaminaChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentStaminaPercent);
 	HeroUIComponent->OnCurrentExperienceChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentExperiencePercent);
 	HeroUIComponent->OnCurrentLevelChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentLevelValue);
+	HeroUIComponent->OnPossiblePickUpItem.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetPossiblePickUpItem);
+	HeroUIComponent->OnPossiblePickUpItem.Broadcast(false);
+	HeroUIComponent->OnItemPickUpSlot.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetItemPickUpWindow);
 }
 
 void UTwoMinWidgetPlayer::SetCurrentHealthPercent(float Percent)
@@ -55,4 +59,21 @@ void UTwoMinWidgetPlayer::SetCurrentLevelValue(int32 InCurrentLevel)
 	if (!LevelText) return;
 	
 	LevelText->SetText(FText::AsNumber(InCurrentLevel));
+}
+
+void UTwoMinWidgetPlayer::SetPossiblePickUpItem(bool bIsPossiblePickUp)
+{
+	if (!PickUpItem) return;
+
+	ESlateVisibility EVisibility = bIsPossiblePickUp ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+	
+	PickUpItem->SetVisibility(EVisibility);
+}
+
+void UTwoMinWidgetPlayer::SetItemPickUpWindow(int32 ShowAllItem, TArray<FItemPickUpEntry>& ItemList)
+{
+	if (!ItemPickUpWindow) return;
+	
+	ItemPickUpWindow->SetVisibility(ESlateVisibility::Visible);
+	ItemPickUpWindow->OnItemPickUpSlot(ShowAllItem, ItemList);
 }

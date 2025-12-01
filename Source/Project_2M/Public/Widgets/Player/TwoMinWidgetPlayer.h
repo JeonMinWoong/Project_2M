@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Widgets/TwoMinWidgetBase.h"
+#include "Widgets/TwoMinCharacterWidgetBase.h"
 #include "TwoMinWidgetPlayer.generated.h"
 
+struct FItemPickUpEntry;
+class UTwoMinWidget_ItemPickUpWindow;
 class UTextBlock;
 class UProgressBar;
 class UPlayerUIComponent;
@@ -13,7 +15,7 @@ class UPlayerUIComponent;
  * 
  */
 UCLASS()
-class PROJECT_2M_API UTwoMinWidgetPlayer : public UTwoMinWidgetBase
+class PROJECT_2M_API UTwoMinWidgetPlayer : public UTwoMinCharacterWidgetBase
 {
 	GENERATED_BODY()
 
@@ -32,6 +34,13 @@ protected:
 
 	UFUNCTION()
 	void SetCurrentLevelValue(int32 InCurrentLevel);
+
+	UFUNCTION()
+	void SetPossiblePickUpItem(bool bIsPossiblePickUp);
+	
+	UFUNCTION()
+	void SetItemPickUpWindow(int32 ShowAllItem, TArray<FItemPickUpEntry>& ItemList);
+
 private:
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* HealthBar;
@@ -44,4 +53,13 @@ private:
 
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* LevelText;
+
+	UPROPERTY(meta=(BindWidget))
+	UTwoMinWidgetBase* PickUpItem;
+	
+	UPROPERTY(meta=(BindWidget))
+	UTwoMinWidgetBase* GoldInfo;
+	
+	UPROPERTY(meta=(BindWidget))
+	UTwoMinWidget_ItemPickUpWindow* ItemPickUpWindow;
 };
