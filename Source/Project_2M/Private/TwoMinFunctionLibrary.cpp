@@ -84,3 +84,19 @@ float UTwoMinFunctionLibrary::AttackTypeChangeToAmount(EAttackType AttackType)
 		return 0;
 	}
 }
+
+EItemType UTwoMinFunctionLibrary::GetItemType(int32 ItemID)
+{
+	int32 Value = ItemID;
+
+	while (Value >= 10)
+	{
+		Value /= 10;
+	}
+	
+	if (Value < static_cast<int8>(EItemType::Consume)) return EItemType::Equipment;
+	if (Value < static_cast<int8>(EItemType::Etc)) return EItemType::Consume;
+	if (Value < static_cast<int8>(EItemType::Unknown)) return EItemType::Etc;
+
+	return EItemType::None;
+}

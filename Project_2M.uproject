@@ -14,7 +14,8 @@
 				"GameplayAbilities",
 				"AIModule",
 				"UMG",
-				"MotionWarping"
+				"MotionWarping",
+				"CoreUObject"
 			]
 		}
 	],

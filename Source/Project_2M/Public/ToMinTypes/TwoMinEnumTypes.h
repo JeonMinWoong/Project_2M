@@ -105,3 +105,45 @@ enum class EItemType : uint8
 	Unknown,
 };
 
+UENUM(BlueprintType)
+enum class EEquipmentType : uint8
+{
+	Weapon_Right,
+	Weapon_Left,
+	Weapon_Both,
+};
+
+UENUM(BlueprintType)
+enum class EInventorySlotType : uint8
+{
+	Equipment,
+	Quick,
+	Inventory,
+};
+
+UENUM(Blueprintable)
+enum class EInventoryWindowType : uint8
+{
+	Equipment,
+	Quick,
+	Inventory,
+};
+
+UENUM(Blueprintable)
+enum class EInventorySelectType : uint8
+{
+	InventoryToEquipment,
+	InventoryToConsume,
+	QuickToConsume,
+};
+
+UENUM(Blueprintable)
+enum class ESelectEventType : uint8
+{
+	InventoryToConsume_Register,
+	InventoryToConsume_Use,
+	InventoryToEquipment_Change,
+	QuickToConsume_NonRegister,
+	QuickToConsume_Use,
+	Cancel,
+};

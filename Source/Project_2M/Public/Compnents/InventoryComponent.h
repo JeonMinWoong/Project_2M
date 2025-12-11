@@ -7,6 +7,9 @@
 #include "InventoryComponent.generated.h"
 
 
+class UTwoMinWidget_InventorySlot;
+class UTwoMinWidget_InventoryUI;
+class UTwoMinWidgetBase;
 struct FItemInstance;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -16,18 +19,35 @@ class PROJECT_2M_API UInventoryComponent : public UActorComponent
 
 public:	
 	UInventoryComponent();
-
+	
+	void InitGiveItem();
+	void OpenInventory(const bool bIsOpenInventory);
+	
 	void SaveToEquipmentInventory(const FItemEquipmentData& EquipmentData, const FString& ItemName);
 	void SaveToConsumeInventory(const FItemConsumeData& ConsumeData, const FString& ItemName);
 	void SaveToEtcInventory(const FItemEtcData& EtcData, const FString& ItemName);
-	int32 SaveToFinalInventory(const int32 ItemID, const int32 ItemCount, const int32 ItemMaxCount);
-	void SaveItemPickUpSlotData(const FString& ItemName, int32 ItemCount, UTexture2D* ItemTexture);
-	void ShowAllItem(int32 SaveAllItemCount);
-
+	int32 SaveToFinalInventory(const int32 ItemID, const int32 ItemCount, const int32 ItemMaxCount, UTexture2D* ItemTexture);
+	void SaveItemPickUpSlotData(const int32 ItemId, const FString& ItemName, int32 ItemCount, UTexture2D* ItemTexture);
+	void ShowPickUpGetItem(int32 SaveAllItemCount);
+	void UpdateInventory();
+	void UseItem(int32 ItemID);
+	FItemInstance* FindItemInstance(int32 ItemID);
+	void ForceEquipmentItem(int32 ItemID, EEquipmentType EquipmentType);
+	
+protected:
+	virtual void BeginPlay() override;
+	
 private:
 	UPROPERTY(VisibleAnywhere)
 	TArray<FItemInstance> Inventory;
 	
 	UPROPERTY()
 	TArray<FItemPickUpEntry> ItemPickUpSlotData;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UTwoMinWidget_InventoryUI> InventoryUIClass;
+	
+	UPROPERTY()
+	UTwoMinWidget_InventoryUI* InventoryUI;
+	
 };

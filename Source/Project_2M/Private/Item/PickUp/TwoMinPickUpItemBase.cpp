@@ -6,7 +6,9 @@
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/InventoryComponent.h"
+#include "GameInstance/TwoMinGameInstance.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Managers/ItemDataManager.h"
 
 ATwoMinPickUpItemBase::ATwoMinPickUpItemBase()
 {
@@ -28,10 +30,11 @@ void ATwoMinPickUpItemBase::BeginPlay()
 
 void ATwoMinPickUpItemBase::MakeItemDropBox(TPair<int32, int32> Item)
 {
-	EItemType ItemType = GetItemType(Item.Key);
+	UTwoMinGameInstance* GI = GetWorld()->GetGameInstance<UTwoMinGameInstance>();
+	EItemType ItemType = UTwoMinFunctionLibrary::GetItemType(Item.Key);
 	if (ItemType == EItemType::Equipment)
 	{
-		FItemEquipmentData NewEquipmentData = GetItemEquipmentData(Item.Key);
+		FItemEquipmentData NewEquipmentData = GI->ItemDataManager->GetItemEquipmentData(Item.Key);
 		
 		FItemEquipmentData ItemEquipmentData;
 		ItemEquipmentData.ItemDataBase = NewEquipmentData.ItemDataBase;
@@ -43,7 +46,7 @@ void ATwoMinPickUpItemBase::MakeItemDropBox(TPair<int32, int32> Item)
 	}
 	else if (ItemType == EItemType::Consume)
 	{
-		FItemConsumeData NewConsumeData = GetItemConsumeData(Item.Key);
+		FItemConsumeData NewConsumeData = GI->ItemDataManager->GetItemConsumeData(Item.Key);
 		
 		FItemConsumeData ItemConsumeData;
 		ItemConsumeData.ItemDataBase = NewConsumeData.ItemDataBase;
@@ -54,7 +57,7 @@ void ATwoMinPickUpItemBase::MakeItemDropBox(TPair<int32, int32> Item)
 	}
 	else if (ItemType == EItemType::Etc)
 	{
-		FItemEtcData NewEtcData = GetItemEtcData(Item.Key);
+		FItemEtcData NewEtcData = GI->ItemDataManager->GetItemEtcData(Item.Key);
 		
 		FItemEtcData ItemEtcData;
 		ItemEtcData.ItemDataBase = NewEtcData.ItemDataBase;
@@ -64,87 +67,14 @@ void ATwoMinPickUpItemBase::MakeItemDropBox(TPair<int32, int32> Item)
 	}
 }
 
-EItemType ATwoMinPickUpItemBase::GetItemType(int32 ItemID)
-{
-	int32 Value = ItemID;
-
-	while (Value >= 10)
-	{
-		Value /= 10;
-	}
-	
-	if (Value < static_cast<int8>(EItemType::Consume)) return EItemType::Equipment;
-	if (Value < static_cast<int8>(EItemType::Etc)) return EItemType::Consume;
-	if (Value < static_cast<int8>(EItemType::Unknown)) return EItemType::Etc;
-
-	return EItemType::None;
-}
-
-FItemEquipmentData ATwoMinPickUpItemBase::GetItemEquipmentData(int32 ItemID) const
-{
-	FItemEquipmentData NewEquipmentData;
-	TArray<FItemEquipmentData*> EquipmentTableGroup;
-	FString DropTableGroupName = FString::FromInt(ItemID);
-	EquipmentDataTable->GetAllRows(DropTableGroupName, EquipmentTableGroup);
-
-	for (FItemEquipmentData* TableGroup : EquipmentTableGroup)
-	{
-		if (ItemID == TableGroup->ItemDataBase.ItemID)
-		{
-			NewEquipmentData = *TableGroup;
-			break;
-		}
-	}
-	
-	return NewEquipmentData;
-}
-
-FItemConsumeData ATwoMinPickUpItemBase::GetItemConsumeData(int32 ItemID) const
-{
-	FItemConsumeData NewConsumeData;
-	TArray<FItemConsumeData*> ConsumeTableGroup;
-	FString DropTableGroupName = FString::FromInt(ItemID);
-	ConsumeDataTable->GetAllRows(DropTableGroupName, ConsumeTableGroup);
-
-	for (FItemConsumeData* TableGroup : ConsumeTableGroup)
-	{
-		if (ItemID == TableGroup->ItemDataBase.ItemID)
-		{
-			NewConsumeData = *TableGroup;
-			break;
-		}
-	}
-	
-	return NewConsumeData;
-}
-
-FItemEtcData ATwoMinPickUpItemBase::GetItemEtcData(int32 ItemID) const
-{
-	FItemEtcData NewEtcData;
-	TArray<FItemEtcData*> EtcTableGroup;
-	FString DropTableGroupName = FString::FromInt(ItemID);
-	EtcDataTable->GetAllRows(DropTableGroupName, EtcTableGroup);
-
-	for (FItemEtcData* TableGroup : EtcTableGroup)
-	{
-		if (ItemID == TableGroup->ItemDataBase.ItemID)
-		{
-			NewEtcData = *TableGroup;
-			break;
-		}
-	}
-	
-	return NewEtcData;
-}
-
-
 void ATwoMinPickUpItemBase::GetUpItem(const ATwoMinPlayerCharacter* PlayerCharacter)
 {
+	UTwoMinGameInstance* GI = GetWorld()->GetGameInstance<UTwoMinGameInstance>();
 	UInventoryComponent* Inventory = PlayerCharacter->GetInventoryComponent();
 	int32 SaveAllItemCount = 0;
 	for (const FItemEquipmentData& EquipmentList : ItemEquipmentList)
 	{
-		FItemEquipmentData NewEquipmentData = GetItemEquipmentData(EquipmentList.ItemDataBase.ItemID);
+		FItemEquipmentData NewEquipmentData = GI->ItemDataManager->GetItemEquipmentData(EquipmentList.ItemDataBase.ItemID);
 		Inventory->SaveToEquipmentInventory(EquipmentList, NewEquipmentData.ItemDataBase.ItemName);	
 		SaveAllItemCount++;
 	}
@@ -153,7 +83,7 @@ void ATwoMinPickUpItemBase::GetUpItem(const ATwoMinPlayerCharacter* PlayerCharac
 	
 	for (const FItemConsumeData& ConsumeList : ItemConsumeList)
 	{
-		FItemConsumeData NewConsumeData = GetItemConsumeData(ConsumeList.ItemDataBase.ItemID);
+		FItemConsumeData NewConsumeData = GI->ItemDataManager->GetItemConsumeData(ConsumeList.ItemDataBase.ItemID);
 		Inventory->SaveToConsumeInventory(ConsumeList, NewConsumeData.ItemDataBase.ItemName);
 		SaveAllItemCount++;
 	}
@@ -162,12 +92,13 @@ void ATwoMinPickUpItemBase::GetUpItem(const ATwoMinPlayerCharacter* PlayerCharac
 	
 	for (const FItemEtcData& EtcList : ItemEtcList)
 	{
-		FItemEtcData NewEtcData = GetItemEtcData(EtcList.ItemDataBase.ItemID);
+		FItemEtcData NewEtcData = GI->ItemDataManager->GetItemEtcData(EtcList.ItemDataBase.ItemID);
 		Inventory->SaveToEtcInventory(EtcList, NewEtcData.ItemDataBase.ItemName);
 		SaveAllItemCount++;
 	}
 
-	Inventory->ShowAllItem(SaveAllItemCount);
+	Inventory->UpdateInventory();
+	Inventory->ShowPickUpGetItem(SaveAllItemCount);
 	ItemEtcList.Empty();
 	
 	Destroy();

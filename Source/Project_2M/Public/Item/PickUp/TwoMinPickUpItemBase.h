@@ -19,10 +19,6 @@ public:
 	virtual void BeginPlay() override;
 	
 	void MakeItemDropBox(TPair<int32, int32> Item);
-	EItemType GetItemType(int32 ItemID);
-	FItemEquipmentData GetItemEquipmentData(int32 ItemID) const;
-	FItemConsumeData GetItemConsumeData(int32 ItemID) const;
-	FItemEtcData GetItemEtcData(int32 ItemID) const;
 	
 	void GetUpItem(const ATwoMinPlayerCharacter* PlayerCharacter);
 protected:

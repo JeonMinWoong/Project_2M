@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "ToMinTypes/TwoMinEnumTypes.h"
 #include "TwoMinFunctionLibrary.generated.h"
 
 struct FGameplayEventData;
@@ -35,4 +36,7 @@ public:
 
 	UFUNCTION()
 	static float AttackTypeChangeToAmount(EAttackType AttackType);
+	
+	UFUNCTION()
+	static EItemType GetItemType(int32 ItemID);
 };

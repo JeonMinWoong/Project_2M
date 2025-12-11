@@ -369,6 +369,9 @@ struct FItemEquipmentData : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Base")
 	FItemData ItemDataBase;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Equipment|ET")
+	EEquipmentType EquipmentType;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Equipment|AP")
 	int32 AttackPower;
 
@@ -402,12 +405,39 @@ USTRUCT(BlueprintType)
 struct FItemInstance
 {
 	GENERATED_BODY()
-
+	
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemID")
 	int32 ItemID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "HoldCount")
 	int32 HoldCount;
+	
+	UPROPERTY(BlueprintReadWrite)
+	UTexture2D* ItemTexture;
+	
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsRegister = false;
+	
+	UPROPERTY(BlueprintReadWrite)
+	EInventorySlotType SlotType = EInventorySlotType::Inventory;
+	
+	UPROPERTY(BlueprintReadWrite)
+	int32 RegisterCount = -1;
+	
+	void OnRegister(bool NewIsRegister, EInventorySlotType NewSlotType, int32 NewRegisterCount)
+	{
+		this->bIsRegister = NewIsRegister;
+		this->SlotType = NewSlotType;
+		this->RegisterCount = NewRegisterCount;
+	}
+	
+	void UnRegister()
+	{
+		this->bIsRegister = false;
+		this->SlotType = EInventorySlotType::Inventory;
+		this->RegisterCount = -1;
+	}
 	
 };
 
@@ -416,6 +446,9 @@ struct FItemPickUpEntry
 {
 	GENERATED_BODY()
 
+	UPROPERTY(BlueprintReadWrite)
+	int32 ItemID;
+	
 	UPROPERTY(BlueprintReadWrite)
 	FString ItemName;
 

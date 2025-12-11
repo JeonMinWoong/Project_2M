@@ -43,6 +43,8 @@ public:
 	FVector GetInputDirection() const;
 	void PlayerLevelUp(int32 NewLevel);
 	
+	void OpenInventoryProcess();
+	
 protected:
 	//~ Begin APawn Interface.
 	virtual void PossessedBy(AController* NewController) override;
@@ -158,6 +160,12 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category= "IgnoreTag_ItemPickUpTrigger")
 	FGameplayTagContainer IgnoreTagContainer;
+
+	void Input_OpenInventory(const FInputActionValue& InputActionValue);
+	
+	bool bIsOpenInventory = false;
+	
+	void Input_UseItemTrigger(const FInputActionValue& InputActionValue);
 	
 #pragma endregion
 
