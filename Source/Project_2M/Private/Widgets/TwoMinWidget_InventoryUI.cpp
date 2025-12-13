@@ -3,11 +3,7 @@
 
 #include "Widgets/TwoMinWidget_InventoryUI.h"
 
-#include "TwoMinDebugHelper.h"
 #include "TwoMinFunctionLibrary.h"
-#include "TwoMinGameplayTag.h"
-#include "Abilities/GameplayAbilityTypes.h"
-#include "Blueprint/WidgetLayoutLibrary.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/InventoryComponent.h"
 #include "Components/CanvasPanelSlot.h"
@@ -15,7 +11,6 @@
 #include "Managers/ItemDataManager.h"
 #include "ToMinTypes/TwoMinEnumTypes.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
-#include "Widgets/TwoMinWidget_EquipmentSlot.h"
 #include "Widgets/TwoMinWidget_InventorySlot.h"
 #include "Widgets/TwoMinWidget_InventoryWindow.h"
 
@@ -132,13 +127,6 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 					
 					PlayerCharacter->OpenInventoryProcess();
 					PlayerCharacter->GetInventoryComponent()->UseItem(ItemInstance.ItemID);
-					PlayerCharacter->GetInventoryComponent()->UpdateInventory();
-					
-					UTwoMinFunctionLibrary::SendToGameplayEffectEvent(
-						PlayerCharacter, 
-						TwoMinGameplayTag::Player_Event_UseItem, 
-						FGameplayEventData()
-					);
 				}
 				
 				return FReply::Handled();
@@ -170,13 +158,6 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 					
 					PlayerCharacter->OpenInventoryProcess();
 					PlayerCharacter->GetInventoryComponent()->UseItem(ItemInstance.ItemID);
-					PlayerCharacter->GetInventoryComponent()->UpdateInventory();
-					
-					UTwoMinFunctionLibrary::SendToGameplayEffectEvent(
-						PlayerCharacter, 
-						TwoMinGameplayTag::Player_Event_UseItem, 
-						FGameplayEventData()
-					);
 				}
 				
 				return FReply::Handled();

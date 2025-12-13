@@ -2,11 +2,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffect.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/BaseUIInterface.h"
 #include "ToMinTypes/TwoMinEnumTypes.h"
 #include "TwoMinBaseCharacter.generated.h"
 
+class UGameplayEffect;
 class UTwoMinAttributeSet;
 class UMotionWarpingComponent;
 class UBaseCombatComponent;
@@ -51,6 +53,10 @@ protected:
 	UPROPERTY()
 	ECharacterType CharacterType;
 	
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Health_Gain")
+	TSubclassOf<UGameplayEffect> HealthGainEffect;
+	
 public:
 	FORCEINLINE UTwoMinAbilitySystemComponent* GetAbilitySystemComponent() const
 	{ return AbilitySystemComponent; }
@@ -60,4 +66,8 @@ public:
 
 	FORCEINLINE ECharacterType GetCharacterType() const
 	{ return CharacterType; }
+	
+	FORCEINLINE UGameplayEffect* GetHealthGainEffect() const
+	{ return HealthGainEffect->GetDefaultObject<UGameplayEffect>(); }
+	
 };

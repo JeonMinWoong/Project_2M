@@ -14,6 +14,9 @@ class PROJECT_2M_API UTwoMinGA_UseItemBase : public UTwoMinGameplayAbility
 {
 	GENERATED_BODY()
 	
+public:
+	void ApplyItemConsumeEffect() const;
+	
 protected:
 	//~ Begin UGameplayAbility Interface.
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -26,5 +29,8 @@ protected:
 private:
 	UPROPERTY(EditDefaultsOnly, Category= "Montages" )
 	TMap<int32, UAnimMontage*> UseItemMontages;
+	
+	UPROPERTY()
+	FItemConsumeData CachedConsumeData;
 	
 };

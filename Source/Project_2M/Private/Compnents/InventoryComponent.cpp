@@ -4,6 +4,8 @@
 
 #include "MathUtil.h"
 #include "TwoMinDebugHelper.h"
+#include "TwoMinGameplayTag.h"
+#include "Abilities/GameplayAbilityTypes.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/UI/PlayerUIComponent.h"
 #include "Controller/TwoMinPlayerController.h"
@@ -222,11 +224,13 @@ void UInventoryComponent::UpdateInventory()
 
 void UInventoryComponent::UseItem(int32 ItemID)
 {
+	bool bIsItemFind = false;
 	int32 RemoveIndex = INDEX_NONE;
 	for (int32 Index = 0; Index < Inventory.Num(); Index++)
 	{
 		if (Inventory[Index].ItemID == ItemID)
 		{
+			bIsItemFind = true;
 			Inventory[Index].HoldCount--;
 			if (Inventory[Index].HoldCount <= 0)
 			{
@@ -237,12 +241,31 @@ void UInventoryComponent::UseItem(int32 ItemID)
 		}
 	}
 	
+	if (bIsItemFind == false) return;
+	
 	if (RemoveIndex != INDEX_NONE)
 	{
 		Inventory.RemoveAt(RemoveIndex);
 	}
 	
 	UpdateInventory();
+
+	const UTwoMinGameInstance* GI = GetWorld()->GetGameInstance<UTwoMinGameInstance>();
+	const FItemConsumeData ConsumeData = GI->ItemDataManager->GetItemConsumeData(ItemID);
+	
+	AActor* Owner = GetOwner();
+	UConsumePayloadObject* ItemPayloadObject = NewObject<UConsumePayloadObject>(Owner);
+	ItemPayloadObject->ConsumeData = ConsumeData;
+	
+	FGameplayEventData EventData;
+	EventData.Instigator = Owner;
+	EventData.OptionalObject = ItemPayloadObject;
+					
+	UTwoMinFunctionLibrary::SendToGameplayEffectEvent(
+		Owner, 
+		TwoMinGameplayTag::Player_Event_UseItem, 
+		EventData
+	);
 }
 
 FItemInstance* UInventoryComponent::FindItemInstance(int32 ItemID)

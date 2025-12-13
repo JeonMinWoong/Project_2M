@@ -113,6 +113,13 @@ enum class EEquipmentType : uint8
 	Weapon_Both,
 };
 
+UENUM(Blueprintable)
+enum class EConsumeType : uint8
+{
+	Heal = 0,
+	Buff = 1,
+};
+
 UENUM(BlueprintType)
 enum class EInventorySlotType : uint8
 {

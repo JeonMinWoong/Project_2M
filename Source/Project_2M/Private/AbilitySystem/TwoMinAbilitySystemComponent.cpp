@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 
+#include "TwoMinDebugHelper.h"
 #include "TwoMinGameplayTag.h"
 #include "AbilitySystem/TwoMinAttributeSet.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
@@ -283,4 +284,26 @@ void UTwoMinAbilitySystemComponent::GiveExperience(ATwoMinEnemyCharacter* InEnem
 
 	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Gain_Experience, GiveExperience);
 	ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+}
+
+void UTwoMinAbilitySystemComponent::GiveHealthPercent(float InHealthPercent)
+{
+	ATwoMinBaseCharacter* Character = Cast<ATwoMinBaseCharacter>(GetAvatarActor());
+	if (!Character) return;
+	
+	FGameplayEffectSpecHandle Spec = MakeOutgoingSpec(
+		Character->GetHealthGainEffect()->GetClass(),
+		1,
+		MakeEffectContext()
+	);
+	
+	UTwoMinAbilitySystemComponent* ASC = Character->GetAbilitySystemComponent();
+	int32 GiveHealthAmount = FMath::FloorToInt32(
+		ASC->GetNumericAttribute(UTwoMinAttributeSet::GetMaxHealthAttribute()) * InHealthPercent);
+
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Gain_Health, GiveHealthAmount);
+	ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+	
+	FString Str = FString::Printf(TEXT("Give Health : %d"), GiveHealthAmount);
+	TwoMinDebugHelper::Print(Str, FColor::Green);
 }

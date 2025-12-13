@@ -387,8 +387,11 @@ struct FItemConsumeData : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Base")
 	FItemData ItemDataBase;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Consume|ConsumeType")
+	EConsumeType ConsumeType;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Consume|CP")
-	int32 ConsumePower;
+	float ConsumePower;
 };
 
 USTRUCT(BlueprintType)
@@ -457,4 +460,14 @@ struct FItemPickUpEntry
 	
 	UPROPERTY(BlueprintReadWrite)
 	UTexture2D* ItemTexture;
+};
+
+UCLASS(BlueprintType)
+class UConsumePayloadObject : public UObject
+{
+	GENERATED_BODY()
+	
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
+	FItemConsumeData ConsumeData;
 };

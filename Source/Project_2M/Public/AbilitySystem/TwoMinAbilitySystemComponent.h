@@ -45,4 +45,8 @@ public:
 	// Player 전용
 	UFUNCTION()
 	void GiveExperience(ATwoMinEnemyCharacter* InEnemyCharacter);
+	
+	// Player 전용
+	UFUNCTION()
+	void GiveHealthPercent(float InHealthPercent);
 };

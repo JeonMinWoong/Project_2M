@@ -385,11 +385,23 @@ void ATwoMinPlayerCharacter::OpenInventoryProcess()
 
 void ATwoMinPlayerCharacter::Input_UseItemTrigger(const FInputActionValue& InputActionValue)
 {
-	UTwoMinFunctionLibrary::SendToGameplayEffectEvent(
-		this, 
-		TwoMinGameplayTag::Player_Event_UseItem, 
-		FGameplayEventData()
-	);
+	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitDowning)
+		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitThrowing)
+			|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_OpenInventory))
+	{
+		return;
+	}
+	
+	for (auto GameplayTag : IgnoreTagContainer)
+	{
+		if (UTwoMinFunctionLibrary::HasGameplayTag(this, GameplayTag))
+		{
+			return;
+		}
+	}
+	
+	// todo : 퀵 슬롯 작업.
+	InventoryComponent->UseItem(20002); // Test Health Potion
 }
 
 bool ATwoMinPlayerCharacter::GetIsRunning()
