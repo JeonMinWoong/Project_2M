@@ -7,6 +7,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "Interfaces/BaseUIInterface.h"
+#include "Widgets/TwoMinWidget_GoldInfo.h"
 #include "Widgets/TwoMinWidget_ItemPickUpWindow.h"
 
 void UTwoMinWidgetPlayer::NativeOnInitialized()
@@ -31,6 +32,7 @@ void UTwoMinWidgetPlayer::InitPlayerUIComponent(UPlayerUIComponent* HeroUICompon
 	HeroUIComponent->OnPossiblePickUpItem.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetPossiblePickUpItem);
 	HeroUIComponent->OnPossiblePickUpItem.Broadcast(false);
 	HeroUIComponent->OnItemPickUpSlot.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetItemPickUpWindow);
+	HeroUIComponent->OnCurrentGoldChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentGoldValue);
 }
 
 void UTwoMinWidgetPlayer::SetCurrentHealthPercent(float Percent)
@@ -76,4 +78,12 @@ void UTwoMinWidgetPlayer::SetItemPickUpWindow(int32 ShowAllItem, TArray<FItemPic
 	
 	ItemPickUpWindow->SetVisibility(ESlateVisibility::Visible);
 	ItemPickUpWindow->OnItemPickUpSlot(ShowAllItem, ItemList);
+}
+
+void UTwoMinWidgetPlayer::SetCurrentGoldValue(int32 NewGold, int32 GainGold)
+{
+	if (!GoldInfo) return;
+	
+	GoldInfo->SetGoldText(NewGold);
+	GoldInfo->SetGoldNotifyText(GainGold);
 }

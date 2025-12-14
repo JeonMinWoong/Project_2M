@@ -6,6 +6,7 @@
 #include "Widgets/TwoMinCharacterWidgetBase.h"
 #include "TwoMinWidgetPlayer.generated.h"
 
+class UTwoMinWidget_GoldInfo;
 struct FItemPickUpEntry;
 class UTwoMinWidget_ItemPickUpWindow;
 class UTextBlock;
@@ -22,6 +23,7 @@ class PROJECT_2M_API UTwoMinWidgetPlayer : public UTwoMinCharacterWidgetBase
 protected:
 	virtual void NativeOnInitialized() override;
 
+	UFUNCTION()
 	void InitPlayerUIComponent(UPlayerUIComponent* HeroUIComponent);
 	
 	virtual void SetCurrentHealthPercent(float Percent) override;
@@ -41,6 +43,9 @@ protected:
 	UFUNCTION()
 	void SetItemPickUpWindow(int32 ShowAllItem, TArray<FItemPickUpEntry>& ItemList);
 
+	UFUNCTION()
+	void SetCurrentGoldValue(int32 NewGold, int32 GainGold);
+	
 private:
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* HealthBar;
@@ -58,8 +63,8 @@ private:
 	UTwoMinWidgetBase* PickUpItem;
 	
 	UPROPERTY(meta=(BindWidget))
-	UTwoMinWidgetBase* GoldInfo;
+	UTwoMinWidget_ItemPickUpWindow* ItemPickUpWindow;
 	
 	UPROPERTY(meta=(BindWidget))
-	UTwoMinWidget_ItemPickUpWindow* ItemPickUpWindow;
+	UTwoMinWidget_GoldInfo* GoldInfo;
 };

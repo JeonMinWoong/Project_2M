@@ -18,6 +18,7 @@ void UTwoMinGA_Death_Enemy::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	if (PlayerCharacter && EnemyCharacter)
 	{
 		PlayerCharacter->GetAbilitySystemComponent()->GiveExperience(EnemyCharacter);
+		PlayerCharacter->GetAbilitySystemComponent()->GiveGold(EnemyCharacter);
 	}
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);

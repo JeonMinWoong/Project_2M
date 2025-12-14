@@ -75,9 +75,12 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Experience_Gain")
 	TSubclassOf<UGameplayEffect> ExperienceGainEffect;
-
+	
 	UPROPERTY(EditDefaultsOnly, Category = "CurveTable|NeedToLevelUp_Experience")
 	UCurveTable* NeedToLevelUp_ExperienceCurveTable;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Gold_Gain")
+	TSubclassOf<UGameplayEffect> GoldGainEffect;
 
 	UPROPERTY(VisibleAnywhere)
 	UInventoryComponent* InventoryComponent;
@@ -184,5 +187,8 @@ public:
 
 	FORCEINLINE UCurveTable* GetNeedToLevelUp_ExperienceCurveTable() const
 	{ return NeedToLevelUp_ExperienceCurveTable; }
+	
+	FORCEINLINE UGameplayEffect* GetGoldGainEffect() const
+	{ return GoldGainEffect->GetDefaultObject<UGameplayEffect>(); }
 };
 

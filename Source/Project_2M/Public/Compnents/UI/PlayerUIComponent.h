@@ -9,6 +9,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPossiblePickUpItem, bool, bIsPossiblePickUp);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemPickUpSlot, int32, SaveAllItemCount, TArray<FItemPickUpEntry>&, ItemList);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCurrentGoldChanged, int32, NewGold, int32, GainGold);
 
 /**
  * 
@@ -33,4 +34,8 @@ public:
 	
 	UPROPERTY()
 	FOnItemPickUpSlot OnItemPickUpSlot;
+	
+	UPROPERTY()
+	FOnCurrentGoldChanged OnCurrentGoldChanged;
+	
 };

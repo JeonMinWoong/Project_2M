@@ -93,4 +93,5 @@ void UTwoMinGA_ExecutionTarget::OnExecutionDeathGameplayEventReceive(FGameplayEv
 	if (!PlayerCharacter || !EnemyCharacter) return;
 
 	PlayerCharacter->GetAbilitySystemComponent()->GiveExperience(EnemyCharacter);
+	PlayerCharacter->GetAbilitySystemComponent()->GiveGold(EnemyCharacter);
 }

@@ -56,6 +56,9 @@ protected:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Health_Gain")
 	TSubclassOf<UGameplayEffect> HealthGainEffect;
+
+	UPROPERTY()
+	int32 GainGold;
 	
 public:
 	FORCEINLINE UTwoMinAbilitySystemComponent* GetAbilitySystemComponent() const
@@ -69,5 +72,8 @@ public:
 	
 	FORCEINLINE UGameplayEffect* GetHealthGainEffect() const
 	{ return HealthGainEffect->GetDefaultObject<UGameplayEffect>(); }
+	
+	FORCEINLINE void SetGainGold(int32 InGainGold) { GainGold = InGainGold; }
+	FORCEINLINE int32 GetGainGold() const { return GainGold; }
 	
 };

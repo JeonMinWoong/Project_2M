@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
 #include "AttributeSet.h"
+#include "Character/TwoMinBaseCharacter.h"
 #include "TwoMinAttributeSet.generated.h"
 
 #define ATTRIBUTE_ACCESSORS(ClassName, PropertyName) \
@@ -91,9 +92,22 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Groggy")
 	FGameplayAttributeData DecreaseGroggyDelay;
 	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, DecreaseGroggyDelay)
+	
+	UPROPERTY(BlueprintReadOnly, Category = "GiveGold")
+	FGameplayAttributeData GiveGold;
+	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, GiveGold)
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Gold")
+	FGameplayAttributeData CurrentGold;
+	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, CurrentGold)
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Gold")
+	FGameplayAttributeData MaxGold;
+	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, MaxGold)
 
 private:
 	int32 NeedToExperienceValue(ATwoMinPlayerCharacter* PlayerCharacter, int32 InCurrentLevel) const;
 	
 	TWeakInterfacePtr<IBaseUIInterface> CachedBaseUInterface;
+	ATwoMinBaseCharacter* OwningBaseCharacter;
 };

@@ -391,7 +391,7 @@ struct FItemConsumeData : public FTableRowBase
 	EConsumeType ConsumeType;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Consume|CP")
-	float ConsumePower;
+	TArray<float> ConsumePowerGroup;
 };
 
 USTRUCT(BlueprintType)

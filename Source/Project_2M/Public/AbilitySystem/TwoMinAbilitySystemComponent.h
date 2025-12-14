@@ -48,5 +48,9 @@ public:
 	
 	// Player 전용
 	UFUNCTION()
+	void GiveGold(ATwoMinEnemyCharacter* InEnemyCharacter);
+	
+	// Player 전용
+	UFUNCTION()
 	void GiveHealthPercent(float InHealthPercent);
 };

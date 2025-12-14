@@ -37,6 +37,10 @@ UTwoMinAttributeSet::UTwoMinAttributeSet()
 	InitCurrentGroggy(0.f);
 	InitGroggyTo(0.f);
 	InitDecreaseGroggyDelay(1.f);
+	
+	InitGiveGold(0);
+	InitCurrentGold(0);
+	InitMaxGold(0);
 }
 
 void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data)
@@ -44,6 +48,7 @@ void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 	if (!CachedBaseUInterface.IsValid())
 	{
 		CachedBaseUInterface = TWeakInterfacePtr<IBaseUIInterface>(Data.Target.GetAvatarActor());
+		OwningBaseCharacter = Cast<ATwoMinBaseCharacter>(Data.Target.GetAvatarActor());
 	}
 	
 	UBaseUIComponent* BaseUIComponent = CachedBaseUInterface->GetBaseUIComponent();
@@ -130,6 +135,18 @@ void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 		const float NewCurrentGroggy = FMath::Clamp(GetCurrentGroggy(), 0.f, GetMaxGroggy());
 
 		SetCurrentGroggy(NewCurrentGroggy);
+	}
+	
+	if (Data.EvaluatedData.Attribute == GetCurrentGoldAttribute())
+	{
+		float NewCurrentGold = FMath::Clamp(GetCurrentGold(), 0.f, GetMaxGold());
+		float GainGold = OwningBaseCharacter->GetGainGold();
+		
+		SetCurrentGold(NewCurrentGold);
+		if (UPlayerUIComponent* PlayerUIComponent = CachedBaseUInterface->GetPlayerUIComponent())
+		{
+			PlayerUIComponent->OnCurrentGoldChanged.Broadcast(NewCurrentGold, GainGold);
+		}
 	}
 
 	if (Data.EvaluatedData.Attribute == GetDamageToAttribute())

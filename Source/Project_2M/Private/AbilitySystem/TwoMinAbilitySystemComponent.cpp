@@ -286,6 +286,25 @@ void UTwoMinAbilitySystemComponent::GiveExperience(ATwoMinEnemyCharacter* InEnem
 	ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
 }
 
+void UTwoMinAbilitySystemComponent::GiveGold(ATwoMinEnemyCharacter* InEnemyCharacter)
+{
+	UTwoMinAbilitySystemComponent* TargetASC = InEnemyCharacter->GetAbilitySystemComponent();
+	int32 GiveGold = TargetASC->GetNumericAttribute(UTwoMinAttributeSet::GetGiveGoldAttribute());
+	
+	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActor());
+	if (!PlayerCharacter) return;
+	
+	FGameplayEffectSpecHandle Spec = MakeOutgoingSpec(
+		PlayerCharacter->GetGoldGainEffect()->GetClass(),
+		1,
+		MakeEffectContext()
+	);
+
+	PlayerCharacter->SetGainGold(GiveGold);
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Gain_Gold, GiveGold);
+	ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+}
+
 void UTwoMinAbilitySystemComponent::GiveHealthPercent(float InHealthPercent)
 {
 	ATwoMinBaseCharacter* Character = Cast<ATwoMinBaseCharacter>(GetAvatarActor());

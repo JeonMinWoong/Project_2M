@@ -51,7 +51,7 @@ void ATwoMinPickUpItemBase::MakeItemDropBox(TPair<int32, int32> Item)
 		FItemConsumeData ItemConsumeData;
 		ItemConsumeData.ItemDataBase = NewConsumeData.ItemDataBase;
 		ItemConsumeData.ItemDataBase.CurrentCount = Item.Value;
-		ItemConsumeData.ConsumePower = NewConsumeData.ConsumePower;
+		ItemConsumeData.ConsumePowerGroup = NewConsumeData.ConsumePowerGroup;
 
 		ItemConsumeList.Add(ItemConsumeData);
 	}

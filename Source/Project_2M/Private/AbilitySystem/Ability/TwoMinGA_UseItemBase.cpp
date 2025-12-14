@@ -41,12 +41,17 @@ void UTwoMinGA_UseItemBase::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 
 void UTwoMinGA_UseItemBase::ApplyItemConsumeEffect() const
 {
+	if (CachedConsumeData.ConsumePowerGroup.IsEmpty()) return;
+	
 	if (CachedConsumeData.ConsumeType == EConsumeType::Heal)
 	{
-		GetTwoMinAbilitySystemComponentFromActorInfo()->GiveHealthPercent(CachedConsumeData.ConsumePower);
+		GetTwoMinAbilitySystemComponentFromActorInfo()->GiveHealthPercent(CachedConsumeData.ConsumePowerGroup[0]);
 	}
 	else
 	{
-		// todo : Buff
+		for (auto ConsumePower : CachedConsumeData.ConsumePowerGroup)
+		{
+			// todo: 버프 해야함.
+		}
 	}
 }
