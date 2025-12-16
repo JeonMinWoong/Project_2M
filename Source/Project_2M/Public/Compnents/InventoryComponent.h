@@ -30,9 +30,11 @@ public:
 	void SaveItemPickUpSlotData(const int32 ItemId, const FString& ItemName, int32 ItemCount, UTexture2D* ItemTexture);
 	void ShowPickUpGetItem(int32 SaveAllItemCount);
 	void UpdateInventory();
-	void UseItem(int32 ItemID);
+	void UseItem(int32 ItemID, bool& bIsRemoved);
 	FItemInstance* FindItemInstance(int32 ItemID);
 	void ForceEquipmentItem(int32 ItemID, EEquipmentType EquipmentType);
+
+	FItemInstance GetQuickSlotItemInstance(int32 SlotIndex) const;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -49,5 +51,4 @@ private:
 	
 	UPROPERTY()
 	UTwoMinWidget_InventoryUI* InventoryUI;
-	
 };

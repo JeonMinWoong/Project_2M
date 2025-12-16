@@ -9,6 +9,7 @@
 #include "Interfaces/BaseUIInterface.h"
 #include "Widgets/TwoMinWidget_GoldInfo.h"
 #include "Widgets/TwoMinWidget_ItemPickUpWindow.h"
+#include "Widgets/TwoMinWidget_WindowQuickSlot.h"
 
 void UTwoMinWidgetPlayer::NativeOnInitialized()
 {
@@ -33,6 +34,7 @@ void UTwoMinWidgetPlayer::InitPlayerUIComponent(UPlayerUIComponent* HeroUICompon
 	HeroUIComponent->OnPossiblePickUpItem.Broadcast(false);
 	HeroUIComponent->OnItemPickUpSlot.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetItemPickUpWindow);
 	HeroUIComponent->OnCurrentGoldChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentGoldValue);
+	HeroUIComponent->OnSetWindowQuickSlot.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::OnSetWindowQuickSlot);
 }
 
 void UTwoMinWidgetPlayer::SetCurrentHealthPercent(float Percent)
@@ -86,4 +88,11 @@ void UTwoMinWidgetPlayer::SetCurrentGoldValue(int32 NewGold, int32 GainGold)
 	
 	GoldInfo->SetGoldText(NewGold);
 	GoldInfo->SetGoldNotifyText(GainGold);
+}
+
+void UTwoMinWidgetPlayer::OnSetWindowQuickSlot(FItemInstance QuickSlotRegisterItem, int32 SlotIndex, bool bIsRegister)
+{
+	if (!WindowQuickSlot) return;
+	
+	WindowQuickSlot->SetQuickSlotRegisterItems(QuickSlotRegisterItem, SlotIndex, bIsRegister);
 }

@@ -6,6 +6,7 @@
 #include "TwoMinFunctionLibrary.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/InventoryComponent.h"
+#include "Compnents/UI/PlayerUIComponent.h"
 #include "Components/CanvasPanelSlot.h"
 #include "GameInstance/TwoMinGameInstance.h"
 #include "Managers/ItemDataManager.h"
@@ -96,6 +97,12 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 				InventoryItem->OnRegister(true, EInventorySlotType::Quick, CurQuickIndex);
 				QuickSlots[CurQuickIndex]->SetInventorySlot(*InventoryItem);
 				
+				if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningPlayerPawn()))
+				{
+					UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetPlayerUIComponent();
+					PlayerUIComponent->OnSetWindowQuickSlot.Broadcast(*InventoryItem, CurQuickIndex, true);
+				}
+				
 				return FReply::Handled();
 			}
 			
@@ -125,8 +132,15 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 					int32 SelectInventoryIndex = InventoryWindow->GetCurInventoryIndex();
 					FItemInstance ItemInstance = InventorySlots[SelectInventoryIndex]->GetItemInstance();
 					
+					bool bIsRemoved = false;
 					PlayerCharacter->OpenInventoryProcess();
-					PlayerCharacter->GetInventoryComponent()->UseItem(ItemInstance.ItemID);
+					PlayerCharacter->GetInventoryComponent()->UseItem(ItemInstance.ItemID, bIsRemoved);
+					
+					if (ItemInstance.bIsRegister && bIsRemoved)
+					{
+						UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetPlayerUIComponent();
+						PlayerUIComponent->OnSetWindowQuickSlot.Broadcast(ItemInstance, ItemInstance.RegisterCount, false);
+					}
 				}
 				
 				return FReply::Handled();
@@ -137,13 +151,19 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 				
 				int32 SelectQuickIndex = QuickWindow->GetCurInventoryIndex();
 				FItemInstance ItemInstance = QuickSlots[SelectQuickIndex]->GetItemInstance();
+				
+				// Overlay 먼저 해제
+				if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningPlayerPawn()))
+				{
+					UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetPlayerUIComponent();
+					PlayerUIComponent->OnSetWindowQuickSlot.Broadcast(ItemInstance, ItemInstance.RegisterCount, false);
+				}
+				
 				int32 RinkItemID = QuickSlots[SelectQuickIndex]->UnRegister();
 				UTwoMinWidget_InventorySlot* RinkInventorySlot = FindInventorySlot(RinkItemID);
 				RinkInventorySlot->UnRegister();
 				FItemInstance* InventoryItem = FindInventoryItem(ItemInstance.ItemID);
 				InventoryItem->UnRegister();
-				
-				// todo : 실제 퀵슬롯에서 소비 아이템 등록 해제.
 				
 				return FReply::Handled();
 			}
@@ -156,8 +176,15 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 					int32 SelectQuickIndex = QuickWindow->GetCurInventoryIndex();
 					FItemInstance ItemInstance = QuickSlots[SelectQuickIndex]->GetItemInstance();
 					
+					bool bIsRemoved = false;
 					PlayerCharacter->OpenInventoryProcess();
-					PlayerCharacter->GetInventoryComponent()->UseItem(ItemInstance.ItemID);
+					PlayerCharacter->GetInventoryComponent()->UseItem(ItemInstance.ItemID, bIsRemoved);
+					
+					if (ItemInstance.bIsRegister && bIsRemoved)
+					{
+						UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetPlayerUIComponent();
+						PlayerUIComponent->OnSetWindowQuickSlot.Broadcast(ItemInstance, ItemInstance.RegisterCount, false);
+					}
 				}
 				
 				return FReply::Handled();

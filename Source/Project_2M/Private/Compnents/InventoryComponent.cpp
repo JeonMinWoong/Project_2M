@@ -211,6 +211,9 @@ void UInventoryComponent::UpdateInventory()
 			if (NewItemInstance.SlotType == EInventorySlotType::Quick)
 			{
 				QuickWindow->GetInventorySlots()[NewItemInstance.RegisterCount]->SetInventorySlot(NewItemInstance);
+				ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwner());
+				UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetPlayerUIComponent();
+				PlayerUIComponent->OnSetWindowQuickSlot.Broadcast(NewItemInstance, NewItemInstance.RegisterCount, true);
 			}
 			else if (NewItemInstance.SlotType == EInventorySlotType::Equipment)
 			{
@@ -222,8 +225,9 @@ void UInventoryComponent::UpdateInventory()
 	}
 }
 
-void UInventoryComponent::UseItem(int32 ItemID)
+void UInventoryComponent::UseItem(int32 ItemID, bool& bIsRemoved)
 {
+	bIsRemoved = false;
 	bool bIsItemFind = false;
 	int32 RemoveIndex = INDEX_NONE;
 	for (int32 Index = 0; Index < Inventory.Num(); Index++)
@@ -245,6 +249,7 @@ void UInventoryComponent::UseItem(int32 ItemID)
 	
 	if (RemoveIndex != INDEX_NONE)
 	{
+		bIsRemoved = true;
 		Inventory.RemoveAt(RemoveIndex);
 	}
 	
@@ -307,4 +312,12 @@ void UInventoryComponent::ForceEquipmentItem(int32 ItemID, EEquipmentType Equipm
 		
 		break;
 	}
+}
+
+FItemInstance UInventoryComponent::GetQuickSlotItemInstance(int32 SlotIndex) const
+{
+	UTwoMinWidget_QuickWindow* QuickWindow = InventoryUI->GetQuickWindow();
+	if (!QuickWindow) return FItemInstance();
+	FItemInstance QuickSlotItem = QuickWindow->GetInventorySlots()[SlotIndex]->GetItemInstance();
+	return QuickSlotItem;
 }

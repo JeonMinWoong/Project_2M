@@ -7,6 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "TwoMinBaseCharacter.h"
 #include "TwoMinFunctionLibrary.h"
+#include "Widgets/TwoMinWidget_WindowQuickSlot.h"
 #include "TwoMinPlayerCharacter.generated.h"
 
 class UInventoryComponent;
@@ -169,6 +170,9 @@ private:
 	bool bIsOpenInventory = false;
 	
 	void Input_UseItemTrigger(const FInputActionValue& InputActionValue);
+	
+	void Input_LeftQuickSlotTrigger(const FInputActionValue& InputActionValue);
+	void Input_RightQuickSlotItemTrigger(const FInputActionValue& InputActionValue);
 	
 #pragma endregion
 

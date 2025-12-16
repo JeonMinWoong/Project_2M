@@ -18,6 +18,8 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Execution_OneHand, "InputTag.Execution.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_OpenInventory, "InputTag.OpenInventory");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_UseItem, "InputTag.UseItem");
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_LeftQuickSlot, "InputTag.LeftQuickSlot");
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_RightQuickSlot, "InputTag.RightQuickSlot");
 
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Toggle, "InputTag.Toggle");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Toggle_LockOn, "InputTag.Toggle.LockOn");

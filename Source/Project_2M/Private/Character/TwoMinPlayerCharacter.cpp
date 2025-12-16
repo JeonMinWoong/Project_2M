@@ -23,6 +23,7 @@
 #include "GameFramework/InputSettings.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Input/CharacterInputComponent.h"
+#include "Widgets/Player/TwoMinWidgetPlayer.h"
 
 ATwoMinPlayerCharacter::ATwoMinPlayerCharacter()
 {
@@ -176,6 +177,10 @@ void ATwoMinPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 		ETriggerEvent::Started, this, &ThisClass::Input_OpenInventory);
 	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_UseItem, 
 		ETriggerEvent::Started, this, &ThisClass::Input_UseItemTrigger);
+	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_LeftQuickSlot, 
+		ETriggerEvent::Started, this, &ThisClass::Input_LeftQuickSlotTrigger);
+	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_RightQuickSlot, 
+		ETriggerEvent::Started, this, &ThisClass::Input_RightQuickSlotItemTrigger);
 }
 
 void ATwoMinPlayerCharacter::Input_Move(const FInputActionValue& InputActionValue)
@@ -400,8 +405,59 @@ void ATwoMinPlayerCharacter::Input_UseItemTrigger(const FInputActionValue& Input
 		}
 	}
 	
+	UTwoMinWidgetPlayer* WidgetPlayer = Cast<UTwoMinWidgetPlayer>(HUDOverlay);
+	if (!WidgetPlayer) return;
+	
+	int32 SlotIndex = WidgetPlayer->GetWindowQuickSlot()->GetCurrentSlotIndex();
+	FItemInstance ItemInstance = InventoryComponent->GetQuickSlotItemInstance(SlotIndex);
+	if (ItemInstance.ItemID == 0) return;
+	
 	// todo : 퀵 슬롯 작업.
-	InventoryComponent->UseItem(20002); // Test Health Potion
+	bool bIsRemoved = false;
+	InventoryComponent->UseItem(ItemInstance.ItemID, bIsRemoved); // Test Health Potion
+	
+	if (ItemInstance.bIsRegister && bIsRemoved)
+	{
+		PlayerUIComponent->OnSetWindowQuickSlot.Broadcast(ItemInstance, ItemInstance.RegisterCount, false);
+	}
+}
+
+void ATwoMinPlayerCharacter::Input_LeftQuickSlotTrigger(const FInputActionValue& InputActionValue)
+{
+	UTwoMinWidgetPlayer* WidgetPlayer = Cast<UTwoMinWidgetPlayer>(HUDOverlay);
+	if (!WidgetPlayer) return;
+
+	int32 CurrentSlotIndex = WidgetPlayer->GetWindowQuickSlot()->GetCurrentSlotIndex();
+	int32 NewSlotIndex;
+	if (CurrentSlotIndex <= WidgetPlayer->GetWindowQuickSlot()->GetMinSlotIndex())
+	{
+		NewSlotIndex = WidgetPlayer->GetWindowQuickSlot()->GetMaxSlotIndex();
+	}
+	else
+	{
+		NewSlotIndex = CurrentSlotIndex - 1;
+	}
+	
+	WidgetPlayer->GetWindowQuickSlot()->SetCurrentSlotIndex(NewSlotIndex);
+}
+
+void ATwoMinPlayerCharacter::Input_RightQuickSlotItemTrigger(const FInputActionValue& InputActionValue)
+{
+	UTwoMinWidgetPlayer* WidgetPlayer = Cast<UTwoMinWidgetPlayer>(HUDOverlay);
+	if (!WidgetPlayer) return;
+
+	int32 CurrentSlotIndex = WidgetPlayer->GetWindowQuickSlot()->GetCurrentSlotIndex();
+	int32 NewSlotIndex;
+	if (CurrentSlotIndex >= WidgetPlayer->GetWindowQuickSlot()->GetMaxSlotIndex())
+	{
+		NewSlotIndex = WidgetPlayer->GetWindowQuickSlot()->GetMinSlotIndex();
+	}
+	else
+	{
+		NewSlotIndex = CurrentSlotIndex + 1;
+	}
+	
+	WidgetPlayer->GetWindowQuickSlot()->SetCurrentSlotIndex(NewSlotIndex);
 }
 
 bool ATwoMinPlayerCharacter::GetIsRunning()

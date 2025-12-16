@@ -6,6 +6,8 @@
 #include "Widgets/TwoMinCharacterWidgetBase.h"
 #include "TwoMinWidgetPlayer.generated.h"
 
+struct FItemInstance;
+class UTwoMinWidget_WindowQuickSlot;
 class UTwoMinWidget_GoldInfo;
 struct FItemPickUpEntry;
 class UTwoMinWidget_ItemPickUpWindow;
@@ -19,10 +21,10 @@ UCLASS()
 class PROJECT_2M_API UTwoMinWidgetPlayer : public UTwoMinCharacterWidgetBase
 {
 	GENERATED_BODY()
-
+	
 protected:
 	virtual void NativeOnInitialized() override;
-
+	
 	UFUNCTION()
 	void InitPlayerUIComponent(UPlayerUIComponent* HeroUIComponent);
 	
@@ -42,9 +44,12 @@ protected:
 	
 	UFUNCTION()
 	void SetItemPickUpWindow(int32 ShowAllItem, TArray<FItemPickUpEntry>& ItemList);
-
+	
 	UFUNCTION()
 	void SetCurrentGoldValue(int32 NewGold, int32 GainGold);
+	
+	UFUNCTION()
+	void OnSetWindowQuickSlot(FItemInstance QuickSlotRegisterItem, int32 SlotIndex, bool bIsRegister);
 	
 private:
 	UPROPERTY(meta=(BindWidget))
@@ -67,4 +72,10 @@ private:
 	
 	UPROPERTY(meta=(BindWidget))
 	UTwoMinWidget_GoldInfo* GoldInfo;
+	
+	UPROPERTY(meta=(BindWidget))
+	UTwoMinWidget_WindowQuickSlot* WindowQuickSlot;
+	
+public:
+	FORCEINLINE UTwoMinWidget_WindowQuickSlot* GetWindowQuickSlot() const { return WindowQuickSlot; }
 };
