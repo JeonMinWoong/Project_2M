@@ -16,9 +16,7 @@ class PROJECT_2M_API UItemDataManager : public UObject
 	
 public:
 	FItemEquipmentData GetItemEquipmentData(int32 ItemID) const;
-	
 	FItemConsumeData GetItemConsumeData(int32 ItemID) const;
-	
 	FItemEtcData GetItemEtcData(int32 ItemID) const;
 	
 private:

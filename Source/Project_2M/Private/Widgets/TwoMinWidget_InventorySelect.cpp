@@ -14,6 +14,9 @@ void UTwoMinWidget_InventorySelect::NativeOnInitialized()
 	InitInventorySelectSlots(InventoryToConsume, InventoryToConsumeSlots);
 	InitInventorySelectSlots(QuickToConsume, QuickToConsumeSlots);
 	InitInventorySelectSlots(InventoryToEquipment, InventoryToEquipmentSlots);
+	InitInventorySelectSlots(InventoryToEtc, InventoryToEtcSlots);
+	InitInventorySelectSlots(EquipToEquipment, EquipToEquipmentSlots);
+	InitInventorySelectSlots(InventoryToEquipped, InventoryToEquippedSlots);
 }
 
 void UTwoMinWidget_InventorySelect::InitInventorySelectSlots(const UVerticalBox* VerticalBox, 
@@ -43,18 +46,54 @@ void UTwoMinWidget_InventorySelect::SetInventorySelectType(const EInventorySelec
 		InventoryToConsume->SetVisibility(ESlateVisibility::Visible);
 		QuickToConsume->SetVisibility(ESlateVisibility::Hidden);
 		InventoryToEquipment->SetVisibility(ESlateVisibility::Hidden);
+		InventoryToEtc->SetVisibility(ESlateVisibility::Hidden);
+		EquipToEquipment->SetVisibility(ESlateVisibility::Hidden);
+		InventoryToEquipped->SetVisibility(ESlateVisibility::Hidden);
 	}
 	else if (InventorySelectType == EInventorySelectType::QuickToConsume)
 	{
 		InventoryToConsume->SetVisibility(ESlateVisibility::Hidden);
 		QuickToConsume->SetVisibility(ESlateVisibility::Visible);
 		InventoryToEquipment->SetVisibility(ESlateVisibility::Hidden);
+		InventoryToEtc->SetVisibility(ESlateVisibility::Hidden);
+		EquipToEquipment->SetVisibility(ESlateVisibility::Hidden);
+		InventoryToEquipped->SetVisibility(ESlateVisibility::Hidden);
 	}
 	else if (InventorySelectType == EInventorySelectType::InventoryToEquipment)
 	{
 		InventoryToConsume->SetVisibility(ESlateVisibility::Hidden);
 		QuickToConsume->SetVisibility(ESlateVisibility::Hidden);
 		InventoryToEquipment->SetVisibility(ESlateVisibility::Visible);
+		InventoryToEtc->SetVisibility(ESlateVisibility::Hidden);
+		EquipToEquipment->SetVisibility(ESlateVisibility::Hidden);
+		InventoryToEquipped->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else if (InventorySelectType == EInventorySelectType::InventoryToEtc)
+	{
+		InventoryToConsume->SetVisibility(ESlateVisibility::Hidden);
+		QuickToConsume->SetVisibility(ESlateVisibility::Hidden);
+		InventoryToEquipment->SetVisibility(ESlateVisibility::Hidden);
+		InventoryToEtc->SetVisibility(ESlateVisibility::Visible);
+		EquipToEquipment->SetVisibility(ESlateVisibility::Hidden);
+		InventoryToEquipped->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else if (InventorySelectType == EInventorySelectType::EquipToEquipment)
+	{
+		InventoryToConsume->SetVisibility(ESlateVisibility::Hidden);
+		QuickToConsume->SetVisibility(ESlateVisibility::Hidden);
+		InventoryToEquipment->SetVisibility(ESlateVisibility::Hidden);
+		InventoryToEtc->SetVisibility(ESlateVisibility::Hidden);
+		EquipToEquipment->SetVisibility(ESlateVisibility::Visible);
+		InventoryToEquipped->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else if (InventorySelectType == EInventorySelectType::InventoryToEquipped)
+	{
+		InventoryToConsume->SetVisibility(ESlateVisibility::Hidden);
+		QuickToConsume->SetVisibility(ESlateVisibility::Hidden);
+		InventoryToEquipment->SetVisibility(ESlateVisibility::Hidden);
+		InventoryToEtc->SetVisibility(ESlateVisibility::Hidden);
+		EquipToEquipment->SetVisibility(ESlateVisibility::Hidden);
+		InventoryToEquipped->SetVisibility(ESlateVisibility::Visible);
 	}
 	
 	SetFocusSlot();
@@ -77,6 +116,21 @@ void UTwoMinWidget_InventorySelect::SetInventorySelectIndex(const int32 NextInde
 		InventoryToEquipmentSlotIndex = FMathf::Clamp(InventoryToEquipmentSlotIndex + NextIndex, 
 			0, InventoryToEquipmentSlots.Num() - 1);
 	}
+	else if (InventorySelectType == EInventorySelectType::InventoryToEtc)
+	{
+		InventoryToEtcSlotIndex = FMathf::Clamp(InventoryToEtcSlotIndex + NextIndex, 
+			0, InventoryToEtcSlots.Num() - 1);
+	}
+	else if (InventorySelectType == EInventorySelectType::EquipToEquipment)
+	{
+		EquipToEquipmentSlotIndex = FMathf::Clamp(EquipToEquipmentSlotIndex + NextIndex, 
+			0, EquipToEquipmentSlots.Num() - 1);
+	}
+	else if (InventorySelectType == EInventorySelectType::InventoryToEquipped)
+	{
+		InventoryToEquippedSlotIndex = FMathf::Clamp(InventoryToEquippedSlotIndex + NextIndex, 
+			0, InventoryToEquippedSlots.Num() - 1);
+	}
 }
 
 int32 UTwoMinWidget_InventorySelect::GetInventorySelectIndex() const
@@ -92,6 +146,18 @@ int32 UTwoMinWidget_InventorySelect::GetInventorySelectIndex() const
 	else if (InventorySelectType == EInventorySelectType::InventoryToEquipment)
 	{
 		return FMathf::Clamp(InventoryToEquipmentSlotIndex, 0, InventoryToEquipmentSlots.Num() - 1);
+	}
+	else if (InventorySelectType == EInventorySelectType::InventoryToEtc)
+	{
+		return FMathf::Clamp(InventoryToEtcSlotIndex, 0, InventoryToEtcSlots.Num() - 1);
+	}
+	else if (InventorySelectType == EInventorySelectType::EquipToEquipment)
+	{
+		return FMathf::Clamp(EquipToEquipmentSlotIndex, 0, EquipToEquipmentSlots.Num() - 1);
+	}
+	else if (InventorySelectType == EInventorySelectType::InventoryToEquipped)
+	{
+		return FMathf::Clamp(InventoryToEquippedSlotIndex, 0, InventoryToEquippedSlots.Num() - 1);
 	}
 	
 	return 0;
@@ -111,6 +177,18 @@ void UTwoMinWidget_InventorySelect::MoveToInventorySelectSlot(const int32 NextIn
 	{
 		InventoryToEquipmentSlots[NextIndex]->SetFocus();
 	}
+	else if (InventorySelectType == EInventorySelectType::InventoryToEtc)
+	{
+		InventoryToEtcSlots[NextIndex]->SetFocus();
+	}
+	else if (InventorySelectType == EInventorySelectType::EquipToEquipment)
+	{
+		EquipToEquipmentSlots[NextIndex]->SetFocus();
+	}
+	else if (InventorySelectType == EInventorySelectType::InventoryToEquipped)
+	{
+		InventoryToEquippedSlots[NextIndex]->SetFocus();
+	}
 }
 
 void UTwoMinWidget_InventorySelect::QuitInventorySelect()
@@ -119,18 +197,29 @@ void UTwoMinWidget_InventorySelect::QuitInventorySelect()
 	if (InventorySelectType == EInventorySelectType::InventoryToConsume)
 	{
 		InventoryToConsumeSlotIndex = 0;
-		ResetAllSelectSlot();
 	}
 	else if (InventorySelectType == EInventorySelectType::QuickToConsume)
 	{
 		QuickToConsumeSlotIndex = 0;
-		ResetAllSelectSlot();
 	}
 	else if (InventorySelectType == EInventorySelectType::InventoryToEquipment)
 	{
 		InventoryToEquipmentSlotIndex = 0;
-		ResetAllSelectSlot();
 	}
+	else if (InventorySelectType == EInventorySelectType::InventoryToEtc)
+	{
+		InventoryToEtcSlotIndex = 0;
+	}
+	else if (InventorySelectType == EInventorySelectType::EquipToEquipment)
+	{
+		EquipToEquipmentSlotIndex = 0;
+	}
+	else if (InventorySelectType == EInventorySelectType::InventoryToEquipped)
+	{
+		InventoryToEquippedSlotIndex = 0;
+	}
+	
+	ResetAllSelectSlot();
 }
 
 ESelectEventType UTwoMinWidget_InventorySelect::OnTriggerEvent(int32 CurIndex)
@@ -146,6 +235,11 @@ ESelectEventType UTwoMinWidget_InventorySelect::OnTriggerEvent(int32 CurIndex)
 		{
 			InventoryToConsumeSlots[CurIndex]->SelectSlot(false);
 			return ESelectEventType::InventoryToConsume_Use;
+		}
+		else if (CurIndex == 2)
+		{
+			InventoryToConsumeSlots[CurIndex]->SelectSlot(true);
+			return ESelectEventType::OpenItemPopup;
 		}
 		
 		InventoryToConsumeSlots[CurIndex]->SelectSlot(false);
@@ -163,6 +257,11 @@ ESelectEventType UTwoMinWidget_InventorySelect::OnTriggerEvent(int32 CurIndex)
 			QuickToConsumeSlots[CurIndex]->SelectSlot(false);
 			return ESelectEventType::QuickToConsume_Use;
 		}
+		else if (CurIndex == 2)
+		{
+			QuickToConsumeSlots[CurIndex]->SelectSlot(true);
+			return ESelectEventType::OpenItemPopup;
+		}
 		
 		QuickToConsumeSlots[CurIndex]->SelectSlot(false);
 		return ESelectEventType::Cancel;
@@ -174,8 +273,46 @@ ESelectEventType UTwoMinWidget_InventorySelect::OnTriggerEvent(int32 CurIndex)
 			InventoryToEquipmentSlots[CurIndex]->SelectSlot(false);
 			return ESelectEventType::InventoryToEquipment_Change;
 		}
+		else if (CurIndex == 1)
+		{
+			InventoryToEquipmentSlots[CurIndex]->SelectSlot(true);
+			return ESelectEventType::OpenItemPopup;
+		}
 		
 		InventoryToEquipmentSlots[CurIndex]->SelectSlot(false);
+		return ESelectEventType::Cancel;
+	}
+	else if (InventorySelectType == EInventorySelectType::InventoryToEtc)
+	{
+		if (CurIndex == 0)
+		{
+			InventoryToEquipmentSlots[CurIndex]->SelectSlot(true);
+			return ESelectEventType::OpenItemPopup;
+		}
+		
+		InventoryToEquipmentSlots[CurIndex]->SelectSlot(false);
+		return ESelectEventType::Cancel;
+	}
+	else if (InventorySelectType == EInventorySelectType::EquipToEquipment)
+	{
+		if (CurIndex == 0)
+		{
+			EquipToEquipmentSlots[CurIndex]->SelectSlot(true);
+			return ESelectEventType::OpenItemPopup;
+		}
+		
+		EquipToEquipmentSlots[CurIndex]->SelectSlot(false);
+		return ESelectEventType::Cancel;
+	}
+	else if (InventorySelectType == EInventorySelectType::InventoryToEquipped)
+	{
+		if (CurIndex == 0)
+		{
+			InventoryToEquippedSlots[CurIndex]->SelectSlot(true);
+			return ESelectEventType::OpenItemPopup;
+		}
+		
+		InventoryToEquippedSlots[CurIndex]->SelectSlot(false);
 		return ESelectEventType::Cancel;
 	}
 	
@@ -197,6 +334,18 @@ void UTwoMinWidget_InventorySelect::ResetAllSelectSlot()
 	{
 		SlotGroup = InventoryToEquipmentSlots;
 	}
+	else if (InventorySelectType == EInventorySelectType::InventoryToEtc)
+	{
+		SlotGroup = InventoryToEtcSlots;
+	}
+	else if (InventorySelectType == EInventorySelectType::EquipToEquipment)
+	{
+		SlotGroup = EquipToEquipmentSlots;
+	}
+	else if (InventorySelectType == EInventorySelectType::InventoryToEquipped)
+	{
+		SlotGroup = InventoryToEquippedSlots;
+	}
 	
 	for (auto SelectSlot : SlotGroup)
 	{
@@ -217,5 +366,17 @@ void UTwoMinWidget_InventorySelect::SetFocusSlot()
 	else if (InventorySelectType == EInventorySelectType::InventoryToEquipment)
 	{
 		InventoryToEquipmentSlots[0]->SetFocus();
+	}
+	else if (InventorySelectType == EInventorySelectType::InventoryToEtc)
+	{
+		InventoryToEtcSlots[0]->SetFocus();
+	}
+	else if (InventorySelectType == EInventorySelectType::EquipToEquipment)
+	{
+		EquipToEquipmentSlots[0]->SetFocus();
+	}
+	else if (InventorySelectType == EInventorySelectType::InventoryToEquipped)
+	{
+		InventoryToEquippedSlots[0]->SetFocus();
 	}
 }

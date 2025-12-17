@@ -141,7 +141,10 @@ enum class EInventorySelectType : uint8
 {
 	InventoryToEquipment,
 	InventoryToConsume,
+	InventoryToEtc,
+	InventoryToEquipped,
 	QuickToConsume,
+	EquipToEquipment,
 };
 
 UENUM(Blueprintable)
@@ -153,4 +156,6 @@ enum class ESelectEventType : uint8
 	QuickToConsume_NonRegister,
 	QuickToConsume_Use,
 	Cancel,
+	OpenItemPopup,
+	CloseItemPopup,
 };

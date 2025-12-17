@@ -10,6 +10,7 @@
 #include "Widgets/TwoMinWidgetBase.h"
 #include "TwoMinWidget_InventoryUI.generated.h"
 
+class UTwoMinWidget_ItemInfoPopup;
 class UTwoMinWidget_InventoryWindow;
 /**
  * 
@@ -39,6 +40,9 @@ private:
 	void ShowInventorySelect(const UTwoMinWidget_InventorySlot* CurSlot, const EInventorySelectType NewInventorySelectType);
 	void HideInventorySelect();
 	
+	void ShowItemInfoPopup(const FItemInstance& ItemInstance);
+	void HideItemInfoPopup();
+	
 	FItemInstance* FindInventoryItem(int32 ItemID);
 	
 	UPROPERTY(meta=(BindWidget))
@@ -53,17 +57,11 @@ private:
 	UPROPERTY()
 	EInventoryWindowType CurInventoryWindowType;
 	
-	UPROPERTY(EditDefaultsOnly, Category="EquipmentData")
-	UDataTable* EquipmentDataTable;
-
-	UPROPERTY(EditDefaultsOnly, Category="ConsumeData")
-	UDataTable* ConsumeDataTable;
-
-	UPROPERTY(EditDefaultsOnly, Category="EtcData")
-	UDataTable* EtcDataTable;
-	
 	UPROPERTY(meta=(BindWidget))
 	UTwoMinWidget_InventorySelect* InventorySelect;
+	
+	UPROPERTY(meta=(BindWidget))
+	UTwoMinWidget_ItemInfoPopup* ItemInfoPopup;
 	
 	UPROPERTY()
 	bool bIsQuickRegister;

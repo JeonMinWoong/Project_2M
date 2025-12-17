@@ -65,6 +65,33 @@ private:
 	UPROPERTY()
 	int32 InventoryToEquipmentSlotIndex;
 	
+	UPROPERTY(meta=(BindWidget))
+	UVerticalBox* InventoryToEtc;
+	
+	UPROPERTY()
+	TArray<TObjectPtr<UTwoMinWidget_SelectSlot>> InventoryToEtcSlots;
+	
+	UPROPERTY()
+	int32 InventoryToEtcSlotIndex;
+	
+	UPROPERTY(meta=(BindWidget))
+	UVerticalBox* EquipToEquipment;
+	
+	UPROPERTY()
+	TArray<TObjectPtr<UTwoMinWidget_SelectSlot>> EquipToEquipmentSlots;
+	
+	UPROPERTY()
+	int32  EquipToEquipmentSlotIndex;
+	
+	UPROPERTY(meta=(BindWidget))
+	UVerticalBox* InventoryToEquipped;
+	
+	UPROPERTY()
+	TArray<TObjectPtr<UTwoMinWidget_SelectSlot>> InventoryToEquippedSlots;
+	
+	UPROPERTY()
+	int32 InventoryToEquippedSlotIndex;
+	
 	UPROPERTY()
 	bool bIsOpen = false;
 	

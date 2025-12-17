@@ -359,6 +359,9 @@ struct FItemData : public FTableRowBase
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemDrop|ItemTexture")
 	UTexture2D* ItemTexture;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemDrop|ItemInformation")
+	FString ItemInformation;
 };
 
 USTRUCT(BlueprintType)

@@ -3,6 +3,7 @@
 
 #include "Widgets/TwoMinWidget_InventoryUI.h"
 
+#include "TwoMinDebugHelper.h"
 #include "TwoMinFunctionLibrary.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/InventoryComponent.h"
@@ -14,6 +15,7 @@
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "Widgets/TwoMinWidget_InventorySlot.h"
 #include "Widgets/TwoMinWidget_InventoryWindow.h"
+#include "Widgets/TwoMinWidget_ItemInfoPopup.h"
 
 UTwoMinWidget_InventoryUI::UTwoMinWidget_InventoryUI()
 {
@@ -59,10 +61,17 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 	}
 	
 	bool bIsSelectOpen = InventorySelect->IsOpen();
+	bool bIsPopupOpen = ItemInfoPopup->IsPopupOpen();
 	const FKey InKey = InKeyEvent.GetKey();
 	
 	if (InKey == EKeys::Enter || InKey == EKeys::Gamepad_FaceButton_Bottom)
 	{
+		if (bIsPopupOpen)
+		{
+			HideItemInfoPopup();
+			return FReply::Handled();
+		}
+		
 		if (bIsSelectOpen)
 		{
 			if (bIsQuickRegister)
@@ -226,6 +235,28 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 				
 				return FReply::Handled();
 			}
+			else if (SelectEvent ==  ESelectEventType::OpenItemPopup)
+			{
+				HideInventorySelect();
+				
+				TwoMinDebugHelper::Print(TEXT("정보 팝업 열기"), FColor::Green);
+				FItemInstance ItemInstance;
+				if (CurInventoryWindowType == EInventoryWindowType::Inventory)
+				{
+					ItemInstance = InventorySlots[CurInventoryIndex]->GetItemInstance();
+				}
+				else if (CurInventoryWindowType == EInventoryWindowType::Equipment)
+				{
+					ItemInstance = EquipmentSlots[CurInventoryIndex]->GetItemInstance();
+					
+				}
+				else if (CurInventoryWindowType == EInventoryWindowType::Quick)
+				{
+					ItemInstance = QuickSlots[CurInventoryIndex]->GetItemInstance();
+				}
+				
+				ShowItemInfoPopup(ItemInstance);
+			}
 			
 			return FReply::Unhandled();
 		}
@@ -242,18 +273,22 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			if (ItemType == EItemType::Consume)
 			{
 				ShowInventorySelect(InventorySlots[CurInventoryIndex], EInventorySelectType::InventoryToConsume);
-				
 				return FReply::Handled();	
 			}
 			else if (ItemType == EItemType::Equipment)
 			{
 				if (InventorySlots[CurInventoryIndex]->IsRegister())
 				{
-					return FReply::Unhandled();
+					ShowInventorySelect(InventorySlots[CurInventoryIndex], EInventorySelectType::InventoryToEquipped);
+					return FReply::Handled();
 				}
 
 				ShowInventorySelect(InventorySlots[CurInventoryIndex], EInventorySelectType::InventoryToEquipment);
-				
+				return FReply::Handled();
+			}
+			else if (ItemType == EItemType::Etc)
+			{
+				ShowInventorySelect(InventorySlots[CurInventoryIndex], EInventorySelectType::InventoryToEtc);
 				return FReply::Handled();
 			}
 			
@@ -261,7 +296,14 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 		}
 		else if (CurInventoryWindowType == EInventoryWindowType::Equipment)
 		{
-			// todo : 장비 슬롯
+			const FItemInstance ItemInstance = EquipmentSlots[CurInventoryIndex]->GetItemInstance();
+			if (ItemInstance.ItemID == 0)
+			{
+				return FReply::Unhandled();
+			}
+			
+			ShowInventorySelect(EquipmentSlots[CurInventoryIndex], EInventorySelectType::EquipToEquipment);
+			return FReply::Handled();
 		}
 		else if (CurInventoryWindowType == EInventoryWindowType::Quick)
 		{
@@ -272,11 +314,18 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			}
 			
 			ShowInventorySelect(QuickSlots[CurInventoryIndex], EInventorySelectType::QuickToConsume);
+			return FReply::Handled();
 		}
 	}
 	
 	if (InKey == EKeys::P || InKey == EKeys::Gamepad_FaceButton_Right)
 	{
+		if (bIsPopupOpen)
+		{
+			HideItemInfoPopup();
+			return FReply::Handled();
+		}
+		
 		if (bIsSelectOpen == false)
 		{
 			return FReply::Unhandled();
@@ -304,6 +353,11 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 	
 	if (InKey == EKeys::Right || InKey == EKeys::D || InKey == EKeys::Gamepad_LeftStick_Right) // + 1
 	{
+		if (bIsPopupOpen)
+		{
+			return FReply::Unhandled();
+		}
+		
 		if (bIsSelectOpen)
 		{
 			if (bIsQuickRegister == false)
@@ -364,6 +418,11 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 	
 	if (InKey == EKeys::Left || InKey == EKeys::A || InKey == EKeys::Gamepad_LeftStick_Left) // - 1
 	{
+		if (bIsPopupOpen)
+		{
+			return FReply::Unhandled();
+		}
+		
 		if (bIsSelectOpen)
 		{
 			if (bIsQuickRegister == false)
@@ -431,6 +490,11 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 	
 	if (InKey == EKeys::Up || InKey == EKeys::W || InKey == EKeys::Gamepad_LeftStick_Up) // - 5
 	{
+		if (bIsPopupOpen)
+		{
+			return FReply::Unhandled();
+		}
+		
 		if (bIsSelectOpen)
 		{
 			if (bIsQuickRegister) return FReply::Unhandled(); 
@@ -463,6 +527,11 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 	
 	if (InKey == EKeys::Down || InKey == EKeys::S || InKey == EKeys::Gamepad_LeftStick_Down) // + 5
 	{
+		if (bIsPopupOpen)
+		{
+			return FReply::Unhandled();
+		}
+		
 		if (bIsSelectOpen)
 		{
 			if (bIsQuickRegister) return FReply::Unhandled();
@@ -566,6 +635,19 @@ void UTwoMinWidget_InventoryUI::HideInventorySelect()
 {
 	InventorySelect->QuitInventorySelect();
 	InventorySelect->SetVisibility(ESlateVisibility::Hidden);
+	OnFocusSlot();
+}
+
+void UTwoMinWidget_InventoryUI::ShowItemInfoPopup(const FItemInstance& ItemInstance)
+{
+	ItemInfoPopup->SetVisibility(ESlateVisibility::Visible);
+	ItemInfoPopup->SetItemInformation(ItemInstance);
+}
+
+void UTwoMinWidget_InventoryUI::HideItemInfoPopup()
+{
+	ItemInfoPopup->HidePopup();
+	ItemInfoPopup->SetVisibility(ESlateVisibility::Hidden);
 	OnFocusSlot();
 }
 
