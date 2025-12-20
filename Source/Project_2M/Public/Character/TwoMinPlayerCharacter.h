@@ -206,5 +206,7 @@ public:
 	
 	FORCEINLINE TSubclassOf<UGameplayEffect> GetConsumeStatusEffect() const
 	{ return ConsumeStatusEffect; }
+	
+	FORCEINLINE UUserWidget* GetHUDOverlay() const { return HUDOverlay; }
 };
 

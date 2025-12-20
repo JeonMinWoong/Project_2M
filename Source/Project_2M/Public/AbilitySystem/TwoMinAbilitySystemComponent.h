@@ -66,4 +66,7 @@ private:
 	
 	UPROPERTY()
 	TMap<int32, FActiveGameplayEffectHandle> BuffItemEffectMap;
+	
+public:
+	FORCEINLINE int32 GetBuffItemEffectNum() const { return BuffItemEffectMap.Num(); }
 };

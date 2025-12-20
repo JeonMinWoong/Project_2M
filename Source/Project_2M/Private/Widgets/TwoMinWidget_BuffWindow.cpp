@@ -27,7 +27,6 @@ void UTwoMinWidget_BuffWindow::NativeOnInitialized()
 		SlotIndex++;
 	}
 	
-	CurSlotIndex = 0;
 	MaxSlotIndex = BuffSlots.Num() - 1;
 }
 
@@ -49,7 +48,6 @@ void UTwoMinWidget_BuffWindow::SetBuffSlot(const int32 ItemID)
 		if (BuffSlots[Index]->GetBuffItemID() == 0)
 		{
 			BuffSlots[Index]->OnBuff(ItemID);
-			CurSlotIndex = Index;
 			break;
 		}
 	}

@@ -31,8 +31,8 @@ private:
 	TArray<TObjectPtr<UTwoMinWidget_BuffSlot>> BuffSlots;
 	
 	UPROPERTY()
-	int32 CurSlotIndex = 0;
-	
-	UPROPERTY()
 	int32 MaxSlotIndex = 0;
+	
+public:
+	FORCEINLINE int32 GetMaxSlotIndex() const { return MaxSlotIndex; }
 };

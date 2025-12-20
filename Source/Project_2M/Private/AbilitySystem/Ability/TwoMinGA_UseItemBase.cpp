@@ -5,6 +5,7 @@
 
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/UI/PlayerUIComponent.h"
+#include "Widgets/Player/TwoMinWidgetPlayer.h"
 
 void UTwoMinGA_UseItemBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                             const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
@@ -57,6 +58,11 @@ void UTwoMinGA_UseItemBase::ApplyItemConsumeEffect() const
 
 		UTwoMinAbilitySystemComponent* ASC = PlayerCharacter->GetAbilitySystemComponent();
 		if (!ASC) return;
+		
+		UTwoMinWidgetPlayer* WidgetPlayer = Cast<UTwoMinWidgetPlayer>(PlayerCharacter->GetHUDOverlay());
+		if (!WidgetPlayer) return;
+		
+		if (ASC->GetBuffItemEffectNum() > WidgetPlayer->GetMaxBuffCount()) return;
 		
 		ASC->AddConsumeBuff(CachedConsumeData.ItemDataBase.ItemID);
 		PlayerCharacter->GetPlayerUIComponent()->OnSetBuffItem.Broadcast(CachedConsumeData.ItemDataBase.ItemID);

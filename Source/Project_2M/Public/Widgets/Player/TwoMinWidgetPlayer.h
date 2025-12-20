@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Widgets/TwoMinCharacterWidgetBase.h"
+#include "Widgets/TwoMinWidget_BuffWindow.h"
 #include "TwoMinWidgetPlayer.generated.h"
 
 class UTwoMinWidget_BuffWindow;
@@ -85,4 +86,5 @@ private:
 	
 public:
 	FORCEINLINE UTwoMinWidget_WindowQuickSlot* GetWindowQuickSlot() const { return WindowQuickSlot; }
+	FORCEINLINE int32 GetMaxBuffCount() const { return BuffWindow->GetMaxSlotIndex(); }
 };
