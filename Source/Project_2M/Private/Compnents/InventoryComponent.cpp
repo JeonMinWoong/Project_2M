@@ -76,6 +76,7 @@ void UInventoryComponent::OpenInventory(const bool bIsOpenInventory)
 		TimeDilation = 0;
 		InventoryUI->AddToViewport();
 		InventoryUI->OnFocusSlot();
+		UpdateStatus();
 	}
 	else
 	{
@@ -302,12 +303,14 @@ void UInventoryComponent::ForceEquipmentItem(int32 ItemID, EEquipmentType Equipm
 			InventorySlot->OnRegister(true, EInventorySlotType::Equipment, 0);
 			ItemInstance->OnRegister(true, EInventorySlotType::Equipment, 0);
 			EquipmentWindow->GetInventorySlots()[0]->SetInventorySlot(*ItemInstance);
+			InventoryUI->OnEquipment(ItemInstance->ItemID);
 		}
 		else if (EquipmentType == EEquipmentType::Weapon_Left)
 		{
 			InventorySlot->OnRegister(true, EInventorySlotType::Equipment, 1);
 			ItemInstance->OnRegister(true, EInventorySlotType::Equipment, 1);
 			EquipmentWindow->GetInventorySlots()[1]->SetInventorySlot(*ItemInstance);
+			InventoryUI->OnEquipment(ItemInstance->ItemID);
 		}
 		
 		break;
@@ -320,4 +323,12 @@ FItemInstance UInventoryComponent::GetQuickSlotItemInstance(int32 SlotIndex) con
 	if (!QuickWindow) return FItemInstance();
 	FItemInstance QuickSlotItem = QuickWindow->GetInventorySlots()[SlotIndex]->GetItemInstance();
 	return QuickSlotItem;
+}
+
+void UInventoryComponent::UpdateStatus()
+{
+	UTwoMinWidget_EquipmentWindow* EquipmentWindow = InventoryUI->GetEquipmentWindow();
+	if (!EquipmentWindow) return;
+	
+	EquipmentWindow->UpdateStatusText();
 }

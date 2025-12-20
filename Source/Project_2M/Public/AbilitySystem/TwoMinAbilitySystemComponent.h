@@ -53,4 +53,17 @@ public:
 	// Player 전용
 	UFUNCTION()
 	void GiveHealthPercent(float InHealthPercent);
+	
+	void AddEquippedItemEffect(int32 ItemID, FActiveGameplayEffectHandle InEffectHandle);
+	FActiveGameplayEffectHandle* FindEquippedItemEffect(int32 ItemID);
+	void RemoveEquippedItemEffect(int32 ItemID);
+	void AddConsumeBuff(int32 ItemID);
+	void RemoveConsumeBuff(int32 ItemID);
+
+private:
+	UPROPERTY()
+	TMap<int32, FActiveGameplayEffectHandle> EquippedItemEffectMap;
+	
+	UPROPERTY()
+	TMap<int32, FActiveGameplayEffectHandle> BuffItemEffectMap;
 };

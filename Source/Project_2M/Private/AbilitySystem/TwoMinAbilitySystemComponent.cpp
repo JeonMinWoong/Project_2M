@@ -9,7 +9,13 @@
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
 #include "Character/TwoMinEnemyDummy.h"
 #include "Character/TwoMinPlayerCharacter.h"
+#include "Compnents/InventoryComponent.h"
+#include "GameInstance/TwoMinGameInstance.h"
+#include "Managers/ItemDataManager.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
+#include "Widgets/TwoMinWidget_InventoryUI.h"
+
+class UTwoMinGameInstance;
 
 void UTwoMinAbilitySystemComponent::OnAbilityInputPressed(const FGameplayTag& InInputTag)
 {
@@ -325,4 +331,95 @@ void UTwoMinAbilitySystemComponent::GiveHealthPercent(float InHealthPercent)
 	
 	FString Str = FString::Printf(TEXT("Give Health : %d"), GiveHealthAmount);
 	TwoMinDebugHelper::Print(Str, FColor::Green);
+}
+
+void UTwoMinAbilitySystemComponent::AddEquippedItemEffect(int32 ItemID, FActiveGameplayEffectHandle InEffectHandle)
+{
+	EquippedItemEffectMap.Add(ItemID, InEffectHandle);
+}
+
+FActiveGameplayEffectHandle* UTwoMinAbilitySystemComponent::FindEquippedItemEffect(int32 ItemID)
+{
+	return EquippedItemEffectMap.Find(ItemID);
+}
+
+void UTwoMinAbilitySystemComponent::RemoveEquippedItemEffect(int32 ItemID)
+{
+	EquippedItemEffectMap.Remove(ItemID);
+}
+
+void UTwoMinAbilitySystemComponent::AddConsumeBuff(int32 ItemID)
+{
+	const ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActor());
+	if (!PlayerCharacter) return;
+	
+	UTwoMinGameInstance* GI = GetWorld()->GetGameInstance<UTwoMinGameInstance>();
+	FItemConsumeData Item = GI->ItemDataManager->GetItemConsumeData(ItemID);
+
+	FGameplayEffectSpecHandle Spec = 
+		MakeOutgoingSpec(
+			PlayerCharacter->GetConsumeStatusEffect(),
+			1.f,
+			MakeEffectContext()
+		);
+	
+	if (!Spec.IsValid()) return;
+	
+	if (Item.ConsumePower.IsEmpty()) return;
+
+	int32 AttackPower = 0;
+	int32 DefensePower = 0;
+	int32 MaxHealth = 0;
+	int32 MaxStamina = 0;
+	UCurveTable* CurveTable = PlayerCharacter->GetNeedToLevelUp_ExperienceCurveTable();
+	const int32 CurLevel = GetNumericAttribute(UTwoMinAttributeSet::GetCurrentLevelAttribute());
+	
+	for (auto ConsumePower : Item.ConsumePower)
+	{
+		if (ConsumePower.Key == EStatusType::Attack)
+		{
+			const FRealCurve* Curve = CurveTable->FindCurve(FName("Player.AttackPower"), TEXT(""));
+			int32 BaseStatusValue = Curve->Eval(CurLevel);
+			AttackPower = FMath::FloorToInt32(BaseStatusValue * ConsumePower.Value);
+			Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Buff_AttackPower, AttackPower);
+		}
+		else if (ConsumePower.Key == EStatusType::Defense)
+		{
+			const FRealCurve* Curve = CurveTable->FindCurve(FName("Player.DefensePower"), TEXT(""));
+			int32 BaseStatusValue = Curve->Eval(CurLevel);
+			DefensePower = FMath::FloorToInt32(BaseStatusValue * ConsumePower.Value);
+			Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Buff_DefensePower, DefensePower);
+		}
+		else if (ConsumePower.Key == EStatusType::MaxHealth)
+		{
+			const FRealCurve* Curve = CurveTable->FindCurve(FName("Player.MaxHealth"), TEXT(""));
+			int32 BaseStatusValue = Curve->Eval(CurLevel);
+			MaxHealth = FMath::FloorToInt32(BaseStatusValue * ConsumePower.Value);
+			Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Buff_MaxHealth, MaxHealth);
+		}
+		else if (ConsumePower.Key == EStatusType::MaxStamina)
+		{
+			const FRealCurve* Curve = CurveTable->FindCurve(FName("Player.MaxStamina"), TEXT(""));
+			int32 BaseStatusValue = Curve->Eval(CurLevel);
+			MaxStamina = FMath::FloorToInt32(BaseStatusValue * ConsumePower.Value);
+			Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Buff_MaxStamina, MaxStamina);
+		}
+	}
+	
+	FActiveGameplayEffectHandle Handle = ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+	BuffItemEffectMap.Add(Item.ItemDataBase.ItemID, Handle);
+	PlayerCharacter->GetInventoryComponent()->GetInventoryUI()->GetEquipmentWindow()->UpdateStatusText();
+}
+
+void UTwoMinAbilitySystemComponent::RemoveConsumeBuff(int32 ItemID)
+{
+	const ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActor());
+	if (!PlayerCharacter) return;
+	
+	FActiveGameplayEffectHandle* Handle = BuffItemEffectMap.Find(ItemID);
+	if (!Handle) return;
+		
+	RemoveActiveGameplayEffect(*Handle);
+	BuffItemEffectMap.Remove(ItemID);
+	PlayerCharacter->GetInventoryComponent()->GetInventoryUI()->GetEquipmentWindow()->UpdateStatusText();
 }

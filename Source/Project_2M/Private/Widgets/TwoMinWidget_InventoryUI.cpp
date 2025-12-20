@@ -5,6 +5,8 @@
 
 #include "TwoMinDebugHelper.h"
 #include "TwoMinFunctionLibrary.h"
+#include "TwoMinGameplayTag.h"
+#include "AbilitySystem/TwoMinAttributeSet.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/InventoryComponent.h"
 #include "Compnents/UI/PlayerUIComponent.h"
@@ -225,13 +227,14 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 					RinkInventorySlot->UnRegister();
 					FItemInstance* RinkInventoryItem = FindInventoryItem(RinkItemID);
 					RinkInventoryItem->UnRegister();
+					OnUnEquipment(RinkInventoryItem->ItemID);
 				}
 				
 				InventorySlots[SelectInventoryIndex]->OnRegister(true, EInventorySlotType::Equipment, EquipmentIndex);
 				InventoryItem->OnRegister(true, EInventorySlotType::Equipment, EquipmentIndex);
 				EquipmentSlots[EquipmentIndex]->SetInventorySlot(*InventoryItem);
 				
-				// todo : 장비 능력치 적용.
+				OnEquipment(InventoryItem->ItemID);
 				
 				return FReply::Handled();
 			}
@@ -683,4 +686,76 @@ void UTwoMinWidget_InventoryUI::OnFocusSlot()
 		const int32 CurInventoryIndex = QuickWindow->GetCurInventoryIndex();
 		MoveToQuickSlot(QuickSlots[CurInventoryIndex], CurInventoryIndex);
 	}
+}
+
+
+void UTwoMinWidget_InventoryUI::OnEquipment(int32 ItemID)
+{
+	const ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningPlayerPawn());
+	if (!PlayerCharacter) return;
+	
+	UTwoMinAbilitySystemComponent* ASC = PlayerCharacter->GetAbilitySystemComponent();
+	if (!ASC) return;
+	
+	UTwoMinGameInstance* GI = GetWorld()->GetGameInstance<UTwoMinGameInstance>();
+	FItemEquipmentData Item = GI->ItemDataManager->GetItemEquipmentData(ItemID);
+
+	FGameplayEffectSpecHandle Spec = 
+		ASC->MakeOutgoingSpec(
+			PlayerCharacter->GetEquipStatusEffect(),
+			1.f,
+			ASC->MakeEffectContext()
+		);
+	
+	if (!Spec.IsValid()) return;
+	
+	if (Item.EquipmentPower.IsEmpty()) return;
+
+	int32 AttackPower = 0;
+	int32 DefensePower = 0;
+	int32 MaxHealth = 0;
+	int32 MaxStamina = 0;
+	for (auto EquipmentPower : Item.EquipmentPower)
+	{
+		if (EquipmentPower.Key == EStatusType::Attack)
+		{
+			AttackPower = EquipmentPower.Value;
+			Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Equipment_AttackPower, AttackPower);
+		}
+		else if (EquipmentPower.Key == EStatusType::Defense)
+		{
+			DefensePower = EquipmentPower.Value;
+			Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Equipment_DefensePower, DefensePower);
+		}
+		else if (EquipmentPower.Key == EStatusType::MaxHealth)
+		{
+			MaxHealth = EquipmentPower.Value;
+			Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Equipment_MaxHealth, MaxHealth);
+		}
+		else if (EquipmentPower.Key == EStatusType::MaxStamina)
+		{
+			MaxStamina = EquipmentPower.Value;
+			Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Equipment_MaxStamina, MaxStamina);
+		}
+	}
+	
+	FActiveGameplayEffectHandle Handle = ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+	ASC->AddEquippedItemEffect(Item.ItemDataBase.ItemID, Handle);
+	EquipmentWindow->UpdateStatusText();
+}
+
+void UTwoMinWidget_InventoryUI::OnUnEquipment(int32 ItemID)
+{
+	const ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningPlayerPawn());
+	if (!PlayerCharacter) return;
+	
+	UTwoMinAbilitySystemComponent* ASC = PlayerCharacter->GetAbilitySystemComponent();
+	if (!ASC) return;
+	
+	FActiveGameplayEffectHandle* Handle = ASC->FindEquippedItemEffect(ItemID);
+	if (!Handle) return;
+		
+	ASC->RemoveActiveGameplayEffect(*Handle);
+	ASC->RemoveEquippedItemEffect(ItemID);
+	EquipmentWindow->UpdateStatusText();
 }

@@ -35,7 +35,7 @@ public:
 	void ForceEquipmentItem(int32 ItemID, EEquipmentType EquipmentType);
 
 	FItemInstance GetQuickSlotItemInstance(int32 SlotIndex) const;
-	
+	void UpdateStatus();
 protected:
 	virtual void BeginPlay() override;
 	
@@ -51,4 +51,7 @@ private:
 	
 	UPROPERTY()
 	UTwoMinWidget_InventoryUI* InventoryUI;
+	
+public:
+	FORCEINLINE UTwoMinWidget_InventoryUI* GetInventoryUI() const { return InventoryUI; }
 };

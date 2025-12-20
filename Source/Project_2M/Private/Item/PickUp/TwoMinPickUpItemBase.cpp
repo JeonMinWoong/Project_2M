@@ -39,8 +39,13 @@ void ATwoMinPickUpItemBase::MakeItemDropBox(TPair<int32, int32> Item)
 		FItemEquipmentData ItemEquipmentData;
 		ItemEquipmentData.ItemDataBase = NewEquipmentData.ItemDataBase;
 		ItemEquipmentData.ItemDataBase.CurrentCount = Item.Value;
-		ItemEquipmentData.AttackPower = NewEquipmentData.AttackPower;
-		ItemEquipmentData.DefensePower = NewEquipmentData.DefensePower;
+		if (NewEquipmentData.EquipmentPower.IsEmpty() == false)
+		{
+			for (auto Power : NewEquipmentData.EquipmentPower)
+			{
+				ItemEquipmentData.EquipmentPower.Add(Power);	
+			}	
+		}
 
 		ItemEquipmentList.Add(ItemEquipmentData);
 	}
@@ -51,8 +56,14 @@ void ATwoMinPickUpItemBase::MakeItemDropBox(TPair<int32, int32> Item)
 		FItemConsumeData ItemConsumeData;
 		ItemConsumeData.ItemDataBase = NewConsumeData.ItemDataBase;
 		ItemConsumeData.ItemDataBase.CurrentCount = Item.Value;
-		ItemConsumeData.ConsumePowerGroup = NewConsumeData.ConsumePowerGroup;
-
+		if (NewConsumeData.ConsumePower.IsEmpty() == false)
+		{
+			for (auto Power : NewConsumeData.ConsumePower)
+			{
+				ItemConsumeData.ConsumePower.Add(Power);	
+			}
+		}
+		
 		ItemConsumeList.Add(ItemConsumeData);
 	}
 	else if (ItemType == EItemType::Etc)

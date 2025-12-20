@@ -375,11 +375,8 @@ struct FItemEquipmentData : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Equipment|ET")
 	EEquipmentType EquipmentType;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Equipment|AP")
-	int32 AttackPower;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Equipment|DP")
-	int32 DefensePower;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Equipment|Power")
+	TMap<EStatusType, int32> EquipmentPower;
 };
 
 USTRUCT(BlueprintType)
@@ -394,7 +391,10 @@ struct FItemConsumeData : public FTableRowBase
 	EConsumeType ConsumeType;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Consume|CP")
-	TArray<float> ConsumePowerGroup;
+	TMap<EStatusType, float> ConsumePower;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Consume|Duration", meta=(EditCondition="ConsumeType == EConsumeType::Buff"))
+	float BuffDuration;
 };
 
 USTRUCT(BlueprintType)

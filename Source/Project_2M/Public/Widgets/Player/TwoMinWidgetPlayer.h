@@ -6,6 +6,7 @@
 #include "Widgets/TwoMinCharacterWidgetBase.h"
 #include "TwoMinWidgetPlayer.generated.h"
 
+class UTwoMinWidget_BuffWindow;
 struct FItemInstance;
 class UTwoMinWidget_WindowQuickSlot;
 class UTwoMinWidget_GoldInfo;
@@ -51,6 +52,9 @@ protected:
 	UFUNCTION()
 	void OnSetWindowQuickSlot(FItemInstance QuickSlotRegisterItem, int32 SlotIndex, bool bIsRegister);
 	
+	UFUNCTION()
+	void OnSetBuffItem(int32 ItemID);
+	
 private:
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* HealthBar;
@@ -75,6 +79,9 @@ private:
 	
 	UPROPERTY(meta=(BindWidget))
 	UTwoMinWidget_WindowQuickSlot* WindowQuickSlot;
+	
+	UPROPERTY(meta=(BindWidget))
+	UTwoMinWidget_BuffWindow* BuffWindow;
 	
 public:
 	FORCEINLINE UTwoMinWidget_WindowQuickSlot* GetWindowQuickSlot() const { return WindowQuickSlot; }

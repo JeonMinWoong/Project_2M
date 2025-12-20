@@ -159,3 +159,14 @@ enum class ESelectEventType : uint8
 	OpenItemPopup,
 	CloseItemPopup,
 };
+
+UENUM(Blueprintable)
+enum class EStatusType : uint8
+{
+	None,
+	HpHeal,
+	Attack,
+	Defense,
+	MaxHealth,
+	MaxStamina,
+};

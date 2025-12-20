@@ -12,6 +12,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemPickUpSlot, int32, SaveAllIt
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCurrentGoldChanged, int32, NewGold, int32, GainGold);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnSetWindowQuickSlot, FItemInstance, QuickSlotRegisterItem, 
 	int32, SlotIndex, bool, bIsRegister);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetBuffItem, int32, ItemID);
 
 /**
  * 
@@ -42,4 +43,7 @@ public:
 	
 	UPROPERTY()
 	FOnSetWindowQuickSlot OnSetWindowQuickSlot;
+	
+	UPROPERTY()
+	FOnSetBuffItem OnSetBuffItem;
 };

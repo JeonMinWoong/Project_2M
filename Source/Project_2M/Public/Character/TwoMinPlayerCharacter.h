@@ -86,6 +86,12 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UInventoryComponent* InventoryComponent;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Status_Effect")
+	TSubclassOf<UGameplayEffect> EquipStatusEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Status_Effect")
+	TSubclassOf<UGameplayEffect> ConsumeStatusEffect;
+	
 	/** CharacterInfo **/
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|Capsule")
 	float CapsuleRadius = 42.f;
@@ -194,5 +200,11 @@ public:
 	
 	FORCEINLINE UGameplayEffect* GetGoldGainEffect() const
 	{ return GoldGainEffect->GetDefaultObject<UGameplayEffect>(); }
+	
+	FORCEINLINE TSubclassOf<UGameplayEffect> GetEquipStatusEffect() const
+	{ return EquipStatusEffect; }
+	
+	FORCEINLINE TSubclassOf<UGameplayEffect> GetConsumeStatusEffect() const
+	{ return ConsumeStatusEffect; }
 };
 

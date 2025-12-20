@@ -55,15 +55,41 @@ void UTwoMinWidget_ItemInfoPopup::GetItemInformation(const FItemEquipmentData& E
 	OutTexture = EquipmentData.ItemDataBase.ItemTexture;
 	
 	FString ToTalStr = TEXT("");
-	if (EquipmentData.AttackPower > 0)
+	if (EquipmentData.EquipmentPower.Contains(EStatusType::Attack))
 	{
-		FString Str = FString::Printf(TEXT("공격력 + %d"), EquipmentData.AttackPower);
+		FString Str = FString::Printf(TEXT("공격력 + %d"), EquipmentData.EquipmentPower[EStatusType::Attack]);
 		ToTalStr = Str;
 	}
 	
-	if (EquipmentData.DefensePower > 0)
+	if (EquipmentData.EquipmentPower.Contains(EStatusType::Defense))
 	{
-		FString Str = FString::Printf(TEXT("방어력 + %d"), EquipmentData.DefensePower);
+		FString Str = FString::Printf(TEXT("방어력 + %d"), EquipmentData.EquipmentPower[EStatusType::Defense]);
+		if (ToTalStr.IsEmpty())
+		{
+			ToTalStr = Str;
+		}
+		else
+		{
+			ToTalStr += TEXT("\n") + Str;
+		}
+	}
+	
+	if (EquipmentData.EquipmentPower.Contains(EStatusType::MaxHealth))
+	{
+		FString Str = FString::Printf(TEXT("체력 + %d"), EquipmentData.EquipmentPower[EStatusType::MaxHealth]);
+		if (ToTalStr.IsEmpty())
+		{
+			ToTalStr = Str;
+		}
+		else
+		{
+			ToTalStr += TEXT("\n") + Str;
+		}
+	}
+	
+	if (EquipmentData.EquipmentPower.Contains(EStatusType::MaxStamina))
+	{
+		FString Str = FString::Printf(TEXT("지구력 + %d"), EquipmentData.EquipmentPower[EStatusType::MaxStamina]);
 		if (ToTalStr.IsEmpty())
 		{
 			ToTalStr = Str;
@@ -87,25 +113,63 @@ void UTwoMinWidget_ItemInfoPopup::GetItemInformation(const FItemConsumeData& Con
 		
 	if (ConsumeData.ConsumeType == EConsumeType::Heal)
 	{
-		int32 IntValue = static_cast<int32>(ConsumeData.ConsumePowerGroup[0] * 100);
-		FString Str = FString::Printf(TEXT("체력 회복 + %d%%"), IntValue);
-		OutStatus = FText::FromString(Str);	
+		if (ConsumeData.ConsumePower.Contains(EStatusType::HpHeal))
+		{
+			int32 IntValue = static_cast<int32>(ConsumeData.ConsumePower[EStatusType::HpHeal] * 100);
+			FString Str = FString::Printf(TEXT("체력 회복 + %d%%"), IntValue);
+			OutStatus = FText::FromString(Str);	
+		}
 	}
 	else if (ConsumeData.ConsumeType == EConsumeType::Buff)
 	{
 		FString ToTalStr = TEXT("");
-		if (ConsumeData.ConsumePowerGroup[0] > 0.f)
+		if (ConsumeData.ConsumePower.Contains(EStatusType::Attack))
 		{
-			int32 IntValue = static_cast<int32>(ConsumeData.ConsumePowerGroup[0] * 100);
+			int32 IntValue = static_cast<int32>(ConsumeData.ConsumePower[EStatusType::Attack] * 100);
 			FString Str = FString::Printf(TEXT("공격력 + %d%%"), IntValue);
 			ToTalStr += Str;
 		}
 		
-		if (ConsumeData.ConsumePowerGroup[1] > 0.f)
+		if (ConsumeData.ConsumePower.Contains(EStatusType::Defense))
 		{
-			int32 IntValue = static_cast<int32>(ConsumeData.ConsumePowerGroup[1] * 100);
-			FString Str2 = FString::Printf(TEXT("\n방어력 + %d%%"), IntValue);
-			ToTalStr += Str2;
+			int32 IntValue = static_cast<int32>(ConsumeData.ConsumePower[EStatusType::Defense] * 100);
+			FString Str = FString::Printf(TEXT("방어력 + %d%%"), IntValue);
+			if (ToTalStr.IsEmpty())
+			{
+				ToTalStr = Str;
+			}
+			else
+			{
+				ToTalStr += TEXT("\n") + Str;
+			}
+		}
+		
+		if (ConsumeData.ConsumePower.Contains(EStatusType::MaxHealth))
+		{
+			int32 IntValue = static_cast<int32>(ConsumeData.ConsumePower[EStatusType::MaxHealth] * 100);
+			FString Str = FString::Printf(TEXT("체력 + %d%%"), IntValue);
+			if (ToTalStr.IsEmpty())
+			{
+				ToTalStr = Str;
+			}
+			else
+			{
+				ToTalStr += TEXT("\n") + Str;
+			}
+		}
+		
+		if (ConsumeData.ConsumePower.Contains(EStatusType::MaxStamina))
+		{
+			int32 IntValue = static_cast<int32>(ConsumeData.ConsumePower[EStatusType::MaxStamina] * 100);
+			FString Str = FString::Printf(TEXT("지구력 + %d%%"), IntValue);
+			if (ToTalStr.IsEmpty())
+			{
+				ToTalStr = Str;
+			}
+			else
+			{
+				ToTalStr += TEXT("\n") + Str;
+			}
 		}
 		
 		OutStatus = FText::FromString(ToTalStr);	

@@ -159,10 +159,21 @@ namespace TwoMinGameplayTag
 	// Data Tags
 	UE_DEFINE_GAMEPLAY_TAG(Data_Cost_Stamina_Enough, "Data.Cost.Stamina.Enough");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Cost_Stamina_UnEnough, "Data.Cost.Stamina.UnEnough");
+	
 	UE_DEFINE_GAMEPLAY_TAG(Data_Gain_Experience, "Data.Gain.Experience");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Gain_Gold, "Data.Gain.Gold");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Gain_Health, "Data.Gain.Health");
+	
+	UE_DEFINE_GAMEPLAY_TAG(Data_Equipment_AttackPower, "Data.Equipment.AttackPower");
+	UE_DEFINE_GAMEPLAY_TAG(Data_Equipment_DefensePower, "Data.Equipment.DefensePower");
+	UE_DEFINE_GAMEPLAY_TAG(Data_Equipment_MaxHealth, "Data.Equipment.MaxHealth");
+	UE_DEFINE_GAMEPLAY_TAG(Data_Equipment_MaxStamina, "Data.Equipment.MaxStamina");
 
+	UE_DEFINE_GAMEPLAY_TAG(Data_Buff_AttackPower, "Data.Buff.AttackPower");
+	UE_DEFINE_GAMEPLAY_TAG(Data_Buff_DefensePower, "Data.Buff.DefensePower");
+	UE_DEFINE_GAMEPLAY_TAG(Data_Buff_MaxHealth, "Data.Buff.MaxHealth");
+	UE_DEFINE_GAMEPLAY_TAG(Data_Buff_MaxStamina, "Data.Buff.MaxStamina");
+	
 	// GameplayEffect Tags
 	UE_DEFINE_GAMEPLAY_TAG(GE_Player_Stats, "GE.Player.Stats");
 	

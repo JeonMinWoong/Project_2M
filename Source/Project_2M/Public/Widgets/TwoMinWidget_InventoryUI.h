@@ -25,7 +25,8 @@ public:
 	virtual void NativeConstruct() override;
 	
 	void OnFocusSlot();
-
+	void OnEquipment(int32 ItemID);
+	void OnUnEquipment(int32 ItemID);
 protected:
 	virtual FReply NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent) override;
 

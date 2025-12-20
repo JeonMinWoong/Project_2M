@@ -3,6 +3,9 @@
 
 #include "AbilitySystem/Ability/TwoMinGA_UseItemBase.h"
 
+#include "Character/TwoMinPlayerCharacter.h"
+#include "Compnents/UI/PlayerUIComponent.h"
+
 void UTwoMinGA_UseItemBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                             const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                             const FGameplayEventData* TriggerEventData)
@@ -41,17 +44,21 @@ void UTwoMinGA_UseItemBase::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 
 void UTwoMinGA_UseItemBase::ApplyItemConsumeEffect() const
 {
-	if (CachedConsumeData.ConsumePowerGroup.IsEmpty()) return;
+	if (CachedConsumeData.ConsumePower.IsEmpty()) return;
 	
 	if (CachedConsumeData.ConsumeType == EConsumeType::Heal)
 	{
-		GetTwoMinAbilitySystemComponentFromActorInfo()->GiveHealthPercent(CachedConsumeData.ConsumePowerGroup[0]);
+		GetTwoMinAbilitySystemComponentFromActorInfo()->GiveHealthPercent(CachedConsumeData.ConsumePower[EStatusType::HpHeal]);
 	}
 	else
 	{
-		for (auto ConsumePower : CachedConsumeData.ConsumePowerGroup)
-		{
-			// todo: 버프 해야함.
-		}
+		ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo());
+		if (!PlayerCharacter) return;
+
+		UTwoMinAbilitySystemComponent* ASC = PlayerCharacter->GetAbilitySystemComponent();
+		if (!ASC) return;
+		
+		ASC->AddConsumeBuff(CachedConsumeData.ItemDataBase.ItemID);
+		PlayerCharacter->GetPlayerUIComponent()->OnSetBuffItem.Broadcast(CachedConsumeData.ItemDataBase.ItemID);
 	}
 }

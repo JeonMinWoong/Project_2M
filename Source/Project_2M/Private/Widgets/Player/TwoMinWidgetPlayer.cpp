@@ -7,6 +7,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "Interfaces/BaseUIInterface.h"
+#include "Widgets/TwoMinWidget_BuffWindow.h"
 #include "Widgets/TwoMinWidget_GoldInfo.h"
 #include "Widgets/TwoMinWidget_ItemPickUpWindow.h"
 #include "Widgets/TwoMinWidget_WindowQuickSlot.h"
@@ -35,6 +36,7 @@ void UTwoMinWidgetPlayer::InitPlayerUIComponent(UPlayerUIComponent* HeroUICompon
 	HeroUIComponent->OnItemPickUpSlot.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetItemPickUpWindow);
 	HeroUIComponent->OnCurrentGoldChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentGoldValue);
 	HeroUIComponent->OnSetWindowQuickSlot.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::OnSetWindowQuickSlot);
+	HeroUIComponent->OnSetBuffItem.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::OnSetBuffItem);
 }
 
 void UTwoMinWidgetPlayer::SetCurrentHealthPercent(float Percent)
@@ -95,4 +97,11 @@ void UTwoMinWidgetPlayer::OnSetWindowQuickSlot(FItemInstance QuickSlotRegisterIt
 	if (!WindowQuickSlot) return;
 	
 	WindowQuickSlot->SetQuickSlotRegisterItems(QuickSlotRegisterItem, SlotIndex, bIsRegister);
+}
+
+void UTwoMinWidgetPlayer::OnSetBuffItem(int32 ItemID)
+{
+	if (!BuffWindow) return;
+	
+	BuffWindow->SetBuffSlot(ItemID);
 }
