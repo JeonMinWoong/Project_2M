@@ -474,3 +474,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
 	FItemConsumeData ConsumeData;
 };
+
+USTRUCT(BlueprintType)
+struct FAngerBuffData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FGameplayTag BuffTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bIsPercent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float BuffAmount;
+};

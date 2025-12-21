@@ -7,6 +7,7 @@
 #include "Widgets/TwoMinWidget_BuffWindow.h"
 #include "TwoMinWidgetPlayer.generated.h"
 
+class UTwoMinWidget_FightBar;
 class UTwoMinWidget_BuffWindow;
 struct FItemInstance;
 class UTwoMinWidget_WindowQuickSlot;
@@ -36,6 +37,12 @@ protected:
 	void SetCurrentStaminaPercent(float Percent);
 
 	UFUNCTION()
+	void SetCurrentFightPercent(float Percent);
+	
+	UFUNCTION()
+	void SetAngerState(bool bIsOnAngerMode);
+	
+	UFUNCTION()
 	void SetCurrentExperiencePercent(float Percent);
 
 	UFUNCTION()
@@ -63,6 +70,9 @@ private:
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* StaminaBar;
 
+	UPROPERTY(meta=(BindWidget))
+	UTwoMinWidget_FightBar* FightBar;
+	
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* ExperienceBar;
 

@@ -17,6 +17,7 @@
 #include "AbilitySystem/Ability/TwoMinGA_ExecutionCaster.h"
 #include "AbilitySystem/Ability/TwoMinGA_GuardBase.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEGA_AttackBase.h"
+#include "Character/TwoMinEnemyCharacter.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/ExecutionComponent.h"
 #include "Compnents/Combat/BaseCombatComponent.h"
@@ -449,6 +450,16 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 		);
 	}
 	
+	if (PlayerCharacter)
+	{
+		UTwoMinAbilitySystemComponent* ASC = 
+			Cast<UTwoMinAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
+		if (ASC)
+		{
+			ASC->GiveFightValue(FName("Player.Attack.Fight"));
+		}
+	}
+	
 	AActor* TargetActor = const_cast<AActor*>(Payload.Target.Get());
 	if (!TargetActor) return;
 	
@@ -461,6 +472,15 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 		TargetASC
 	);
 
+	if (ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(InstigatorActor))
+	{
+		UTwoMinAbilitySystemComponent* ASC = Cast<UTwoMinAbilitySystemComponent>(TargetASC);
+		if (ASC)
+		{
+			ASC->GiveFightValue(FName("Player.Hit.Fight"));
+		}
+	}
+	
 	if (!ResultEffectHandle.WasSuccessfullyApplied())
 	{
 		return;

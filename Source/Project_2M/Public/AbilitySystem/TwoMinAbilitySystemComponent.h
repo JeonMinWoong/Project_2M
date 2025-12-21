@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "Character/TwoMinPlayerCharacter.h"
 #include "TwoMinAbilitySystemComponent.generated.h"
 
 class ATwoMinEnemyCharacter;
@@ -54,13 +55,30 @@ public:
 	UFUNCTION()
 	void GiveHealthPercent(float InHealthPercent);
 	
+	UFUNCTION()
+	void GiveFightValue(FName InFightRowName);
+	void StartDecreaseFightValue(ATwoMinPlayerCharacter* PlayerCharacter);
+	void EndDecreaseFightValue();
+
+	void AddAngerBuffEffect(FGameplayTag ApplyBuffTag, bool bIsPercent, float BuffAmount);
+	void RemoveAngerBuffEffect(FGameplayTag RemoveBuffTag);
+	
 	void AddEquippedItemEffect(int32 ItemID, FActiveGameplayEffectHandle InEffectHandle);
 	FActiveGameplayEffectHandle* FindEquippedItemEffect(int32 ItemID);
 	void RemoveEquippedItemEffect(int32 ItemID);
 	void AddConsumeBuff(int32 ItemID);
 	void RemoveConsumeBuff(int32 ItemID);
-
+	
 private:
+	UPROPERTY()
+	FActiveGameplayEffectHandle FightDecreaseHandle;
+	
+	UPROPERTY()
+	FActiveGameplayEffectHandle AngerDecreaseHandle;
+	
+	UPROPERTY()
+	TMap<FGameplayTag, FActiveGameplayEffectHandle> AngerBuffEffectMap;
+	
 	UPROPERTY()
 	TMap<int32, FActiveGameplayEffectHandle> EquippedItemEffectMap;
 	
@@ -69,4 +87,7 @@ private:
 	
 public:
 	FORCEINLINE int32 GetBuffItemEffectNum() const { return BuffItemEffectMap.Num(); }
+	FORCEINLINE void SetAngerDecreaseHandle(FActiveGameplayEffectHandle InHandle) { AngerDecreaseHandle = InHandle; }
+	FORCEINLINE FActiveGameplayEffectHandle GetAngerDecreaseHandle() const { return AngerDecreaseHandle; }
+	FORCEINLINE void ClearAngerDecreaseHandle() { AngerDecreaseHandle.Invalidate(); }
 };

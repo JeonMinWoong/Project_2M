@@ -20,6 +20,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_UseItem, "InputTag.UseItem");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_LeftQuickSlot, "InputTag.LeftQuickSlot");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_RightQuickSlot, "InputTag.RightQuickSlot");
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_AngerMode_Inrush, "InputTag.AngerMode.Inrush");
 
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Toggle, "InputTag.Toggle");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Toggle_LockOn, "InputTag.Toggle.LockOn");
@@ -43,6 +44,8 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_Roll, "Player.Ability.Roll");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_ItemPickUp, "Player.Ability.ItemPickUp");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_UseItem, "Player.Ability.UseItem");
+	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_AngerMode_Inrush, "Player.Ability.AngerMode.Inrush");
+	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_AngerMode_Ing, "Player.Ability.AngerMode.Ing");
 
 	// Player Event Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_SwitchTarget_Left, "Player.Event.SwitchTarget.Left");
@@ -51,6 +54,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_ChargingEnd, "Player.Event.ChargingEnd");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_ItemPickUp, "Player.Event.ItemPickUp");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_UseItem, "Player.Event.UseItem");
+	UE_DEFINE_GAMEPLAY_TAG(Player_Event_AngerMode_Start, "Player.Event.AngerMode.Start");
 	
 	// Player State Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Running, "Player.State.Running");
@@ -60,6 +64,9 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Attacking, "Player.State.Attacking");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_ItemPickUp, "Player.State.ItemPickUp");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_UseItem, "Player.State.UseItem");
+	UE_DEFINE_GAMEPLAY_TAG(Player_State_FullFight, "Player.State.FullFight");
+	UE_DEFINE_GAMEPLAY_TAG(Player_State_AngerMode, "Player.State.AngerMode");
+	UE_DEFINE_GAMEPLAY_TAG(Player_State_ZeroFight, "Player.State.ZeroFight");
 	
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_OpenInventory, "Player.State.OpenInventory");
 
@@ -163,6 +170,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Data_Gain_Experience, "Data.Gain.Experience");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Gain_Gold, "Data.Gain.Gold");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Gain_Health, "Data.Gain.Health");
+	UE_DEFINE_GAMEPLAY_TAG(Data_Gain_Fight, "Data.Gain.Fight");
 	
 	UE_DEFINE_GAMEPLAY_TAG(Data_Equipment_AttackPower, "Data.Equipment.AttackPower");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Equipment_DefensePower, "Data.Equipment.DefensePower");

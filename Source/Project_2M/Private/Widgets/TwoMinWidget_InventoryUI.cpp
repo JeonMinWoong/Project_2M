@@ -720,24 +720,25 @@ void UTwoMinWidget_InventoryUI::OnEquipment(int32 ItemID)
 		if (EquipmentPower.Key == EStatusType::Attack)
 		{
 			AttackPower = EquipmentPower.Value;
-			Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Equipment_AttackPower, AttackPower);
 		}
 		else if (EquipmentPower.Key == EStatusType::Defense)
 		{
 			DefensePower = EquipmentPower.Value;
-			Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Equipment_DefensePower, DefensePower);
 		}
 		else if (EquipmentPower.Key == EStatusType::MaxHealth)
 		{
 			MaxHealth = EquipmentPower.Value;
-			Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Equipment_MaxHealth, MaxHealth);
 		}
 		else if (EquipmentPower.Key == EStatusType::MaxStamina)
 		{
 			MaxStamina = EquipmentPower.Value;
-			Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Equipment_MaxStamina, MaxStamina);
 		}
 	}
+	
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Equipment_AttackPower, AttackPower);
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Equipment_DefensePower, DefensePower);
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Equipment_MaxHealth, MaxHealth);
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Equipment_MaxStamina, MaxStamina);
 	
 	FActiveGameplayEffectHandle Handle = ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
 	ASC->AddEquippedItemEffect(Item.ItemDataBase.ItemID, Handle);

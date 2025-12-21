@@ -23,12 +23,11 @@ public:
 	virtual void OnHitTargetActor(AActor* HitActor) override;
 	virtual UAutoTargetingComponent* GetAutoTargetingComponent() const override;
 	virtual UExecutionComponent* GetExecutionComponent() const override;
-	
+
 private:
 	UPROPERTY(EditAnywhere)
 	UAutoTargetingComponent* AutoTargetComponent;
 	
 	UPROPERTY(EditAnywhere)
 	UExecutionComponent* ExecutionComponent;
-	
 };

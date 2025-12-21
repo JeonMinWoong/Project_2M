@@ -46,6 +46,8 @@ public:
 	
 	void OpenInventoryProcess();
 	
+	FTimerHandle FightDecreaseTimerHandle;
+	
 protected:
 	//~ Begin APawn Interface.
 	virtual void PossessedBy(AController* NewController) override;
@@ -83,6 +85,19 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Gold_Gain")
 	TSubclassOf<UGameplayEffect> GoldGainEffect;
 
+	UPROPERTY(EditDefaultsOnly, Category = "CurveTable|Fight_Curve")
+	UCurveTable* FightCurveTable;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Fight_Gain")
+	TSubclassOf<UGameplayEffect> FightGainEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Fight_Decrease")
+	TSubclassOf<UGameplayEffect> FightDecreaseEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Anger_Decrease")
+	TSubclassOf<UGameplayEffect> AngerDecreaseEffect;
+	
+	
 	UPROPERTY(VisibleAnywhere)
 	UInventoryComponent* InventoryComponent;
 	
@@ -200,6 +215,18 @@ public:
 	
 	FORCEINLINE UGameplayEffect* GetGoldGainEffect() const
 	{ return GoldGainEffect->GetDefaultObject<UGameplayEffect>(); }
+	
+	FORCEINLINE UCurveTable* GetFightCurveTable() const
+	{ return FightCurveTable; }
+	
+	FORCEINLINE UGameplayEffect* GetFightGainEffect() const
+	{ return FightGainEffect->GetDefaultObject<UGameplayEffect>(); }
+	
+	FORCEINLINE UGameplayEffect* GetFightDecreaseEffect() const
+	{ return FightDecreaseEffect->GetDefaultObject<UGameplayEffect>(); }
+	
+	FORCEINLINE UGameplayEffect* GetAngerDecreaseEffect() const
+	{ return AngerDecreaseEffect->GetDefaultObject<UGameplayEffect>(); }
 	
 	FORCEINLINE TSubclassOf<UGameplayEffect> GetEquipStatusEffect() const
 	{ return EquipStatusEffect; }

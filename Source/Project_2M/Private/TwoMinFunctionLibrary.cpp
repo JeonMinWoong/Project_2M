@@ -100,3 +100,14 @@ EItemType UTwoMinFunctionLibrary::GetItemType(int32 ItemID)
 
 	return EItemType::None;
 }
+
+constexpr float EPS = 0.0001f;
+bool UTwoMinFunctionLibrary::IsNearFloatZero(float Value)
+{
+	return FMath::IsNearlyZero(Value, EPS);
+}
+
+bool UTwoMinFunctionLibrary::IsNearFloatEqual(float Value, float EqualValue)
+{
+	return FMath::IsNearlyEqual(Value, EqualValue);
+}

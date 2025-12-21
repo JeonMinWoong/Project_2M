@@ -8,6 +8,7 @@
 #include "Components/TextBlock.h"
 #include "Interfaces/BaseUIInterface.h"
 #include "Widgets/TwoMinWidget_BuffWindow.h"
+#include "Widgets/TwoMinWidget_FightBar.h"
 #include "Widgets/TwoMinWidget_GoldInfo.h"
 #include "Widgets/TwoMinWidget_ItemPickUpWindow.h"
 #include "Widgets/TwoMinWidget_WindowQuickSlot.h"
@@ -29,6 +30,7 @@ void UTwoMinWidgetPlayer::InitPlayerUIComponent(UPlayerUIComponent* HeroUICompon
 {
 	HeroUIComponent->OnCurrentHealthChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentHealthPercent);
 	HeroUIComponent->OnCurrentStaminaChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentStaminaPercent);
+	HeroUIComponent->OnCurrentFightChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentFightPercent);
 	HeroUIComponent->OnCurrentExperienceChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentExperiencePercent);
 	HeroUIComponent->OnCurrentLevelChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentLevelValue);
 	HeroUIComponent->OnPossiblePickUpItem.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetPossiblePickUpItem);
@@ -37,6 +39,7 @@ void UTwoMinWidgetPlayer::InitPlayerUIComponent(UPlayerUIComponent* HeroUICompon
 	HeroUIComponent->OnCurrentGoldChanged.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetCurrentGoldValue);
 	HeroUIComponent->OnSetWindowQuickSlot.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::OnSetWindowQuickSlot);
 	HeroUIComponent->OnSetBuffItem.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::OnSetBuffItem);
+	HeroUIComponent->OnSetAngerState.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetAngerState);
 }
 
 void UTwoMinWidgetPlayer::SetCurrentHealthPercent(float Percent)
@@ -51,6 +54,20 @@ void UTwoMinWidgetPlayer::SetCurrentStaminaPercent(float Percent)
 	if (!StaminaBar) return;
 
 	StaminaBar->SetPercent(Percent);
+}
+
+void UTwoMinWidgetPlayer::SetCurrentFightPercent(float Percent)
+{
+	if (!FightBar) return;
+	
+	FightBar->SetPercent(Percent);
+}
+
+void UTwoMinWidgetPlayer::SetAngerState(bool bIsOnAngerMode)
+{
+	if (!FightBar) return;
+	
+	FightBar->SetOnAngerMode(bIsOnAngerMode);
 }
 
 void UTwoMinWidgetPlayer::SetCurrentExperiencePercent(float Percent)

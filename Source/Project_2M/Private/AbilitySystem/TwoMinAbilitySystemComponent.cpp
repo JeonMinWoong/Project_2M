@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 
+#include "IDetailTreeNode.h"
 #include "TwoMinDebugHelper.h"
 #include "TwoMinGameplayTag.h"
 #include "AbilitySystem/TwoMinAttributeSet.h"
@@ -322,15 +323,148 @@ void UTwoMinAbilitySystemComponent::GiveHealthPercent(float InHealthPercent)
 		MakeEffectContext()
 	);
 	
-	UTwoMinAbilitySystemComponent* ASC = Character->GetAbilitySystemComponent();
-	int32 GiveHealthAmount = FMath::FloorToInt32(
-		ASC->GetNumericAttribute(UTwoMinAttributeSet::GetMaxHealthAttribute()) * InHealthPercent);
+	int32 GiveHealthAmount = 
+		FMath::FloorToInt32(GetNumericAttribute(UTwoMinAttributeSet::GetMaxHealthAttribute()) * InHealthPercent);
 
 	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Gain_Health, GiveHealthAmount);
 	ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
 	
 	FString Str = FString::Printf(TEXT("Give Health : %d"), GiveHealthAmount);
 	TwoMinDebugHelper::Print(Str, FColor::Green);
+}
+
+void UTwoMinAbilitySystemComponent::GiveFightValue(FName InFightRowName)
+{
+	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActor());
+	if (!PlayerCharacter) return;
+	
+	FGameplayEffectSpecHandle Spec = MakeOutgoingSpec(
+		PlayerCharacter->GetFightGainEffect()->GetClass(),
+		1,
+		MakeEffectContext()
+	);
+
+	UCurveTable* CurveTable = PlayerCharacter->GetFightCurveTable();
+	const FRealCurve* Curve = CurveTable->FindCurve(InFightRowName, TEXT(""));
+	int32 GainFightValue = Curve->Eval(1);
+	
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Gain_Fight, GainFightValue);
+	ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+	
+	StartDecreaseFightValue(PlayerCharacter);
+}
+
+void UTwoMinAbilitySystemComponent::StartDecreaseFightValue(ATwoMinPlayerCharacter* PlayerCharacter)
+{
+	UCurveTable* CurveTable = PlayerCharacter->GetFightCurveTable();
+	FTimerManager& TimerManager = PlayerCharacter->GetWorldTimerManager();
+	if (TimerManager.IsTimerActive(PlayerCharacter->FightDecreaseTimerHandle))
+	{
+		TimerManager.ClearTimer(PlayerCharacter->FightDecreaseTimerHandle);
+	}
+	
+	EndDecreaseFightValue();
+	
+	float DecreaseDelay = CurveTable->FindCurve(FName("Player.DecDelay.Fight"), TEXT(""))->Eval(1);
+	PlayerCharacter->GetWorldTimerManager().SetTimer(PlayerCharacter->FightDecreaseTimerHandle,
+		[this, PlayerCharacter]()
+	{
+			if (FightDecreaseHandle.IsValid()) return;
+			
+			FGameplayEffectSpecHandle Spec = MakeOutgoingSpec(
+				PlayerCharacter->GetFightDecreaseEffect()->GetClass(), 
+				1.f, 
+				MakeEffectContext()
+			);
+			
+			FightDecreaseHandle = ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+	}, DecreaseDelay, false);
+}
+
+void UTwoMinAbilitySystemComponent::EndDecreaseFightValue()
+{
+	if (FightDecreaseHandle.IsValid())
+	{
+		RemoveActiveGameplayEffect(FightDecreaseHandle);
+		FightDecreaseHandle.Invalidate();
+	}
+}
+
+void UTwoMinAbilitySystemComponent::AddAngerBuffEffect(FGameplayTag ApplyBuffTag, bool bIsPercent, float BuffAmount)
+{
+	const ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActor());
+	if (!PlayerCharacter) return;
+	
+	FGameplayEffectSpecHandle Spec = 
+		MakeOutgoingSpec(
+			PlayerCharacter->GetConsumeStatusEffect(),
+			1.f,
+			MakeEffectContext()
+		);
+	
+	if (!Spec.IsValid()) return;
+	
+	UCurveTable* CurveTable = PlayerCharacter->GetNeedToLevelUp_ExperienceCurveTable();
+	const int32 CurLevel = GetNumericAttribute(UTwoMinAttributeSet::GetCurrentLevelAttribute());
+	
+	int32 AttackPower = 0;
+	int32 DefensePower = 0;
+	int32 MaxHealth = 0;
+	int32 MaxStamina = 0;
+	if (ApplyBuffTag == TwoMinGameplayTag::Data_Buff_AttackPower)
+	{
+		const FRealCurve* Curve = CurveTable->FindCurve(FName("Player.AttackPower"), TEXT(""));
+		if (!Curve) return;
+	
+		int32 BaseStatusValue = Curve->Eval(CurLevel);
+		AttackPower = bIsPercent ? FMath::FloorToInt32(BaseStatusValue * BuffAmount) : FMath::FloorToInt32(BuffAmount);
+	}
+	else if (ApplyBuffTag == TwoMinGameplayTag::Data_Buff_DefensePower)
+	{
+		const FRealCurve* Curve = CurveTable->FindCurve(FName("Player.DefensePower"), TEXT(""));
+		if (!Curve) return;
+	
+		int32 BaseStatusValue = Curve->Eval(CurLevel);
+		DefensePower = bIsPercent ? FMath::FloorToInt32(BaseStatusValue * BuffAmount) : FMath::FloorToInt32(BuffAmount);
+	}
+	else if (ApplyBuffTag == TwoMinGameplayTag::Data_Buff_MaxHealth)
+	{
+		const FRealCurve* Curve = CurveTable->FindCurve(FName("Player.MaxHealth"), TEXT(""));
+		if (!Curve) return;
+	
+		int32 BaseStatusValue = Curve->Eval(CurLevel);
+		MaxHealth = bIsPercent ? FMath::FloorToInt32(BaseStatusValue * BuffAmount) : FMath::FloorToInt32(BuffAmount);
+	}
+	else if (ApplyBuffTag == TwoMinGameplayTag::Data_Buff_MaxStamina)
+	{
+		const FRealCurve* Curve = CurveTable->FindCurve( FName("Player.MaxStamina"), TEXT(""));
+		if (!Curve) return;
+	
+		int32 BaseStatusValue = Curve->Eval(CurLevel);
+		MaxStamina = bIsPercent ? FMath::FloorToInt32(BaseStatusValue * BuffAmount) : FMath::FloorToInt32(BuffAmount);
+	}
+	
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Buff_AttackPower, AttackPower);
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Buff_DefensePower, DefensePower);
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Buff_MaxHealth, MaxHealth);
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Buff_MaxStamina, MaxStamina);
+	
+	FActiveGameplayEffectHandle Handle = ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+	AngerBuffEffectMap.Add(ApplyBuffTag, Handle);
+	PlayerCharacter->GetInventoryComponent()->GetInventoryUI()->GetEquipmentWindow()->UpdateStatusText();
+}
+
+void UTwoMinAbilitySystemComponent::RemoveAngerBuffEffect(FGameplayTag RemoveBuffTag)
+{
+	const ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActor());
+	if (!PlayerCharacter) return;
+	
+	FActiveGameplayEffectHandle* Handle = AngerBuffEffectMap.Find(RemoveBuffTag);
+	if (!Handle) return;
+		
+	RemoveActiveGameplayEffect(*Handle);
+	AngerBuffEffectMap.Remove(RemoveBuffTag);
+	PlayerCharacter->GetInventoryComponent()->GetInventoryUI()->GetEquipmentWindow()->UpdateStatusText();
 }
 
 void UTwoMinAbilitySystemComponent::AddEquippedItemEffect(int32 ItemID, FActiveGameplayEffectHandle InEffectHandle)
@@ -381,30 +515,31 @@ void UTwoMinAbilitySystemComponent::AddConsumeBuff(int32 ItemID)
 			const FRealCurve* Curve = CurveTable->FindCurve(FName("Player.AttackPower"), TEXT(""));
 			int32 BaseStatusValue = Curve->Eval(CurLevel);
 			AttackPower = FMath::FloorToInt32(BaseStatusValue * ConsumePower.Value);
-			Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Buff_AttackPower, AttackPower);
 		}
 		else if (ConsumePower.Key == EStatusType::Defense)
 		{
 			const FRealCurve* Curve = CurveTable->FindCurve(FName("Player.DefensePower"), TEXT(""));
 			int32 BaseStatusValue = Curve->Eval(CurLevel);
 			DefensePower = FMath::FloorToInt32(BaseStatusValue * ConsumePower.Value);
-			Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Buff_DefensePower, DefensePower);
 		}
 		else if (ConsumePower.Key == EStatusType::MaxHealth)
 		{
 			const FRealCurve* Curve = CurveTable->FindCurve(FName("Player.MaxHealth"), TEXT(""));
 			int32 BaseStatusValue = Curve->Eval(CurLevel);
 			MaxHealth = FMath::FloorToInt32(BaseStatusValue * ConsumePower.Value);
-			Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Buff_MaxHealth, MaxHealth);
 		}
 		else if (ConsumePower.Key == EStatusType::MaxStamina)
 		{
 			const FRealCurve* Curve = CurveTable->FindCurve(FName("Player.MaxStamina"), TEXT(""));
 			int32 BaseStatusValue = Curve->Eval(CurLevel);
 			MaxStamina = FMath::FloorToInt32(BaseStatusValue * ConsumePower.Value);
-			Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Buff_MaxStamina, MaxStamina);
 		}
 	}
+	
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Buff_AttackPower, AttackPower);
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Buff_DefensePower, DefensePower);
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Buff_MaxHealth, MaxHealth);
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Buff_MaxStamina, MaxStamina);
 	
 	FActiveGameplayEffectHandle Handle = ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
 	BuffItemEffectMap.Add(Item.ItemDataBase.ItemID, Handle);

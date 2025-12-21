@@ -39,4 +39,10 @@ public:
 	
 	UFUNCTION()
 	static EItemType GetItemType(int32 ItemID);
+	
+	UFUNCTION()
+	static bool IsNearFloatZero(float Value);
+	
+	UFUNCTION()
+	static bool IsNearFloatEqual(float Value, float EqualValue);
 };

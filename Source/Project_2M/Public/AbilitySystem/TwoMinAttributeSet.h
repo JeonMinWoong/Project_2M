@@ -53,6 +53,14 @@ public:
 	FGameplayAttributeData CurrentStamina;
 	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, CurrentStamina)
 
+	UPROPERTY(BlueprintReadOnly, Category = "Fight")
+	FGameplayAttributeData MaxFight;
+	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, MaxFight)
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Fight")
+	FGameplayAttributeData CurrentFight;
+	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, CurrentFight)
+	
 	UPROPERTY(BlueprintReadOnly, Category = "Experience")
 	FGameplayAttributeData MaxExperience;
 	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, MaxExperience)
@@ -109,5 +117,7 @@ private:
 	int32 NeedToExperienceValue(ATwoMinPlayerCharacter* PlayerCharacter, int32 InCurrentLevel) const;
 	
 	TWeakInterfacePtr<IBaseUIInterface> CachedBaseUInterface;
+	
+	UPROPERTY()
 	ATwoMinBaseCharacter* OwningBaseCharacter;
 };

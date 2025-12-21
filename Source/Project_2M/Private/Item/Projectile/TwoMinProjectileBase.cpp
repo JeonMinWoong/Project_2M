@@ -10,6 +10,7 @@
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
 #include "AbilitySystem/Ability/TwoMinGA_GuardBase.h"
 #include "Character/TwoMinBaseCharacter.h"
+#include "Character/TwoMinEnemyCharacter.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/KismetArrayLibrary.h"
@@ -240,6 +241,15 @@ void ATwoMinProjectileBase::HandleApplyProjectileDamage(APawn* HitPawn, FGamepla
 		OtherCharacter->GetAbilitySystemComponent()
 	);
 
+	if (ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(MyActor))
+	{
+		UTwoMinAbilitySystemComponent* ASC = OtherCharacter->GetAbilitySystemComponent();
+		if (ASC)
+		{
+			ASC->GiveFightValue(FName("Player.Hit.Fight"));
+		}
+	}
+	
 	if (!ResultEffectHandle.WasSuccessfullyApplied())
 	{
 		return;

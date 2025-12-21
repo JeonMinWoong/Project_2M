@@ -23,6 +23,9 @@ UTwoMinAttributeSet::UTwoMinAttributeSet()
 	InitMaxStamina(1.f);
 	InitCurrentStamina(1.f);
 	
+	InitMaxHealth(0.f);
+	InitCurrentHealth(0.f);
+	
 	InitMaxExperience(1.f);
 	InitCurrentExperience(0.f);
 	
@@ -86,6 +89,48 @@ void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 		if (UPlayerUIComponent* PlayerUIComponent = CachedBaseUInterface->GetPlayerUIComponent())
 		{
 			PlayerUIComponent->OnCurrentStaminaChanged.Broadcast(GetCurrentStamina()/GetMaxStamina());	
+		}
+	}
+	
+	if (Data.EvaluatedData.Attribute == GetCurrentFightAttribute())
+	{
+		const float NewCurrentFight = FMath::Clamp(GetCurrentFight(), 0.f, GetMaxFight());
+
+		SetCurrentFight(NewCurrentFight);
+
+		if (GetCurrentFight() == GetMaxFight())
+		{
+			UTwoMinFunctionLibrary::AddGameplayTagToActor(
+				Data.Target.GetOwnerActor(),
+				TwoMinGameplayTag::Player_State_FullFight
+			);
+		}
+		else
+		{
+			UTwoMinFunctionLibrary::RemoveGameplayTagToActor(
+				Data.Target.GetOwnerActor(),
+				TwoMinGameplayTag::Player_State_FullFight
+			);
+			
+			if (UTwoMinFunctionLibrary::IsNearFloatZero(GetCurrentFight()))
+			{
+				UTwoMinFunctionLibrary::AddGameplayTagToActor(
+					Data.Target.GetOwnerActor(),
+					TwoMinGameplayTag::Player_State_ZeroFight
+				);
+			}
+			else
+			{
+				UTwoMinFunctionLibrary::RemoveGameplayTagToActor(
+					Data.Target.GetOwnerActor(),
+				TwoMinGameplayTag::Player_State_ZeroFight
+				);
+			}
+		}
+		
+		if (UPlayerUIComponent* PlayerUIComponent = CachedBaseUInterface->GetPlayerUIComponent())
+		{
+			PlayerUIComponent->OnCurrentFightChanged.Broadcast(GetCurrentFight()/GetMaxFight());	
 		}
 	}
 

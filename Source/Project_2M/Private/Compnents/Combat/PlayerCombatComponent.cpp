@@ -3,14 +3,11 @@
 
 #include "Compnents/Combat/PlayerCombatComponent.h"
 
-#include "TwoMinFunctionLibrary.h"
-#include "TwoMinGameplayTag.h"
 #include "Compnents/AutoTargetingComponent.h"
-#include "Kismet/KismetSystemLibrary.h"
 
 UPlayerCombatComponent::UPlayerCombatComponent()
 {
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 	AutoTargetComponent = CreateDefaultSubobject<UAutoTargetingComponent>(TEXT("AutoTargetComponent"));
 	ExecutionComponent = CreateDefaultSubobject<UExecutionComponent>(TEXT("ExecutionComponent"));

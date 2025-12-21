@@ -13,6 +13,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCurrentGoldChanged, int32, NewGo
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnSetWindowQuickSlot, FItemInstance, QuickSlotRegisterItem, 
 	int32, SlotIndex, bool, bIsRegister);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetBuffItem, int32, ItemID);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetAngerState, bool, bIsOnAngerMode);
 
 /**
  * 
@@ -25,6 +26,9 @@ class PROJECT_2M_API UPlayerUIComponent : public UBaseUIComponent
 public:
 	UPROPERTY()
 	FOnPercentChangedDelegate OnCurrentStaminaChanged;
+	
+	UPROPERTY()
+	FOnPercentChangedDelegate OnCurrentFightChanged;
 
 	UPROPERTY()
 	FOnPercentChangedDelegate OnCurrentExperienceChanged;
@@ -46,4 +50,7 @@ public:
 	
 	UPROPERTY()
 	FOnSetBuffItem OnSetBuffItem;
+	
+	UPROPERTY()
+	FOnSetAngerState OnSetAngerState;
 };

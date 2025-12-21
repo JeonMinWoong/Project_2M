@@ -69,8 +69,6 @@ void UTwoMinWidget_BuffSlot::OnCopyBuff(int32 ItemID, float RunningTime)
 	CurrentTime = RunningTime;
 }
 
-constexpr float EPS = 0.0001f;
-
 void UTwoMinWidget_BuffSlot::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
@@ -78,7 +76,7 @@ void UTwoMinWidget_BuffSlot::NativeTick(const FGeometry& MyGeometry, float InDel
 	if (bIsOnBuff == false) return;
 	
 	float GlobalTime = UGameplayStatics::GetGlobalTimeDilation(GetWorld());
-	if (FMath::IsNearlyZero(GlobalTime, EPS)) return;
+	if (UTwoMinFunctionLibrary::IsNearFloatZero(GlobalTime)) return;
 	
 	// 0 이면 무제한.
 	if (BuffDuration <= 0) return;
