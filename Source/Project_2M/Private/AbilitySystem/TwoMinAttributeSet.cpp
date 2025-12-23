@@ -98,6 +98,8 @@ void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 
 		SetCurrentFight(NewCurrentFight);
 
+		ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(Data.Target.GetAvatarActor());
+		
 		if (GetCurrentFight() == GetMaxFight())
 		{
 			UTwoMinFunctionLibrary::AddGameplayTagToActor(

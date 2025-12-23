@@ -181,6 +181,9 @@ void ATwoMinPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 		ETriggerEvent::Started, this, &ThisClass::Input_LeftQuickSlotTrigger);
 	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_RightQuickSlot, 
 		ETriggerEvent::Started, this, &ThisClass::Input_RightQuickSlotItemTrigger);
+	
+	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_SpecialAttack_Check, 
+		ETriggerEvent::Started, this, &ThisClass::Input_SpecialAttack_Check_Trigger);
 }
 
 void ATwoMinPlayerCharacter::Input_Move(const FInputActionValue& InputActionValue)
@@ -458,6 +461,23 @@ void ATwoMinPlayerCharacter::Input_RightQuickSlotItemTrigger(const FInputActionV
 	}
 	
 	WidgetPlayer->GetWindowQuickSlot()->SetCurrentSlotIndex(NewSlotIndex);
+}
+
+void ATwoMinPlayerCharacter::Input_SpecialAttack_Check_Trigger(const FInputActionValue& InputActionValue)
+{
+	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_FullFight))
+	{
+		Input_AbilityInputPressed(TwoMinGameplayTag::InputTag_AngerMode_Inrush);
+		return;
+	}
+	
+	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_AngerMode))
+	{
+		Input_AbilityInputPressed(TwoMinGameplayTag::InputTag_AngerMode_SpecialAttack_OneHand);
+		return;
+	}
+	
+	Input_AbilityInputPressed(TwoMinGameplayTag::InputTag_SpecialAttack_OneHand);
 }
 
 bool ATwoMinPlayerCharacter::GetIsRunning()

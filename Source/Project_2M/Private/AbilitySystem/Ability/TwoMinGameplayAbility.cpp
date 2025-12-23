@@ -17,6 +17,7 @@
 #include "AbilitySystem/Ability/TwoMinGA_ExecutionCaster.h"
 #include "AbilitySystem/Ability/TwoMinGA_GuardBase.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEGA_AttackBase.h"
+#include "AbilitySystem/Ability/Player/TwoMinGA_SpecialAttackBase.h"
 #include "Character/TwoMinEnemyCharacter.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/ExecutionComponent.h"
@@ -233,10 +234,21 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByMelee(FGameplayEvent
 		//DebugTwoMin::Print(TEXT("Player Ability Event Received"), FColor::Green);
 
 		UTwoMinGA_AttackBase* PlayerAttackBase = Cast<UTwoMinGA_AttackBase>(this);
-		if (!PlayerAttackBase) return;
-
-		const FAttackInfoData& AttackInfoData = PlayerAttackBase->GetAttackInfoData();
-		AttackPayload->Data = AttackInfoData;
+		UTwoMinGA_SpecialAttackBase* PlayerSpecialAttackBase = Cast<UTwoMinGA_SpecialAttackBase>(this);
+		if (PlayerAttackBase)
+		{
+			const FAttackInfoData& AttackInfoData = PlayerAttackBase->GetAttackInfoData();
+			AttackPayload->Data = AttackInfoData;	
+		}
+		else if (PlayerSpecialAttackBase)
+		{
+			const FAttackInfoData& AttackInfoData = PlayerSpecialAttackBase->GetAttackInfoData();
+			AttackPayload->Data = AttackInfoData;
+		}
+		else
+		{
+			return;
+		}
 	}
 
 	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(TargetActor);

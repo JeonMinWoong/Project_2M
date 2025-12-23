@@ -90,7 +90,7 @@ void ATwoMinEnemyCharacter::BeforeDeathProcess()
 void ATwoMinEnemyCharacter::AfterDeathProcess()
 {
 	Super::AfterDeathProcess();
-
+	
 	TMap<int32, int32> DropItems = ItemDropComponent->TryGetDropItems();
 
 	if (DropItems.IsEmpty())

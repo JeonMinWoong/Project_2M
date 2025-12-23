@@ -195,6 +195,8 @@ private:
 	void Input_LeftQuickSlotTrigger(const FInputActionValue& InputActionValue);
 	void Input_RightQuickSlotItemTrigger(const FInputActionValue& InputActionValue);
 	
+	void Input_SpecialAttack_Check_Trigger(const FInputActionValue& InputActionValue);
+	
 #pragma endregion
 
 public:

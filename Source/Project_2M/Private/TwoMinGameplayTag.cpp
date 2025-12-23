@@ -20,7 +20,10 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_UseItem, "InputTag.UseItem");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_LeftQuickSlot, "InputTag.LeftQuickSlot");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_RightQuickSlot, "InputTag.RightQuickSlot");
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_SpecialAttack_Check, "InputTag.SpecialAttack.Check");
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_SpecialAttack_OneHand, "InputTag.SpecialAttack.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_AngerMode_Inrush, "InputTag.AngerMode.Inrush");
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_AngerMode_SpecialAttack_OneHand, "InputTag.AngerMode.SpecialAttack.OneHand");
 
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Toggle, "InputTag.Toggle");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Toggle_LockOn, "InputTag.Toggle.LockOn");
@@ -40,12 +43,14 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_CountAttack_OneHand, "Player.Ability.CounterAttack.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_ChargeAttack_OneHand, "Player.Ability.ChargeAttack.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_RunAttack_OneHand, "Player.Ability.RunAttack.OneHand");
+	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_SpecialAttack_OneHand, "Player.Ability.SpecialAttack.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_LockOn, "Player.Ability.LockOn");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_Roll, "Player.Ability.Roll");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_ItemPickUp, "Player.Ability.ItemPickUp");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_UseItem, "Player.Ability.UseItem");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_AngerMode_Inrush, "Player.Ability.AngerMode.Inrush");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_AngerMode_Ing, "Player.Ability.AngerMode.Ing");
+	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_AngerMode_SpecialAttack_OneHand, "Player.Ability.AngerMode.SpecialAttack.OneHand");
 
 	// Player Event Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_SwitchTarget_Left, "Player.Event.SwitchTarget.Left");
@@ -166,6 +171,7 @@ namespace TwoMinGameplayTag
 	// Data Tags
 	UE_DEFINE_GAMEPLAY_TAG(Data_Cost_Stamina_Enough, "Data.Cost.Stamina.Enough");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Cost_Stamina_UnEnough, "Data.Cost.Stamina.UnEnough");
+	UE_DEFINE_GAMEPLAY_TAG(Data_Cost_Fight, "Data.Cost.Fight");
 	
 	UE_DEFINE_GAMEPLAY_TAG(Data_Gain_Experience, "Data.Gain.Experience");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Gain_Gold, "Data.Gain.Gold");

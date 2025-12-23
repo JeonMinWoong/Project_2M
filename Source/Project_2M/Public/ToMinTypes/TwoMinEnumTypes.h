@@ -170,3 +170,12 @@ enum class EStatusType : uint8
 	MaxHealth,
 	MaxStamina,
 };
+
+UENUM(Blueprintable)
+enum class EAddMappingContextType : uint8
+{
+	None = 0,
+	Normal = 1,
+	FullFight = 2,
+	AngerMode = 3,
+};
