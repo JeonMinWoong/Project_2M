@@ -97,11 +97,14 @@ void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 		const float NewCurrentFight = FMath::Clamp(GetCurrentFight(), 0.f, GetMaxFight());
 
 		SetCurrentFight(NewCurrentFight);
-
-		ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(Data.Target.GetAvatarActor());
 		
 		if (GetCurrentFight() == GetMaxFight())
 		{
+			UTwoMinFunctionLibrary::RemoveGameplayTagToActor(
+				Data.Target.GetOwnerActor(),
+				TwoMinGameplayTag::Player_State_ZeroFight
+			);
+			
 			UTwoMinFunctionLibrary::AddGameplayTagToActor(
 				Data.Target.GetOwnerActor(),
 				TwoMinGameplayTag::Player_State_FullFight

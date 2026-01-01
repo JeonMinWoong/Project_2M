@@ -57,7 +57,7 @@ void UTwoMinGA_SpecialAttackBase::ActivateAbility(const FGameplayAbilitySpecHand
 	ResetTask->EventReceived.AddDynamic(this, &ThisClass::OnResetAttackCountGameplayEffectReceive);
 	ResetTask->ReadyForActivation();
 	
-	if (HitCollisionMap.IsEmpty() == false && HitCollisionMap.Contains(CurComboCount))
+	if (HitCollisionMap.IsEmpty() == false)
 	{
 		WaitGameplayEvent(HitCollisionEventTag, true);	
 	}
@@ -139,6 +139,8 @@ void UTwoMinGA_SpecialAttackBase::ApplyCost(const FGameplayAbilitySpecHandle Han
 void UTwoMinGA_SpecialAttackBase::CustomEventReceived(FGameplayEventData Payload)
 {
 	Super::CustomEventReceived(Payload);
+	
+	if (HitCollisionMap.Contains(CurComboCount) == false) return;
 	
 	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo());
 	if (!PlayerCharacter) return;

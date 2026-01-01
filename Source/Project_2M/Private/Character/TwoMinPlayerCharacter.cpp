@@ -492,20 +492,19 @@ void ATwoMinPlayerCharacter::Input_RightQuickSlotItemTrigger(const FInputActionV
 
 void ATwoMinPlayerCharacter::Input_SpecialAttack_Check_Trigger(const FInputActionValue& InputActionValue)
 {
-	FName FightCostName = "";
+	FGameplayTag InputTag = TwoMinGameplayTag::InputTag_SpecialAttack_OneHand;
+	FName FightCostName = "Player.SpecialAttack.OneHand";
 	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_FullFight))
 	{
-		Input_AbilityInputPressed(TwoMinGameplayTag::InputTag_AngerMode_Inrush);
-		return;
+		FightCostName = "Player.Anger.InRush";
+		InputTag = TwoMinGameplayTag::InputTag_AngerMode_Inrush;
 	}
-	
-	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_AngerMode))
+	else if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_AngerMode))
 	{
-		Input_AbilityInputPressed(TwoMinGameplayTag::InputTag_AngerMode_SpecialAttack_OneHand);
-		return;
+		FightCostName = "Player.SpecialAttack.Anger.OneHand";
+		InputTag = TwoMinGameplayTag::InputTag_AngerMode_SpecialAttack_OneHand;
 	}
 	
-	FightCostName = "Player.SpecialAttack.Onehand";
 	float CurFightValue =
 		GetAbilitySystemComponent()->GetNumericAttribute(UTwoMinAttributeSet::GetCurrentFightAttribute());
 	const FRealCurve* Curve = FightCurveTable->FindCurve(FightCostName, "1");
@@ -517,7 +516,7 @@ void ATwoMinPlayerCharacter::Input_SpecialAttack_Check_Trigger(const FInputActio
 	}
 	
 	bIsSpecialAttackCheck = true;
-	Input_AbilityInputPressed(TwoMinGameplayTag::InputTag_SpecialAttack_OneHand);
+	Input_AbilityInputPressed(InputTag);
 }
 
 bool ATwoMinPlayerCharacter::GetIsRunning()
