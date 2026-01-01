@@ -23,6 +23,7 @@
 #include "Compnents/ExecutionComponent.h"
 #include "Compnents/Combat/BaseCombatComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Item/HitBox/BoxHitCollision.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 
 class UAbilityTask_WaitGameplayEvent;
@@ -414,7 +415,7 @@ void UTwoMinGameplayAbility::CustomOnBlendOutAbility()
 }
 
 void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffect> EffectClass,
-	FGameplayEventData Payload, bool bIsTargetGuard, bool bIsExecution)
+                                                      FGameplayEventData Payload, bool bIsTargetGuard, bool bIsExecution)
 {
 	if (!EffectClass) return;
 	
@@ -503,6 +504,12 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 		return;
 	}
 	
+	OnHitStop(Payload, bIsTargetGuard, AttackPayload, TargetCharacter);
+}
+
+void UTwoMinGameplayAbility::OnHitStop(const FGameplayEventData& Payload, bool bIsTargetGuard,
+	const UAttackPayloadObject* AttackPayload, ATwoMinBaseCharacter* TargetCharacter)
+{
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 		TargetCharacter,
 		GetHitGameplayEffectTag(bIsTargetGuard, AttackPayload->Data.HitData.HitType),
@@ -510,12 +517,12 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 	);
 
 	const float HitStopAttackerDelay = bIsTargetGuard ?
-		AttackPayload->Data.HitStopAttackerData.AttackerDelay_Guard :
-		AttackPayload->Data.HitStopAttackerData.AttackerDelay_Hit;
+										   AttackPayload->Data.HitStopAttackerData.AttackerDelay_Guard :
+										   AttackPayload->Data.HitStopAttackerData.AttackerDelay_Hit;
 	
 	const float HitStopVictimDelay = bIsTargetGuard ?
-		AttackPayload->Data.HitStopVictimData.VictimDelay_Guard :
-		AttackPayload->Data.HitStopVictimData.VictimDelay_Hit;
+										 AttackPayload->Data.HitStopVictimData.VictimDelay_Guard :
+										 AttackPayload->Data.HitStopVictimData.VictimDelay_Hit;
 	
 	HitStopProcess(Payload.Instigator->GetInstigator(), HitStopAttackerDelay);
 	HitStopProcess(TargetCharacter, HitStopVictimDelay);
@@ -679,6 +686,53 @@ void UTwoMinGameplayAbility::SendToExhaustedEvent() const
 		TwoMinGameplayTag::Shared_Event_Exhausted,
 		EventData
 	);
+}
+
+void UTwoMinGameplayAbility::EnableHitCollision(ATwoMinBaseCharacter* BaseCharacter)
+{
+	// todo : HitBox  생성 및 활성화 
+	
+	UAttackPayloadObject* AttackPayload = NewObject<UAttackPayloadObject>(BaseCharacter);
+	TSubclassOf<AHitCollisionBase> CollisionBase = nullptr;
+	
+	const ECharacterType CharacterType = BaseCharacter->GetCharacterType();
+	if (CharacterType == ECharacterType::None) return;
+	
+	if (CharacterType == ECharacterType::Enemy)
+	{
+		// todo : Enemy
+	}
+	else if (CharacterType == ECharacterType::Player)
+	{
+		UTwoMinGA_SpecialAttackBase* SpecialAttackBase = Cast<UTwoMinGA_SpecialAttackBase>(this);
+		if (!SpecialAttackBase) return;
+		
+		CollisionBase = SpecialAttackBase->GetHitCollisionBase();
+		AttackPayload->Data = SpecialAttackBase->GetAttackInfoData();
+	}
+	
+	if (!CollisionBase) return;
+	
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = BaseCharacter;
+	
+	AHitCollisionBase* SpawnCollision = GetWorld()->SpawnActor<AHitCollisionBase>(
+		CollisionBase,
+		BaseCharacter->GetActorLocation(),
+		BaseCharacter->GetActorForwardVector().Rotation(),
+		SpawnParams
+	);
+	
+	if (SpawnCollision->GetHitCollisionType() == EHitCollisionType::Box)
+	{
+		if (ABoxHitCollision* BoxHitCollision = Cast<ABoxHitCollision>(SpawnCollision))
+		{
+			BoxHitCollision->SetCollisionAttackInfoData(AttackPayload->Data);
+			BoxHitCollision->SetActiveAbilityTag(AbilityTags.First());
+			BoxHitCollision->SetCollisionAttackGameplayEffectClass(GetAttackGameplayEffectClass());
+			BoxHitCollision->SetActiveAbilityLevel(GetAbilityLevel());
+		}
+	}
 }
 
 void UTwoMinGameplayAbility::CustomCancelAbility()

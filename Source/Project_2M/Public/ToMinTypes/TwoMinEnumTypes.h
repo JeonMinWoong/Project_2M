@@ -179,3 +179,18 @@ enum class EAddMappingContextType : uint8
 	FullFight = 2,
 	AngerMode = 3,
 };
+
+UENUM(Blueprintable)
+enum class EFanRotationType : uint8
+{
+	Horizontal = 0,
+	Vertical = 1,
+};
+
+UENUM(Blueprintable)
+enum class EHitCollisionType : uint8
+{
+	None = 0,
+	Circle = 1,
+	Box = 2,
+};

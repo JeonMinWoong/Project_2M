@@ -12,7 +12,7 @@ TMap<int32, int32> UItemDropComponent::TryGetDropItems() const
 	TMap<int32, int32> DropItems;
 	TArray<FItemDropData*> DropTableGroup;
 	
-	if (DropTableOwner.IsEmpty() == false)
+	if (DropTableOwner.IsEmpty())
 	{
 		return DropItems;
 	}

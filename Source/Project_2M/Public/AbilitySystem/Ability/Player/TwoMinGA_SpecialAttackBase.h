@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Ability/TwoMinGA_AttackBase.h"
+#include "Item/HitBox/HitCollisionBase.h"
 #include "TwoMinGA_SpecialAttackBase.generated.h"
 
 /**
@@ -37,6 +38,8 @@ protected:
 	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 						   const FGameplayAbilityActivationInfo ActivationInfo) const override;
 	
+	virtual void CustomEventReceived(FGameplayEventData Payload) override;
+	
 private:
 	float CalculationFightCost() const;
 	
@@ -64,6 +67,13 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category= "FightCostName")
 	FName FightCostName;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "HitCollision|HitEventTag")
+	FGameplayTag HitCollisionEventTag;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "HitCollision|Map")
+	TMap<int, TSubclassOf<AHitCollisionBase>> HitCollisionMap;
+	
 public:
 	FORCEINLINE virtual FAttackInfoData& GetAttackInfoData() { return AttackInfosData[CurComboCount]; }
+	FORCEINLINE TSubclassOf<AHitCollisionBase> GetHitCollisionBase() { return HitCollisionMap[CurComboCount]; }
 };

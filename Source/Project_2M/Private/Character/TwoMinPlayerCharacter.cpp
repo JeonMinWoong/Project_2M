@@ -8,6 +8,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "TwoMinFunctionLibrary.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
+#include "AbilitySystem/TwoMinAttributeSet.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
 #include "Blueprint/UserWidget.h"
 #include "Camera/CameraComponent.h"
@@ -131,6 +132,23 @@ void ATwoMinPlayerCharacter::BeginPlay()
 		{
 			HUDOverlay->AddToViewport();
 		}
+	}
+}
+
+void ATwoMinPlayerCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	
+	if (bIsSpecialAttackCheck == false)
+	{
+		return;
+	}
+	
+	CurDelay += DeltaTime;
+	if (CurDelay >= InputDelay)
+	{
+		bIsSpecialAttackCheck = false;
+		CurDelay = 0.f;
 	}
 }
 
@@ -323,6 +341,15 @@ void ATwoMinPlayerCharacter::Input_AbilityInputPressed(FGameplayTag InInputTag)
 		return;
 	}
 	
+	if (InInputTag == TwoMinGameplayTag::InputTag_LightAttack_OneHand ||
+		InInputTag == TwoMinGameplayTag::InputTag_HeavyAttack_OneHand)
+	{
+		if (bIsSpecialAttackCheck)
+		{
+			return;
+		}
+	}
+	
 	AbilitySystemComponent->OnAbilityInputPressed(InInputTag);
 }
 
@@ -465,6 +492,7 @@ void ATwoMinPlayerCharacter::Input_RightQuickSlotItemTrigger(const FInputActionV
 
 void ATwoMinPlayerCharacter::Input_SpecialAttack_Check_Trigger(const FInputActionValue& InputActionValue)
 {
+	FName FightCostName = "";
 	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_FullFight))
 	{
 		Input_AbilityInputPressed(TwoMinGameplayTag::InputTag_AngerMode_Inrush);
@@ -477,6 +505,18 @@ void ATwoMinPlayerCharacter::Input_SpecialAttack_Check_Trigger(const FInputActio
 		return;
 	}
 	
+	FightCostName = "Player.SpecialAttack.Onehand";
+	float CurFightValue =
+		GetAbilitySystemComponent()->GetNumericAttribute(UTwoMinAttributeSet::GetCurrentFightAttribute());
+	const FRealCurve* Curve = FightCurveTable->FindCurve(FightCostName, "1");
+	const float FightCost = Curve->Eval(1);
+	
+	if (CurFightValue < FightCost)
+	{
+		return;
+	}
+	
+	bIsSpecialAttackCheck = true;
 	Input_AbilityInputPressed(TwoMinGameplayTag::InputTag_SpecialAttack_OneHand);
 }
 

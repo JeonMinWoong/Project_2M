@@ -148,6 +148,8 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_Execution_Target, "Shared.Event.Execution.Target");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_Execution_Death, "Shared.Event.Execution.Death");
 	
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Event_Skill_OnCollision, "Shared.Event.Skill.OnCollision");
+	
 	// Shard State Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_Invincible, "Shared.State.Invincible");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_State_UnBreakAttack, "Shared.State.UnBreakAttack");

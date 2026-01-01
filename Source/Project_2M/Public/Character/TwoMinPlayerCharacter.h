@@ -54,6 +54,7 @@ protected:
 	//~ End APawn Interface
 
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
 private:
@@ -196,6 +197,10 @@ private:
 	void Input_RightQuickSlotItemTrigger(const FInputActionValue& InputActionValue);
 	
 	void Input_SpecialAttack_Check_Trigger(const FInputActionValue& InputActionValue);
+	
+	bool bIsSpecialAttackCheck = false;
+	float InputDelay = 0.1f;
+	float CurDelay = 0.f;
 	
 #pragma endregion
 

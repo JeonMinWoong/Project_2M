@@ -50,6 +50,9 @@ public:
 	virtual bool IsMustBeLikedToGameplayAbility() const;
 	virtual bool IsPossibleMustBeHoldAbilityImmediatelyCancel() const;
 	
+	void OnHitStop(const FGameplayEventData& Payload, bool bIsTargetGuard, const UAttackPayloadObject* AttackPayload,
+		ATwoMinBaseCharacter* TargetCharacter);
+	
 protected:
 	//~ Begin UGameplayAbility Interface.
 	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
@@ -119,6 +122,8 @@ protected:
 	                       const FGameplayAbilityActivationInfo ActivationInfo) const override;
 
 	void SendToExhaustedEvent() const;
+	
+	void EnableHitCollision(ATwoMinBaseCharacter* BaseCharacter);
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AbilityPoicy")
 	EToMinAbilityActivationPolicy AbilityActivationPolicy = EToMinAbilityActivationPolicy::OnTriggered;
