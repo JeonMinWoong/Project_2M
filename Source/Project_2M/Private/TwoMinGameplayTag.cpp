@@ -127,6 +127,10 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_Execution_Caster, "Shared.Ability.Execution.Caster");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_Execution_Target, "Shared.Ability.Execution.Target");
 
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_Weapon_Right, "Shared.Ability.Weapon.Right");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_Weapon_Left, "Shared.Ability.Weapon.Left");
+	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_Weapon_Both, "Shared.Ability.Weapon.Both");
+	
 	// Shard SetByCaller
 	UE_DEFINE_GAMEPLAY_TAG(Shared_SetByCaller_BaseDamage, "Shared.SetByCaller.BaseDamage");
 	UE_DEFINE_GAMEPLAY_TAG(Shared_SetByCaller_ExecutionDamage, "Shared.SetByCaller.ExecutionDamage");

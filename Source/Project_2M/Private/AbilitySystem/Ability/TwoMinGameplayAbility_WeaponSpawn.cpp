@@ -16,82 +16,7 @@ void UTwoMinGameplayAbility_WeaponSpawn::ActivateAbility(const FGameplayAbilityS
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
-	if (WeaponClass)
-	{
-		FActorSpawnParameters SpawnParameters;
-		SpawnParameters.Owner = GetAvatarActorFromActorInfo();
-		SpawnParameters.Instigator = Cast<APawn>(GetAvatarActorFromActorInfo());
-		SpawnParameters.SpawnCollisionHandlingOverride =
-			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		SpawnParameters.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
-		
-		ATwoMinWeaponBase* SpawnWeapon =
-			GetWorld()->SpawnActor<ATwoMinWeaponBase>(
-				WeaponClass,
-				FVector(),
-				FRotator(),
-				SpawnParameters
-			);
-
-		if (SpawnWeapon)
-		{
-			FAttachmentTransformRules AttachmentRules(
-				EAttachmentRule::SnapToTarget,
-				EAttachmentRule::KeepRelative,
-				EAttachmentRule::KeepWorld,
-				true);
-			
-			SpawnWeapon->AttachToComponent(
-				GetOwningComponentFromActorInfo(),
-				AttachmentRules,
-				AttachSocketName
-			);
-
-			if (ATwoMinBaseCharacter* OwnerCharacter = Cast<ATwoMinBaseCharacter>(GetOwningActorFromActorInfo()))
-			{
-				if (UBaseCombatComponent* CombatComponent = OwnerCharacter->GetCombatComponent())
-				{
-					CombatComponent->RegisterSpawnedWeapon(WeaponSpawnTag, SpawnWeapon);
-				}
-
-				if (ATwoMinPlayerCharacter* Player = Cast<ATwoMinPlayerCharacter>(OwnerCharacter))
-				{
-					APlayerController* PC = GetWorld()->GetFirstPlayerController();
-					if (PC)
-					{
-						ULocalPlayer* LocalPlayer = PC ->GetLocalPlayer();
-						if (LocalPlayer)
-						{
-							UEnhancedInputLocalPlayerSubsystem* EnhancedInputLocalPlayerSubsystem =
-							ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
-							if (EnhancedInputLocalPlayerSubsystem)
-							{
-								const FTwoMinPlayerWeaponData& WeaponData = SpawnWeapon->GetWeaponData();
-
-								if (WeaponData.WeaponAnimLayerToLink)
-								{
-									Player->GetMesh()->LinkAnimClassLayers(WeaponData.WeaponAnimLayerToLink);	
-								}
-								
-								EnhancedInputLocalPlayerSubsystem->AddMappingContext(
-									WeaponData.WeaponInputMappingContext,
-									0
-								);
-
-								TArray<FGameplayAbilitySpecHandle> GrantedAbilityHandles;
-								Player->GetAbilitySystemComponent()->GrantHeroWeaponAbilities(
-									WeaponData.DefaultWeaponAbilities,
-									1,
-									GrantedAbilityHandles
-								);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	
+	OnChangeWeapon(WeaponClass, true);
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
@@ -100,4 +25,80 @@ void UTwoMinGameplayAbility_WeaponSpawn::EndAbility(const FGameplayAbilitySpecHa
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+void UTwoMinGameplayAbility_WeaponSpawn::OnChangeWeapon(TSubclassOf<ATwoMinWeaponBase> InWeaponClass, bool bIsFirst)
+{
+	if (!InWeaponClass) return;
+	
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.Owner = GetAvatarActorFromActorInfo();
+	SpawnParameters.Instigator = Cast<APawn>(GetAvatarActorFromActorInfo());
+	SpawnParameters.SpawnCollisionHandlingOverride =
+		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+	SpawnParameters.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
+
+	ATwoMinWeaponBase* SpawnWeapon =
+		GetWorld()->SpawnActor<ATwoMinWeaponBase>(
+			InWeaponClass,
+			FVector(),
+			FRotator(),
+			SpawnParameters
+		);
+
+	if (!SpawnWeapon) return;
+
+	FAttachmentTransformRules AttachmentRules(
+		EAttachmentRule::SnapToTarget,
+		EAttachmentRule::KeepRelative,
+		EAttachmentRule::KeepWorld,
+		true);
+
+	SpawnWeapon->AttachToComponent(
+		GetOwningComponentFromActorInfo(),
+		AttachmentRules,
+		AttachSocketName
+	);
+
+	ATwoMinBaseCharacter* OwnerCharacter = Cast<ATwoMinBaseCharacter>(GetOwningActorFromActorInfo());
+	if (!OwnerCharacter) return;
+
+	if (bIsFirst == false)
+	{
+		OwnerCharacter->GetCombatComponent()->UnRegisterWeapon(WeaponSpawnTag);
+	}
+	
+	OwnerCharacter->GetCombatComponent()->RegisterSpawnedWeapon(WeaponSpawnTag, SpawnWeapon);
+	
+	if (OwnerCharacter->GetCharacterType() == ECharacterType::Enemy) return;
+	if (bIsFirst == false) return;
+	
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (!PC) return;
+
+	ULocalPlayer* LocalPlayer = PC->GetLocalPlayer();
+	if (!LocalPlayer) return;
+
+	UEnhancedInputLocalPlayerSubsystem* EnhancedInputLocalPlayerSubsystem =
+		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+	if (!EnhancedInputLocalPlayerSubsystem) return;
+
+	const FTwoMinPlayerWeaponData& WeaponData = SpawnWeapon->GetWeaponData();
+
+	if (WeaponData.WeaponAnimLayerToLink)
+	{
+		OwnerCharacter->GetMesh()->LinkAnimClassLayers(WeaponData.WeaponAnimLayerToLink);
+	}
+
+	EnhancedInputLocalPlayerSubsystem->AddMappingContext(
+		WeaponData.WeaponInputMappingContext,
+		0
+	);
+
+	TArray<FGameplayAbilitySpecHandle> GrantedAbilityHandles;
+	OwnerCharacter->GetAbilitySystemComponent()->GrantHeroWeaponAbilities(
+		WeaponData.DefaultWeaponAbilities,
+		1,
+		GrantedAbilityHandles
+	);
 }

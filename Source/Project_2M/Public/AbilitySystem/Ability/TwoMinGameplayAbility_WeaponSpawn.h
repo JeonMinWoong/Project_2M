@@ -16,6 +16,9 @@ class PROJECT_2M_API UTwoMinGameplayAbility_WeaponSpawn : public UTwoMinGameplay
 {
 	GENERATED_BODY()
 	
+public:
+	void OnChangeWeapon(TSubclassOf<ATwoMinWeaponBase> InWeaponClass, bool bIsFirst);
+	
 protected:
 	//~ Begin UGameplayAbility Interface.
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

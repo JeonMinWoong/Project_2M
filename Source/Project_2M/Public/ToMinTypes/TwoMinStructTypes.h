@@ -7,6 +7,7 @@
 
 #include "TwoMinStructTypes.generated.h"
 
+class ATwoMinWeaponBase;
 class UImage;
 class ATargetPoint;
 enum class EHitType : uint8;
@@ -377,6 +378,9 @@ struct FItemEquipmentData : public FTableRowBase
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Equipment|Power")
 	TMap<EStatusType, int32> EquipmentPower;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Equipment|Class")
+	TSubclassOf<ATwoMinWeaponBase> WeaponClass;
 };
 
 USTRUCT(BlueprintType)

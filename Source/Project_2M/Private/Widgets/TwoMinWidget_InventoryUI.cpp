@@ -7,6 +7,7 @@
 #include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "AbilitySystem/TwoMinAttributeSet.h"
+#include "AbilitySystem/Ability/TwoMinGameplayAbility_WeaponSpawn.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/InventoryComponent.h"
 #include "Compnents/UI/PlayerUIComponent.h"
@@ -711,6 +712,29 @@ void UTwoMinWidget_InventoryUI::OnEquipment(int32 ItemID)
 	
 	if (Item.EquipmentPower.IsEmpty()) return;
 
+	FGameplayTag WeaponTag;
+	if (Item.EquipmentType == EEquipmentType::Weapon_Right)
+	{
+		WeaponTag = TwoMinGameplayTag::Shared_Ability_Weapon_Right;
+	}
+	else if (Item.EquipmentType == EEquipmentType::Weapon_Left)
+	{
+		WeaponTag = TwoMinGameplayTag::Shared_Ability_Weapon_Left;
+	}
+	else
+	{
+		// todo : 두손검 추가
+		//
+	}
+	
+	UTwoMinGameplayAbility* Ability = ASC->GetActiveAbility(WeaponTag);
+	if (!Ability) return;
+	
+	UTwoMinGameplayAbility_WeaponSpawn* WeaponSpawn =  Cast<UTwoMinGameplayAbility_WeaponSpawn>(Ability);
+	if (!WeaponSpawn) return;
+	
+	WeaponSpawn->OnChangeWeapon(Item.WeaponClass, false);
+	
 	int32 AttackPower = 0;
 	int32 DefensePower = 0;
 	int32 MaxHealth = 0;

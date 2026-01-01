@@ -21,6 +21,18 @@ void UBaseCombatComponent::RegisterSpawnedWeapon(FGameplayTag InWeaponTagToRegis
 	InWeaponToRegister->OnWeaponPulledFromTarget.BindUObject(this, &ThisClass::OnWeaponPulledFromTargetActor);
 }
 
+void UBaseCombatComponent::UnRegisterWeapon(FGameplayTag InWeaponTagToRegister)
+{
+	if (!CharacterCarriedWeaponMap.Contains(InWeaponTagToRegister)) return;
+	
+	ATwoMinWeaponBase* WeaponBase = CharacterCarriedWeaponMap[InWeaponTagToRegister];
+	WeaponBase->OnWeaponHitTarget.Unbind();
+	WeaponBase->OnWeaponPulledFromTarget.Unbind();
+	CharacterCarriedWeaponMap.Remove(InWeaponTagToRegister);
+	
+	WeaponBase->Destroy();
+}
+
 TArray<ATwoMinWeaponBase*> UBaseCombatComponent::GetCharacterCurrentEquippedWeapon() const
 {
 	if (CharacterCarriedWeaponMap.IsEmpty())

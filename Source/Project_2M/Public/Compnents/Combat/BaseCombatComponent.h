@@ -21,6 +21,7 @@ class PROJECT_2M_API UBaseCombatComponent : public UBaseComponent
 
 public:
 	void RegisterSpawnedWeapon(FGameplayTag InWeaponTagToRegister, ATwoMinWeaponBase* InWeaponToRegister);
+	void UnRegisterWeapon(FGameplayTag InWeaponTagToRegister);
 	
 	TArray<ATwoMinWeaponBase*> GetCharacterCurrentEquippedWeapon() const;
 	
