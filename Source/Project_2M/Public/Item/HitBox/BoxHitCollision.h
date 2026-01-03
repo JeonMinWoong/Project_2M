@@ -20,11 +20,7 @@ public:
 protected:
 	virtual void OnConstruction(const FTransform& Transform) override;
 	
-	virtual void BeginPlay() override;
-	
 	virtual void OnCheckHitActorCollision() override;
-	virtual void OnDamageToHitActor(AActor* HitActor) override;
-	
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "BoxSize")

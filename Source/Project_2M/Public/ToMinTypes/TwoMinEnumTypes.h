@@ -193,4 +193,5 @@ enum class EHitCollisionType : uint8
 	None = 0,
 	Circle = 1,
 	Box = 2,
+	Sector = 3,
 };

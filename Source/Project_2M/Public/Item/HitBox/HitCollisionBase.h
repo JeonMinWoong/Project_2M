@@ -30,9 +30,11 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void Destroyed() override;
-
+	
 	virtual void OnCheckHitActorCollision();
 	virtual void OnDamageToHitActor(AActor* HitActor);
+	
+	virtual bool IsCustomHitCondition(AActor* HitActor);
 	
 	UPROPERTY(EditAnywhere, Category="Debug")
 	bool bDrawEditorDebug = true;

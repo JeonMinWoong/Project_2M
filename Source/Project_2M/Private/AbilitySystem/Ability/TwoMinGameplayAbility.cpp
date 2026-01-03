@@ -17,6 +17,7 @@
 #include "AbilitySystem/Ability/TwoMinGA_ExecutionCaster.h"
 #include "AbilitySystem/Ability/TwoMinGA_GuardBase.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEGA_AttackBase.h"
+#include "AbilitySystem/Ability/Enemy/TwoMinEGA_SpecialAttackBase.h"
 #include "AbilitySystem/Ability/Player/TwoMinGA_SpecialAttackBase.h"
 #include "Character/TwoMinEnemyCharacter.h"
 #include "Character/TwoMinPlayerCharacter.h"
@@ -690,8 +691,6 @@ void UTwoMinGameplayAbility::SendToExhaustedEvent() const
 
 void UTwoMinGameplayAbility::EnableHitCollision(ATwoMinBaseCharacter* BaseCharacter)
 {
-	// todo : HitBox  생성 및 활성화 
-	
 	UAttackPayloadObject* AttackPayload = NewObject<UAttackPayloadObject>(BaseCharacter);
 	TSubclassOf<AHitCollisionBase> CollisionBase = nullptr;
 	
@@ -700,7 +699,11 @@ void UTwoMinGameplayAbility::EnableHitCollision(ATwoMinBaseCharacter* BaseCharac
 	
 	if (CharacterType == ECharacterType::Enemy)
 	{
-		// todo : Enemy
+		UTwoMinEGA_SpecialAttackBase* SpecialAttackBase = Cast<UTwoMinEGA_SpecialAttackBase>(this);
+		if (!SpecialAttackBase) return;
+		
+		CollisionBase = SpecialAttackBase->GetHitCollisionBase();
+		AttackPayload->Data = SpecialAttackBase->GetAttackInfoData();
 	}
 	else if (CharacterType == ECharacterType::Player)
 	{
@@ -723,16 +726,12 @@ void UTwoMinGameplayAbility::EnableHitCollision(ATwoMinBaseCharacter* BaseCharac
 		SpawnParams
 	);
 	
-	if (SpawnCollision->GetHitCollisionType() == EHitCollisionType::Box)
-	{
-		if (ABoxHitCollision* BoxHitCollision = Cast<ABoxHitCollision>(SpawnCollision))
-		{
-			BoxHitCollision->SetCollisionAttackInfoData(AttackPayload->Data);
-			BoxHitCollision->SetActiveAbilityTag(AbilityTags.First());
-			BoxHitCollision->SetCollisionAttackGameplayEffectClass(GetAttackGameplayEffectClass());
-			BoxHitCollision->SetActiveAbilityLevel(GetAbilityLevel());
-		}
-	}
+	if (!SpawnCollision) return;
+	
+	SpawnCollision->SetCollisionAttackInfoData(AttackPayload->Data);
+	SpawnCollision->SetActiveAbilityTag(AbilityTags.First());
+	SpawnCollision->SetCollisionAttackGameplayEffectClass(GetAttackGameplayEffectClass());
+	SpawnCollision->SetActiveAbilityLevel(GetAbilityLevel());
 }
 
 void UTwoMinGameplayAbility::CustomCancelAbility()

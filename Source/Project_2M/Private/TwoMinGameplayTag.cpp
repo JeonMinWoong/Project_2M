@@ -92,6 +92,13 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Range_1, "Enemy.Ability.Range.1");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Range_2, "Enemy.Ability.Range.2");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Range_3, "Enemy.Ability.Range.3");
+	
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_SpecialAttack, "Enemy.Ability.SpecialAttack");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_SpecialAttack_1, "Enemy.Ability.SpecialAttack.1");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_SpecialAttack_2, "Enemy.Ability.SpecialAttack.2");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_SpecialAttack_3, "Enemy.Ability.SpecialAttack.3");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_SpecialAttack_4, "Enemy.Ability.SpecialAttack.4");
+	
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Detect, "Enemy.Ability.Detect");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Groggy, "Enemy.Ability.Groggy");
 
@@ -107,6 +114,11 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Range_1, "Enemy.Cooldown.Ability.Range.1");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Range_2, "Enemy.Cooldown.Ability.Range.2");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Range_3, "Enemy.Cooldown.Ability.Range.3");
+	
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_SpecialAttack_1, "Enemy.Cooldown.Ability.SpecialAttack.1");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_SpecialAttack_2, "Enemy.Cooldown.Ability.SpecialAttack.2");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_SpecialAttack_3, "Enemy.Cooldown.Ability.SpecialAttack.3");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_SpecialAttack_4, "Enemy.Cooldown.Ability.SpecialAttack.4");
 
 	// Enemy Event Tag
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Event_Groggy, "Enemy.Event.Groggy");
