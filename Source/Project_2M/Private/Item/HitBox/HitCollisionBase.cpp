@@ -48,15 +48,11 @@ void AHitCollisionBase::Tick(float DeltaTime)
 		return;	
 	}
 	
-	if (CurrentHitCount >= MaxHitCount)
-	{
-		Destroy();
-		return;
-	}
-	
 	CurrentHitTerm += DeltaTime;
 	if (CurrentHitTerm >= MaxHitTerm)
 	{
+		if (CurrentHitCount >= MaxHitCount) return;
+		
 		CurrentHitCount++;
 		OnCheckHitActorCollision();
 	}

@@ -91,6 +91,9 @@ protected:
 	virtual void OnResetAttackCountGameplayEffectReceive(FGameplayEventData Payload);
 	
 	UFUNCTION()
+	virtual void OnAttackGameplayEventReceivedByLocation(FGameplayEventData Payload);  
+	
+	UFUNCTION()
 	virtual void CustomCompleteAbility();
 	
 	UFUNCTION()
@@ -123,7 +126,7 @@ protected:
 
 	void SendToExhaustedEvent() const;
 	
-	void EnableHitCollision(ATwoMinBaseCharacter* BaseCharacter);
+	void EnableHitCollision(ATwoMinBaseCharacter* BaseCharacter, FVector TargetLocation = FVector::ZeroVector);
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AbilityPoicy")
 	EToMinAbilityActivationPolicy AbilityActivationPolicy = EToMinAbilityActivationPolicy::OnTriggered;

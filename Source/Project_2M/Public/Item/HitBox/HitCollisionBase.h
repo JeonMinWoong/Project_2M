@@ -42,6 +42,9 @@ protected:
 	UPROPERTY()
 	EHitCollisionType HitCollisionType;
 	
+	UPROPERTY(EditDefaultsOnly, Category= "HitCollisionSpawnType")
+	EHitCollisionSpawnType HitCollisionSpawnType;
+	
 	UPROPERTY()
 	ATwoMinBaseCharacter* OwnerCharacter;
 	
@@ -80,6 +83,7 @@ protected:
 	
 public:
 	FORCEINLINE EHitCollisionType GetHitCollisionType() const { return HitCollisionType; }
+	FORCEINLINE EHitCollisionSpawnType GetHitCollisionSpawnType() const { return HitCollisionSpawnType; }
 	
 	FORCEINLINE void SetCollisionAttackInfoData(const FAttackInfoData& InAttackInfoData)
 	{ AttackInfoData = InAttackInfoData; }

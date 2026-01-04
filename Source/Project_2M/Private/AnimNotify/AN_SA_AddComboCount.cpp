@@ -5,6 +5,7 @@
 
 #include "AbilitySystem/Ability/TwoMinGA_AttackBase.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEGA_AttackBase.h"
+#include "AbilitySystem/Ability/Enemy/TwoMinEGA_SpecialAttackBase.h"
 #include "AbilitySystem/Ability/Player/TwoMinGA_SpecialAttackBase.h"
 
 void UAN_SA_AddComboCount::FinishAbilityProcess(UTwoMinGameplayAbility* InAbility)
@@ -17,5 +18,10 @@ void UAN_SA_AddComboCount::FinishAbilityProcess(UTwoMinGameplayAbility* InAbilit
 	if (UTwoMinGA_SpecialAttackBase* SpecialAttack = Cast<UTwoMinGA_SpecialAttackBase>(InAbility))
 	{
 		SpecialAttack->AddComboCount();
+	}
+	
+	if (UTwoMinEGA_SpecialAttackBase* EnemySpecialAttack = Cast<UTwoMinEGA_SpecialAttackBase>(InAbility))
+	{
+		EnemySpecialAttack->AddComboCount();
 	}
 }

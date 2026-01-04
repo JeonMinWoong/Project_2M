@@ -195,3 +195,10 @@ enum class EHitCollisionType : uint8
 	Box = 2,
 	Sector = 3,
 };
+
+UENUM(Blueprintable)
+enum class EHitCollisionSpawnType : uint8
+{
+	MyLocation = 0,
+	TargetLocation = 1,
+};

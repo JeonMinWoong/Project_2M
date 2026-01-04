@@ -396,6 +396,11 @@ void UTwoMinGameplayAbility::OnResetAttackCountGameplayEffectReceive(FGameplayEv
 	
 }
 
+void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByLocation(FGameplayEventData Payload)
+{
+	
+}
+
 void UTwoMinGameplayAbility::CustomCompleteAbility()
 {
 	bool bReplicateEndAbility = true;
@@ -689,7 +694,7 @@ void UTwoMinGameplayAbility::SendToExhaustedEvent() const
 	);
 }
 
-void UTwoMinGameplayAbility::EnableHitCollision(ATwoMinBaseCharacter* BaseCharacter)
+void UTwoMinGameplayAbility::EnableHitCollision(ATwoMinBaseCharacter* BaseCharacter, FVector TargetLocation)
 {
 	UAttackPayloadObject* AttackPayload = NewObject<UAttackPayloadObject>(BaseCharacter);
 	TSubclassOf<AHitCollisionBase> CollisionBase = nullptr;
@@ -721,7 +726,7 @@ void UTwoMinGameplayAbility::EnableHitCollision(ATwoMinBaseCharacter* BaseCharac
 	
 	AHitCollisionBase* SpawnCollision = GetWorld()->SpawnActor<AHitCollisionBase>(
 		CollisionBase,
-		BaseCharacter->GetActorLocation(),
+		TargetLocation.IsZero() ? BaseCharacter->GetActorLocation() : TargetLocation,
 		BaseCharacter->GetActorForwardVector().Rotation(),
 		SpawnParams
 	);

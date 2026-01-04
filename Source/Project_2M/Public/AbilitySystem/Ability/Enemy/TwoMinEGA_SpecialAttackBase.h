@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraSystem.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEnemyGameplayAbility.h"
 #include "TwoMinEGA_SpecialAttackBase.generated.h"
 
@@ -31,10 +32,15 @@ protected:
 	virtual void OnResetAttackCountGameplayEffectReceive(FGameplayEventData Payload) override;
 	virtual TSubclassOf<UGameplayEffect> GetAttackGameplayEffectClass() const override;
 	
+	virtual void OnAttackGameplayEventReceivedByLocation(FGameplayEventData Payload) override;
+	
 	virtual void CustomEventReceived(FGameplayEventData Payload) override;
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|HitEventTag")
 	FGameplayTag OnHitEventTag;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Attack|LocationEventTag")
+	FGameplayTag OnLocationEventTag;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Montages")
 	UAnimMontage* AttackMontage;
@@ -57,7 +63,15 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "HitCollision|Map")
 	TMap<int, TSubclassOf<AHitCollisionBase>> HitCollisionMap;
 	
+	UPROPERTY()
+	FVector CachedTargetLocation;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Effect|CachedLocation")
+	UNiagaraSystem* CachedLocationEffect;
+	
 public:
 	FORCEINLINE virtual FAttackInfoData& GetAttackInfoData() { return AttackInfosData[CurComboCount]; }
 	FORCEINLINE TSubclassOf<AHitCollisionBase> GetHitCollisionBase() { return HitCollisionMap[CurComboCount]; }
+	
+	FORCEINLINE void SetCachedTargetLocation(const FVector& InLocation) { CachedTargetLocation = InLocation; }
 };
