@@ -50,12 +50,15 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Range")
 	FGameplayTag OnShootEventTag;
-
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Range")
 	TSubclassOf<ATwoMinProjectileBase> Projectile;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attack|Range")
 	FName ShootSocketName;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Attack|Range")
+	FGameplayTag OnTargetEventTag;
 	
 #pragma endregion
 	

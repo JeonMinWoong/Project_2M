@@ -7,6 +7,7 @@
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "TwoMinProjectileBase.generated.h"
 
+class ATwoMinBaseCharacter;
 class UNiagaraSystem;
 class UProjectileMovementComponent;
 class UBoxComponent;
@@ -21,6 +22,9 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
+	
+	FVector GetSpawnLocation();
+	
 protected:
 	void HomingTick(float DeltaSeconds);
 	AActor* UpdateHomingTarget();
@@ -62,24 +66,32 @@ protected:
 	float HoverTime = 0;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
-		meta = (EditCondition = "ProjectileType != EProjectileType::Normal"))
+		meta = (EditCondition = "ProjectileType == EProjectileType::Homing"))
 	AActor* HomingTarget = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
-		meta = (EditCondition = "ProjectileType != EProjectileType::Normal"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
+		meta = (EditCondition = "ProjectileType == EProjectileType::Homing"))
 	float HomingRange = 0.f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
-		meta = (EditCondition = "ProjectileType != EProjectileType::Normal"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
+		meta = (EditCondition = "ProjectileType == EProjectileType::Homing"))
 	float HomingActivationDelay = 0.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
-		meta = (EditCondition = "ProjectileType != EProjectileType::Normal"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
+		meta = (EditCondition = "ProjectileType == EProjectileType::Homing"))
 	float HomingRetargetInterval = 0.2f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
-		meta = (EditCondition = "ProjectileType != EProjectileType::Normal"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails|HomingType",
+		meta = (EditCondition = "ProjectileType == EProjectileType::Homing"))
 	float HomingAccelerationMagnitude = 450.f;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails|LocationType",
+		meta = (EditCondition = "ProjectileType == EProjectileType::Location"))
+	FVector SpawnLocation = FVector::ZeroVector;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails|LocationType",
+		meta = (EditCondition = "ProjectileType == EProjectileType::Location"))
+	FVector RandomLocation = FVector::ZeroVector;
 	
 	bool bIsHit = false;
 	float CurHoverTime = 0.f;
@@ -93,9 +105,14 @@ protected:
 	float CurHomingRetargetInterval = 0.f;
 	
 private:
+	FVector GetDirection() const;
+	
 	FAttackInfoData ProjectileAttackInfoData;
 	
 	FGameplayTag ActiveAbilityTag;
+	
+	UPROPERTY()
+	ATwoMinBaseCharacter* CachedTargetCharacter;
 	
 	UPROPERTY()
 	TSubclassOf<UGameplayEffect> ProjectileAttackGameplayEffectClass;
@@ -103,6 +120,8 @@ private:
 	int AbilityLevel;
 	
 public:
+	FORCEINLINE EProjectileType GetProjectileType() const { return ProjectileType; }
+	
 	FORCEINLINE void SetProjectileAttackInfoData(const FAttackInfoData& InAttackInfoData)
 	{ ProjectileAttackInfoData = InAttackInfoData; }
 
@@ -112,4 +131,6 @@ public:
 	{ ProjectileAttackGameplayEffectClass = InGameplayEffect; }
 
 	FORCEINLINE void SetActiveAbilityLevel(const int InLevel) { AbilityLevel = InLevel; }
+	
+	FORCEINLINE void SetTargetCharacter(ATwoMinBaseCharacter* InCharacter) { CachedTargetCharacter = InCharacter; }
 };

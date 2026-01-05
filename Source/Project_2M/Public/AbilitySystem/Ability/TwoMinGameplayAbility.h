@@ -94,6 +94,9 @@ protected:
 	virtual void OnAttackGameplayEventReceivedByLocation(FGameplayEventData Payload);  
 	
 	UFUNCTION()
+	virtual void OnAbilityGameplayEventReceivedByTarget(FGameplayEventData Payload);
+	
+	UFUNCTION()
 	virtual void CustomCompleteAbility();
 	
 	UFUNCTION()
@@ -147,16 +150,20 @@ protected:
 	mutable bool bIsEndAbilitySendToExhaustedEvent = false;
 
 private:
-
+	
 	bool CalcKnockbackTarget(ATwoMinBaseCharacter* Char, const FVector& Dir, float Distance, FVector& OutTarget);
 	void SetCurveRootMotion(UAnimMontage* TargetMontage, UMotionWarpingComponent* MW, const float StartTime,
 		const float EndTime, UCurveFloat* KnockBackCurve);
 	
 	UPROPERTY()
 	TArray<UTwoMinGameplayAbility*> PossibleCancelAbilities;
+	
+	UPROPERTY()
+	ATwoMinBaseCharacter* CachedAbilityTargetCharacter;
 
 public:
 	FORCEINLINE ETwoAbilityInputType GetAbilityInputType() const { return AbilityInputType; }
 	FORCEINLINE EToMinAbilityActivationPolicy GetActivationPolicy() const { return AbilityActivationPolicy; }
 	FORCEINLINE bool IsReTriggerActive() const { return bIsReTriggerAble; }
+	FORCEINLINE ATwoMinBaseCharacter* GetCachedAbilityTargetCharacter() const { return CachedAbilityTargetCharacter; }
 };

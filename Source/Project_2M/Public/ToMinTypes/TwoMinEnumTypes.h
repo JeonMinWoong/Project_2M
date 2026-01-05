@@ -71,6 +71,7 @@ enum class EProjectileType : uint8
 {
 	Normal,
 	Homing,
+	Location,
 };
 
 UENUM(BlueprintType)

@@ -13,7 +13,7 @@
 #include "Character/TwoMinEnemyCharacter.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Kismet/KismetArrayLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 ATwoMinProjectileBase::ATwoMinProjectileBase()
@@ -21,10 +21,14 @@ ATwoMinProjectileBase::ATwoMinProjectileBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	ProjectileCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("ProjectileCollisionBox"));
+	ProjectileCollisionBox->SetCollisionObjectType(ECC_GameTraceChannel1);
 	ProjectileCollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	ProjectileCollisionBox->SetCollisionResponseToAllChannels(ECR_Ignore);
+	
 	ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Block);
 	ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+	
 	ProjectileCollisionBox->OnComponentHit.AddUniqueDynamic(this, &ThisClass::OnProjectileHit);
 	SetRootComponent(ProjectileCollisionBox);
 
@@ -41,6 +45,7 @@ void ATwoMinProjectileBase::BeginPlay()
 
 	SetLifeSpan(LifeTime);
 	IgnoreActors.Emplace(GetOwner());
+	ProjectileCollisionBox->IgnoreActorWhenMoving(GetOwner(), true);
 }
 
 void ATwoMinProjectileBase::Tick(float DeltaSeconds)
@@ -61,8 +66,12 @@ void ATwoMinProjectileBase::Tick(float DeltaSeconds)
 		bIsHoverOut = true;
 		ProjectileMovementComp->InitialSpeed = InitialSpeed;
 		ProjectileMovementComp->MaxSpeed = MaxSpeed;
-		FVector ToTarget = GetActorForwardVector() * ProjectileMovementComp->InitialSpeed;
+		
+		FVector Direction = GetDirection();
+		FVector ToTarget = Direction * ProjectileMovementComp->InitialSpeed;
 		ProjectileMovementComp->Velocity = ToTarget;
+		
+		SetActorRotation(ToTarget.Rotation());
 		return;
 	}
 
@@ -70,6 +79,29 @@ void ATwoMinProjectileBase::Tick(float DeltaSeconds)
 	{
 		HomingTick(DeltaSeconds);
 	}
+}
+
+FVector ATwoMinProjectileBase::GetSpawnLocation()
+{
+	if (ProjectileType != EProjectileType::Location)
+	{
+		return FVector::ZeroVector;
+	}
+	
+	FVector OwnerLocation = GetOwner()->GetActorLocation();
+	FRotator OwnerRotation = GetOwner()->GetActorRotation();
+	
+	float HalfLocalX = RandomLocation.X / 2;
+	float HalfLocalY = RandomLocation.Y / 2;
+	float HalfLocalZ = RandomLocation.Z / 2;
+	
+	FVector FinalLocation = OwnerLocation;
+	FVector RandomVector = FVector(
+		FMath::FRandRange(-HalfLocalX, HalfLocalX),
+		FMath::FRandRange(-HalfLocalY, HalfLocalY),
+		FMath::FRandRange(-HalfLocalZ, HalfLocalZ));
+	
+	return FinalLocation + SpawnLocation + OwnerRotation.RotateVector(RandomVector);
 }
 
 void ATwoMinProjectileBase::HomingTick(float DeltaSeconds)
@@ -296,4 +328,20 @@ void ATwoMinProjectileBase::Destroyed()
 	HitResult.ImpactNormal = GetActorLocation();
 	
 	PlayImpactEffect(HitResult);
+}
+
+FVector ATwoMinProjectileBase::GetDirection() const
+{
+	if (ProjectileType != EProjectileType::Location)
+	{
+		return GetActorForwardVector();
+	}
+	
+	if (!CachedTargetCharacter)
+	{
+		return GetActorForwardVector();
+	}
+
+	const FVector Direction = (CachedTargetCharacter->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+	return Direction;
 }

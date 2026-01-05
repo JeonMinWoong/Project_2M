@@ -303,6 +303,7 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByRange(FGameplayEvent
 	UAttackPayloadObject* AttackPayload = NewObject<UAttackPayloadObject>(BaseCharacter);
 	TSubclassOf<ATwoMinProjectileBase> ProjectileBase = nullptr;
 	FName SocketName = NAME_None;
+	ATwoMinBaseCharacter* TargetCharacter = nullptr;
 	
 	if (CharacterType == ECharacterType::Enemy)
 	{
@@ -316,6 +317,7 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByRange(FGameplayEvent
 
 		ProjectileBase = EnemyAttackBase->GetProjectile();
 		SocketName = EnemyAttackBase->GetShootSocketName();
+		TargetCharacter = EnemyAttackBase->GetCachedAbilityTargetCharacter();
 	}
 	else if (CharacterType == ECharacterType::Player)
 	{
@@ -328,6 +330,7 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByRange(FGameplayEvent
 		AttackPayload->Data = AttackInfoData;
 
 		//ProjectileBase = PlayerAttackBase->GetProjectile();
+		//TargetCharacter = PlayerAttackBase->GetCachedAbilityTargetCharacter();
 	}
 	
 	if (!ProjectileBase || SocketName.IsNone()) return;
@@ -351,6 +354,15 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByRange(FGameplayEvent
 		Projectile->SetActiveAbilityTag(AbilityTags.First());
 		Projectile->SetProjectileAttackGameplayEffectClass(GetAttackGameplayEffectClass());
 		Projectile->SetActiveAbilityLevel(GetAbilityLevel());
+		
+		if (Projectile->GetProjectileType() == EProjectileType::Location)
+		{
+			Projectile->SetTargetCharacter(TargetCharacter);
+			FVector CustomSpawnLocation = Projectile->GetSpawnLocation();
+			if (CustomSpawnLocation.IsNearlyZero()) return;
+			
+			Projectile->SetActorLocation(CustomSpawnLocation);
+		}
 	}
 }
 
@@ -399,6 +411,17 @@ void UTwoMinGameplayAbility::OnResetAttackCountGameplayEffectReceive(FGameplayEv
 void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByLocation(FGameplayEventData Payload)
 {
 	
+}
+
+void UTwoMinGameplayAbility::OnAbilityGameplayEventReceivedByTarget(FGameplayEventData Payload)
+{
+	AActor* TargetActor = const_cast<AActor*>(Payload.Target.Get());
+	if (!TargetActor) return;
+	
+	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(TargetActor);
+	if (!TargetCharacter) return;
+	
+	CachedAbilityTargetCharacter = TargetCharacter;
 }
 
 void UTwoMinGameplayAbility::CustomCompleteAbility()

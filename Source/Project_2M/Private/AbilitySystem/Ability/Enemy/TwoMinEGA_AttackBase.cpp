@@ -53,8 +53,14 @@ void UTwoMinEGA_AttackBase::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		break;
 	case EAttackRangeType::Range:
 		{
+			UAbilityTask_WaitGameplayEvent* TargetTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
+				this, OnTargetEventTag, nullptr, false, true);
+
+			TargetTask->EventReceived.AddDynamic(this, &ThisClass::OnAbilityGameplayEventReceivedByTarget);
+			TargetTask->ReadyForActivation();
+			
 			UAbilityTask_WaitGameplayEvent* Task = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
-this, OnShootEventTag, nullptr, false, true);
+				this, OnShootEventTag, nullptr, false, true);
 
 			Task->EventReceived.AddDynamic(this, &ThisClass::OnAttackGameplayEventReceivedByRange);
 			Task->ReadyForActivation();
