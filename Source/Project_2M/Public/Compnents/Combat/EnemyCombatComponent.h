@@ -30,12 +30,16 @@ public:
 	bool IsEvenOneAttackCondition(const AActor* TargetActor) const;
 	bool IsEvenOneAttackCooldown();
 	bool IsStopBattleMoveGameplayContainer();
+	bool IsEvasionCondition(AActor* TargetActor, EEnemyEvasionType EvasionType) const;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Battle|AttackConditions")
 	TMap<int, FEnemyAIAttackConditionData> AttackConditions;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Battle|StopBattleMoveTags")
 	FGameplayTagContainer StopBattleTags;
+	
+	UPROPERTY(EditAnywhere, Category = "Battle|EvasionConditions")
+	TMap<EEnemyEvasionType, FEnemyAIEvasionConditionDate> EvasionConditions;
 	
 #pragma endregion
 	

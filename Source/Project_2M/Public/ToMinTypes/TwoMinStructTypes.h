@@ -493,3 +493,30 @@ struct FAngerBuffData
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float BuffAmount;
 };
+
+USTRUCT(BlueprintType)
+struct FEnemyAIEvasionConditionDate
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float PossibleMinAngle;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float PossibleMaxAngle;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float PossibleMinDistance;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float PossibleMaxDistance;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FGameplayTag AbilityCooldownTag;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FGameplayTag ShouldNotExistTag;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FGameplayTag ShouldExistTag;
+};

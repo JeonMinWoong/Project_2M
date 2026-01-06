@@ -4,6 +4,8 @@
 #include "Compnents/Combat/EnemyCombatComponent.h"
 
 #include "TwoMinFunctionLibrary.h"
+#include "TwoMinGameplayTag.h"
+#include "Character/TwoMinPlayerCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 
 
@@ -126,6 +128,63 @@ bool UEnemyCombatComponent::IsStopBattleMoveGameplayContainer()
 	}
 	
 	return bHasStopBattle;
+}
+
+bool UEnemyCombatComponent::IsEvasionCondition(AActor* TargetActor, EEnemyEvasionType EvasionType) const
+{
+	bool bIsSuccessful = false;
+	if (EvasionConditions.IsEmpty() || !EvasionConditions.Contains(EvasionType)) return bIsSuccessful;
+	
+	AActor* MyActor = GetOwner();
+	if (!MyActor) return bIsSuccessful;
+	
+	if (UTwoMinFunctionLibrary::HasGameplayTag(TargetActor, TwoMinGameplayTag::Player_State_BeforeAttacking) == false)
+	{
+		return bIsSuccessful;
+	}
+	
+	FEnemyAIEvasionConditionDate EvasionCondition = EvasionConditions[EvasionType];
+	float DistToBattleTarget = FVector::Dist(MyActor->GetActorLocation(), TargetActor->GetActorLocation());
+	
+	if (EvasionCondition.PossibleMinDistance >= DistToBattleTarget || 
+		EvasionCondition.PossibleMaxDistance < DistToBattleTarget)
+	{
+		return bIsSuccessful;
+	}
+
+	FVector MyForward = MyActor->GetActorForwardVector();
+	FVector ToTarget = (TargetActor->GetActorLocation() - MyActor->GetActorLocation()).GetSafeNormal2D();
+	float Dot = FVector::DotProduct(MyForward, ToTarget);
+	float Cross = FVector::CrossProduct(MyForward, ToTarget).Z;
+	float AngleDeg = FMath::RadiansToDegrees(FMath::Atan2(Cross, Dot));
+
+	if (EvasionCondition.PossibleMinAngle > AngleDeg || EvasionCondition.PossibleMaxAngle < AngleDeg)
+	{
+		return bIsSuccessful;
+	}
+
+	if (EvasionCondition.AbilityCooldownTag == FGameplayTag::EmptyTag)
+	{
+		bIsSuccessful = true;
+	}
+	else
+	{
+		bIsSuccessful = UTwoMinFunctionLibrary::HasGameplayTag(MyActor, EvasionCondition.AbilityCooldownTag) == false;
+	}
+
+	if (EvasionCondition.ShouldNotExistTag != FGameplayTag::EmptyTag)
+	{
+		bIsSuccessful = bIsSuccessful ?
+		UTwoMinFunctionLibrary::HasGameplayTag(MyActor, EvasionCondition.ShouldNotExistTag) == false : false;
+	}
+
+	if (EvasionCondition.ShouldExistTag == FGameplayTag::EmptyTag)
+	{
+		return bIsSuccessful;
+	}
+
+	bIsSuccessful = bIsSuccessful ? UTwoMinFunctionLibrary::HasGameplayTag(MyActor, EvasionCondition.ShouldExistTag) : false;
+	return bIsSuccessful;
 }
 
 

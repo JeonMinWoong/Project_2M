@@ -203,3 +203,12 @@ enum class EHitCollisionSpawnType : uint8
 	MyLocation = 0,
 	TargetLocation = 1,
 };
+
+UENUM(Blueprintable)
+enum class EEnemyEvasionType : uint8
+{
+	None = 0,
+	Back = 1,
+	Left = 2,
+	Right = 3,
+};

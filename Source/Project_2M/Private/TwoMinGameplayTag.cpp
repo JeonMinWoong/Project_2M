@@ -66,6 +66,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_LockOn, "Player.State.LockOn");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Rolling, "Player.State.Rolling");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Charging, "Player.State.Charging");
+	UE_DEFINE_GAMEPLAY_TAG(Player_State_BeforeAttacking, "Player.State.BeforeAttacking");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Attacking, "Player.State.Attacking");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_ItemPickUp, "Player.State.ItemPickUp");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_UseItem, "Player.State.UseItem");
@@ -100,6 +101,7 @@ namespace TwoMinGameplayTag
 	
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Detect, "Enemy.Ability.Detect");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Groggy, "Enemy.Ability.Groggy");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Ability_Evasion, "Enemy.Ability.Evasion");
 
 	// Enemy Cooldown Tags
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Melee_1, "Enemy.Cooldown.Ability.Melee.1");
@@ -117,14 +119,18 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Range_1, "Enemy.Cooldown.Ability.Range.1");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Range_2, "Enemy.Cooldown.Ability.Range.2");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Range_3, "Enemy.Cooldown.Ability.Range.3");
+	
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Cooldown_Ability_Evasion, "Enemy.Cooldown.Ability.Evasion");
 
 	// Enemy Event Tag
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Event_Groggy, "Enemy.Event.Groggy");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Event_Evasion, "Enemy.Event.Evasion");
 	
 	// Enemy State Tags
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_Running, "Enemy.State.Running");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_Groggy, "Enemy.State.Groggy");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_DecreaseGroggy, "Enemy.State.DecreaseGroggy");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_Evasion, "Enemy.State.Evasion");
 	
 	// Shard Ability Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_HitReact, "Shared.Ability.HitReact");

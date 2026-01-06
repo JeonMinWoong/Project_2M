@@ -448,6 +448,17 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 {
 	if (!EffectClass) return;
 	
+	AActor* InstigatorActor = const_cast<AActor*>(Payload.Instigator.Get());
+	if (!InstigatorActor) return;
+	
+	AActor* TargetActor = const_cast<AActor*>(Payload.Target.Get());
+	if (!TargetActor) return;
+	
+	if (UTwoMinFunctionLibrary::HasGameplayTag(TargetActor, TwoMinGameplayTag::Shared_State_Invincible))
+	{
+		return;
+	}
+	
 	FGameplayEffectContextHandle ContextHandle = GetTwoMinAbilitySystemComponentFromActorInfo()->MakeEffectContext();
 	ContextHandle.SetAbility(this);
 	ContextHandle.AddSourceObject(GetAvatarActorFromActorInfo());
@@ -480,9 +491,6 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 		);	
 	}
 
-	AActor* InstigatorActor = const_cast<AActor*>(Payload.Instigator.Get());
-	if (!InstigatorActor) return;
-
 	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(InstigatorActor);
 	if (bIsExecution == false && PlayerCharacter)
 	{
@@ -501,9 +509,6 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 			ASC->GiveFightValue(FName("Player.Attack.Fight"));
 		}
 	}
-	
-	AActor* TargetActor = const_cast<AActor*>(Payload.Target.Get());
-	if (!TargetActor) return;
 	
 	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(TargetActor);
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetCharacter);
