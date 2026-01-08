@@ -339,7 +339,7 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByRange(FGameplayEvent
 	SpawnParams.Owner = BaseCharacter;
 	
 	FVector SpawnLocation = BaseCharacter->GetMesh()->GetSocketLocation(SocketName);
-	FRotator SpawnRotation = BaseCharacter->GetActorRotation();
+	FRotator SpawnRotation = BaseCharacter->GetMesh()->GetSocketRotation(SocketName);
 
 	ATwoMinProjectileBase* Projectile = GetWorld()->SpawnActor<ATwoMinProjectileBase>(
 		ProjectileBase,

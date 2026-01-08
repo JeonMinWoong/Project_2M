@@ -14,4 +14,10 @@ class PROJECT_2M_API UTwoMinEnemyGameplayAbility : public UTwoMinGameplayAbility
 {
 	GENERATED_BODY()
 	
+protected:
+	UFUNCTION()
+	void OnStartTeleport();
+	
+	UFUNCTION()
+	void OnFinishTeleport();
 };

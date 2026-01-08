@@ -32,6 +32,8 @@ public:
 	virtual UExecutionComponent* GetExecutionComponent() const;
 	void ClearOverlappingActors();
 	
+	void EnableWeaponsMesh(bool bIsEnable);
+	
 protected:
 	virtual void ToggleCurrentEquippedWeaponCollision(bool bShouldEnable, EToggleDamageType ToggleDamageType);
 

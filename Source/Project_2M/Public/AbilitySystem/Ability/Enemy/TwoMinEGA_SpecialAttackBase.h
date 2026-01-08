@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "NiagaraSystem.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEnemyGameplayAbility.h"
+#include "AbilitySystem/Ability/Task/TwoMinAT_TeleportTaskBase.h"
 #include "TwoMinEGA_SpecialAttackBase.generated.h"
 
 class AHitCollisionBase;
@@ -68,6 +69,17 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Effect|CachedLocation")
 	UNiagaraSystem* CachedLocationEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Additional|Task|Teleport")
+	TSubclassOf<UTwoMinAT_TeleportTaskBase> TeleportTaskClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Additional|Task|Teleport", 
+		meta = (EditCondition = "TeleportTaskClass != nullptr"))
+	float TeleportStartDelay;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Additional|Task|Teleport", 
+		meta = (EditCondition = "TeleportTaskClass != nullptr"))
+	float TeleportFinishDelay;
 	
 public:
 	FORCEINLINE virtual FAttackInfoData& GetAttackInfoData() { return AttackInfosData[CurComboCount]; }

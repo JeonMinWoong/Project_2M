@@ -6,6 +6,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
+#include "AbilitySystem/Ability/Task/TwoMinAT_TeleportTaskBase.h"
 #include "Character/TwoMinEnemyCharacter.h"
 #include "Compnents/Combat/BaseCombatComponent.h"
 #include "Item/HitBox/HitCollisionBase.h"
@@ -64,6 +65,16 @@ void UTwoMinEGA_SpecialAttackBase::ActivateAbility(const FGameplayAbilitySpecHan
 	if (HitCollisionMap.IsEmpty() == false)
 	{
 		WaitGameplayEvent(HitCollisionEventTag, false);	
+	}
+	
+	if (TeleportTaskClass)
+	{
+		UTwoMinAT_TeleportTaskBase* TeleportTask = 
+			UTwoMinAT_TeleportTaskBase::CreateTickTask(this,TeleportStartDelay, TeleportFinishDelay);
+		
+		TeleportTask->FOnStartTeleport.AddUniqueDynamic(this, &ThisClass::OnStartTeleport);
+		TeleportTask->FOnFinishTeleport.AddUniqueDynamic(this, &ThisClass::OnFinishTeleport);
+		TeleportTask->ReadyForActivation();
 	}
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);

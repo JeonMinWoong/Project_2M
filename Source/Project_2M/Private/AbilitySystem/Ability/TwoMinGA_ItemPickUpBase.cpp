@@ -4,7 +4,7 @@
 #include "AbilitySystem/Ability/TwoMinGA_ItemPickUpBase.h"
 
 #include "TwoMinGameplayTag.h"
-#include "AbilitySystem/Ability/TwoMinAbilityTask.h"
+#include "AbilitySystem/Ability/Task/TwoMinAbilityTask.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/UI/PlayerUIComponent.h"
 #include "Kismet/KismetMathLibrary.h"

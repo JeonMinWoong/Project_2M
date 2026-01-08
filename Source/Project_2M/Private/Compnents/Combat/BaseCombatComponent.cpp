@@ -75,6 +75,14 @@ void UBaseCombatComponent::ClearOverlappingActors()
 	OverlappingActors.Empty();
 }
 
+void UBaseCombatComponent::EnableWeaponsMesh(bool bIsEnable)
+{
+	for (const auto CarriedWeaponMap : CharacterCarriedWeaponMap)
+	{
+		CarriedWeaponMap.Value->EnableMesh(bIsEnable);
+	}
+}
+
 void UBaseCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bShouldEnable, EToggleDamageType ToggleDamageType)
 {
 	TArray<ATwoMinWeaponBase*> WeaponToToggle = GetCharacterCurrentEquippedWeapon();

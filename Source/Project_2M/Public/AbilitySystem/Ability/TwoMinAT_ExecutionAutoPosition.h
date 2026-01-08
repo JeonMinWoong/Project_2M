@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AbilitySystem/Ability/TwoMinAbilityTask.h"
+#include "AbilitySystem/Ability/Task/TwoMinAbilityTask.h"
 #include "TwoMinAT_ExecutionAutoPosition.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FExecutionAutoPositionDelegate, float, DeltaTime);

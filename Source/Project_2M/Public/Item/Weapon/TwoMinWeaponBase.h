@@ -45,4 +45,5 @@ protected:
 
 public:
 	FORCEINLINE UBoxComponent* GetWeaponCollisionBox() const { return WeaponCollisionBox; }
+	FORCEINLINE void EnableMesh(bool bShouldEnable) const { WeaponMesh->SetVisibility(bShouldEnable); }
 };
