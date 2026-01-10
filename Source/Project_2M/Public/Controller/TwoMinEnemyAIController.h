@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Character/TwoMinBaseCharacter.h"
 #include "Perception/AIPerceptionTypes.h"
 #include "ToMinTypes/TwoMinEnumTypes.h"
 #include "TwoMinEnemyAIController.generated.h"
@@ -22,6 +23,8 @@ public:
 	ATwoMinEnemyAIController(const FObjectInitializer& ObjectInitializer);
 	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
+	ATwoMinBaseCharacter* GetBattleTargetCharacter() const;
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
@@ -41,5 +44,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Detour Crowd Avoidance Config")
 	float CollisionQueryRange = 150.f;
+
 	
 };

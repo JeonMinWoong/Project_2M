@@ -23,6 +23,17 @@ void UTwoMinEGA_EvasionBase::ActivateAbility(const FGameplayAbilitySpecHandle Ha
 	}
 	
 	PlayToAnimMontage(EvasionAnimMontage[EvasionType]);
+	
+	if (TeleportTaskClass)
+	{
+		UTwoMinAT_TeleportTaskBase* TeleportTask = 
+			UTwoMinAT_TeleportTaskBase::CreateTickTask(this, TeleportData);
+		
+		TeleportTask->FOnStartTeleport.AddUniqueDynamic(this, &ThisClass::OnStartTeleport);
+		TeleportTask->FOnFinishTeleport.AddUniqueDynamic(this, &ThisClass::OnFinishTeleport);
+		TeleportTask->ReadyForActivation();
+	}
+	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 

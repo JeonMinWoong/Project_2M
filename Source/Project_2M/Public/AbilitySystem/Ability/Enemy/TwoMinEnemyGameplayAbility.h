@@ -16,7 +16,7 @@ class PROJECT_2M_API UTwoMinEnemyGameplayAbility : public UTwoMinGameplayAbility
 	
 protected:
 	UFUNCTION()
-	void OnStartTeleport();
+	void OnStartTeleport(float TeleportDistance);
 	
 	UFUNCTION()
 	void OnFinishTeleport();

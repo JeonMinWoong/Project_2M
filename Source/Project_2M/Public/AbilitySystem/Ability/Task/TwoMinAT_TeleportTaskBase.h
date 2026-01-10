@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Ability/Task/TwoMinAbilityTask.h"
+#include "ToMinTypes/TwoMinStructTypes.h"
 #include "TwoMinAT_TeleportTaskBase.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStartTeleportDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStartTeleportDelegate, float, TeleportDistance);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFinishTeleportDelegate);
 
 /**
@@ -19,8 +20,8 @@ class PROJECT_2M_API UTwoMinAT_TeleportTaskBase : public UTwoMinAbilityTask
 	GENERATED_BODY()
 	
 public:
-	static UTwoMinAT_TeleportTaskBase* CreateTickTask(UGameplayAbility* OwningAbility, float InTeleportStartDelay, 
-		float InTeleportFinishDelay);
+	static UTwoMinAT_TeleportTaskBase* CreateTickTask(UGameplayAbility* OwningAbility, 
+		const FTeleportData& InTeleportStartDelay);
 	
 	virtual void Activate() override;
 	virtual void TickTask(float DeltaTime) override;
@@ -32,11 +33,8 @@ public:
 	FOnFinishTeleportDelegate FOnFinishTeleport;
 	
 private:
-	UPROPERTY(EditDefaultsOnly)
-	float TeleportStartDelay;
-	
-	UPROPERTY(EditDefaultsOnly)
-	float TeleportFinishDelay;
+	UPROPERTY()
+	FTeleportData TeleportData;
 
 	UPROPERTY()
 	float ElapsedTime;

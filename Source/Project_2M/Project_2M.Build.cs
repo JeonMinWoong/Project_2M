@@ -20,6 +20,7 @@ public class Project_2M : ModuleRules
 			"GameplayTasks",
 			"AIModule",
 			"MotionWarping",
+			"NavigationSystem",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "MotionWarping", "Niagara" });

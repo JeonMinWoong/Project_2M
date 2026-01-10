@@ -75,11 +75,7 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Additional|Task|Teleport", 
 		meta = (EditCondition = "TeleportTaskClass != nullptr"))
-	float TeleportStartDelay;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Additional|Task|Teleport", 
-		meta = (EditCondition = "TeleportTaskClass != nullptr"))
-	float TeleportFinishDelay;
+	FTeleportData TeleportData;
 	
 public:
 	FORCEINLINE virtual FAttackInfoData& GetAttackInfoData() { return AttackInfosData[CurComboCount]; }

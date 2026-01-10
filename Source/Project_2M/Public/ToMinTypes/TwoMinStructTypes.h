@@ -520,3 +520,19 @@ struct FEnemyAIEvasionConditionDate
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FGameplayTag ShouldExistTag;
 };
+
+USTRUCT(BlueprintType)
+struct FTeleportData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float TeleportStartDelay;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float TeleportFinishDelay;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float TeleportDistance;
+	
+};

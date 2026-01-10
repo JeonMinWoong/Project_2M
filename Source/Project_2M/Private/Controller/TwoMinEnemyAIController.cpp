@@ -44,6 +44,17 @@ ETeamAttitude::Type ATwoMinEnemyAIController::GetTeamAttitudeTowards(const AActo
 	return ETeamAttitude::Friendly;
 }
 
+ATwoMinBaseCharacter* ATwoMinEnemyAIController::GetBattleTargetCharacter() const
+{
+	const UBlackboardComponent* BB = GetBlackboardComponent();
+	if (!BB) return nullptr;
+
+	UObject* Object = BB->GetValueAsObject(TwoMinBBKeys::BattleTarget);
+	if (!Object) return nullptr;
+
+	return Cast<ATwoMinBaseCharacter>(Object);
+}
+
 void ATwoMinEnemyAIController::BeginPlay()
 {
 	Super::BeginPlay();

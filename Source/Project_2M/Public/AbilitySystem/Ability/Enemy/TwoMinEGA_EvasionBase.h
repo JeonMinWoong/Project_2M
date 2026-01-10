@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEnemyGameplayAbility.h"
+#include "AbilitySystem/Ability/Task/TwoMinAT_TeleportTaskBase.h"
 #include "TwoMinEGA_EvasionBase.generated.h"
 
+class UTwoMinAT_TeleportTaskBase;
 /**
  * 
  */
@@ -27,4 +29,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	TMap<EEnemyEvasionType, UAnimMontage*> EvasionAnimMontage;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "Additional|Task|Teleport")
+	TSubclassOf<UTwoMinAT_TeleportTaskBase> TeleportTaskClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Additional|Task|Teleport", 
+		meta = (EditCondition = "TeleportTaskClass != nullptr"))
+	FTeleportData TeleportData;
 };

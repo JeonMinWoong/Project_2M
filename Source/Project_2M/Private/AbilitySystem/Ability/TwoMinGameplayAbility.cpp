@@ -226,10 +226,21 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByMelee(FGameplayEvent
 		//DebugTwoMin::Print(TEXT("Enemy Ability Event Received"), FColor::Red);
 
 		UTwoMinEGA_AttackBase* EnemyAttackBase = Cast<UTwoMinEGA_AttackBase>(this);
-		if (!EnemyAttackBase) return;
-
-		const FAttackInfoData& AttackInfoData = EnemyAttackBase->GetAttackInfoData();
-		AttackPayload->Data = AttackInfoData;
+		UTwoMinEGA_SpecialAttackBase* EnemySpecialAttackBase = Cast<UTwoMinEGA_SpecialAttackBase>(this);
+		if (EnemyAttackBase)
+		{
+			const FAttackInfoData& AttackInfoData = EnemyAttackBase->GetAttackInfoData();
+			AttackPayload->Data = AttackInfoData;
+		}
+		else if (EnemySpecialAttackBase)
+		{
+			const FAttackInfoData& AttackInfoData = EnemySpecialAttackBase->GetAttackInfoData();
+			AttackPayload->Data = AttackInfoData;
+		}
+		else
+		{
+			return;
+		}		
 	}
 	else if (CharacterType == ECharacterType::Player)
 	{

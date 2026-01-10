@@ -3,12 +3,11 @@
 
 #include "AbilitySystem/Ability/Task/TwoMinAT_TeleportTaskBase.h"
 
-UTwoMinAT_TeleportTaskBase* UTwoMinAT_TeleportTaskBase::CreateTickTask(UGameplayAbility* OwningAbility, 
-	float InTeleportStartDelay, float InTeleportFinishDelay)
+UTwoMinAT_TeleportTaskBase* UTwoMinAT_TeleportTaskBase::CreateTickTask(UGameplayAbility* OwningAbility,
+	const FTeleportData& InTeleportStartDelay)
 {
 	UTwoMinAT_TeleportTaskBase* Task = NewAbilityTask<UTwoMinAT_TeleportTaskBase>(OwningAbility);
-	Task->TeleportStartDelay = InTeleportStartDelay;
-	Task->TeleportFinishDelay = InTeleportFinishDelay;
+	Task->TeleportData = InTeleportStartDelay;
 	
 	return Task; 
 }
@@ -30,14 +29,14 @@ void UTwoMinAT_TeleportTaskBase::TickTask(float DeltaTime)
 	ElapsedTime += DeltaTime;
 	if (bIsTeleportStarted == false)
 	{
-		if (ElapsedTime < TeleportStartDelay) return;
+		if (ElapsedTime < TeleportData.TeleportStartDelay) return;
 		
 		bIsTeleportStarted = true;
-		FOnStartTeleport.Broadcast();
+		FOnStartTeleport.Broadcast(TeleportData.TeleportDistance);
 	}
 	else
 	{
-		if (ElapsedTime < TeleportFinishDelay) return;
+		if (ElapsedTime < TeleportData.TeleportFinishDelay) return;
 		
 		FOnFinishTeleport.Broadcast();
 		EndTask();

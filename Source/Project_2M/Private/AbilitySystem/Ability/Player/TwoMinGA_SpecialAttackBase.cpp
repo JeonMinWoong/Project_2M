@@ -71,6 +71,11 @@ void UTwoMinGA_SpecialAttackBase::EndAbility(const FGameplayAbilitySpecHandle Ha
 {
 	if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo()))
 	{
+		if (UAutoTargetingComponent* AutoTargeting = PlayerCharacter->GetCombatComponent()->GetAutoTargetingComponent())
+		{
+			AutoTargeting->EndAutoTargeting();
+		}
+		
 		PlayerCharacter->GetCombatComponent()->ClearOverlappingActors();
 	}
 	

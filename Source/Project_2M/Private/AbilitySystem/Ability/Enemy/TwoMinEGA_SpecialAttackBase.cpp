@@ -70,7 +70,7 @@ void UTwoMinEGA_SpecialAttackBase::ActivateAbility(const FGameplayAbilitySpecHan
 	if (TeleportTaskClass)
 	{
 		UTwoMinAT_TeleportTaskBase* TeleportTask = 
-			UTwoMinAT_TeleportTaskBase::CreateTickTask(this,TeleportStartDelay, TeleportFinishDelay);
+			UTwoMinAT_TeleportTaskBase::CreateTickTask(this, TeleportData);
 		
 		TeleportTask->FOnStartTeleport.AddUniqueDynamic(this, &ThisClass::OnStartTeleport);
 		TeleportTask->FOnFinishTeleport.AddUniqueDynamic(this, &ThisClass::OnFinishTeleport);
@@ -84,6 +84,11 @@ void UTwoMinEGA_SpecialAttackBase::EndAbility(const FGameplayAbilitySpecHandle H
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
+	if (ATwoMinEnemyCharacter* Enemy = Cast<ATwoMinEnemyCharacter>(GetAvatarActorFromActorInfo()))
+	{
+		Enemy->GetCombatComponent()->ClearOverlappingActors();
+	}
+	
 	ResetComboCount();
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
