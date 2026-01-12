@@ -12,11 +12,6 @@ void UTwoMinGA_ExecutionBase::ActivateAbility(const FGameplayAbilitySpecHandle H
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
-	UTwoMinFunctionLibrary::AddGameplayTagToActor(
-		GetAvatarActorFromActorInfo(),
-		TwoMinGameplayTag::Shared_State_Invincible
-	);
-	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
@@ -24,11 +19,6 @@ void UTwoMinGA_ExecutionBase::EndAbility(const FGameplayAbilitySpecHandle Handle
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
-	UTwoMinFunctionLibrary::RemoveGameplayTagToActor(
-		GetAvatarActorFromActorInfo(),
-	TwoMinGameplayTag::Shared_State_Invincible
-	);
-	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
