@@ -3,6 +3,7 @@
 
 #include "Compnents/Combat/EnemyCombatComponent.h"
 
+#include "TwoMinDebugHelper.h"
 #include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "Character/TwoMinPlayerCharacter.h"
@@ -224,6 +225,68 @@ void UEnemyCombatComponent::ResetPatrolPoint()
 	{
 		bIsPatrol = false;
 	}
+}
+
+void UEnemyCombatComponent::UpdateBanAttack(float MinBanAttackDelay, float MaxBanAttackDelay)
+{
+	AActor* EnemyCharacter = GetOwner();
+	
+	if (bIsBanAttack)
+	{
+		if (UTwoMinFunctionLibrary::HasGameplayTag(EnemyCharacter, TwoMinGameplayTag::Enemy_State_BanAttack)) return;
+	}
+	else
+	{
+		if (UTwoMinFunctionLibrary::HasGameplayTag(EnemyCharacter, TwoMinGameplayTag::Enemy_State_NoBanAttack)) return;
+	}
+	
+	bool NextBanAttack = UKismetMathLibrary::RandomBool();
+	if (NextBanAttack)
+	{
+		if (bIsBanAttack == NextBanAttack)
+		{
+			NextBanAttack = !NextBanAttack;	
+		}
+	}
+
+	ClearBanAttack();
+	bIsBanAttack = NextBanAttack;
+	
+	TwoMinDebugHelper::Print(TEXT("공격 상태 : ") + FString(bIsBanAttack ? TEXT("금지") : TEXT("가능")));
+	
+	if (bIsBanAttack)
+	{
+		float BanAttackDelay = FMath::FRandRange(MinBanAttackDelay, MaxBanAttackDelay);
+		UTwoMinFunctionLibrary::AddGameplayTagToActor(EnemyCharacter, TwoMinGameplayTag::Enemy_State_BanAttack);
+		FTimerManager& TimerManager = EnemyCharacter->GetWorldTimerManager();
+		TimerManager.SetTimer(this->BanAttackTimerHandle,
+			[EnemyCharacter]()
+			{
+				UTwoMinFunctionLibrary::RemoveGameplayTagToActor(EnemyCharacter, TwoMinGameplayTag::Enemy_State_BanAttack);
+			}, BanAttackDelay, false);
+	}
+	else
+	{
+		float NoBanAttackDelay = 8.f;
+		UTwoMinFunctionLibrary::AddGameplayTagToActor(EnemyCharacter, TwoMinGameplayTag::Enemy_State_NoBanAttack);
+		FTimerManager& TimerManager = EnemyCharacter->GetWorldTimerManager();
+		TimerManager.SetTimer(this->BanAttackTimerHandle,
+			[EnemyCharacter]()
+			{
+				UTwoMinFunctionLibrary::RemoveGameplayTagToActor(EnemyCharacter, TwoMinGameplayTag::Enemy_State_NoBanAttack);
+			}, NoBanAttackDelay, false);
+	}
+}
+
+void UEnemyCombatComponent::ClearBanAttack()
+{
+	bIsBanAttack = false;
+	
+	AActor* EnemyCharacter = GetOwner();
+	FTimerManager& TimerManager = EnemyCharacter->GetWorldTimerManager();
+	TimerManager.ClearTimer(this->BanAttackTimerHandle);
+	UTwoMinFunctionLibrary::RemoveGameplayTagToActor(EnemyCharacter, TwoMinGameplayTag::Enemy_State_BanAttack);
+	UTwoMinFunctionLibrary::RemoveGameplayTagToActor(EnemyCharacter, TwoMinGameplayTag::Enemy_State_NoBanAttack);
 }
 
 void UEnemyCombatComponent::PatrolWaitPoint()

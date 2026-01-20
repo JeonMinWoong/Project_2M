@@ -50,5 +50,7 @@ bool UBTTE_AttackMoveWait::CanAttackMoveWait(UBehaviorTreeComponent& OwnerComp) 
 	AActor* MyActor = EnemyCombatComponent->GetOwner();
 	if (!MyActor) return false;
 	
+	if (EnemyCombatComponent->IsBanAttack()) return false;
+	
 	return EnemyCombatComponent->IsEvenOneAttackCooldown();
 }

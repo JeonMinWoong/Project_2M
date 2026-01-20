@@ -131,6 +131,8 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_Groggy, "Enemy.State.Groggy");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_DecreaseGroggy, "Enemy.State.DecreaseGroggy");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_Evasion, "Enemy.State.Evasion");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_BanAttack, "Enemy.State.BanAttack");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_NoBanAttack, "Enemy.State.NoBanAttack");
 	
 	// Shard Ability Tags
 	UE_DEFINE_GAMEPLAY_TAG(Shared_Ability_HitReact, "Shared.Ability.HitReact");

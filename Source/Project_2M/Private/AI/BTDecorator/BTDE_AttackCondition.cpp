@@ -23,5 +23,8 @@ bool UBTDE_AttackCondition::CalculateRawConditionValue(UBehaviorTreeComponent& O
 
 	UEnemyCombatComponent* EnemyCombatComponent = GetEnemyCombatComponent(OwnerComp);
 	if (!EnemyCombatComponent) return false;
+	
+	if (EnemyCombatComponent->IsBanAttack()) return false;
+	
 	return EnemyCombatComponent->IsAttackCondition(BattleTarget, AttackConditionIndex);
 }

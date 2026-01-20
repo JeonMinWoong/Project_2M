@@ -32,6 +32,9 @@ public:
 	bool IsStopBattleMoveGameplayContainer();
 	bool IsEvasionCondition(AActor* TargetActor, EEnemyEvasionType EvasionType) const;
 	
+	void UpdateBanAttack(float MinBanAttackDelay, float MaxBanAttackDelay);
+	void ClearBanAttack();
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Battle|AttackConditions")
 	TMap<int, FEnemyAIAttackConditionData> AttackConditions;
 
@@ -66,6 +69,10 @@ private:
 
 	bool bIsBattlePossible = false;
 	
+	bool bIsBanAttack = false;
+	
+	FTimerHandle BanAttackTimerHandle;
+	
 #pragma endregion
 
 #pragma region Detect
@@ -97,6 +104,8 @@ private:
 public:
 	FORCEINLINE bool IsBattlePossible() const { return bIsBattlePossible; }
 	FORCEINLINE void SetIsBattlePossible(bool InIsBattlePossible) { bIsBattlePossible = InIsBattlePossible; }
+	
+	FORCEINLINE bool IsBanAttack() const { return bIsBanAttack; }
 	
 	FORCEINLINE bool IsEquip() const { return bIsEquipPossible ? bIsEquip : false; }
 	FORCEINLINE void SetIsEquip(bool InIsEquip)

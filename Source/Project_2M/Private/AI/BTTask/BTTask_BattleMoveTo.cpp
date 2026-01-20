@@ -14,6 +14,11 @@ UBTTask_BattleMoveTo::UBTTask_BattleMoveTo()
 	bNotifyTick = true;
 }
 
+EBTNodeResult::Type UBTTask_BattleMoveTo::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+{
+	return Super::ExecuteTask(OwnerComp, NodeMemory);
+}
+
 void UBTTask_BattleMoveTo::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
@@ -35,11 +40,29 @@ void UBTTask_BattleMoveTo::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 
 	AActor* TargetActor = Cast<AActor>(Object);
 	if (!TargetActor) return;
-
+	
 	bool bIsStopBattleMove =
 		EnemyCombatComponent->IsStopBattleMoveGameplayContainer() ||
-			EnemyCombatComponent->IsEvenOneAttackCondition(TargetActor);
+			(EnemyCombatComponent->IsBanAttack() == false && EnemyCombatComponent->IsEvenOneAttackCondition(TargetActor));
 	if (bIsStopBattleMove == false) return;
 	
-	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+}
+
+void UBTTask_BattleMoveTo::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory,
+	EBTNodeResult::Type TaskResult)
+{
+	Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
+	
+	if (bIsCheckArrive == false) return;
+	
+	if (TaskResult != EBTNodeResult::Succeeded) return;
+	
+	AAIController* AI = OwnerComp.GetAIOwner();
+	if (!AI) return;
+	
+	UBlackboardComponent* BB = AI->GetBlackboardComponent();
+	if (!BB) return;	
+	
+	BB->SetValueAsBool(TwoMinBBKeys::bIsArriveBattleMovePoint, true);
 }

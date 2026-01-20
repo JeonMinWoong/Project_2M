@@ -213,3 +213,12 @@ enum class EEnemyEvasionType : uint8
 	Right = 3,
 	All = 4,
 };
+
+UENUM(Blueprintable)
+enum class EEnemyAIMoveType : uint8
+{
+	None = 0,
+	Melee = 1,
+	Middle = 2,
+	Ranged = 3,
+};
