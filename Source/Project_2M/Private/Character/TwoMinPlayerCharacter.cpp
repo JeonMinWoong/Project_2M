@@ -418,6 +418,25 @@ void ATwoMinPlayerCharacter::OpenInventoryProcess()
 	InventoryComponent->OpenInventory(bIsOpenInventory);
 }
 
+void ATwoMinPlayerCharacter::PlayCameraShakeOnHit(ECameraShakeType CameraShakeType)
+{
+	if (CameraShakeMap.Contains(CameraShakeType) == false) return;
+	
+	if (CachedCameraShake)
+	{
+		if (CachedCameraShake->IsActive())
+		{
+			if (CameraShakeType < CachedCameraShakeType) return;
+
+			CachedCameraShake->StopShake();
+			CachedCameraShake = nullptr;	
+		}
+	}
+	
+	CachedCameraShakeType = CameraShakeType;
+	CachedCameraShake = GetPlayerController()->PlayerCameraManager->StartCameraShake(CameraShakeMap[CameraShakeType]);
+}
+
 void ATwoMinPlayerCharacter::Input_UseItemTrigger(const FInputActionValue& InputActionValue)
 {
 	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitDowning)

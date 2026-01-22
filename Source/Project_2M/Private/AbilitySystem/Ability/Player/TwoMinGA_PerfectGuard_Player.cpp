@@ -12,6 +12,7 @@ void UTwoMinGA_PerfectGuard_Player::ActivateAbility(const FGameplayAbilitySpecHa
                                                     const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                                     const FGameplayEventData* TriggerEventData)
 {
+	CameraShakeToShakeType(GetAvatarActorFromActorInfo(), ECameraShakeType::Heavy);
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 

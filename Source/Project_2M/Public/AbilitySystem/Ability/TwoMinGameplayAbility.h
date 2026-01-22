@@ -115,6 +115,9 @@ protected:
 	
 	void HitStopProcess(AActor* HitStopCharacter, const float HitStopDelay);
 	
+	void CameraShakeToShakeType(AActor* ShakeCharacter, ECameraShakeType CameraShakeType);
+	void CameraShakeOnHitReact(AActor* ShakeCharacter, EHitType HitType, bool bIsTargetGuard);
+	
 	virtual TSubclassOf<UGameplayEffect> GetAttackGameplayEffectClass() const;
 
 	float CalculationStaminaCost() const;

@@ -555,6 +555,9 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 void UTwoMinGameplayAbility::OnHitStop(const FGameplayEventData& Payload, bool bIsTargetGuard,
 	const UAttackPayloadObject* AttackPayload, ATwoMinBaseCharacter* TargetCharacter)
 {
+	CameraShakeToShakeType(Payload.Instigator->GetInstigator(), AttackPayload->Data.CameraShakeType);
+	CameraShakeOnHitReact(TargetCharacter, AttackPayload->Data.HitData.HitType, bIsTargetGuard);
+	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 		TargetCharacter,
 		GetHitGameplayEffectTag(bIsTargetGuard, AttackPayload->Data.HitData.HitType),
@@ -653,6 +656,40 @@ void UTwoMinGameplayAbility::HitStopProcess(AActor* HitStopCharacter, const floa
 	{
 			TargetAnimInstance->Montage_Resume(TargetMontage);
 	}, HitStopDelay, false);
+}
+
+void UTwoMinGameplayAbility::CameraShakeToShakeType(AActor* ShakeCharacter, ECameraShakeType CameraShakeType)
+{
+	if (CameraShakeType == ECameraShakeType::None) return;
+	
+	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(ShakeCharacter);
+	if (!PlayerCharacter) return;
+	
+	PlayerCharacter->PlayCameraShakeOnHit(CameraShakeType);
+}
+
+void UTwoMinGameplayAbility::CameraShakeOnHitReact(AActor* ShakeCharacter, EHitType HitType, bool bIsTargetGuard)
+{
+	if (bIsTargetGuard) return;
+	
+	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(ShakeCharacter);
+	if (!PlayerCharacter) return;
+	
+	switch (HitType)
+	{
+	case EHitType::Down:
+		PlayerCharacter->PlayCameraShakeOnHit(ECameraShakeType::Heavy);
+		break;
+	case EHitType::Throw:
+		PlayerCharacter->PlayCameraShakeOnHit(ECameraShakeType::Heavy);
+		break;
+	case EHitType::Push:
+		PlayerCharacter->PlayCameraShakeOnHit(ECameraShakeType::Medium);
+		break;
+	default:
+		PlayerCharacter->PlayCameraShakeOnHit(ECameraShakeType::Light);
+		break;
+	}
 }
 
 TSubclassOf<UGameplayEffect> UTwoMinGameplayAbility::GetAttackGameplayEffectClass() const

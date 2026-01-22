@@ -86,3 +86,4 @@ Saved/
 .idea/
 *.sln
 .vsconfig
+global.json

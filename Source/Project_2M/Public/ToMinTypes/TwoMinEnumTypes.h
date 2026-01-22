@@ -222,3 +222,12 @@ enum class EEnemyAIMoveType : uint8
 	Middle = 2,
 	Ranged = 3,
 };
+
+UENUM(Blueprintable)
+enum class ECameraShakeType : uint8
+{
+	None = 0,
+	Light = 1,
+	Medium = 2,
+	Heavy = 3,
+};

@@ -191,6 +191,9 @@ struct FAttackInfoData : public FGameplayAbilityTargetData
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(EditCondition="AttackType != EAttackType::Execution"))
 	int HitDirectionNumber;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ECameraShakeType CameraShakeType = ECameraShakeType::None;
 
 	virtual UScriptStruct* GetScriptStruct() const override
 	{

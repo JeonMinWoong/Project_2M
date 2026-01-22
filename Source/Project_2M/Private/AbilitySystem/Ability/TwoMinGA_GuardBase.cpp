@@ -230,6 +230,8 @@ void UTwoMinGA_GuardBase::OnHitGuard(FGameplayEventData Payload)
 		PushCurve = AttackInfoData.HitData.KnockBackCurve;
 	}
 	
+	CameraShakeToShakeType(MyCharacter, 
+		GetCameraShakeType(AttackInfoData.AttackType, bIsEndAbilitySendToExhaustedEvent));
 	OnStartKnockBack(MyCharacter, HitGuardAnimMontage[HitMontageNumber], ToImpact, PushDistance,
 		PushTime, PushCurve);
 	
@@ -253,6 +255,20 @@ int UTwoMinGA_GuardBase::GetHitMontageNumber(const FAttackInfoData& AttackInfoDa
 	}
 	
 	return FMath::Clamp(static_cast<int32>(AttackInfoData.AttackType) - 1, 0,HitGuardAnimMontage.Num() - 1);
+}
+
+ECameraShakeType UTwoMinGA_GuardBase::GetCameraShakeType(EAttackType AttackType, bool bIsGuardBreak) const
+{
+	if (bIsGuardBreak) return ECameraShakeType::Heavy;
+	
+	switch (AttackType) {
+	case EAttackType::Light:
+		return ECameraShakeType::Light;
+	case EAttackType::Heavy:
+		return ECameraShakeType::Medium;
+	default: 
+		return ECameraShakeType::None;
+	}
 }
 
 void UTwoMinGA_GuardBase::OnHitEnd()

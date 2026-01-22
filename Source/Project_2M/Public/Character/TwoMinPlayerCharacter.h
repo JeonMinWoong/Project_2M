@@ -45,7 +45,8 @@ public:
 	void PlayerLevelUp(int32 NewLevel);
 	
 	void OpenInventoryProcess();
-	
+	void PlayCameraShakeOnHit(ECameraShakeType CameraShakeType);
+
 	FTimerHandle FightDecreaseTimerHandle;
 	
 protected:
@@ -154,6 +155,15 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|CharacterMovement")
 	FRotator CharacterRotationRate = FRotator(0.f, 500.f, 0.f);
 
+	UPROPERTY(EditDefaultsOnly, Category = "CameraShake")
+	TMap<ECameraShakeType, TSubclassOf<UCameraShakeBase>> CameraShakeMap;
+	
+	UPROPERTY()
+	UCameraShakeBase* CachedCameraShake;
+	
+	UPROPERTY()
+	ECameraShakeType CachedCameraShakeType;
+	
 #pragma region Input
   	/** Inputs **/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="CharacterData", meta=(AllowPrivateAccess="true"))

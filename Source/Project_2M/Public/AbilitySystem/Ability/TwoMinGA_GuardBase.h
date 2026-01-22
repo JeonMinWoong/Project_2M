@@ -48,6 +48,8 @@ protected:
 private:
 	int GetHitMontageNumber(const FAttackInfoData& AttackInfoData) const;
 	
+	ECameraShakeType GetCameraShakeType(EAttackType AttackType, bool bIsGuardBreak) const;
+	
 	UFUNCTION()
 	void OnHitGuard(FGameplayEventData Payload);
 
