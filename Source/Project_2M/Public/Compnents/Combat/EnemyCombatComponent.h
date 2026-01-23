@@ -23,7 +23,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 								   FActorComponentTickFunction* ThisTickFunction) override;
 	
-	virtual void OnHitTargetActor(AActor* HitActor) override;
+	virtual void OnHitTargetActor(AActor* HitActor, int32 HitWeaponIndex) override;
 
 #pragma region Battle
 	bool IsAttackCondition(const AActor* TargetActor, int AttackConditionIndex) const;

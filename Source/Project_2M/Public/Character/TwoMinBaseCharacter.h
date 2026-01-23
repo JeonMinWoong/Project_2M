@@ -8,6 +8,7 @@
 #include "ToMinTypes/TwoMinEnumTypes.h"
 #include "TwoMinBaseCharacter.generated.h"
 
+class UNiagaraSystem;
 class UGameplayEffect;
 class UTwoMinAttributeSet;
 class UMotionWarpingComponent;
@@ -27,6 +28,9 @@ public:
 	virtual UBaseUIComponent* GetBaseUIComponent() const override;
 	virtual void BeforeDeathProcess();
 	virtual void AfterDeathProcess();
+	
+	virtual void OnHitEffectSpawnPoint(bool bIsTargetGuard, int32 WeaponIndex);
+	virtual void OnHitEffectAttachToWeaponSocket(bool bIsTargetGuard, int32 WeaponIndex);
 	
 	FTimerHandle HitStopTimerHandle;
 	
@@ -52,6 +56,18 @@ protected:
 	
 	UPROPERTY()
 	ECharacterType CharacterType;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeHitEffects|PointSpawnEffect")
+	UNiagaraSystem* HitEffect_PointSpawnEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeHitEffects|PointSpawnEffect")
+	FName HitEffect_SpawnSocketName;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeHitEffects|AttachTrailEffect")
+	UNiagaraSystem* HitEffect_AttachTrailEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "MeleeHitEffects|AttachTrailEffect")
+	FName HitEffect_AttachSocketName;
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Health_Gain")

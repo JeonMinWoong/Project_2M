@@ -2,6 +2,7 @@
 #include "Character/TwoMinBaseCharacter.h"
 
 #include "MotionWarpingComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "AbilitySystem/TwoMinAttributeSet.h"
 #include "Compnents/Combat/BaseCombatComponent.h"
@@ -58,6 +59,46 @@ void ATwoMinBaseCharacter::AfterDeathProcess()
 	if (RemoveDelay >= 0)
 	{
 		SetLifeSpan(RemoveDelay);	
+	}
+}
+
+void ATwoMinBaseCharacter::OnHitEffectSpawnPoint(bool bIsTargetGuard, int32 WeaponIndex)
+{
+	if (HitEffect_PointSpawnEffect)
+	{
+		ATwoMinWeaponBase* HitWeapon = GetCombatComponent()->GetCharacterCurrentEquippedWeapon()[WeaponIndex];
+		if(!HitWeapon) return;
+
+		FVector SpawnLocation = HitWeapon->GetWeaponMesh()->GetSocketLocation(HitEffect_SpawnSocketName);
+		FRotator SpawnRotation = HitWeapon->GetWeaponMesh()->GetSocketRotation(HitEffect_SpawnSocketName);
+		
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			GetWorld(),
+			HitEffect_PointSpawnEffect,
+			SpawnLocation,
+			SpawnRotation
+		);
+	}
+}
+
+void ATwoMinBaseCharacter::OnHitEffectAttachToWeaponSocket(bool bIsTargetGuard, int32 WeaponIndex)
+{
+	if (HitEffect_AttachTrailEffect)
+	{
+		if (WeaponIndex > 0) return;
+		
+		ATwoMinWeaponBase* FirstWeapon = GetCombatComponent()->GetCharacterCurrentEquippedWeapon()[WeaponIndex];
+		if(!FirstWeapon) return;		
+
+		UNiagaraFunctionLibrary::SpawnSystemAttached(
+			HitEffect_AttachTrailEffect,
+			FirstWeapon->GetWeaponMesh(),
+			HitEffect_AttachSocketName,
+			FVector::ZeroVector,
+			FRotator::ZeroRotator,
+			EAttachLocation::SnapToTarget,
+			true
+		);
 	}
 }
 

@@ -24,9 +24,9 @@ void UEnemyCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	PatrolWaitPoint();
 }
 
-void UEnemyCombatComponent::OnHitTargetActor(AActor* HitActor)
+void UEnemyCombatComponent::OnHitTargetActor(AActor* HitActor, int32 HitWeaponIndex)
 {
-	Super::OnHitTargetActor(HitActor);
+	Super::OnHitTargetActor(HitActor, HitWeaponIndex);
 }
 
 bool UEnemyCombatComponent::IsAttackCondition(const AActor* TargetActor, int AttackConditionIndex) const

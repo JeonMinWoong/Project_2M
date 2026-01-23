@@ -13,9 +13,9 @@ UPlayerCombatComponent::UPlayerCombatComponent()
 	ExecutionComponent = CreateDefaultSubobject<UExecutionComponent>(TEXT("ExecutionComponent"));
 }
 
-void UPlayerCombatComponent::OnHitTargetActor(AActor* HitActor)
+void UPlayerCombatComponent::OnHitTargetActor(AActor* HitActor, int32 HitWeaponIndex)
 {
-	Super::OnHitTargetActor(HitActor);
+	Super::OnHitTargetActor(HitActor, HitWeaponIndex);
 }
 
 UAutoTargetingComponent* UPlayerCombatComponent::GetAutoTargetingComponent() const

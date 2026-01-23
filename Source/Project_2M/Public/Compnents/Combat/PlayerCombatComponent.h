@@ -20,7 +20,7 @@ class PROJECT_2M_API UPlayerCombatComponent : public UBaseCombatComponent
 public:
 	UPlayerCombatComponent();
 
-	virtual void OnHitTargetActor(AActor* HitActor) override;
+	virtual void OnHitTargetActor(AActor* HitActor, int32 HitWeaponIndex) override;
 	virtual UAutoTargetingComponent* GetAutoTargetingComponent() const override;
 	virtual UExecutionComponent* GetExecutionComponent() const override;
 

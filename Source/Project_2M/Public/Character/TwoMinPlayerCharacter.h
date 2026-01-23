@@ -45,6 +45,7 @@ public:
 	void PlayerLevelUp(int32 NewLevel);
 	
 	void OpenInventoryProcess();
+	
 	void PlayCameraShakeOnHit(ECameraShakeType CameraShakeType);
 
 	FTimerHandle FightDecreaseTimerHandle;

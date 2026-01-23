@@ -10,7 +10,7 @@
 struct FTwoMinPlayerWeaponData;
 class UBoxComponent;
 
-DECLARE_DELEGATE_OneParam(FOnTargetInteractedDelegate, AActor*);
+DECLARE_DELEGATE_TwoParams(FOnTargetInteractedDelegate, AActor*, int32);
 
 UCLASS()
 class PROJECT_2M_API ATwoMinWeaponBase : public AActor
@@ -43,7 +43,12 @@ protected:
 	virtual void OnCollisionBoxEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "WeaponIndex")
+	int32 WeaponIndex = 0;
+	
 public:
 	FORCEINLINE UBoxComponent* GetWeaponCollisionBox() const { return WeaponCollisionBox; }
+	FORCEINLINE UStaticMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
 	FORCEINLINE void EnableMesh(bool bShouldEnable) const { WeaponMesh->SetVisibility(bShouldEnable); }
 };

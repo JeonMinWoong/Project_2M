@@ -297,6 +297,9 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByMelee(FGameplayEvent
 		return;
 	}
 
+	int32 WeaponIndex = FMath::RoundToInt(Payload.EventMagnitude);
+	
+	MeleeOnHitEffectProcess(BaseCharacter, bIsTargetGuard, WeaponIndex);
 	DamageToEffectSpecHandle(GetAttackGameplayEffectClass(), Payload, bIsTargetGuard);
 }
 
@@ -452,6 +455,12 @@ void UTwoMinGameplayAbility::CustomOnBlendOutAbility()
 {
 	CancelAbility(GetCurrentAbilitySpecHandle(), GetCurrentActorInfo(), GetCurrentActivationInfo(),
 		true);
+}
+
+void UTwoMinGameplayAbility::MeleeOnHitEffectProcess(ATwoMinBaseCharacter* OwnerCharacter, bool bIsTargetGuard, int32 WeaponIndex)
+{
+	OwnerCharacter->OnHitEffectSpawnPoint(bIsTargetGuard, WeaponIndex);
+	OwnerCharacter->OnHitEffectAttachToWeaponSocket(bIsTargetGuard, WeaponIndex);
 }
 
 void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffect> EffectClass,

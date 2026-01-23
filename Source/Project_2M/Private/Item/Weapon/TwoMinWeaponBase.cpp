@@ -44,7 +44,7 @@ void ATwoMinWeaponBase::OnCollisionBoxBeginOverlap(UPrimitiveComponent* Overlapp
 	{
 		if (UTwoMinFunctionLibrary::IsTargetPawnHostile(WeaponOwningPawn, HitPawn))
 		{
-			OnWeaponHitTarget.ExecuteIfBound(OtherActor);
+			OnWeaponHitTarget.ExecuteIfBound(OtherActor, WeaponIndex);
 		}
 	}
 }
@@ -60,7 +60,7 @@ void ATwoMinWeaponBase::OnCollisionBoxEndOverlap(UPrimitiveComponent* Overlapped
 	{
 		if (UTwoMinFunctionLibrary::IsTargetPawnHostile(WeaponOwningPawn, HitPawn))
 		{
-			OnWeaponPulledFromTarget.ExecuteIfBound(OtherActor);
+			OnWeaponPulledFromTarget.ExecuteIfBound(OtherActor, WeaponIndex);
 		}
 	}
 }

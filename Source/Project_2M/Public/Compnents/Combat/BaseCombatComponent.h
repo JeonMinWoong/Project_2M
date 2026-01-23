@@ -37,8 +37,8 @@ public:
 protected:
 	virtual void ToggleCurrentEquippedWeaponCollision(bool bShouldEnable, EToggleDamageType ToggleDamageType);
 
-	virtual void OnHitTargetActor(AActor* HitActor);
-	virtual void OnWeaponPulledFromTargetActor(AActor* InteractedActor);
+	virtual void OnHitTargetActor(AActor* HitActor, int32 HitWeaponIndex);
+	virtual void OnWeaponPulledFromTargetActor(AActor* InteractedActor, int32 HitWeaponIndex);
 
 	UPROPERTY()
 	TArray<AActor*> OverlappingActors;

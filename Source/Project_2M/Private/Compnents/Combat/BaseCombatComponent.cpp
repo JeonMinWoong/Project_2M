@@ -112,7 +112,7 @@ void UBaseCombatComponent::ToggleCurrentEquippedWeaponCollision(bool bShouldEnab
 	}
 }
 
-void UBaseCombatComponent::OnHitTargetActor(AActor* HitActor)
+void UBaseCombatComponent::OnHitTargetActor(AActor* HitActor, int32 HitWeaponIndex)
 {
 	ATwoMinBaseCharacter* Character = Cast<ATwoMinBaseCharacter>(HitActor);
 	if (!Character) return;
@@ -125,6 +125,7 @@ void UBaseCombatComponent::OnHitTargetActor(AActor* HitActor)
 	
 	Data.Instigator = GetOwningPawn();
 	Data.Target = HitActor;
+	Data.EventMagnitude = static_cast<float>(HitWeaponIndex);
 
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 		GetOwningPawn(),
@@ -133,7 +134,7 @@ void UBaseCombatComponent::OnHitTargetActor(AActor* HitActor)
 	);
 }
 
-void UBaseCombatComponent::OnWeaponPulledFromTargetActor(AActor* InteractedActor)
+void UBaseCombatComponent::OnWeaponPulledFromTargetActor(AActor* InteractedActor, int32 HitWeaponIndex)
 {
 	
 }
