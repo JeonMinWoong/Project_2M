@@ -250,7 +250,7 @@ USTRUCT(BlueprintType)
 struct FEnemyAIPatrolData
 {
 	GENERATED_BODY()
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ATargetPoint* PatrolPoint;
 	

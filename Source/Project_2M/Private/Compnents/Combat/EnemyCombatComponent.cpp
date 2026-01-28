@@ -189,6 +189,15 @@ bool UEnemyCombatComponent::IsEvasionCondition(AActor* TargetActor, EEnemyEvasio
 }
 
 
+void UEnemyCombatComponent::InitPatrol(TArray<FEnemyAIPatrolData> InPatrolPoints, EPatrolPathMode InPatrolPathMode)
+{
+	PatrolPoints = InPatrolPoints;
+	PatrolPathMode = InPatrolPathMode;
+	CurrentPatrolPointIndex = 0;
+	bIsPatrolPointArrivedWait = false;
+	CurrentPatrolPointArrivedWaitTime = 0.f;
+}
+
 int32 UEnemyCombatComponent::GetNextPatrolPointIndex()
 {
 	int32 NextIndex = 0;

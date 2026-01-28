@@ -61,6 +61,7 @@ enum class EAttackType : uint8
 UENUM(BlueprintType)
 enum class EPatrolPathMode : uint8
 {
+	None,
 	Loop,
 	PingPong
 };
@@ -230,4 +231,29 @@ enum class ECameraShakeType : uint8
 	Light = 1,
 	Medium = 2,
 	Heavy = 3,
+};
+
+UENUM(Blueprintable)
+enum class ESpawnMonsterType : uint8
+{
+	None = 0,
+	Skeleton_Sword_Man = 1,
+	Skeleton_Axe = 2,
+	Skeleton_Archer = 3,
+	Skeleton_Mage = 4,
+	
+	Elite_Skeleton_Lord = 101,
+	
+	Boss_Necromancer = 201,
+};
+
+UENUM(Blueprintable)
+enum class ESpawnMonsterLevel : uint8
+{
+	None = 0,
+	Develop = 1,
+	
+	Level_1_1 = 11,
+	Level_1_2 = 12,
+	Level_1_3 = 13,
 };

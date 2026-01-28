@@ -48,6 +48,7 @@ public:
 	
 #pragma region Patrol
 	
+	void InitPatrol(TArray<FEnemyAIPatrolData> InPatrolPoints, EPatrolPathMode InPatrolPathMode);
 	int32 GetNextPatrolPointIndex();
 
 	void ResetPatrolPoint();
