@@ -192,9 +192,11 @@ private:
 
 	void Input_AbilityInputPressed(FGameplayTag InInputTag);
 	void Input_AbilityInputReleased(FGameplayTag InInputTag);
-
+	
+	void Input_ObjectiveTargetingTrigger(const FInputActionValue& InputActionValue);
 	void Input_PickUpTrigger(const FInputActionValue& InputActionValue);
-
+	void Input_InteractTrigger(const FInputActionValue& InputActionValue);
+	
 	UPROPERTY(EditDefaultsOnly, Category= "IgnoreTag_ItemPickUpTrigger")
 	FGameplayTagContainer IgnoreTagContainer;
 

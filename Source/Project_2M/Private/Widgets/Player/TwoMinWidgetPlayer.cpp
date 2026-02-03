@@ -40,6 +40,8 @@ void UTwoMinWidgetPlayer::InitPlayerUIComponent(UPlayerUIComponent* HeroUICompon
 	HeroUIComponent->OnSetWindowQuickSlot.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::OnSetWindowQuickSlot);
 	HeroUIComponent->OnSetBuffItem.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::OnSetBuffItem);
 	HeroUIComponent->OnSetAngerState.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetAngerState);
+	HeroUIComponent->OnPossibleInteraction.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetPossibleInteraction);
+	HeroUIComponent->OnPossibleInteraction.Broadcast(false);
 }
 
 void UTwoMinWidgetPlayer::SetCurrentHealthPercent(float Percent)
@@ -121,4 +123,12 @@ void UTwoMinWidgetPlayer::OnSetBuffItem(int32 ItemID)
 	if (!BuffWindow) return;
 	
 	BuffWindow->SetBuffSlot(ItemID);
+}
+
+void UTwoMinWidgetPlayer::SetPossibleInteraction(bool bIsPossibleInteraction)
+{
+	if (!Interaction) return;
+	
+	ESlateVisibility EVisibility = bIsPossibleInteraction ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
+	Interaction->SetVisibility(EVisibility);
 }

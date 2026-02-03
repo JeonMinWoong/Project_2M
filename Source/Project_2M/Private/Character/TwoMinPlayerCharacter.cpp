@@ -188,8 +188,8 @@ void ATwoMinPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	CharacterInputComponent->BindAbilityInputAction(InputConfigDataAsset, this,
 			&ThisClass::Input_AbilityInputPressed, &ThisClass::Input_AbilityInputReleased);
 
-	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_ItemPickUp,
-	ETriggerEvent::Started, this, &ThisClass::Input_PickUpTrigger);
+	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_ObjectTargeting,
+	ETriggerEvent::Started, this, &ThisClass::Input_ObjectiveTargetingTrigger);
 	
 	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_OpenInventory,
 		ETriggerEvent::Started, this, &ThisClass::Input_OpenInventory);
@@ -365,6 +365,21 @@ void ATwoMinPlayerCharacter::Input_AbilityInputReleased(FGameplayTag InInputTag)
 	AbilitySystemComponent->OnAbilityInputReleased(InInputTag);
 }
 
+void ATwoMinPlayerCharacter::Input_ObjectiveTargetingTrigger(const FInputActionValue& InputActionValue)
+{
+	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_Possible_ItemPickUp))
+	{
+		Input_PickUpTrigger(InputActionValue);
+		return;
+	}
+	
+	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_Possible_Interaction))
+	{
+		Input_InteractTrigger(InputActionValue);
+		return;
+	}
+}
+
 void ATwoMinPlayerCharacter::Input_PickUpTrigger(const FInputActionValue& InputActionValue)
 {
 	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitDowning)
@@ -391,9 +406,42 @@ void ATwoMinPlayerCharacter::Input_PickUpTrigger(const FInputActionValue& InputA
 	);
 }
 
+void ATwoMinPlayerCharacter::Input_InteractTrigger(const FInputActionValue& InputActionValue)
+{
+	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitDowning)
+		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitThrowing)
+			|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_OpenInventory))
+	{
+		return;
+	}
+	
+	for (auto GameplayTag : IgnoreTagContainer)
+	{
+		if (UTwoMinFunctionLibrary::HasGameplayTag(this, GameplayTag))
+		{
+			return;
+		}
+	}
+	
+	FGameplayEventData EventData;
+	
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
+		this,
+		TwoMinGameplayTag::Player_Event_Interaction,
+		EventData
+	);
+}
+
 void ATwoMinPlayerCharacter::Input_OpenInventory(const FInputActionValue& InputActionValue)
 {
-	OpenInventoryProcess();
+	if (PlayerUIComponent->IsMapSelectWidgetOpen())
+	{
+		PlayerUIComponent->OpenMapSelectWidget(this, false);
+	}
+	else
+	{
+		OpenInventoryProcess();	
+	}
 }
 
 void ATwoMinPlayerCharacter::OpenInventoryProcess()

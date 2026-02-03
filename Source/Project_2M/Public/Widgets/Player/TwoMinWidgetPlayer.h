@@ -63,6 +63,9 @@ protected:
 	UFUNCTION()
 	void OnSetBuffItem(int32 ItemID);
 	
+	UFUNCTION()
+	void SetPossibleInteraction(bool bIsPossibleInteraction);
+	
 private:
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* HealthBar;
@@ -93,6 +96,9 @@ private:
 	
 	UPROPERTY(meta=(BindWidget))
 	UTwoMinWidget_BuffWindow* BuffWindow;
+	
+	UPROPERTY(meta=(BindWidget))
+	UTwoMinWidgetBase* Interaction;
 	
 public:
 	FORCEINLINE UTwoMinWidget_WindowQuickSlot* GetWindowQuickSlot() const { return WindowQuickSlot; }

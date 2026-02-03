@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "TwoMinGameInstance.generated.h"
 
+class UWorldStageManager;
 class UItemDataManager;
 /**
  * 
@@ -16,6 +17,15 @@ class PROJECT_2M_API UTwoMinGameInstance : public UGameInstance
 	GENERATED_BODY()
 	
 public:
+	virtual void Init() override;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Instanced)
 	UItemDataManager* ItemDataManager;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Instanced)
+	UWorldStageManager* StateManager;
+	
+	UPROPERTY(VisibleAnywhere)
+	bool bIsStageMoving = false;
+	
 };

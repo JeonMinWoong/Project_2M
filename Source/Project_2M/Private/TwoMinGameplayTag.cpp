@@ -14,7 +14,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_RunAttack_OneHand, "InputTag.RunAttack.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_SwitchTarget, "InputTag.SwitchTarget");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Roll, "InputTag.Roll");
-	UE_DEFINE_GAMEPLAY_TAG(InputTag_ItemPickUp, "InputTag.ItemPickUp");
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_ObjectTargeting, "InputTag.ObjectTargeting");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Execution_OneHand, "InputTag.Execution.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_OpenInventory, "InputTag.OpenInventory");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_UseItem, "InputTag.UseItem");
@@ -52,6 +52,8 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_AngerMode_Ing, "Player.Ability.AngerMode.Ing");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_AngerMode_SpecialAttack_OneHand, "Player.Ability.AngerMode.SpecialAttack.OneHand");
 
+	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_Interaction, "Player.Ability.Interaction");
+	
 	// Player Event Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_SwitchTarget_Left, "Player.Event.SwitchTarget.Left");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_SwitchTarget_Right, "Player.Event.SwitchTarget.Right");
@@ -60,6 +62,8 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_ItemPickUp, "Player.Event.ItemPickUp");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_UseItem, "Player.Event.UseItem");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_AngerMode_Start, "Player.Event.AngerMode.Start");
+	
+	UE_DEFINE_GAMEPLAY_TAG(Player_Event_Interaction, "Player.Event.Interaction");
 	
 	// Player State Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Running, "Player.State.Running");
@@ -75,6 +79,8 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_ZeroFight, "Player.State.ZeroFight");
 	
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_OpenInventory, "Player.State.OpenInventory");
+	UE_DEFINE_GAMEPLAY_TAG(Player_State_Possible_ItemPickUp, "Player.State.Possible.ItemPickUp");
+	UE_DEFINE_GAMEPLAY_TAG(Player_State_Possible_Interaction, "Player.State.Possible.Interaction");
 
 	// Enemy Weapon Tags
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Weapon, "Enemy.Weapon");
