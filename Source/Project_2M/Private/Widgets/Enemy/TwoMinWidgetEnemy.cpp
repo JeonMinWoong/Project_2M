@@ -6,8 +6,12 @@
 #include "Character/TwoMinEnemyDummy.h"
 #include "Compnents/UI/EnemyUIComponent.h"
 #include "Components/ProgressBar.h"
-#include "Components/TextBlock.h"
 #include "Interfaces/BaseUIInterface.h"
+
+UTwoMinWidgetEnemy::UTwoMinWidgetEnemy()
+{
+	bIsWorldWidget = true;
+}
 
 void UTwoMinWidgetEnemy::NativeOnInitialized()
 {
@@ -17,15 +21,22 @@ void UTwoMinWidgetEnemy::NativeOnInitialized()
 	{
 		if (UEnemyUIComponent* EnemyUIComponent = BaseUIInterface->GetEnemyUIComponent())
 		{
-			InitEnemyIComponent(EnemyUIComponent);	
+			InitEnemyUIComponent(EnemyUIComponent);	
 		}
 	}
 }
 
-void UTwoMinWidgetEnemy::InitEnemyIComponent(UEnemyUIComponent* EnemyUIComponent)
+void UTwoMinWidgetEnemy::InitEnemyUIComponent(UEnemyUIComponent* EnemyUIComponent)
 {
 	HealthBar->SetVisibility(ESlateVisibility::Hidden);
 	EnemyUIComponent->OnCurrentHealthChanged.AddUniqueDynamic(this, &UTwoMinWidgetEnemy::SetCurrentHealthPercent);
+}
+
+void UTwoMinWidgetEnemy::HideWorldHealthBar()
+{
+	if (!HealthBar) return;
+	
+	HealthBar->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UTwoMinWidgetEnemy::SetCurrentHealthPercent(float Percent)
@@ -50,5 +61,12 @@ void UTwoMinWidgetEnemy::SetCurrentHealthPercent(float Percent)
 
 void UTwoMinWidgetEnemy::OffHealthBar()
 {
-	HealthBar->SetVisibility(ESlateVisibility::Hidden);
+	if (!bIsWorldWidget)
+	{
+		RemoveFromParent();
+	}
+	else
+	{
+		HealthBar->SetVisibility(ESlateVisibility::Hidden);	
+	}
 }

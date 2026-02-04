@@ -5,6 +5,7 @@
 
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/TwoMinBaseCharacter.h"
+#include "Character/TwoMinEnemyCharacter.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "ToMinTypes/TwoMinBlackboardKeys.h"
@@ -15,15 +16,26 @@ void UBTSE_UpdatePlayerChecker::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 	UBlackboardComponent* BB = GetBlackboardComponent(OwnerComp);
 	if (!BB) return;
 	
-	UEnemyCombatComponent* EnemyCombatComponent = GetEnemyCombatComponent(OwnerComp);
-	if (!EnemyCombatComponent) return;
+	ATwoMinEnemyCharacter* EnemyCharacter = GetEnemyCharacter(OwnerComp);
+	if (!EnemyCharacter) return;
+	
+	UEnemyCombatComponent* CombatComponent = GetEnemyCombatComponent(OwnerComp);
+	if (!CombatComponent) return;
 
-	if (EnemyCombatComponent->IsBattlePossible() == false)
+	if (CombatComponent->IsBattlePossible() == false)
 	{
 		BB->SetValueAsObject(TwoMinBBKeys::BattleTarget, nullptr);
 	}
-
-	ATwoMinBaseCharacter* Player = UpdatePlayerChecker(EnemyCombatComponent->GetOwner());
+	
+	float BaseBattleRange = BattleRange;
+	const float CustomBattleRange = 
+		EnemyCharacter->IsUseBossHealthBar() ? CombatComponent->GetCustomBattleRange() : 0;
+	if (CustomBattleRange > 0.f)
+	{
+		BaseBattleRange = CustomBattleRange;
+	}
+	
+	ATwoMinBaseCharacter* Player = UpdatePlayerChecker(EnemyCharacter, BaseBattleRange);
 	if (Player)
 	{
 		BB->SetValueAsObject(TwoMinBBKeys::BattleTarget, Player);
@@ -34,7 +46,7 @@ void UBTSE_UpdatePlayerChecker::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 	}
 }
 
-ATwoMinBaseCharacter* UBTSE_UpdatePlayerChecker::UpdatePlayerChecker(AActor* EnemyCharacter) const
+ATwoMinBaseCharacter* UBTSE_UpdatePlayerChecker::UpdatePlayerChecker(AActor* EnemyCharacter, const float CheckBattleRange) const
 {
 	TArray<AActor*> Overlapped;
 	TArray<AActor*> IgnoreActors;
@@ -44,7 +56,7 @@ ATwoMinBaseCharacter* UBTSE_UpdatePlayerChecker::UpdatePlayerChecker(AActor* Ene
 	UKismetSystemLibrary::SphereOverlapActors(
             GetWorld(),
             EnemyCharacter->GetActorLocation(),
-            CheckRange,
+            CheckBattleRange,
             ObjectTypes,              // 어떤 오브젝트 타입만 찾을지 (Pawn/PhysicsBody/WorldDynamic 등)
             ATwoMinPlayerCharacter::StaticClass(),
             IgnoreActors,

@@ -18,11 +18,13 @@ class PROJECT_2M_API UTwoMinWidgetEnemy : public UTwoMinCharacterWidgetBase
 	GENERATED_BODY()
 
 public:
-	void InitEnemyIComponent(UEnemyUIComponent* EnemyUIComponent);
+	UTwoMinWidgetEnemy();
+	
+	virtual void InitEnemyUIComponent(UEnemyUIComponent* EnemyUIComponent);
+	void HideWorldHealthBar();
 	
 protected:
 	virtual void NativeOnInitialized() override;
-
 	virtual void SetCurrentHealthPercent(float Percent) override;
 	
 	UFUNCTION()
@@ -31,7 +33,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	float HealthBarHiddenTime = 3.f;
 	
-private:
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* HealthBar;
+	
+	UPROPERTY()
+	bool bIsWorldWidget;
 };

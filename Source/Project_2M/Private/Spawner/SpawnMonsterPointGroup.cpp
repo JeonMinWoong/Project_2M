@@ -52,6 +52,14 @@ void ASpawnMonsterPointGroup::BeginPlay()
 	
 	for (int Index = 0; Index < SpawnPoints.Num(); Index++)
 	{
+		if (!SpawnPoints.IsValidIndex(Index)) continue;
+		if (SpawnPoints[Index] == nullptr)
+		{
+			FString Str = FString::Printf(TEXT("SpawnPoints[%d] is nullptr"), Index);
+			TwoMinDebugHelper::Print(Str, FColor::Red);
+			continue;
+		}
+		
 		int32 SpawnIndex = 0;
 		ATwoMinEnemyCharacter* SpawnEnemy = SpawnPoints[Index]->SpawnMonsterPoint(SpawnIndex);
 		if (!SpawnEnemy)

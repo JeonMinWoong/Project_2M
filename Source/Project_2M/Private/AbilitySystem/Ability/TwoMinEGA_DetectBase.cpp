@@ -5,6 +5,7 @@
 
 #include "Character/TwoMinEnemyCharacter.h"
 #include "Compnents/Combat/EnemyCombatComponent.h"
+#include "Compnents/UI/EnemyUIComponent.h"
 
 class UEnemyCombatComponent;
 
@@ -20,6 +21,12 @@ void UTwoMinEGA_DetectBase::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		EnemyCombatComponent->SetIsEquip(true);
 	}
 
+	if (EnemyCharacter->IsUseBossHealthBar())
+	{
+		const FString BossName = EnemyCharacter->GetMonsterName();
+		EnemyCharacter->GetEnemyUIComponent()->ShowBossHealthBar(BossName);
+	}
+	
 	if (DetectAnimMontage)
 	{
 		PlayToAnimMontage(DetectAnimMontage);

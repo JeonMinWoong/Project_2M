@@ -19,9 +19,9 @@ protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 private:
-	ATwoMinBaseCharacter* UpdatePlayerChecker(AActor* EnemyCharacter) const;
+	ATwoMinBaseCharacter* UpdatePlayerChecker(AActor* EnemyCharacter, const float CheckBattleRange) const;
 
 	UPROPERTY(EditAnywhere, Category = "CheckRange")
-	float CheckRange;
+	float BattleRange;
 	
 };

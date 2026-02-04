@@ -7,6 +7,7 @@
 #include "Compnents/Combat/EnemyCombatComponent.h"
 #include "BTService_Enemy.generated.h"
 
+class ATwoMinEnemyCharacter;
 /**
  * 
  */
@@ -17,6 +18,6 @@ class PROJECT_2M_API UBTService_Enemy : public UBTService
 
 protected:
 	UBlackboardComponent* GetBlackboardComponent(UBehaviorTreeComponent& OwnerComp) const;
-	
+	ATwoMinEnemyCharacter* GetEnemyCharacter(UBehaviorTreeComponent& OwnerComp) const;
 	UEnemyCombatComponent* GetEnemyCombatComponent(UBehaviorTreeComponent& OwnerComp) const;
 };

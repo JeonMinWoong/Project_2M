@@ -23,5 +23,5 @@ protected:
 
 private:
 	UPROPERTY(EditAnywhere, Category = "DetectRadius")
-	float DetectRadius;
+	float DetectRange;
 };

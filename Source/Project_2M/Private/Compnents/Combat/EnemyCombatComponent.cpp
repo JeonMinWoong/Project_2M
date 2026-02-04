@@ -261,8 +261,6 @@ void UEnemyCombatComponent::UpdateBanAttack(float MinBanAttackDelay, float MaxBa
 	ClearBanAttack();
 	bIsBanAttack = NextBanAttack;
 	
-	TwoMinDebugHelper::Print(TEXT("공격 상태 : ") + FString(bIsBanAttack ? TEXT("금지") : TEXT("가능")));
-	
 	if (bIsBanAttack)
 	{
 		float BanAttackDelay = FMath::FRandRange(MinBanAttackDelay, MaxBanAttackDelay);

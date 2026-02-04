@@ -7,6 +7,7 @@
 #include "Components/WidgetComponent.h"
 #include "TwoMinEnemyCharacter.generated.h"
 
+class UTwoMinWidgetBoss;
 class ATwoMinPickUpItemBase;
 class UItemDropComponent;
 class UWidgetComponent;
@@ -42,6 +43,8 @@ protected:
 	UEnemyUIComponent* EnemyUIComponent;
 	
 private:
+	void InitEnemyHealthWidget();
+	
 	/** Components **/
 	UPROPERTY(VisibleAnywhere)
 	UEnemyCombatComponent* EnemyCombatComponent;
@@ -56,6 +59,9 @@ private:
 	UWidgetComponent* EnemyExecutionWidgetComponent;
 	
 	/** CharacterInfo **/
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|Name")
+	FString MonsterName = "Monster";
+	
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|MonsterType")
 	EMonsterType MonsterType = EMonsterType::Normal;
 
@@ -67,9 +73,17 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "ItemDropClass")
 	TSubclassOf<ATwoMinPickUpItemBase> ItemDropClass; 
-
+	
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|IsBossHealthBar")
+	bool bUseBossHealthBar = false;
+	
 public:
 	EMonsterType GetMonsterType() const { return MonsterType; };
-
+	FString GetMonsterName() const { return MonsterName; };
+	
 	FORCEINLINE void EnableExecutionWidget(bool bIsEnable) const { EnemyExecutionWidgetComponent->SetVisibility(bIsEnable); }
+	
+	FORCEINLINE void SetUseBossHealthBar(const bool bIsUse) { bUseBossHealthBar =  bIsUse; }
+	FORCEINLINE bool IsUseBossHealthBar() const { return bUseBossHealthBar; }
+	
 };

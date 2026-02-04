@@ -15,12 +15,20 @@ UBlackboardComponent* UBTDecorator_Enemy::GetBlackboardComponent(UBehaviorTreeCo
 	return BB;
 }
 
-UEnemyCombatComponent* UBTDecorator_Enemy::GetEnemyCombatComponent(UBehaviorTreeComponent& OwnerComp) const
+ATwoMinEnemyCharacter* UBTDecorator_Enemy::GetEnemyCharacter(UBehaviorTreeComponent& OwnerComp) const
 {
 	AAIController* AI = OwnerComp.GetAIOwner();
 	if (!AI) return nullptr;
 
 	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(AI->GetPawn());
+	if (!EnemyCharacter) return nullptr;
+	
+	return EnemyCharacter;
+}
+
+UEnemyCombatComponent* UBTDecorator_Enemy::GetEnemyCombatComponent(UBehaviorTreeComponent& OwnerComp) const
+{
+	ATwoMinEnemyCharacter* EnemyCharacter = GetEnemyCharacter(OwnerComp);
 	if (!EnemyCharacter) return nullptr;
 
 	UBlackboardComponent* BB = OwnerComp.GetBlackboardComponent();

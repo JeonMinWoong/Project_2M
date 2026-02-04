@@ -31,6 +31,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "SpawnInfo|SpawnMonsterPointIndex")
 	int32 SpawnMonsterPointIndex = -1;
 	
+	UPROPERTY(EditAnywhere, Category = "SpawnInfo|IsBoss")
+	bool bIsBoss = false;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "SpawnInfo|SpawnMonsters")
 	TMap<ESpawnMonsterType, TSubclassOf<AActor>> SpawnMonsterClasses;
 	

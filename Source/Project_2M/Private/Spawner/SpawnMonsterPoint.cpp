@@ -101,15 +101,13 @@ ATwoMinEnemyCharacter* ASpawnMonsterPoint::SpawnMonsterPoint(int32& OutSpawnMons
 		return nullptr;
 	}
 	
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.SpawnCollisionHandlingOverride =
-		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-	
 	ATwoMinEnemyCharacter* SpawnEnemy = 
-		GetWorld()->SpawnActor<ATwoMinEnemyCharacter>(
+		GetWorld()->SpawnActorDeferred<ATwoMinEnemyCharacter>(
 			SpawnMonsterClasses[SpawnMonsterType], 
 			GetActorTransform(), 
-			SpawnParameters
+			nullptr,
+			nullptr,
+			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
 		);
 	
 	if (!SpawnEnemy)
@@ -127,5 +125,7 @@ ATwoMinEnemyCharacter* ASpawnMonsterPoint::SpawnMonsterPoint(int32& OutSpawnMons
 		EnemyCombatComponent->InitPatrol(PatrolPoints, PatrolPathMode);	
 	}
 	
+	SpawnEnemy->SetUseBossHealthBar(bIsBoss);
+	SpawnEnemy->FinishSpawning(GetActorTransform());
 	return SpawnEnemy;
 }

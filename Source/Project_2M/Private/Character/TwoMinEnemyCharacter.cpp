@@ -155,8 +155,23 @@ void ATwoMinEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (UTwoMinWidgetEnemy* HealthWidget = Cast<UTwoMinWidgetEnemy>(EnemyHealthWidgetComponent->GetUserWidgetObject()))
+	InitEnemyHealthWidget();
+}
+
+void ATwoMinEnemyCharacter::InitEnemyHealthWidget()
+{
+	UUserWidget* UserWidget = EnemyHealthWidgetComponent->GetUserWidgetObject();
+	if (!UserWidget) return;
+		
+	UTwoMinWidgetEnemy* HealthWidget = Cast<UTwoMinWidgetEnemy>(UserWidget);
+	if (!HealthWidget) return;
+	
+	if (bUseBossHealthBar)
 	{
-		HealthWidget->InitEnemyIComponent(EnemyUIComponent);
+		HealthWidget->HideWorldHealthBar();
+	}
+	else
+	{
+		HealthWidget->InitEnemyUIComponent(EnemyUIComponent);
 	}
 }

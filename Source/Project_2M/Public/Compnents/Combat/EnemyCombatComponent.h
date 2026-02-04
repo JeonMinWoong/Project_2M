@@ -68,6 +68,9 @@ private:
 
 #pragma region Battle
 
+	UPROPERTY(EditDefaultsOnly, Category="IsBossInfo|CustomBattleRange")
+	float CustomBattleRange = 0;
+	
 	bool bIsBattlePossible = false;
 	
 	bool bIsBanAttack = false;
@@ -78,8 +81,11 @@ private:
 
 #pragma region Detect
 
-	UPROPERTY(EditAnywhere, Category = "WeaponEquipPossible")
+	UPROPERTY(EditAnywhere, Category = "DetectInfo|WeaponEquipPossible")
 	bool bIsEquipPossible = false;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "IsBossInfo|CustomDetectRange")
+	float CustomDetectRange = 0;
 	
 	bool bIsEquip = false;
 	
@@ -103,6 +109,7 @@ private:
 #pragma endregion
 	
 public:
+	FORCEINLINE float GetCustomBattleRange() const { return CustomBattleRange; }
 	FORCEINLINE bool IsBattlePossible() const { return bIsBattlePossible; }
 	FORCEINLINE void SetIsBattlePossible(bool InIsBattlePossible) { bIsBattlePossible = InIsBattlePossible; }
 	
@@ -114,6 +121,8 @@ public:
 		if (bIsEquipPossible == false)return;
 		bIsEquip = InIsEquip;
 	}
+	
+	FORCEINLINE float GetCustomDetectRange() const { return CustomDetectRange; }
 	
 	FORCEINLINE bool IsPatrol() const { return bIsPatrol; }
 	FORCEINLINE void SetIsPatrol(bool InIsPatrol) { bIsPatrol = InIsPatrol; }

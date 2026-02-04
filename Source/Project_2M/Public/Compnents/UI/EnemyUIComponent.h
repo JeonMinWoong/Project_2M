@@ -6,6 +6,7 @@
 #include "Compnents/UI/BaseUIComponent.h"
 #include "EnemyUIComponent.generated.h"
 
+class UTwoMinWidgetBoss;
 /**
  * 
  */
@@ -15,5 +16,14 @@ class PROJECT_2M_API UEnemyUIComponent : public UBaseUIComponent
 	GENERATED_BODY()
 
 public:
+	void ShowBossHealthBar(const FString& BossName);
+	
 	FOnStringChangeDelegate OnEnemyStateChanged;
+	
+private:
+	UPROPERTY(EditDefaultsOnly, Category= "CharacterInfo|BossHealthBar")
+	TSubclassOf<UTwoMinWidgetBoss> BossHealthBarWidgetClass;
+	
+	UPROPERTY()
+	UTwoMinWidgetBoss* BossHealthBarWidget;
 };
