@@ -33,9 +33,6 @@ private:
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* MapNameTextBlock;
 	
-	UPROPERTY(EditAnywhere, Category="MapSelectSlot|StageName")
-	FString StageName;
-	
 	UPROPERTY(EditAnywhere, Category="MapSelectSlot|MapName")
 	FText MapName;
 	
@@ -53,6 +50,5 @@ private:
 	
 public:
 	FORCEINLINE bool IsLocked() const { return bIsLocked; }
-	FORCEINLINE FString GetStageName() const { return StageName; }
 	
 };

@@ -3,6 +3,8 @@
 #include "Spawner/SpawnMonsterPointGroup.h"
 
 #include "TwoMinDebugHelper.h"
+#include "GameInstance/TwoMinGameInstance.h"
+#include "Managers/WorldStageManager.h"
 #include "Spawner/SpawnMonsterPoint.h"
 
 ASpawnMonsterPointGroup::ASpawnMonsterPointGroup()
@@ -21,22 +23,12 @@ void ASpawnMonsterPointGroup::BeginPlay()
 		return;
 	}
 	
-	bool bIsMatchLevel = false;
-	FString CurrentName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
-	switch (SpawnMonsterLevel) {
-	case ESpawnMonsterLevel::Develop:
-		bIsMatchLevel = CurrentName == "DevelopMap";
-		break;
-	case ESpawnMonsterLevel::Level_1_1:
-		bIsMatchLevel = CurrentName == "Dungeon_Stage1";
-		break;
-	case ESpawnMonsterLevel::Level_1_2:
-		bIsMatchLevel = CurrentName == "Dungeon_Stage2";
-		break;
-	case ESpawnMonsterLevel::Level_1_3:
-		bIsMatchLevel = CurrentName == "Dungeon_Stage3";
-		break;
-	}
+	UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetWorld()->GetGameInstance());
+	if (!GI) return;
+
+	const FString CurrentName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
+	const int32 IndexValue = static_cast<int32>(SpawnMonsterLevel) - 1;
+	bool bIsMatchLevel = CurrentName == GI->StateManager->GetCurrentStageName(IndexValue);
 	
 	if (bIsMatchLevel == false)
 	{

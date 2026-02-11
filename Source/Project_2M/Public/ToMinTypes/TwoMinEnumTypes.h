@@ -253,7 +253,7 @@ enum class ESpawnMonsterLevel : uint8
 	None = 0,
 	Develop = 1,
 	
-	Level_1_1 = 11,
-	Level_1_2 = 12,
-	Level_1_3 = 13,
+	Level_1_1 = 2,
+	Level_1_2 = 3,
+	Level_1_3 = 4,
 };

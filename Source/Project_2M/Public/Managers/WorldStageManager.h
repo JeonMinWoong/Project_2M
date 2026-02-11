@@ -26,10 +26,11 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "WorldStageNames")
 	TArray<FString> WorldStageNames;
 	
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TMap<FString, bool> WorldStageMap;
 	
 public:
+	FORCEINLINE FString GetCurrentStageName(int32 IndexValue) const { return WorldStageNames[IndexValue]; }
 	FORCEINLINE TMap<FString, bool> GetWorldStageMap() { return WorldStageMap; }
 	
 	FORCEINLINE void SetWorldStage(FString WorldStageName, const bool bIsClear) 

@@ -9,6 +9,8 @@ void UWorldStageManager::InitStage()
 
 	for (auto StageName : WorldStageNames)
 	{
+		if (StageName == "DevelopMap") continue;
+		
 		WorldStageMap.Add(StageName, false);
 	}
 	
@@ -16,14 +18,14 @@ void UWorldStageManager::InitStage()
 	{
 		if (TestClearArray.IsEmpty()) return;
 		
-		for (int32 Index = 0; Index < TestClearArray.Num(); ++Index)
+		for (int32 Index = 1; Index < TestClearArray.Num(); ++Index)
 		{
-			WorldStageMap[WorldStageNames[Index]] = TestClearArray[Index]; 
+			WorldStageMap[WorldStageNames[Index]] = TestClearArray[Index - 1]; 
 		}
 	}
 	else
 	{
-		FString FirstStageName = WorldStageNames[0];
+		FString FirstStageName = WorldStageNames[1];
 		WorldStageMap[FirstStageName] = true;	
 	}
 }
