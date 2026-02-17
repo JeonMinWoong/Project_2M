@@ -58,6 +58,8 @@ void ATwoMinBaseCharacter::AfterDeathProcess()
 		
 	if (RemoveDelay >= 0)
 	{
+		if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(this)) return;
+		
 		SetLifeSpan(RemoveDelay);	
 	}
 	
@@ -73,6 +75,13 @@ void ATwoMinBaseCharacter::Destroyed()
 void ATwoMinBaseCharacter::OnDestroyedProcess()
 {
 	
+}
+
+void ATwoMinBaseCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	
+	GetWorldTimerManager().ClearAllTimersForObject(this);
 }
 
 void ATwoMinBaseCharacter::OnHitEffectSpawnPoint(bool bIsTargetGuard, int32 WeaponIndex)

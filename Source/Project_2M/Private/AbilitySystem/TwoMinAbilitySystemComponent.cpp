@@ -371,14 +371,16 @@ void UTwoMinAbilitySystemComponent::StartDecreaseFightValue(ATwoMinPlayerCharact
 	
 	EndDecreaseFightValue();
 	
+	TWeakObjectPtr<ATwoMinPlayerCharacter> WeakPlayerCharacter = PlayerCharacter;
 	float DecreaseDelay = CurveTable->FindCurve(FName("Player.DecDelay.Fight"), TEXT(""))->Eval(1);
 	PlayerCharacter->GetWorldTimerManager().SetTimer(PlayerCharacter->FightDecreaseTimerHandle,
-		[this, PlayerCharacter]()
+		[this, WeakPlayerCharacter]()
 	{
 			if (FightDecreaseHandle.IsValid()) return;
+			if (!WeakPlayerCharacter.IsValid()) return;
 			
 			FGameplayEffectSpecHandle Spec = MakeOutgoingSpec(
-				PlayerCharacter->GetFightDecreaseEffect()->GetClass(), 
+				WeakPlayerCharacter->GetFightDecreaseEffect()->GetClass(), 
 				1.f, 
 				MakeEffectContext()
 			);

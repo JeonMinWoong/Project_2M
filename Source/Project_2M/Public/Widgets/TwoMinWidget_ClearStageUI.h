@@ -41,8 +41,6 @@ private:
 	void PlayClearCountAnim();
 	void FinishClearCountAnim();
 	
-	void LockPlayerInput(bool bLock);
-	
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* ClearStageTextBlock;
 	

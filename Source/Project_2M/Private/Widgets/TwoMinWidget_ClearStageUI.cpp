@@ -128,9 +128,12 @@ void UTwoMinWidget_ClearStageUI::SettingClearStageUI()
 	UTwoMinAbilitySystemComponent* ASC = PlayerCharacter->GetAbilitySystemComponent();
 	if (!ASC) return;
 	
-	LockPlayerInput(true);
-	PlayClearStageAnim();
+	ATwoMinBaseGameMode* GM = Cast<ATwoMinBaseGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return;
 	
+	GM->LockPlayerInput(true, this);
+	
+	PlayClearStageAnim();
 	ASC->GiveGoldAmount(GainGold);
 	ASC->GiveExperienceAmount(GainExp);
 	GI->ItemDataManager->GiveToInventory(PlayerCharacter, EquipmentList, ConsumeList, EtcList, true);
@@ -231,21 +234,4 @@ bool UTwoMinWidget_ClearStageUI::OnReturnButton()
 	bIsGoingVillage = true;
 	GM->OpenStageProcess(GoStageName);
 	return true;
-}
-
-void UTwoMinWidget_ClearStageUI::LockPlayerInput(const bool bLock)
-{
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	if (!PC) return;
-	
-	PC->SetIgnoreMoveInput(bLock);
-	PC->SetIgnoreLookInput(bLock);
-	if (bLock)
-	{
-		PC->SetInputMode(FInputModeUIOnly().SetWidgetToFocus(TakeWidget()));
-	}
-	else
-	{
-		PC->SetInputMode(FInputModeGameOnly());
-	}
 }

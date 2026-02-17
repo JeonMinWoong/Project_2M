@@ -30,6 +30,7 @@ public:
 	virtual void AfterDeathProcess();
 	virtual void Destroyed() override;
 	virtual void OnDestroyedProcess();
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	virtual void OnHitEffectSpawnPoint(bool bIsTargetGuard, int32 WeaponIndex);
 	virtual void OnHitEffectAttachToWeaponSocket(bool bIsTargetGuard, int32 WeaponIndex);

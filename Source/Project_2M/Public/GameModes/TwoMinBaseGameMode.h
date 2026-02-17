@@ -6,6 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "TwoMinBaseGameMode.generated.h"
 
+class UTwoMinWidget_DefeatStageUI;
+class UTwoMinWidgetBase;
 class UTwoMinWidget_ClearStageUI;
 class UTwoMinWidget_ScreenFadeInOut;
 /**
@@ -23,6 +25,8 @@ public:
 	bool IsOpeningStage() const;
 	
 	void ShowClearStageUI();
+	void ShowDefeatStageUI();
+	void LockPlayerInput(bool bLock, UTwoMinWidgetBase* InWidget) const;
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category="GameModeWidget|FadeInOut")
@@ -36,4 +40,10 @@ private:
 	
 	UPROPERTY()
 	UTwoMinWidget_ClearStageUI* ClearStageWidget;
+	
+	UPROPERTY(EditDefaultsOnly, Category="GameModeWidget|DefeatStage")
+	TSubclassOf<UTwoMinWidget_DefeatStageUI> DefeatStageWidgetClass;
+	
+	UPROPERTY()
+	UTwoMinWidget_DefeatStageUI* DefeatStageWidget;
 };

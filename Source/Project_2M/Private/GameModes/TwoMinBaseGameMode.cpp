@@ -7,6 +7,7 @@
 #include "GameInstance/TwoMinGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/TwoMinWidget_ClearStageUI.h"
+#include "Widgets/TwoMinWidget_DefeatStageUI.h"
 #include "Widgets/GameMode/TwoMinWidget_ScreenFadeInOut.h"
 
 void ATwoMinBaseGameMode::BeginPlay()
@@ -64,4 +65,36 @@ void ATwoMinBaseGameMode::ShowClearStageUI()
 	ClearStageWidget->SettingClearStageUI();
 	
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0);
+}
+
+void ATwoMinBaseGameMode::ShowDefeatStageUI()
+{
+	if (!DefeatStageWidgetClass) return;
+	
+	if (!DefeatStageWidget)
+	{
+		DefeatStageWidget = CreateWidget<UTwoMinWidget_DefeatStageUI>(GetWorld(), DefeatStageWidgetClass);	
+	}
+	
+	DefeatStageWidget->AddToViewport();
+	DefeatStageWidget->SettingDefeatStageUI();
+	
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0);
+}
+
+void ATwoMinBaseGameMode::LockPlayerInput(bool bLock, UTwoMinWidgetBase* InWidget) const
+{
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (!PC) return;
+	
+	PC->SetIgnoreMoveInput(bLock);
+	PC->SetIgnoreLookInput(bLock);
+	if (bLock)
+	{
+		PC->SetInputMode(FInputModeUIOnly().SetWidgetToFocus(InWidget->TakeWidget()));
+	}
+	else
+	{
+		PC->SetInputMode(FInputModeGameOnly());
+	}
 }

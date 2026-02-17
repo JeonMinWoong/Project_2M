@@ -23,7 +23,9 @@
 #include "GameFramework/InputDeviceSubsystem.h"
 #include "GameFramework/InputSettings.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameModes/TwoMinBaseGameMode.h"
 #include "Input/CharacterInputComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Widgets/Player/TwoMinWidgetPlayer.h"
 
 ATwoMinPlayerCharacter::ATwoMinPlayerCharacter()
@@ -150,6 +152,21 @@ void ATwoMinPlayerCharacter::Tick(float DeltaTime)
 		bIsSpecialAttackCheck = false;
 		CurDelay = 0.f;
 	}
+}
+
+void ATwoMinPlayerCharacter::AfterDeathProcess()
+{
+	Super::AfterDeathProcess();
+	
+	DefeatStateProcess();
+}
+
+void ATwoMinPlayerCharacter::DefeatStateProcess()
+{
+	ATwoMinBaseGameMode* GM = Cast<ATwoMinBaseGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return;
+	
+	GM->ShowDefeatStageUI();
 }
 
 void ATwoMinPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

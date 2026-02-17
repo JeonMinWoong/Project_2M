@@ -1,0 +1,141 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
+#include "Widgets/TwoMinWidget_DefeatStageUI.h"
+
+#include "Components/TextBlock.h"
+#include "GameInstance/TwoMinGameInstance.h"
+#include "GameModes/TwoMinBaseGameMode.h"
+#include "Kismet/GameplayStatics.h"
+#include "Managers/WorldStageManager.h"
+#include "Widgets/TwoMinWidget_BaseButton.h"
+
+void UTwoMinWidget_DefeatStageUI::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	
+	if (OnOpenDefeatStageAnim)
+	{
+		CompleteOpenDefeatStageAnimEvent.BindDynamic(this, &UTwoMinWidget_DefeatStageUI::PlayDefeatCountAnim);
+		BindToAnimationFinished(OnOpenDefeatStageAnim, CompleteOpenDefeatStageAnimEvent);
+	}
+	
+	bIsGoingVillage = false;
+}
+
+FReply UTwoMinWidget_DefeatStageUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
+{
+	const FKey InKey = InKeyEvent.GetKey();
+	if (InKey == EKeys::Enter || InKey == EKeys::Gamepad_FaceButton_Bottom)
+	{
+		if (OnReturnButton() == false) return FReply::Unhandled();
+		
+		return FReply::Handled();
+	}
+	
+	if (InKey == EKeys::P || InKey == EKeys::Gamepad_FaceButton_Right)
+	{
+		return FReply::Unhandled();
+	}
+	
+	if (InKey == EKeys::Right || InKey == EKeys::D || InKey == EKeys::Gamepad_LeftStick_Right)
+	{
+		return FReply::Unhandled();
+	}
+	
+	if (InKey == EKeys::Left || InKey == EKeys::A || InKey == EKeys::Gamepad_LeftStick_Left)
+	{
+		return FReply::Unhandled();
+	}
+	
+	if (InKey == EKeys::Up || InKey == EKeys::W || InKey == EKeys::Gamepad_LeftStick_Up)
+	{
+		return FReply::Unhandled();
+	}
+	
+	if (InKey == EKeys::Down || InKey == EKeys::S || InKey == EKeys::Gamepad_LeftStick_Down)
+	{
+		return FReply::Unhandled();
+	}
+	
+	return Super::NativeOnPreviewKeyDown(MyGeometry, InKeyEvent);
+}
+
+
+void UTwoMinWidget_DefeatStageUI::SettingDefeatStageUI()
+{
+	ATwoMinBaseGameMode* GM = Cast<ATwoMinBaseGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return;
+	
+	GM->LockPlayerInput(true, this);
+	
+	PlayDefeatStageAnim();
+}
+
+void UTwoMinWidget_DefeatStageUI::PlayDefeatStageAnim()
+{
+	if (IsAnimationPlaying(OnOpenDefeatStageAnim))
+	{
+		StopAnimation(OnOpenDefeatStageAnim);
+	}
+	
+	PlayAnimation(OnOpenDefeatStageAnim);
+}
+
+void UTwoMinWidget_DefeatStageUI::PlayDefeatCountAnim()
+{
+	if (IsAnimationPlaying(OnStartDefeatCountAnim))
+	{
+		StopAnimation(OnStartDefeatCountAnim);
+	}
+	
+	PlayAnimation(OnStartDefeatCountAnim);
+	ReturnButton->SetFocus();
+}
+
+void UTwoMinWidget_DefeatStageUI::Anim_OnUpdateDefeatCount()
+{
+	if (bIsGoingVillage) return;
+	
+	const int32 CountValue = MaxClearCountTime - CurClearCountTime++;
+	const FString FinalStr = FString::Printf(TEXT("%d초 후 마을로 자동 이동"), CountValue);
+	CountTextBlock->SetText(FText::FromString(FinalStr));
+	
+	FinishDefeatCountAnim();
+}
+
+void UTwoMinWidget_DefeatStageUI::FinishDefeatCountAnim()
+{
+	if (MaxClearCountTime >= CurClearCountTime) return;
+	
+	if (IsAnimationPlaying(OnStartDefeatCountAnim))
+	{
+		StopAnimation(OnStartDefeatCountAnim);
+	}
+	
+	OnReturnButton();
+}
+
+bool UTwoMinWidget_DefeatStageUI::OnReturnButton()
+{
+	if (bIsGoingVillage) return false;
+	
+	ATwoMinBaseGameMode* GM = Cast<ATwoMinBaseGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return false;
+	
+	UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
+	if (!GI) return false;
+
+	FString CurRealStageName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
+
+	const int32 CurStageIndex = GI->StateManager->GetWorldStageIndex(CurRealStageName);
+	FName GoStageName = FName(*GI->StateManager->GetIndexRealStageName(0));
+	if (CurStageIndex != 0)
+	{
+		GoStageName = FName(*GI->StateManager->GetVillageName());
+	}
+	
+	bIsGoingVillage = true;
+	GM->OpenStageProcess(GoStageName);
+	return true;
+}
