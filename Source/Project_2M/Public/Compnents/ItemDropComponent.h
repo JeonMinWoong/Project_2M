@@ -16,14 +16,9 @@ class PROJECT_2M_API UItemDropComponent : public UActorComponent
 public:	
 	UItemDropComponent();
 
-	TMap<int32, int32> TryGetDropItems() const;
+	TMap<int32, int32> TryGetCharacterDropItems() const;
 
 private:
-	void CalculateDropProbability(const FItemDropData* ItemDropData, int32& OutItemCode, int32& OutDropCount) const;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "DropTable")
-	UDataTable* DropTable;
-
 	UPROPERTY(EditDefaultsOnly, Category = "DropTableOwner")
 	FString DropTableOwner;
 };

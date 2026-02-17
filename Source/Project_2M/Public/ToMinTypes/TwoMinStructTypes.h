@@ -539,3 +539,32 @@ struct FTeleportData
 	float TeleportDistance;
 	
 };
+
+USTRUCT(BlueprintType)
+struct FWorldStageNameData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString RealStageName;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString ShowStateName;
+	
+};
+
+USTRUCT(BlueprintType)
+struct FWorldStageClearGainData : public FTableRowBase
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FName ClearItemOwner;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 GainGold;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 GainExp;
+	
+};

@@ -6,6 +6,7 @@
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "ItemDataManager.generated.h"
 
+class ATwoMinPlayerCharacter;
 /**
  * 
  */
@@ -15,11 +16,20 @@ class PROJECT_2M_API UItemDataManager : public UObject
 	GENERATED_BODY()
 	
 public:
+	TMap<int32, int32> TryGetDropItems(const FString& DropTableOwner) const;
+	void GetDropItemList(TPair<int32, int32> Item, TArray<FItemEquipmentData>& OutItemEquipmentList, 
+		TArray<FItemConsumeData>& OutItemConsumeList, TArray<FItemEtcData>& OutItemEtcList) const;
+	void GiveToInventory(const ATwoMinPlayerCharacter* PlayerCharacter, 
+		TArray<FItemEquipmentData> InItemEquipmentList, TArray<FItemConsumeData> InItemConsumeList,
+		TArray<FItemEtcData> InItemEtcList, bool bIsClearStage) const;
+	
 	FItemEquipmentData GetItemEquipmentData(int32 ItemID) const;
 	FItemConsumeData GetItemConsumeData(int32 ItemID) const;
 	FItemEtcData GetItemEtcData(int32 ItemID) const;
-	
+
 private:
+	void CalculateDropProbability(const FItemDropData* ItemDropData, int32& OutItemCode, int32& OutDropCount) const;
+	
 	UPROPERTY(EditDefaultsOnly, Category="EquipmentData")
 	UDataTable* EquipmentDataTable;
 
@@ -28,4 +38,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="EtcData")
 	UDataTable* EtcDataTable;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "StageInfo|DropTable")
+	UDataTable* DropTable;
 };

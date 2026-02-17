@@ -48,7 +48,7 @@ FReply UTwoMinWidget_MapSelectUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 		UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
 		if (!GI) return FReply::Unhandled();
 		
-		const FName GoStageName = FName(*GI->StateManager->GetCurrentStageName(CurrentFocusIndex + 1));
+		const FName GoStageName = FName(*GI->StateManager->GetIndexRealStageName(CurrentFocusIndex + 1));
 		GM->OpenStageProcess(GoStageName);
 		
 		return FReply::Handled();
@@ -122,7 +122,7 @@ void UTwoMinWidget_MapSelectUI::InitStageButtons()
 	TMap<FString, bool> WorldStageMap = GI->StateManager->GetWorldStageMap();
 	for (int32 Index = 0; Index < StageButtonSlots.Num(); ++Index)
 	{
-		bool bIsLocked = !WorldStageMap[GI->StateManager->GetCurrentStageName(Index + 1)];
+		bool bIsLocked = !WorldStageMap[GI->StateManager->GetIndexRealStageName(Index + 1)];
 		StageButtonSlots[Index]->SetLocked(bIsLocked);
 	}
 }

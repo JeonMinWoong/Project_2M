@@ -47,9 +47,13 @@ public:
 	UFUNCTION()
 	void GiveExperience(ATwoMinEnemyCharacter* InEnemyCharacter);
 	
+	void GiveExperienceAmount(int32 InExperienceAmount);
+	
 	// Player 전용
 	UFUNCTION()
 	void GiveGold(ATwoMinEnemyCharacter* InEnemyCharacter);
+	
+	void GiveGoldAmount(int32 InGoldAmount);
 	
 	// Player 전용
 	UFUNCTION()

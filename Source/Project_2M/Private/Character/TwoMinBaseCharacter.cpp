@@ -60,6 +60,19 @@ void ATwoMinBaseCharacter::AfterDeathProcess()
 	{
 		SetLifeSpan(RemoveDelay);	
 	}
+	
+}
+
+void ATwoMinBaseCharacter::Destroyed()
+{
+	Super::Destroyed();
+	
+	OnDestroyedProcess();
+}
+
+void ATwoMinBaseCharacter::OnDestroyedProcess()
+{
+	
 }
 
 void ATwoMinBaseCharacter::OnHitEffectSpawnPoint(bool bIsTargetGuard, int32 WeaponIndex)

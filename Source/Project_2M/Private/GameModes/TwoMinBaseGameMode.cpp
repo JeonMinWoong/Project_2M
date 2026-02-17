@@ -5,6 +5,8 @@
 
 #include "Blueprint/UserWidget.h"
 #include "GameInstance/TwoMinGameInstance.h"
+#include "Kismet/GameplayStatics.h"
+#include "Widgets/TwoMinWidget_ClearStageUI.h"
 #include "Widgets/GameMode/TwoMinWidget_ScreenFadeInOut.h"
 
 void ATwoMinBaseGameMode::BeginPlay()
@@ -40,11 +42,26 @@ void ATwoMinBaseGameMode::OpenStageProcess(const FName StageName)
 		FadeInOutWidget = CreateWidget<UTwoMinWidget_ScreenFadeInOut>(GetWorld(), FadeInOutWidgetClass);	
 	}
 	
-	FadeInOutWidget->AddToViewport();
+	FadeInOutWidget->AddToViewport(1000);
 	FadeInOutWidget->StartFadeOut(StageName);
 }
 
 bool ATwoMinBaseGameMode::IsOpeningStage() const
 {
 	return FadeInOutWidget && FadeInOutWidget->IsPlayingFadeOut();
+}
+
+void ATwoMinBaseGameMode::ShowClearStageUI()
+{
+	if (!ClearStageWidgetClass) return;
+	
+	if (!ClearStageWidget)
+	{
+		ClearStageWidget = CreateWidget<UTwoMinWidget_ClearStageUI>(GetWorld(), ClearStageWidgetClass);	
+	}
+	
+	ClearStageWidget->AddToViewport();
+	ClearStageWidget->SettingClearStageUI();
+	
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0);
 }

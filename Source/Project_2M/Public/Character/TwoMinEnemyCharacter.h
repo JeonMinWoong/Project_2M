@@ -29,6 +29,9 @@ public:
 	virtual UEnemyUIComponent* GetEnemyUIComponent() const override;
 	virtual void BeforeDeathProcess() override;
 	virtual void AfterDeathProcess() override;
+	virtual void OnDestroyedProcess() override;
+	
+	void ClearStageProcess() const;
 	
 	FTimerHandle DecreaseGroggyTimerHandle;
 	

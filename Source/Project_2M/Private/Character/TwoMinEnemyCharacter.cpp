@@ -14,7 +14,9 @@
 #include "Components/WidgetComponent.h"
 #include "DataAssets/StartUpData/DataAsset_StartUpDataBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameModes/TwoMinBaseGameMode.h"
 #include "Item/PickUp/TwoMinPickUpItemBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "Widgets/Enemy/TwoMinWidgetEnemy.h"
 
 ATwoMinEnemyCharacter::ATwoMinEnemyCharacter()
@@ -91,8 +93,8 @@ void ATwoMinEnemyCharacter::AfterDeathProcess()
 {
 	Super::AfterDeathProcess();
 	
-	TMap<int32, int32> DropItems = ItemDropComponent->TryGetDropItems();
-
+	TMap<int32, int32> DropItems = ItemDropComponent->TryGetCharacterDropItems();
+	
 	if (DropItems.IsEmpty())
 	{
 		TwoMinDebugHelper::Print(TEXT("아이템 드랍 없음."));
@@ -136,6 +138,21 @@ void ATwoMinEnemyCharacter::AfterDeathProcess()
 			ItemDropBox->MakeItemDropBox(DropItem);
 		}
 	}
+}
+
+void ATwoMinEnemyCharacter::OnDestroyedProcess()
+{
+	Super::OnDestroyedProcess();
+	
+	ClearStageProcess();
+}
+
+void ATwoMinEnemyCharacter::ClearStageProcess() const
+{
+	ATwoMinBaseGameMode* GM = Cast<ATwoMinBaseGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return;
+	
+	GM->ShowClearStageUI();
 }
 
 void ATwoMinEnemyCharacter::PossessedBy(AController* NewController)

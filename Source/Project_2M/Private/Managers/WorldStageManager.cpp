@@ -5,13 +5,13 @@
 
 void UWorldStageManager::InitStage()
 {
-	if (WorldStageNames.IsEmpty()) return;
+	if (WorldStageNameDataGroup.IsEmpty()) return;
 
-	for (auto StageName : WorldStageNames)
+	for (auto StageData : WorldStageNameDataGroup)
 	{
-		if (StageName == "DevelopMap") continue;
+		if (StageData.RealStageName == "DevelopMap") continue;
 		
-		WorldStageMap.Add(StageName, false);
+		WorldStageMap.Add(StageData.RealStageName, false);
 	}
 	
 	if (bIsTestClear)
@@ -20,12 +20,45 @@ void UWorldStageManager::InitStage()
 		
 		for (int32 Index = 1; Index < TestClearArray.Num(); ++Index)
 		{
-			WorldStageMap[WorldStageNames[Index]] = TestClearArray[Index - 1]; 
+			WorldStageMap[WorldStageNameDataGroup[Index].RealStageName] = TestClearArray[Index - 1]; 
 		}
 	}
 	else
 	{
-		FString FirstStageName = WorldStageNames[1];
+		FString FirstStageName = WorldStageNameDataGroup[1].RealStageName;
 		WorldStageMap[FirstStageName] = true;	
 	}
+}
+
+int32 UWorldStageManager::GetWorldStageIndex(const FString& WorldRealStageName)
+{
+	for (int32 Index = 0; Index < WorldStageNameDataGroup.Num(); ++Index)
+	{
+		for (auto StageData : WorldStageNameDataGroup)
+		{
+			if (StageData.RealStageName == WorldRealStageName)
+			{
+				return Index;
+			}
+		}
+	}
+	
+	return -1;
+}
+
+FWorldStageClearGainData* UWorldStageManager::GetCurrentWorldClearStageData(const FString& WorldRealStageName) const
+{
+	TArray<FWorldStageClearGainData*> ClearStageTableGroup;
+		
+	ClearStageTable->GetAllRows(WorldRealStageName, ClearStageTableGroup);
+		
+	for (FWorldStageClearGainData* ClearStateData : ClearStageTableGroup)
+	{
+		if (ClearStateData && ClearStateData->ClearItemOwner == WorldRealStageName)
+		{
+			return ClearStateData;
+		}
+	}
+	
+	return nullptr;
 }

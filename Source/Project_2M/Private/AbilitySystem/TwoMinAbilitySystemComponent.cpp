@@ -278,8 +278,11 @@ bool UTwoMinAbilitySystemComponent::TryActivateAbilityByTag(FGameplayTag Ability
 void UTwoMinAbilitySystemComponent::GiveExperience(ATwoMinEnemyCharacter* InEnemyCharacter)
 {
 	UTwoMinAbilitySystemComponent* TargetASC = InEnemyCharacter->GetAbilitySystemComponent();
-	int32 GiveExperience = TargetASC->GetNumericAttribute(UTwoMinAttributeSet::GetGiveExperienceAttribute());
+	GiveExperienceAmount(TargetASC->GetNumericAttribute(UTwoMinAttributeSet::GetGiveExperienceAttribute()));
+}
 
+void UTwoMinAbilitySystemComponent::GiveExperienceAmount(int32 InExperienceAmount)
+{
 	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActor());
 	if (!PlayerCharacter) return;
 	
@@ -289,15 +292,18 @@ void UTwoMinAbilitySystemComponent::GiveExperience(ATwoMinEnemyCharacter* InEnem
 		MakeEffectContext()
 	);
 
-	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Gain_Experience, GiveExperience);
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Gain_Experience, InExperienceAmount);
 	ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
 }
 
 void UTwoMinAbilitySystemComponent::GiveGold(ATwoMinEnemyCharacter* InEnemyCharacter)
 {
 	UTwoMinAbilitySystemComponent* TargetASC = InEnemyCharacter->GetAbilitySystemComponent();
-	int32 GiveGold = TargetASC->GetNumericAttribute(UTwoMinAttributeSet::GetGiveGoldAttribute());
-	
+	GiveGoldAmount(TargetASC->GetNumericAttribute(UTwoMinAttributeSet::GetGiveGoldAttribute()));
+}
+
+void UTwoMinAbilitySystemComponent::GiveGoldAmount(int32 InGoldAmount)
+{
 	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActor());
 	if (!PlayerCharacter) return;
 	
@@ -307,8 +313,8 @@ void UTwoMinAbilitySystemComponent::GiveGold(ATwoMinEnemyCharacter* InEnemyChara
 		MakeEffectContext()
 	);
 
-	PlayerCharacter->SetGainGold(GiveGold);
-	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Gain_Gold, GiveGold);
+	PlayerCharacter->SetGainGold(InGoldAmount);
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Gain_Gold, InGoldAmount);
 	ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
 }
 

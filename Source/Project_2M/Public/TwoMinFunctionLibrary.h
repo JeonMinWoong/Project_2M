@@ -45,4 +45,5 @@ public:
 	
 	UFUNCTION()
 	static bool IsNearFloatEqual(float Value, float EqualValue);
+
 };
