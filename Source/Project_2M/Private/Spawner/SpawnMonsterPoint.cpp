@@ -28,6 +28,8 @@ void ASpawnMonsterPoint::PostDuplicate(bool bDuplicateForPIE)
 {
 	Super::PostDuplicate(bDuplicateForPIE);
 	
+	if (bDuplicateForPIE) return;
+	
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), StaticClass(), FoundActors);
 	
