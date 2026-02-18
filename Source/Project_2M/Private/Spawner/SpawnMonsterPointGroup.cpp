@@ -5,6 +5,8 @@
 #include "TwoMinDebugHelper.h"
 #include "Character/TwoMinEnemyCharacter.h"
 #include "GameInstance/TwoMinGameInstance.h"
+#include "Item/TwoMinStageWall.h"
+#include "Kismet/GameplayStatics.h"
 #include "Managers/WorldStageManager.h"
 #include "Spawner/SpawnMonsterPoint.h"
 
@@ -71,6 +73,17 @@ void ASpawnMonsterPointGroup::BeginPlay()
 	}
 	
 	MaxDeathMonsterCount = SpawnedMonstersMap.Num();
+	
+	TArray<AActor*> FoundStageWallActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ATwoMinStageWall::StaticClass(), FoundStageWallActors);
+
+	for (AActor* FoundStageWallActor : FoundStageWallActors)
+	{
+		if (ATwoMinStageWall* StageWall = Cast<ATwoMinStageWall>(FoundStageWallActor))
+		{
+			StageWallGroup.Emplace(StageWall);
+		}
+	}
 }
 
 void ASpawnMonsterPointGroup::AddDeathMonsterCount()
@@ -79,7 +92,17 @@ void ASpawnMonsterPointGroup::AddDeathMonsterCount()
 	
 	if (CurDeathMonsterCount < MaxDeathMonsterCount) return;
 	
-	TwoMinDebugHelper::Print(TEXT("보스전 오픈"), FColor::Green);
+	OpenBossStage();
+}
+
+void ASpawnMonsterPointGroup::OpenBossStage()
+{
+	for (auto StageWall : StageWallGroup)
+	{
+		if (!StageWall) continue;
+		
+		StageWall->Destroy();
+	}
 }
 
 

@@ -6,6 +6,7 @@
 #include "ToMinTypes/TwoMinEnumTypes.h"
 #include "SpawnMonsterPointGroup.generated.h"
 
+class ATwoMinStageWall;
 class ATwoMinEnemyCharacter;
 class ASpawnMonsterPoint;
 
@@ -22,6 +23,8 @@ protected:
 	virtual void BeginPlay() override;
 	
 private:
+	void OpenBossStage();
+	
 	UPROPERTY(EditAnywhere, Category = "SpawnGroupInfo|SpawnLevel")
 	ESpawnMonsterLevel SpawnMonsterLevel;
 	
@@ -39,5 +42,8 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, Category = "SpawnGroupInfo|DeathMonsterCount")
 	int32 CurDeathMonsterCount = 0;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SpawnGroupInfo|StageWallGroup")
+	TArray<ATwoMinStageWall*> StageWallGroup;
 	
 };
