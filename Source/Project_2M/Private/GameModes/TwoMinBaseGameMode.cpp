@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "GameInstance/TwoMinGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Spawner/SpawnMonsterPointGroup.h"
 #include "Widgets/TwoMinWidget_ClearStageUI.h"
 #include "Widgets/TwoMinWidget_DefeatStageUI.h"
 #include "Widgets/GameMode/TwoMinWidget_ScreenFadeInOut.h"
@@ -13,6 +14,9 @@
 void ATwoMinBaseGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	AActor* FindSpawnGroup = UGameplayStatics::GetActorOfClass(GetWorld(), ASpawnMonsterPointGroup::StaticClass());
+	SpawnMonsterPointGroup = Cast<ASpawnMonsterPointGroup>(FindSpawnGroup);
 	
 	UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
 	if (!GI) return;

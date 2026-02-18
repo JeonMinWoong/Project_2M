@@ -17,6 +17,7 @@
 #include "GameModes/TwoMinBaseGameMode.h"
 #include "Item/PickUp/TwoMinPickUpItemBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Spawner/SpawnMonsterPointGroup.h"
 #include "Widgets/Enemy/TwoMinWidgetEnemy.h"
 
 ATwoMinEnemyCharacter::ATwoMinEnemyCharacter()
@@ -87,11 +88,21 @@ void ATwoMinEnemyCharacter::BeforeDeathProcess()
 	AI->StopMovement();
 	AI->BrainComponent->StopLogic(TEXT("AI Disabled"));
 	AI->UnPossess();
+	
+	ATwoMinBaseGameMode* GM = Cast<ATwoMinBaseGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return;
+	
+	if (IsUseBossHealthBar() == false)
+	{
+		GM->GetSpawnMonsterPointGroup()->AddDeathMonsterCount();
+	}
 }
 
 void ATwoMinEnemyCharacter::AfterDeathProcess()
 {
 	Super::AfterDeathProcess();
+	
+	if (IsUseBossHealthBar()) return;
 	
 	TMap<int32, int32> DropItems = ItemDropComponent->TryGetCharacterDropItems();
 	
@@ -143,6 +154,8 @@ void ATwoMinEnemyCharacter::AfterDeathProcess()
 void ATwoMinEnemyCharacter::OnDestroyedProcess()
 {
 	Super::OnDestroyedProcess();
+	
+	if (IsUseBossHealthBar() == false) return;
 	
 	ClearStageProcess();
 }

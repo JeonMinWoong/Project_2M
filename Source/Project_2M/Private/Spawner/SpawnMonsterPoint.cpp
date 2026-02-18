@@ -24,6 +24,16 @@ void ASpawnMonsterPoint::OnConstruction(const FTransform& Transform)
 	}
 }
 
+void ASpawnMonsterPoint::PostDuplicate(bool bDuplicateForPIE)
+{
+	Super::PostDuplicate(bDuplicateForPIE);
+	
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), StaticClass(), FoundActors);
+	
+	SpawnMonsterPointIndex = FoundActors.Num();
+}
+
 void ASpawnMonsterPoint::PostEditChangeChainProperty(FPropertyChangedChainEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeChainProperty(PropertyChangedEvent);

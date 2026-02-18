@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "TwoMinBaseGameMode.generated.h"
 
+class ASpawnMonsterPointGroup;
 class UTwoMinWidget_DefeatStageUI;
 class UTwoMinWidgetBase;
 class UTwoMinWidget_ClearStageUI;
@@ -46,4 +47,11 @@ private:
 	
 	UPROPERTY()
 	UTwoMinWidget_DefeatStageUI* DefeatStageWidget;
+	
+	UPROPERTY()
+	ASpawnMonsterPointGroup* SpawnMonsterPointGroup;
+	
+public:
+	FORCEINLINE ASpawnMonsterPointGroup* GetSpawnMonsterPointGroup() const { return SpawnMonsterPointGroup; }
+	
 };

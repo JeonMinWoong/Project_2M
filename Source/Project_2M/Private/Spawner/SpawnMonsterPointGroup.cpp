@@ -3,6 +3,7 @@
 #include "Spawner/SpawnMonsterPointGroup.h"
 
 #include "TwoMinDebugHelper.h"
+#include "Character/TwoMinEnemyCharacter.h"
 #include "GameInstance/TwoMinGameInstance.h"
 #include "Managers/WorldStageManager.h"
 #include "Spawner/SpawnMonsterPoint.h"
@@ -60,7 +61,25 @@ void ASpawnMonsterPointGroup::BeginPlay()
 			return;
 		}
 		
+		if (SpawnEnemy->IsUseBossHealthBar())
+		{
+			SpawnedBossMonster = SpawnEnemy;
+			continue;
+		}
+		
 		SpawnedMonstersMap.Add(SpawnIndex, SpawnEnemy);
 	}
+	
+	MaxDeathMonsterCount = SpawnedMonstersMap.Num();
 }
+
+void ASpawnMonsterPointGroup::AddDeathMonsterCount()
+{
+	CurDeathMonsterCount++;
+	
+	if (CurDeathMonsterCount < MaxDeathMonsterCount) return;
+	
+	TwoMinDebugHelper::Print(TEXT("보스전 오픈"), FColor::Green);
+}
+
 

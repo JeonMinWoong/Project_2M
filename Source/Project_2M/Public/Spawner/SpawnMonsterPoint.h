@@ -22,13 +22,15 @@ public:
 	
 #if WITH_EDITOR
 	virtual void OnConstruction(const FTransform& Transform) override;
+	virtual void PostDuplicate(bool bDuplicateForPIE) override;
+	
 	virtual void PostEditChangeChainProperty(FPropertyChangedChainEvent& PropertyChangedEvent) override;
 #endif
 	
 	ATwoMinEnemyCharacter* SpawnMonsterPoint(int32& OutSpawnMonsterPointIndex);
 	
 private:
-	UPROPERTY(VisibleAnywhere, Category = "SpawnInfo|SpawnMonsterPointIndex")
+	UPROPERTY(EditAnywhere, Category = "SpawnInfo|SpawnMonsterPointIndex")
 	int32 SpawnMonsterPointIndex = -1;
 	
 	UPROPERTY(EditAnywhere, Category = "SpawnInfo|IsBoss")

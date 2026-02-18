@@ -17,6 +17,7 @@ class PROJECT_2M_API ASpawnMonsterPointGroup : public AActor
 public:	
 	ASpawnMonsterPointGroup();
 
+	void AddDeathMonsterCount();
 protected:
 	virtual void BeginPlay() override;
 	
@@ -27,7 +28,16 @@ private:
 	UPROPERTY(EditAnywhere, Category = "SpawnGroupInfo|SpawnPoints")
 	TArray<ASpawnMonsterPoint*> SpawnPoints;
 	
-	UPROPERTY(VisibleAnywhere, Category = "SpawnGroupInfo|SpawnedMonsters")
+	UPROPERTY(VisibleAnywhere, Category = "SpasnGroupInfo|SpawnedMonsters")
 	TMap<int32, ATwoMinEnemyCharacter*> SpawnedMonstersMap;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SpawnGroupInfo|SpawnedBossMonster")
+	ATwoMinEnemyCharacter* SpawnedBossMonster;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SpawnGroupInfo|DeathMonsterCount")
+	int32 MaxDeathMonsterCount;
+	
+	UPROPERTY(VisibleAnywhere, Category = "SpawnGroupInfo|DeathMonsterCount")
+	int32 CurDeathMonsterCount = 0;
 	
 };
