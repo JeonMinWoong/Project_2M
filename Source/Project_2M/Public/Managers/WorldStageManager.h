@@ -19,6 +19,7 @@ public:
 	void InitStage();
 	int32 GetWorldStageIndex(const FString& WorldRealStageName);
 	FWorldStageClearGainData* GetCurrentWorldClearStageData(const FString& WorldRealStageName) const;
+	void ClearCurrentWorldStage();
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "StageInfo|TestClearState")

@@ -13,4 +13,6 @@ class PROJECT_2M_API ATwoMinStageWall : public AActor
 public:	
 	ATwoMinStageWall();
 
+	void OpenStageWall();
+	void CloseStageWall();
 };

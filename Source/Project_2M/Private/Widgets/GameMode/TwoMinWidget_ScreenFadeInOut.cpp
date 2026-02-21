@@ -74,7 +74,7 @@ void UTwoMinWidget_ScreenFadeInOut::LockPlayerInput(const bool bLock)
 void UTwoMinWidget_ScreenFadeInOut::CompleteFadeOutAnim()
 {
 	if (NextStageName.IsNone()) return;
-	
+
 	UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
 	if (!GI) return;
 	
@@ -93,4 +93,5 @@ void UTwoMinWidget_ScreenFadeInOut::StartFadeInAnim()
 void UTwoMinWidget_ScreenFadeInOut::CompleteFadeInAnim()
 {
 	LockPlayerInput(false);
+	RemoveFromParent();
 }

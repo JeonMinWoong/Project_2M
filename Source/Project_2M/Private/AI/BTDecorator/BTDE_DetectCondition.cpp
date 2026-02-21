@@ -22,6 +22,7 @@ bool UBTDE_DetectCondition::CalculateRawConditionValue(UBehaviorTreeComponent& O
 	if (!TargetObj) return false;
 
 	const float DistToTarget = BB->GetValueAsFloat(TwoMinBBKeys::DistToTarget);
+	if (DistToTarget <= 0) return false;
 	
 	ATwoMinEnemyCharacter* EnemyCharacter = GetEnemyCharacter(OwnerComp);
 	if (!EnemyCharacter) return false;

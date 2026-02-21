@@ -34,12 +34,9 @@ int32 UWorldStageManager::GetWorldStageIndex(const FString& WorldRealStageName)
 {
 	for (int32 Index = 0; Index < WorldStageNameDataGroup.Num(); ++Index)
 	{
-		for (auto StageData : WorldStageNameDataGroup)
+		if (WorldStageNameDataGroup[Index].RealStageName == WorldRealStageName)
 		{
-			if (StageData.RealStageName == WorldRealStageName)
-			{
-				return Index;
-			}
+			return Index;
 		}
 	}
 	
@@ -61,4 +58,17 @@ FWorldStageClearGainData* UWorldStageManager::GetCurrentWorldClearStageData(cons
 	}
 	
 	return nullptr;
+}
+
+void UWorldStageManager::ClearCurrentWorldStage()
+{
+	const FString CurRealStageName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
+	const int32 NextIndex = GetWorldStageIndex(CurRealStageName) + 1;
+	if (NextIndex <= 1) return;
+	
+	const FString NextRealStageName = GetIndexRealStageName(NextIndex);
+	if (NextRealStageName.IsEmpty()) return;
+	if (WorldStageMap.Contains(NextRealStageName) == false) return;
+	
+	WorldStageMap[NextRealStageName] = true;
 }

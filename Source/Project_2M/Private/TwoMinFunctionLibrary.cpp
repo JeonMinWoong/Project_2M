@@ -48,8 +48,12 @@ void UTwoMinFunctionLibrary::SendToGameplayEffectEvent(AActor* InActor, FGamepla
 
 void UTwoMinFunctionLibrary::AddGameplayTagToActor(AActor* InActor, FGameplayTag TagToAdd)
 {
+	if (!InActor) return;
+	if (!InActor->IsValidLowLevel()) return;
+	
 	ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(InActor);
 	if (!MyCharacter) return;
+	
 	UTwoMinAbilitySystemComponent* Asc = MyCharacter->GetAbilitySystemComponent();
 	if (!Asc) return;
 	
@@ -61,8 +65,12 @@ void UTwoMinFunctionLibrary::AddGameplayTagToActor(AActor* InActor, FGameplayTag
 
 void UTwoMinFunctionLibrary::RemoveGameplayTagToActor(AActor* InActor, FGameplayTag TagToAdd)
 {
+	if (!InActor) return;
+	if (!InActor->IsValidLowLevel()) return;
+	
 	ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(InActor);
 	if (!MyCharacter) return;
+	
 	UTwoMinAbilitySystemComponent* Asc = MyCharacter->GetAbilitySystemComponent();
 	if (!Asc) return;
 	

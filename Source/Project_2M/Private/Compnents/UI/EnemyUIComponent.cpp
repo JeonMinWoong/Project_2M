@@ -3,6 +3,9 @@
 
 #include "Compnents/UI/EnemyUIComponent.h"
 
+#include "GameModes/TwoMinBaseGameMode.h"
+#include "Kismet/GameplayStatics.h"
+#include "Spawner/SpawnMonsterPointGroup.h"
 #include "Widgets/Enemy/TwoMinWidgetBoss.h"
 
 void UEnemyUIComponent::ShowBossHealthBar(const FString& BossName)
@@ -17,4 +20,9 @@ void UEnemyUIComponent::ShowBossHealthBar(const FString& BossName)
 	BossHealthBarWidget->AddToViewport();
 	BossHealthBarWidget->InitEnemyUIComponent(this);
 	BossHealthBarWidget->ShowBossHealthBar(BossName);
+	
+	ATwoMinBaseGameMode* GM = Cast<ATwoMinBaseGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return;
+	
+	GM->GetSpawnMonsterPointGroup()->EnterBossStage();
 }

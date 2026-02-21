@@ -19,12 +19,14 @@ public:
 	ASpawnMonsterPointGroup();
 
 	void AddDeathMonsterCount();
+	
+	void OpenBossStage();
+	void EnterBossStage();
+	
 protected:
 	virtual void BeginPlay() override;
 	
 private:
-	void OpenBossStage();
-	
 	UPROPERTY(EditAnywhere, Category = "SpawnGroupInfo|SpawnLevel")
 	ESpawnMonsterLevel SpawnMonsterLevel;
 	

@@ -101,7 +101,17 @@ void ASpawnMonsterPointGroup::OpenBossStage()
 	{
 		if (!StageWall) continue;
 		
-		StageWall->Destroy();
+		StageWall->OpenStageWall();
+	}
+}
+
+void ASpawnMonsterPointGroup::EnterBossStage()
+{
+	for (auto StageWall : StageWallGroup)
+	{
+		if (!StageWall) continue;
+		
+		StageWall->CloseStageWall();
 	}
 }
 

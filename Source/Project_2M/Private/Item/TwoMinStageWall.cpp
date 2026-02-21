@@ -7,3 +7,15 @@ ATwoMinStageWall::ATwoMinStageWall()
 
 }
 
+void ATwoMinStageWall::OpenStageWall()
+{
+	SetActorHiddenInGame(true);
+	SetActorEnableCollision(false);
+}
+
+void ATwoMinStageWall::CloseStageWall()
+{
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
+}
+

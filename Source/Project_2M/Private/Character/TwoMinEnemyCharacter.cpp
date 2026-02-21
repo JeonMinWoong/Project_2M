@@ -14,9 +14,11 @@
 #include "Components/WidgetComponent.h"
 #include "DataAssets/StartUpData/DataAsset_StartUpDataBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameInstance/TwoMinGameInstance.h"
 #include "GameModes/TwoMinBaseGameMode.h"
 #include "Item/PickUp/TwoMinPickUpItemBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Managers/WorldStageManager.h"
 #include "Spawner/SpawnMonsterPointGroup.h"
 #include "Widgets/Enemy/TwoMinWidgetEnemy.h"
 
@@ -96,6 +98,10 @@ void ATwoMinEnemyCharacter::BeforeDeathProcess()
 	{
 		GM->GetSpawnMonsterPointGroup()->AddDeathMonsterCount();
 	}
+	else
+	{
+		GM->GetSpawnMonsterPointGroup()->OpenBossStage();
+	}
 }
 
 void ATwoMinEnemyCharacter::AfterDeathProcess()
@@ -165,7 +171,11 @@ void ATwoMinEnemyCharacter::ClearStageProcess() const
 	ATwoMinBaseGameMode* GM = Cast<ATwoMinBaseGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (!GM) return;
 	
+	UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetWorld()->GetGameInstance());
+	if (!GI) return;
+	
 	GM->ShowClearStageUI();
+	GI->StateManager->ClearCurrentWorldStage();
 }
 
 void ATwoMinEnemyCharacter::PossessedBy(AController* NewController)
