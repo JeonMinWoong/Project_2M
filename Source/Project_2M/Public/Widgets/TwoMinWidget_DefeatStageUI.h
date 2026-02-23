@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ToMinTypes/TwoMinEnumTypes.h"
 #include "Widgets/TwoMinWidgetBase.h"
 #include "TwoMinWidget_DefeatStageUI.generated.h"
 
+enum class EDefeatType : uint8;
 class UTwoMinWidget_BaseButton;
 class UTextBlock;
 /**
@@ -34,12 +36,18 @@ private:
 	
 	void FinishDefeatCountAnim();
 	bool OnReturnButton();
+	bool OnRetryButton();
 
+	bool IsButtonDown() const;
+	
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* CountTextBlock;
 	
 	UPROPERTY(meta=(BindWidget))
 	UTwoMinWidget_BaseButton* ReturnButton;
+	
+	UPROPERTY(meta=(BindWidget))
+	UTwoMinWidget_BaseButton* RetryButton;
 	
 	UPROPERTY(EditDefaultsOnly)
 	int32 MaxClearCountTime = 10;
@@ -57,5 +65,8 @@ private:
 	UWidgetAnimation* OnStartDefeatCountAnim;
 	
 	UPROPERTY()
-	bool bIsGoingVillage = false;
+	EDefeatType CheckDefeatType = EDefeatType::None;
+	
+	UPROPERTY()
+	int32 CurFocusIndex = 0;
 };

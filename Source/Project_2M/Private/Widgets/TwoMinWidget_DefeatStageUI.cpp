@@ -20,7 +20,8 @@ void UTwoMinWidget_DefeatStageUI::NativeOnInitialized()
 		BindToAnimationFinished(OnOpenDefeatStageAnim, CompleteOpenDefeatStageAnimEvent);
 	}
 	
-	bIsGoingVillage = false;
+	CheckDefeatType = EDefeatType::None;
+	CurFocusIndex = 0;
 }
 
 FReply UTwoMinWidget_DefeatStageUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
@@ -28,7 +29,14 @@ FReply UTwoMinWidget_DefeatStageUI::NativeOnPreviewKeyDown(const FGeometry& MyGe
 	const FKey InKey = InKeyEvent.GetKey();
 	if (InKey == EKeys::Enter || InKey == EKeys::Gamepad_FaceButton_Bottom)
 	{
-		if (OnReturnButton() == false) return FReply::Unhandled();
+		if (CurFocusIndex == 0)
+		{
+			if (OnReturnButton() == false) return FReply::Unhandled();	
+		}
+		else if (CurFocusIndex == 1)
+		{
+			if (OnRetryButton() == false) return FReply::Unhandled();
+		}
 		
 		return FReply::Handled();
 	}
@@ -40,11 +48,27 @@ FReply UTwoMinWidget_DefeatStageUI::NativeOnPreviewKeyDown(const FGeometry& MyGe
 	
 	if (InKey == EKeys::Right || InKey == EKeys::D || InKey == EKeys::Gamepad_LeftStick_Right)
 	{
+		if (IsButtonDown()) return FReply::Unhandled();
+		
+		int32 NextFocusIndex = CurFocusIndex + 1;
+		if (NextFocusIndex > 1) return FReply::Unhandled();
+		
+		CurFocusIndex++;
+		RetryButton->SetFocus();
+		
 		return FReply::Unhandled();
 	}
 	
 	if (InKey == EKeys::Left || InKey == EKeys::A || InKey == EKeys::Gamepad_LeftStick_Left)
 	{
+		if (IsButtonDown()) return FReply::Unhandled();
+		
+		int32 NextFocusIndex = CurFocusIndex - 1;
+		if (NextFocusIndex < 0) return FReply::Unhandled();
+		
+		CurFocusIndex--;
+		ReturnButton->SetFocus();
+		
 		return FReply::Unhandled();
 	}
 	
@@ -95,7 +119,7 @@ void UTwoMinWidget_DefeatStageUI::PlayDefeatCountAnim()
 
 void UTwoMinWidget_DefeatStageUI::Anim_OnUpdateDefeatCount()
 {
-	if (bIsGoingVillage) return;
+	if (IsButtonDown()) return;
 	
 	const int32 CountValue = MaxClearCountTime - CurClearCountTime++;
 	const FString FinalStr = FString::Printf(TEXT("%d초 후 마을로 자동 이동"), CountValue);
@@ -118,7 +142,7 @@ void UTwoMinWidget_DefeatStageUI::FinishDefeatCountAnim()
 
 bool UTwoMinWidget_DefeatStageUI::OnReturnButton()
 {
-	if (bIsGoingVillage) return false;
+	if (IsButtonDown()) return false;
 	
 	ATwoMinBaseGameMode* GM = Cast<ATwoMinBaseGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (!GM) return false;
@@ -135,7 +159,30 @@ bool UTwoMinWidget_DefeatStageUI::OnReturnButton()
 		GoStageName = FName(*GI->StateManager->GetVillageName());
 	}
 	
-	bIsGoingVillage = true;
+	CheckDefeatType = EDefeatType::Return;
 	GM->OpenStageProcess(GoStageName);
 	return true;
+}
+
+bool UTwoMinWidget_DefeatStageUI::OnRetryButton()
+{
+	if (IsButtonDown()) return false;
+	
+	ATwoMinBaseGameMode* GM = Cast<ATwoMinBaseGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return false;
+	
+	UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
+	if (!GI) return false;
+
+	FString CurRealStageName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
+	if (GI->StateManager->GetWorldStage(CurRealStageName) == false) return false;
+	
+	CheckDefeatType = EDefeatType::Retry;
+	GM->OpenStageProcess(FName(CurRealStageName));
+	return true;
+}
+
+bool UTwoMinWidget_DefeatStageUI::IsButtonDown() const
+{
+	return CheckDefeatType != EDefeatType::None;
 }

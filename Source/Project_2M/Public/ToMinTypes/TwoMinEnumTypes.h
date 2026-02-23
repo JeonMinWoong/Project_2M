@@ -257,3 +257,11 @@ enum class ESpawnMonsterLevel : uint8
 	Level_1_2 = 3,
 	Level_1_3 = 4,
 };
+
+UENUM(Blueprintable)
+enum class EDefeatType : uint8
+{
+	None = 0,
+	Return = 1,
+	Retry = 2,
+};
