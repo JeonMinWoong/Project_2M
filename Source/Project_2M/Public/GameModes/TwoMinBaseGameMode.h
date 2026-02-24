@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "TwoMinBaseGameMode.generated.h"
 
+struct FSaveGameData;
 class ASpawnMonsterPointGroup;
 class UTwoMinWidget_DefeatStageUI;
 class UTwoMinWidgetBase;
