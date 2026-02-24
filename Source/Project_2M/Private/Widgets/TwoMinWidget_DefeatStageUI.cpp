@@ -175,8 +175,13 @@ bool UTwoMinWidget_DefeatStageUI::OnRetryButton()
 	if (!GI) return false;
 
 	FString CurRealStageName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
-	if (GI->StateManager->GetWorldStage(CurRealStageName) == false) return false;
-	
+	if (GI->StateManager->GetWorldStage(CurRealStageName) == false)
+	{
+		if (GI->StateManager->GetWorldStageIndex(CurRealStageName) == -1)
+		{
+			return false;	
+		}
+	}
 	CheckDefeatType = EDefeatType::Retry;
 	GM->OpenStageProcess(FName(CurRealStageName));
 	return true;

@@ -23,9 +23,9 @@ public:
 	void InitGiveItem();
 	void OpenInventory(const bool bIsOpenInventory);
 	
-	void SaveToEquipmentInventory(const FItemEquipmentData& EquipmentData, const FString& ItemName);
-	void SaveToConsumeInventory(const FItemConsumeData& ConsumeData, const FString& ItemName);
-	void SaveToEtcInventory(const FItemEtcData& EtcData, const FString& ItemName);
+	void SaveToEquipmentInventory(const FItemEquipmentData& EquipmentData, const FString& ItemName, bool bIsClearStage);
+	void SaveToConsumeInventory(const FItemConsumeData& ConsumeData, const FString& ItemName, bool bIsClearStage);
+	void SaveToEtcInventory(const FItemEtcData& EtcData, const FString& ItemName, bool bIsClearStage);
 	int32 SaveToFinalInventory(const int32 ItemID, const int32 ItemCount, const int32 ItemMaxCount, UTexture2D* ItemTexture);
 	void SaveItemPickUpSlotData(const int32 ItemId, const FString& ItemName, int32 ItemCount, UTexture2D* ItemTexture);
 	void ShowPickUpGetItem(int32 SaveAllItemCount);
@@ -54,4 +54,6 @@ private:
 	
 public:
 	FORCEINLINE UTwoMinWidget_InventoryUI* GetInventoryUI() const { return InventoryUI; }
+	FORCEINLINE TArray<FItemInstance> GetInventory() const { return Inventory; }
+	FORCEINLINE void SetInventory(const TArray<FItemInstance>& LoadItems) { Inventory = LoadItems; }
 };

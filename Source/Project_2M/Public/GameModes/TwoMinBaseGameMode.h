@@ -21,8 +21,12 @@ class PROJECT_2M_API ATwoMinBaseGameMode : public AGameModeBase
 	
 public:
 	virtual void BeginPlay() override;
+	void LoadSaveDataProcess(FSaveGameData& LoadSaveGameData);
+	void AfterBeginPlay();
 	
-	void OpenStageProcess(const FName StageName);
+	void OpenStageProcess(const FName StageName, bool bIsSaveData = true);
+	void CreateNewSaveGameData(FSaveGameData& NewSaveGameData) const;
+	
 	bool IsOpeningStage() const;
 	
 	void ShowClearStageUI();
@@ -51,7 +55,11 @@ private:
 	UPROPERTY()
 	ASpawnMonsterPointGroup* SpawnMonsterPointGroup;
 	
+	UPROPERTY()
+	bool bIsCompleteLoadSaveData = false;
+	
 public:
 	FORCEINLINE ASpawnMonsterPointGroup* GetSpawnMonsterPointGroup() const { return SpawnMonsterPointGroup; }
+	FORCEINLINE bool IsLoadData() const { return bIsCompleteLoadSaveData; }
 	
 };

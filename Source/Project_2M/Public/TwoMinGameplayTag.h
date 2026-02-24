@@ -219,6 +219,8 @@ namespace TwoMinGameplayTag
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Data_Buff_MaxHealth);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Data_Buff_MaxStamina);
 	
+	// SaveGame Tags
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Data_SaveGame_Slot_1);
 
 	// GameplayEffect Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(GE_Player_Stats);

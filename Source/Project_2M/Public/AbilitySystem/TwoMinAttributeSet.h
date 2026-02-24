@@ -29,6 +29,8 @@ public:
 
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData &Data) override;
 
+	static int32 NeedToExperienceValue(ATwoMinPlayerCharacter* PlayerCharacter, int32 InCurrentLevel);
+	
 	UPROPERTY(BlueprintReadOnly, Category = "Level")
 	FGameplayAttributeData MaxLevel;
 	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, MaxLevel)
@@ -114,8 +116,6 @@ public:
 	ATTRIBUTE_ACCESSORS(UTwoMinAttributeSet, MaxGold)
 
 private:
-	int32 NeedToExperienceValue(ATwoMinPlayerCharacter* PlayerCharacter, int32 InCurrentLevel) const;
-	
 	TWeakInterfacePtr<IBaseUIInterface> CachedBaseUInterface;
 	
 	UPROPERTY()

@@ -12,8 +12,12 @@
 #include "Compnents/InventoryComponent.h"
 #include "Compnents/UI/PlayerUIComponent.h"
 #include "Components/CanvasPanelSlot.h"
+#include "Components/TextBlock.h"
 #include "GameInstance/TwoMinGameInstance.h"
+#include "GameModes/TwoMinBaseGameMode.h"
+#include "Kismet/GameplayStatics.h"
 #include "Managers/ItemDataManager.h"
+#include "Managers/WorldStageManager.h"
 #include "ToMinTypes/TwoMinEnumTypes.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "Widgets/TwoMinWidget_InventorySlot.h"
@@ -30,6 +34,16 @@ void UTwoMinWidget_InventoryUI::NativeConstruct()
 	Super::NativeConstruct();
 	
 	InventorySelect->SetVisibility(ESlateVisibility::Hidden);
+
+	const bool bIsUsingGamePad =
+		UTwoMinFunctionLibrary::IsUsingGamePad(GetWorld(), GetOwningPlayer()->GetPlatformUserId());
+	
+	KeyBoardBox->SetVisibility(bIsUsingGamePad ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
+	GamePadBox->SetVisibility(bIsUsingGamePad ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	
+	const bool bIsVillageMap = UTwoMinFunctionLibrary::IsVillageMap(GetWorld());
+	const FString Str = FString::Printf(bIsVillageMap ? TEXT(": 수동 저장") : TEXT(": 전투 포기"));
+	AdditionalButtonText->SetText(FText::FromString(Str));
 }
 
 FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
@@ -67,6 +81,38 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 	bool bIsPopupOpen = ItemInfoPopup->IsPopupOpen();
 	const FKey InKey = InKeyEvent.GetKey();
 	
+	if (InKey == EKeys::R || InKey == EKeys::Gamepad_FaceButton_Top)
+	{
+		ATwoMinBaseGameMode* GM = Cast<ATwoMinBaseGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+		if (!GM) return FReply::Unhandled();
+		
+		if (UTwoMinFunctionLibrary::IsVillageMap(GetWorld()))
+		{
+			FSaveGameData NewSaveGameData;
+			GM->CreateNewSaveGameData(NewSaveGameData);
+	
+			UTwoMinFunctionLibrary::SaveGame(NewSaveGameData);
+			return FReply::Handled();
+		}
+		else
+		{
+			UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
+			if (!GI) return FReply::Unhandled();
+
+			FString CurRealStageName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
+
+			const int32 CurStageIndex = GI->StateManager->GetWorldStageIndex(CurRealStageName);
+			FName GoStageName = FName(*GI->StateManager->GetIndexRealStageName(0));
+			if (CurStageIndex != 0)
+			{
+				GoStageName = FName(*GI->StateManager->GetVillageName());
+			}
+
+			GM->OpenStageProcess(GoStageName, false);
+			return FReply::Handled();
+		}
+	}
+	
 	if (InKey == EKeys::Enter || InKey == EKeys::Gamepad_FaceButton_Bottom)
 	{
 		if (bIsPopupOpen)
@@ -92,6 +138,13 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 					if (UTwoMinWidget_InventorySlot* QuickSlot = FindQuickSlot(ItemInstance.ItemID))
 					{
 						QuickSlot->UnRegister();
+					}
+					
+					// Overlay 먼저 해제
+					if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningPlayerPawn()))
+					{
+						UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetPlayerUIComponent();
+						PlayerUIComponent->OnSetWindowQuickSlot.Broadcast(ItemInstance, ItemInstance.RegisterCount, false);
 					}
 				}
 				

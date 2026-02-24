@@ -3,6 +3,7 @@
 
 #include "Widgets/TwoMinWidget_GoldInfo.h"
 
+#include "TwoMinFunctionLibrary.h"
 #include "Components/TextBlock.h"
 #include "Widgets/TwoMinWidget_GoldNotify.h"
 
@@ -14,6 +15,8 @@ void UTwoMinWidget_GoldInfo::SetGoldText(const int32 InGoldAmount)
 
 void UTwoMinWidget_GoldInfo::SetGoldNotifyText(int32 GainAmount)
 {
+	if (UTwoMinFunctionLibrary::IsLoadData(this)) return;
+	
 	GoldNotify->SetVisibility(ESlateVisibility::Visible);
 	const FString Str = FString::Printf(TEXT("+ %d"), GainAmount);
 	const FText GoldText = FText::FromString(Str);

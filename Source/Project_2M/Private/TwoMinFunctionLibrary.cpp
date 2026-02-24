@@ -5,8 +5,39 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GenericTeamAgentInterface.h"
+#include "TwoMinDebugHelper.h"
+#include "TwoMinGameplayTag.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "Character/TwoMinBaseCharacter.h"
+#include "GameFramework/InputDeviceSubsystem.h"
+#include "GameFramework/InputSettings.h"
+#include "GameInstance/TwoMinGameInstance.h"
+#include "GameModes/TwoMinBaseGameMode.h"
+#include "Kismet/GameplayStatics.h"
+#include "Managers/WorldStageManager.h"
+#include "SaveGame/TwoMinSaveGame.h"
+
+bool UTwoMinFunctionLibrary::IsUsingGamePad(const UWorld* World, FPlatformUserId UserId)
+{
+	if (!World) return false;
+
+	const UGameInstance* GI = World->GetGameInstance();
+	if (!GI) return false;
+	
+	const UInputDeviceSubsystem* InputDeviceSubsystem =
+		GI->GetEngine()->GetEngineSubsystem<UInputDeviceSubsystem>();
+	
+	if (InputDeviceSubsystem)
+	{
+		FHardwareDeviceIdentifier MostRecentDevice = InputDeviceSubsystem->GetMostRecentlyUsedHardwareDevice(UserId);
+		if (MostRecentDevice.PrimaryDeviceType == EHardwareDevicePrimaryType::Gamepad)
+		{
+			return true;
+		}
+	}
+	
+	return false;
+}
 
 bool UTwoMinFunctionLibrary::IsTargetPawnHostile(APawn* OwnerPawn, APawn* TargetPawn)
 {
@@ -118,4 +149,67 @@ bool UTwoMinFunctionLibrary::IsNearFloatZero(float Value)
 bool UTwoMinFunctionLibrary::IsNearFloatEqual(float Value, float EqualValue)
 {
 	return FMath::IsNearlyEqual(Value, EqualValue);
+}
+
+bool UTwoMinFunctionLibrary::IsVillageMap(const UWorld* World)
+{
+	if (!World) return false;
+
+	const UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(World->GetGameInstance());
+	if (!GI) return false;
+	
+	return GI->StateManager->IsVillageMap();
+}
+
+void UTwoMinFunctionLibrary::SaveGame(const FSaveGameData& NewSaveGameData)
+{
+	USaveGame* SaveGameObject = UGameplayStatics::CreateSaveGameObject(UTwoMinSaveGame::StaticClass());
+	UTwoMinSaveGame* TwoMinSaveGame = Cast<UTwoMinSaveGame>(SaveGameObject);
+	if (!TwoMinSaveGame) return;
+	
+	TwoMinSaveGame->SaveGameData(NewSaveGameData);
+	
+	const bool bWasSaved = UGameplayStatics::SaveGameToSlot(
+		TwoMinSaveGame,
+		TwoMinGameplayTag::Data_SaveGame_Slot_1.GetTag().ToString(),
+		0
+	);
+
+	const FString SaveStr = bWasSaved ? TEXT("저장 완료.") : TEXT("저장 실패.");
+	TwoMinDebugHelper::Print(SaveStr, FColor::Green);
+}
+
+bool UTwoMinFunctionLibrary::TryLoadGame(FSaveGameData& OutSaveGameData)
+{
+	const FString SlotName = TwoMinGameplayTag::Data_SaveGame_Slot_1.GetTag().ToString();
+	const bool IsFindSaveData = UGameplayStatics::DoesSaveGameExist(SlotName, 0);
+	if (IsFindSaveData == false) return false;
+	
+	USaveGame* SaveGameObject = UGameplayStatics::LoadGameFromSlot(SlotName, 0);
+	UTwoMinSaveGame* TwoMinSaveGame = Cast<UTwoMinSaveGame>(SaveGameObject);
+	if (!TwoMinSaveGame) return false;
+	
+	OutSaveGameData = TwoMinSaveGame->LoadGameData();
+
+	if (OutSaveGameData.PlayerLevel <= 0)
+	{
+		TwoMinDebugHelper::Print(TEXT("불러오기 실패"), FColor::Red);
+		return false;
+	}
+	
+	TwoMinDebugHelper::Print(TEXT("불러오기 성공"), FColor::Green);
+	return true;
+}
+
+bool UTwoMinFunctionLibrary::IsLoadData(const UObject* WorldContextObject)
+{
+	if (!WorldContextObject) return false;
+
+	const UWorld* World = WorldContextObject->GetWorld();
+	if (!World) return false;
+
+	const ATwoMinBaseGameMode* GM = Cast<ATwoMinBaseGameMode>(UGameplayStatics::GetGameMode(World));
+	if (!GM) return false;
+	
+	return GM->IsLoadData();
 }

@@ -43,19 +43,73 @@ void UInventoryComponent::BeginPlay()
 
 void UInventoryComponent::InitGiveItem()
 {
-	UTwoMinGameInstance* GI = GetWorld()->GetGameInstance<UTwoMinGameInstance>();
-	FItemEquipmentData BaseSwordData = GI->ItemDataManager->GetItemEquipmentData(10001);
-	SaveToFinalInventory(BaseSwordData.ItemDataBase.ItemID, BaseSwordData.ItemDataBase.CurrentCount, 
-		BaseSwordData.ItemDataBase.MaxCount, BaseSwordData.ItemDataBase.ItemTexture);
+	if (UTwoMinFunctionLibrary::IsLoadData(this) == false)
+	{
+		// 처음 아이템 추가.
+		UTwoMinGameInstance* GI = GetWorld()->GetGameInstance<UTwoMinGameInstance>();
+		FItemEquipmentData BaseSwordData = GI->ItemDataManager->GetItemEquipmentData(10001);
+		SaveToFinalInventory(BaseSwordData.ItemDataBase.ItemID, BaseSwordData.ItemDataBase.CurrentCount, 
+			BaseSwordData.ItemDataBase.MaxCount, BaseSwordData.ItemDataBase.ItemTexture);
 	
-	FItemEquipmentData BaseShieldData = GI->ItemDataManager->GetItemEquipmentData(10002);
-	SaveToFinalInventory(BaseShieldData.ItemDataBase.ItemID, BaseShieldData.ItemDataBase.CurrentCount, 
-		BaseShieldData.ItemDataBase.MaxCount, BaseShieldData.ItemDataBase.ItemTexture);
-	
-	UpdateInventory();
+		FItemEquipmentData BaseShieldData = GI->ItemDataManager->GetItemEquipmentData(10002);
+		SaveToFinalInventory(BaseShieldData.ItemDataBase.ItemID, BaseShieldData.ItemDataBase.CurrentCount, 
+			BaseShieldData.ItemDataBase.MaxCount, BaseShieldData.ItemDataBase.ItemTexture);
 
-	ForceEquipmentItem(BaseSwordData.ItemDataBase.ItemID, BaseSwordData.EquipmentType);
-	ForceEquipmentItem(BaseShieldData.ItemDataBase.ItemID, BaseShieldData.EquipmentType);
+		UpdateInventory();
+		
+		ForceEquipmentItem(BaseSwordData.ItemDataBase.ItemID, BaseSwordData.EquipmentType);
+		ForceEquipmentItem(BaseShieldData.ItemDataBase.ItemID, BaseShieldData.EquipmentType);	
+	}
+	else
+	{
+		UpdateInventory();
+		
+		// 로드 아이템 장착.
+		UTwoMinWidget_EquipmentWindow* EquipmentWindow = InventoryUI->GetEquipmentWindow();
+		UTwoMinWidget_QuickWindow* QuickWindow = InventoryUI->GetQuickWindow();
+		UTwoMinWidget_InventoryWindow* InventoryWindow = InventoryUI->GetInventoryWindow();
+		if (!InventoryWindow || !QuickWindow || !EquipmentWindow) return;
+		
+		UTwoMinGameInstance* GI = GetWorld()->GetGameInstance<UTwoMinGameInstance>();
+		for (auto InventorySlot :  InventoryWindow->GetInventorySlots())
+		{
+			int32 SlotItemID = InventorySlot->GetItemInstance().ItemID;
+			
+			FItemInstance* ItemInstance = FindItemInstance(SlotItemID);
+			if (!ItemInstance) continue;
+			if (ItemInstance->bIsRegister == false) continue;
+			
+			EItemType ItemType = UTwoMinFunctionLibrary::GetItemType(SlotItemID);
+			
+			if (ItemType == EItemType::Etc) continue;
+			
+			if (ItemType == EItemType::Equipment)
+			{
+				FItemEquipmentData EquipmentData = GI->ItemDataManager->GetItemEquipmentData(SlotItemID);
+				if (EquipmentData.EquipmentType == EEquipmentType::Weapon_Right)
+				{
+					InventorySlot->OnRegister(true, EInventorySlotType::Equipment, 0);
+					ItemInstance->OnRegister(true, EInventorySlotType::Equipment, 0);
+					EquipmentWindow->GetInventorySlots()[0]->SetInventorySlot(*ItemInstance);
+					InventoryUI->OnEquipment(ItemInstance->ItemID);
+				}
+				else if (EquipmentData.EquipmentType == EEquipmentType::Weapon_Left)
+				{
+					InventorySlot->OnRegister(true, EInventorySlotType::Equipment, 1);
+					ItemInstance->OnRegister(true, EInventorySlotType::Equipment, 1);
+					EquipmentWindow->GetInventorySlots()[1]->SetInventorySlot(*ItemInstance);
+					InventoryUI->OnEquipment(ItemInstance->ItemID);
+				}	
+			}
+			else if (ItemType == EItemType::Consume)
+			{
+				int32 RegisterCount = ItemInstance->RegisterCount;
+				InventorySlot->OnRegister(true, EInventorySlotType::Quick, RegisterCount);
+				ItemInstance->OnRegister(true, EInventorySlotType::Quick, RegisterCount);
+				QuickWindow->GetInventorySlots()[RegisterCount]->SetInventorySlot(*ItemInstance);
+			}
+		}
+	}
 }
 
 void UInventoryComponent::OpenInventory(const bool bIsOpenInventory)
@@ -87,28 +141,39 @@ void UInventoryComponent::OpenInventory(const bool bIsOpenInventory)
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), TimeDilation);
 }
 
-void UInventoryComponent::SaveToEquipmentInventory(const FItemEquipmentData& EquipmentData, const FString& ItemName)
+void UInventoryComponent::SaveToEquipmentInventory(const FItemEquipmentData& EquipmentData, const FString& ItemName, 
+	bool bIsClearStage)
 {
 	FItemData ItemBase = EquipmentData.ItemDataBase;
 	int32 ExcessCount = SaveToFinalInventory(ItemBase.ItemID, ItemBase.CurrentCount,
 		ItemBase.MaxCount, ItemBase.ItemTexture);
-	SaveItemPickUpSlotData(ItemBase.ItemID, ItemName, ItemBase.CurrentCount - ExcessCount, ItemBase.ItemTexture);
+	if (bIsClearStage == false)
+	{
+		SaveItemPickUpSlotData(ItemBase.ItemID, ItemName, ItemBase.CurrentCount - ExcessCount, ItemBase.ItemTexture);
+	}
 }
 
-void UInventoryComponent::SaveToConsumeInventory(const FItemConsumeData& ConsumeData, const FString& ItemName)
+void UInventoryComponent::SaveToConsumeInventory(const FItemConsumeData& ConsumeData, const FString& ItemName, 
+	bool bIsClearStage)
 {
 	FItemData ItemBase = ConsumeData.ItemDataBase;
 	int32 ExcessCount =  SaveToFinalInventory(ItemBase.ItemID, ItemBase.CurrentCount, 
 		ItemBase.MaxCount, ItemBase.ItemTexture);
-	SaveItemPickUpSlotData(ItemBase.ItemID, ItemName, ItemBase.CurrentCount - ExcessCount, ItemBase.ItemTexture);
+	if (bIsClearStage == false)
+	{
+		SaveItemPickUpSlotData(ItemBase.ItemID, ItemName, ItemBase.CurrentCount - ExcessCount, ItemBase.ItemTexture);	
+	}
 }
 
-void UInventoryComponent::SaveToEtcInventory(const FItemEtcData& EtcData, const FString& ItemName)
+void UInventoryComponent::SaveToEtcInventory(const FItemEtcData& EtcData, const FString& ItemName, bool bIsClearStage)
 {
 	FItemData ItemBase = EtcData.ItemDataBase;
 	int32 ExcessCount = SaveToFinalInventory(ItemBase.ItemID, ItemBase.CurrentCount,
 		ItemBase.MaxCount, ItemBase.ItemTexture);
-	SaveItemPickUpSlotData(ItemBase.ItemID, ItemName, ItemBase.CurrentCount - ExcessCount, ItemBase.ItemTexture);
+	if (bIsClearStage == false)
+	{
+		SaveItemPickUpSlotData(ItemBase.ItemID, ItemName, ItemBase.CurrentCount - ExcessCount, ItemBase.ItemTexture);	
+	}
 }
 
 int32 UInventoryComponent::SaveToFinalInventory(const int32 ItemID, const int32 ItemCount, const int32 ItemMaxCount, 
@@ -131,15 +196,15 @@ int32 UInventoryComponent::SaveToFinalInventory(const int32 ItemID, const int32 
 		if (OutExcessCount > 0)
 		{
 			OldItemInstance->HoldCount = FMathf::Min(ItemMaxCount, OldItemInstance->HoldCount + ItemCount);
-			FString AfterText = FString::Printf(TEXT("기존 아이템 초과 : ItemID_%d, +%d"), ItemID, OutExcessCount);
-			TwoMinDebugHelper::Print(AfterText, FColor::Red);
+			//FString AfterText = FString::Printf(TEXT("기존 아이템 초과 : ItemID_%d, +%d"), ItemID, OutExcessCount);
+			//TwoMinDebugHelper::Print(AfterText, FColor::Red);
 			return OutExcessCount;
 		}
 		
 		OldItemInstance->HoldCount += ItemCount;
 
-		FString AfterText = FString::Printf(TEXT("기존 아이템 중첩 : ItemID_%d, +%d"), ItemID, ItemCount);
-		TwoMinDebugHelper::Print(AfterText, FColor::Yellow);
+		//FString AfterText = FString::Printf(TEXT("기존 아이템 중첩 : ItemID_%d, +%d"), ItemID, ItemCount);
+		//TwoMinDebugHelper::Print(AfterText, FColor::Yellow);
 	}
 	else
 	{
@@ -150,8 +215,8 @@ int32 UInventoryComponent::SaveToFinalInventory(const int32 ItemID, const int32 
 		
 		Inventory.Add(ItemInstance);
 
-		FString Text = FString::Printf(TEXT("새로운 아이템 획득 : ItemID_%d, +%d"), ItemID, ItemCount);
-		TwoMinDebugHelper::Print(Text, FColor::Green);
+		//FString Text = FString::Printf(TEXT("새로운 아이템 획득 : ItemID_%d, +%d"), ItemID, ItemCount);
+		//TwoMinDebugHelper::Print(Text, FColor::Green);
 	}
 	
 	return OutExcessCount;

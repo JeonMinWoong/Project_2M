@@ -219,6 +219,9 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Data_Buff_MaxHealth, "Data.Buff.MaxHealth");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Buff_MaxStamina, "Data.Buff.MaxStamina");
 	
+	// SaveGame Tags
+	UE_DEFINE_GAMEPLAY_TAG(Data_SaveGame_Slot_1, "Data.SaveGame.Slot.1");
+	
 	// GameplayEffect Tags
 	UE_DEFINE_GAMEPLAY_TAG(GE_Player_Stats, "GE.Player.Stats");
 	

@@ -6,6 +6,7 @@
 #include "TwoMinWidget_EquipmentWindow.h"
 #include "TwoMinWidget_InventorySelect.h"
 #include "TwoMinWidget_QuickWindow.h"
+#include "Components/SizeBox.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "Widgets/TwoMinWidgetBase.h"
 #include "TwoMinWidget_InventoryUI.generated.h"
@@ -66,6 +67,15 @@ private:
 	
 	UPROPERTY()
 	bool bIsQuickRegister;
+	
+	UPROPERTY(meta=(BindWidget))
+	USizeBox* KeyBoardBox;
+	
+	UPROPERTY(meta=(BindWidget))
+	USizeBox* GamePadBox;
+	
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* AdditionalButtonText;
 	
 public:
 	FORCEINLINE UTwoMinWidget_EquipmentWindow* GetEquipmentWindow() const { return EquipmentWindow; } 

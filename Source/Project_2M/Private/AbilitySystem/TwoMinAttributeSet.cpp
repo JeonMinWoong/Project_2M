@@ -4,7 +4,6 @@
 #include "AbilitySystem/TwoMinAttributeSet.h"
 
 #include "GameplayEffectExtension.h"
-#include "TwoMinDebugHelper.h"
 #include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "Character/TwoMinPlayerCharacter.h"
@@ -256,7 +255,7 @@ void UTwoMinAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffect
 	}
 }
 
-int32 UTwoMinAttributeSet::NeedToExperienceValue(ATwoMinPlayerCharacter* PlayerCharacter, int32 InCurrentLevel) const
+int32 UTwoMinAttributeSet::NeedToExperienceValue(ATwoMinPlayerCharacter* PlayerCharacter, int32 InCurrentLevel)
 {
 	UCurveTable* CurveTable = PlayerCharacter->GetNeedToLevelUp_ExperienceCurveTable();
 	const FRealCurve* Curve = CurveTable->FindCurve(FName("Player.MaxExperience"), TEXT("NeedToExperienceValue"));

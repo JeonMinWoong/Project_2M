@@ -63,4 +63,10 @@ public:
 	{ return WorldStageMap.FindRef(WorldStageName); }
 	
 	FORCEINLINE FString GetVillageName() { return VillageName; }
+	
+	FORCEINLINE bool IsVillageMap() const
+	{
+		const FString CurRealStageName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
+		return CurRealStageName.Equals(VillageName);
+	}
 };

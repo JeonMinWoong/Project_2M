@@ -121,12 +121,7 @@ void ATwoMinPlayerCharacter::PossessedBy(AController* NewController)
 			LoadedData->GiveToAbilitySystemComponent(AbilitySystemComponent);
 		}
 	}
-}
-
-void ATwoMinPlayerCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-
+	
 	if (HUDOverlayClass)
 	{
 		HUDOverlay = CreateWidget<UUserWidget>(GetPlayerController(), HUDOverlayClass);
@@ -135,6 +130,12 @@ void ATwoMinPlayerCharacter::BeginPlay()
 			HUDOverlay->AddToViewport();
 		}
 	}
+}
+
+void ATwoMinPlayerCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	
 }
 
 void ATwoMinPlayerCharacter::Tick(float DeltaTime)
@@ -333,20 +334,7 @@ void ATwoMinPlayerCharacter::Input_OnRun(const FInputActionValue& InputActionVal
 
 bool ATwoMinPlayerCharacter::IsUsingGamepad() const
 {
-	const UInputDeviceSubsystem* InputDeviceSubsystem =
-		GetGameInstance()->GetEngine()->GetEngineSubsystem<UInputDeviceSubsystem>();
-	
-	if (InputDeviceSubsystem)
-	{
-		FHardwareDeviceIdentifier MostRecentDevice =
-			InputDeviceSubsystem->GetMostRecentlyUsedHardwareDevice(GetPlatformUserId());
-		if (MostRecentDevice.PrimaryDeviceType == EHardwareDevicePrimaryType::Gamepad)
-		{
-			return true; // 게임패드 사용 중
-		}
-	}
-	
-	return false;
+	return UTwoMinFunctionLibrary::IsUsingGamePad(GetWorld(), GetPlatformUserId());
 }
 
 void ATwoMinPlayerCharacter::Input_AbilityInputPressed(FGameplayTag InInputTag)

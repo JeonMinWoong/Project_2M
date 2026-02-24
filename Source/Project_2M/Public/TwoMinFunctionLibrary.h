@@ -7,6 +7,7 @@
 #include "ToMinTypes/TwoMinEnumTypes.h"
 #include "TwoMinFunctionLibrary.generated.h"
 
+struct FSaveGameData;
 struct FGameplayEventData;
 struct FGameplayTag;
 /**
@@ -18,6 +19,9 @@ class PROJECT_2M_API UTwoMinFunctionLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
+	UFUNCTION()
+	static bool IsUsingGamePad(const UWorld* World, FPlatformUserId UserId);
+	
 	UFUNCTION()
 	static bool IsTargetPawnHostile(APawn* OwnerPawn, APawn* TargetPawn);
 
@@ -46,4 +50,15 @@ public:
 	UFUNCTION()
 	static bool IsNearFloatEqual(float Value, float EqualValue);
 
+	UFUNCTION()
+	static bool IsVillageMap(const UWorld* World);
+	
+	UFUNCTION()
+	static void SaveGame(const FSaveGameData& NewSaveGameData);
+	
+	UFUNCTION()
+	static bool TryLoadGame(FSaveGameData& OutSaveGameData);
+	
+	UFUNCTION()
+	static bool IsLoadData(const UObject* WorldContextObject);
 };

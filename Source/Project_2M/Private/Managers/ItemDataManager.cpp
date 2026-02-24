@@ -96,7 +96,7 @@ void UItemDataManager::GiveToInventory(const ATwoMinPlayerCharacter* PlayerChara
 	for (const FItemEquipmentData& EquipmentList : InItemEquipmentList)
 	{
 		FItemEquipmentData NewEquipmentData = GetItemEquipmentData(EquipmentList.ItemDataBase.ItemID);
-		Inventory->SaveToEquipmentInventory(EquipmentList, NewEquipmentData.ItemDataBase.ItemName);	
+		Inventory->SaveToEquipmentInventory(EquipmentList, NewEquipmentData.ItemDataBase.ItemName, bIsClearStage);	
 		SaveAllItemCount++;
 	}
 
@@ -105,7 +105,7 @@ void UItemDataManager::GiveToInventory(const ATwoMinPlayerCharacter* PlayerChara
 	for (const FItemConsumeData& ConsumeList : InItemConsumeList)
 	{
 		FItemConsumeData NewConsumeData = GetItemConsumeData(ConsumeList.ItemDataBase.ItemID);
-		Inventory->SaveToConsumeInventory(ConsumeList, NewConsumeData.ItemDataBase.ItemName);
+		Inventory->SaveToConsumeInventory(ConsumeList, NewConsumeData.ItemDataBase.ItemName, bIsClearStage);
 		SaveAllItemCount++;
 	}
 
@@ -114,7 +114,7 @@ void UItemDataManager::GiveToInventory(const ATwoMinPlayerCharacter* PlayerChara
 	for (const FItemEtcData& EtcList : InItemEtcList)
 	{
 		FItemEtcData NewEtcData = GetItemEtcData(EtcList.ItemDataBase.ItemID);
-		Inventory->SaveToEtcInventory(EtcList, NewEtcData.ItemDataBase.ItemName);
+		Inventory->SaveToEtcInventory(EtcList, NewEtcData.ItemDataBase.ItemName, bIsClearStage);
 		SaveAllItemCount++;
 	}
 

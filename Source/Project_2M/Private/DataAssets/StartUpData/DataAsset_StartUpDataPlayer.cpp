@@ -68,7 +68,7 @@ void UDataAsset_StartUpDataPlayer::StartUpDataLevelUp(UTwoMinAbilitySystemCompon
 	
 	// 경험치 복구.
 	InAscToGive->ApplyModToAttribute(UTwoMinAttributeSet::GetCurrentExperienceAttribute(),
-		EGameplayModOp::Additive, SavedExperience);
+		EGameplayModOp::Override, SavedExperience);
 
 	const float MaxExperience = InAscToGive->GetNumericAttribute(UTwoMinAttributeSet::GetMaxExperienceAttribute());
 	

@@ -568,3 +568,24 @@ struct FWorldStageClearGainData : public FTableRowBase
 	int32 GainExp;
 	
 };
+
+USTRUCT(NotBlueprintType)
+struct FSaveGameData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY()
+	TMap<FString, bool> WorldStageMap;
+	
+	UPROPERTY()
+	int32 PlayerLevel;
+	
+	UPROPERTY()
+	int32 PlayerCurrentExp;
+	
+	UPROPERTY()
+	int32 PlayerCurrentGold;
+	
+	UPROPERTY()
+	TArray<FItemInstance> PlayerCurrentItems;
+};
