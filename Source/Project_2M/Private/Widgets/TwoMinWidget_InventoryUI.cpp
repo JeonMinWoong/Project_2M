@@ -91,7 +91,7 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningPlayerPawn()))
 			{
 				PlayerCharacter->OpenInventoryProcess();
-				// todo : 저장 아이콘 표시~
+				PlayerCharacter->GetPlayerUIComponent()->OnStartManualSaveAnim.Broadcast();
 			}
 			
 			FSaveGameData NewSaveGameData;

@@ -17,6 +17,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnSetWindowQuickSlot, FItemInsta
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetBuffItem, int32, ItemID);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetAngerState, bool, bIsOnAngerMode);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPossibleInteraction, bool, bIsPossibleInteraction);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStartManualSaveAnim);
+
 
 /**
  * 
@@ -62,6 +64,9 @@ public:
 	
 	UPROPERTY()
 	FOnPossibleInteraction OnPossibleInteraction;
+	
+	UPROPERTY()
+	FOnStartManualSaveAnim OnStartManualSaveAnim;
 	
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "UI|MapSelect")

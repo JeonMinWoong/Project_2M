@@ -3,7 +3,9 @@
 
 #include "Widgets/Player/TwoMinWidgetPlayer.h"
 
+#include "Animation/WidgetAnimation.h"
 #include "Compnents/UI/PlayerUIComponent.h"
+#include "Components/CanvasPanel.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "Interfaces/BaseUIInterface.h"
@@ -42,6 +44,7 @@ void UTwoMinWidgetPlayer::InitPlayerUIComponent(UPlayerUIComponent* HeroUICompon
 	HeroUIComponent->OnSetAngerState.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetAngerState);
 	HeroUIComponent->OnPossibleInteraction.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::SetPossibleInteraction);
 	HeroUIComponent->OnPossibleInteraction.Broadcast(false);
+	HeroUIComponent->OnStartManualSaveAnim.AddUniqueDynamic(this, &UTwoMinWidgetPlayer::OnStartManualSave);
 }
 
 void UTwoMinWidgetPlayer::SetCurrentHealthPercent(float Percent)
@@ -131,4 +134,16 @@ void UTwoMinWidgetPlayer::SetPossibleInteraction(bool bIsPossibleInteraction)
 	
 	ESlateVisibility EVisibility = bIsPossibleInteraction ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
 	Interaction->SetVisibility(EVisibility);
+}
+
+void UTwoMinWidgetPlayer::OnStartManualSave()
+{
+	if (!OnStartManualSaveAnim) return;
+	
+	if (IsAnimationPlaying(OnStartManualSaveAnim))
+	{
+		StopAnimation(OnStartManualSaveAnim);
+	}
+	
+	PlayAnimation(OnStartManualSaveAnim);
 }

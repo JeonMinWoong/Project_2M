@@ -7,6 +7,7 @@
 #include "Widgets/TwoMinWidget_BuffWindow.h"
 #include "TwoMinWidgetPlayer.generated.h"
 
+class UCanvasPanel;
 class UTwoMinWidget_FightBar;
 class UTwoMinWidget_BuffWindow;
 struct FItemInstance;
@@ -66,6 +67,9 @@ protected:
 	UFUNCTION()
 	void SetPossibleInteraction(bool bIsPossibleInteraction);
 	
+	UFUNCTION()
+	void OnStartManualSave();
+	
 private:
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* HealthBar;
@@ -99,6 +103,9 @@ private:
 	
 	UPROPERTY(meta=(BindWidget))
 	UTwoMinWidgetBase* Interaction;
+	
+	UPROPERTY(meta=(BindWidgetAnim), Transient)
+	UWidgetAnimation* OnStartManualSaveAnim;
 	
 public:
 	FORCEINLINE UTwoMinWidget_WindowQuickSlot* GetWindowQuickSlot() const { return WindowQuickSlot; }
