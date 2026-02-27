@@ -43,7 +43,7 @@ void UInventoryComponent::BeginPlay()
 
 void UInventoryComponent::InitGiveItem()
 {
-	if (UTwoMinFunctionLibrary::IsLoadData(this) == false)
+	if (UTwoMinFunctionLibrary::IsLoadingData(this) == false)
 	{
 		// 처음 아이템 추가.
 		UTwoMinGameInstance* GI = GetWorld()->GetGameInstance<UTwoMinGameInstance>();

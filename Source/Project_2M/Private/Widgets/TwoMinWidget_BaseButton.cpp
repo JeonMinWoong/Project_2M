@@ -4,6 +4,24 @@
 #include "Widgets/TwoMinWidget_BaseButton.h"
 
 #include "Components/Image.h"
+#include "Components/TextBlock.h"
+
+void UTwoMinWidget_BaseButton::SetLocked(bool Locked)
+{
+	if (Locked)
+	{
+		LockImage->SetVisibility(ESlateVisibility::Hidden);
+		FLinearColor tColor = FLinearColor(0.072f, 0.072f, 0.072f, 1.f);
+		TextBox->SetColorAndOpacity(FSlateColor(tColor));
+		bIsLocked = true;
+	}
+	else
+	{
+		LockImage->SetVisibility(ESlateVisibility::Hidden);
+		TextBox->SetColorAndOpacity(FSlateColor(FLinearColor::White));
+		bIsLocked = false;
+	}
+}
 
 void UTwoMinWidget_BaseButton::NativeOnAddedToFocusPath(const FFocusEvent& InFocusEvent)
 {

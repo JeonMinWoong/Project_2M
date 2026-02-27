@@ -6,6 +6,7 @@
 #include "Widgets/TwoMinWidgetBase.h"
 #include "TwoMinWidget_BaseButton.generated.h"
 
+class UTextBlock;
 class UImage;
 /**
  * 
@@ -15,6 +16,12 @@ class PROJECT_2M_API UTwoMinWidget_BaseButton : public UTwoMinWidgetBase
 {
 	GENERATED_BODY()
 
+public:
+	void SetLocked(bool Locked);
+
+	UPROPERTY(meta=(BindWidget), BlueprintReadWrite)
+	UTextBlock* TextBox;
+	
 protected:
 	virtual void NativeOnAddedToFocusPath(const FFocusEvent& InFocusEvent) override;
 	virtual void NativeOnRemovedFromFocusPath(const FFocusEvent& InFocusEvent) override;
@@ -24,4 +31,13 @@ private:
 	
 	UPROPERTY(meta=(BindWidget))
 	UImage* FocusImage;
+	
+	UPROPERTY(meta=(BindWidget))
+	UImage* LockImage;
+
+	UPROPERTY()
+	bool bIsLocked = false;
+	
+public:
+	FORCEINLINE bool IsLocked() const { return bIsLocked; }
 };

@@ -60,5 +60,11 @@ public:
 	static bool TryLoadGame(FSaveGameData& OutSaveGameData);
 	
 	UFUNCTION()
-	static bool IsLoadData(const UObject* WorldContextObject);
+	static bool IsExistSaveGameData();
+	
+	UFUNCTION()
+	static void RemoveSaveGameData();
+	
+	UFUNCTION()
+	static bool IsLoadingData(const UObject* WorldContextObject);
 };

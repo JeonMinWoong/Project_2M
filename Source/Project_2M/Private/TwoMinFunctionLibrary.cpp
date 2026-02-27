@@ -181,10 +181,9 @@ void UTwoMinFunctionLibrary::SaveGame(const FSaveGameData& NewSaveGameData)
 
 bool UTwoMinFunctionLibrary::TryLoadGame(FSaveGameData& OutSaveGameData)
 {
-	const FString SlotName = TwoMinGameplayTag::Data_SaveGame_Slot_1.GetTag().ToString();
-	const bool IsFindSaveData = UGameplayStatics::DoesSaveGameExist(SlotName, 0);
-	if (IsFindSaveData == false) return false;
+	if (IsExistSaveGameData() == false) return false;
 	
+	const FString SlotName = TwoMinGameplayTag::Data_SaveGame_Slot_1.GetTag().ToString();
 	USaveGame* SaveGameObject = UGameplayStatics::LoadGameFromSlot(SlotName, 0);
 	UTwoMinSaveGame* TwoMinSaveGame = Cast<UTwoMinSaveGame>(SaveGameObject);
 	if (!TwoMinSaveGame) return false;
@@ -201,7 +200,23 @@ bool UTwoMinFunctionLibrary::TryLoadGame(FSaveGameData& OutSaveGameData)
 	return true;
 }
 
-bool UTwoMinFunctionLibrary::IsLoadData(const UObject* WorldContextObject)
+bool UTwoMinFunctionLibrary::IsExistSaveGameData()
+{
+	const FString SlotName = TwoMinGameplayTag::Data_SaveGame_Slot_1.GetTag().ToString();
+	const bool IsFindSaveData = UGameplayStatics::DoesSaveGameExist(SlotName, 0);
+	
+	return IsFindSaveData;
+}
+
+void UTwoMinFunctionLibrary::RemoveSaveGameData()
+{
+	if (IsExistSaveGameData() == false) return;
+	
+	const FString SlotName = TwoMinGameplayTag::Data_SaveGame_Slot_1.GetTag().ToString();
+	UGameplayStatics::DeleteGameInSlot(SlotName, 0);
+}
+
+bool UTwoMinFunctionLibrary::IsLoadingData(const UObject* WorldContextObject)
 {
 	if (!WorldContextObject) return false;
 

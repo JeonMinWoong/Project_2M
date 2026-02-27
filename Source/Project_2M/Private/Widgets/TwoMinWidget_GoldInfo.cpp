@@ -15,7 +15,7 @@ void UTwoMinWidget_GoldInfo::SetGoldText(const int32 InGoldAmount)
 
 void UTwoMinWidget_GoldInfo::SetGoldNotifyText(int32 GainAmount)
 {
-	if (UTwoMinFunctionLibrary::IsLoadData(this)) return;
+	if (UTwoMinFunctionLibrary::IsLoadingData(this)) return;
 	
 	GoldNotify->SetVisibility(ESlateVisibility::Visible);
 	const FString Str = FString::Printf(TEXT("+ %d"), GainAmount);

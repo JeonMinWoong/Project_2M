@@ -29,3 +29,8 @@ FSaveGameData UTwoMinSaveGame::LoadGameData() const
 	//TwoMinDebugHelper::Print(TEXT("불러오기 중..."), FColor::Green);
 	return NewSaveGameData;
 }
+
+bool UTwoMinSaveGame::IsExistSaveGameData() const
+{
+	return PlayerLevel > 0;
+}

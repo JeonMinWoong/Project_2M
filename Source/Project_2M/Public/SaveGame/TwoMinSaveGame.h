@@ -20,6 +20,7 @@ class PROJECT_2M_API UTwoMinSaveGame : public USaveGame
 public:
 	void SaveGameData(const FSaveGameData& NewSaveGameData);
 	FSaveGameData LoadGameData() const;
+	bool IsExistSaveGameData() const;
 
 private:
 	UPROPERTY()
