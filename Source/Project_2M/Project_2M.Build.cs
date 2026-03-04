@@ -21,6 +21,8 @@ public class Project_2M : ModuleRules
 			"AIModule",
 			"MotionWarping",
 			"NavigationSystem",
+			"LevelSequence", 
+			"MovieScene"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "MotionWarping", "Niagara" });

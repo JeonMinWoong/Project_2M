@@ -26,3 +26,10 @@ void UEnemyUIComponent::ShowBossHealthBar(const FString& BossName)
 	
 	GM->GetSpawnMonsterPointGroup()->EnterBossStage();
 }
+
+void UEnemyUIComponent::HideBossHealthBar()
+{
+	if (!BossHealthBarWidget) return;
+	
+	BossHealthBarWidget->RemoveFromParent();
+}

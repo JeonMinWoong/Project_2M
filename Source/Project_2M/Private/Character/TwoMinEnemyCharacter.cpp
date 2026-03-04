@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "BrainComponent.h"
 #include "TwoMinDebugHelper.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Compnents/ItemDropComponent.h"
 #include "Compnents/Combat/EnemyCombatComponent.h"
@@ -16,6 +17,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameInstance/TwoMinGameInstance.h"
 #include "GameModes/TwoMinBaseGameMode.h"
+#include "Item/EnterEvent/TwoMinEnterEventBase.h"
 #include "Item/PickUp/TwoMinPickUpItemBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Managers/WorldStageManager.h"
@@ -83,6 +85,8 @@ UEnemyUIComponent* ATwoMinEnemyCharacter::GetEnemyUIComponent() const
 void ATwoMinEnemyCharacter::BeforeDeathProcess()
 {
 	Super::BeforeDeathProcess();
+	
+	if (bIsCinematic) return;
 
 	AAIController* AI = Cast<AAIController>(GetController());
 	if (!AI) return;
@@ -100,7 +104,28 @@ void ATwoMinEnemyCharacter::BeforeDeathProcess()
 	}
 	else
 	{
-		GM->GetSpawnMonsterPointGroup()->OpenBossStage();
+		if (BossPhase == EBossPhaseType::Phase_Finish)
+		{
+			GM->GetSpawnMonsterPointGroup()->OpenBossStage();	
+		}
+		else
+		{
+			int32 PhaseValue = static_cast<int>(BossPhase);
+			EBossPhaseType NextPhase = static_cast<EBossPhaseType>(PhaseValue - 1);
+			
+			FTimerManager& TimerManager = GetWorldTimerManager();
+			if (TimerManager.IsTimerActive(PhaseConversionTimerHandle))
+			{
+				TimerManager.ClearTimer(PhaseConversionTimerHandle);
+			}
+			
+			TimerManager.SetTimer(PhaseConversionTimerHandle,
+				[this, NextPhase]()
+				{
+					GetEnemyUIComponent()->HideBossHealthBar();
+					InitPhaseConversion(NextPhase);
+				}, PhaseConversionDelay, false);
+		}
 	}
 }
 
@@ -108,6 +133,7 @@ void ATwoMinEnemyCharacter::AfterDeathProcess()
 {
 	Super::AfterDeathProcess();
 	
+	if (bIsCinematic) return;
 	if (IsUseBossHealthBar()) return;
 	
 	TMap<int32, int32> DropItems = ItemDropComponent->TryGetCharacterDropItems();
@@ -161,7 +187,9 @@ void ATwoMinEnemyCharacter::OnDestroyedProcess()
 {
 	Super::OnDestroyedProcess();
 	
+	if (bIsCinematic) return;
 	if (IsUseBossHealthBar() == false) return;
+	if (BossPhase != EBossPhaseType::Phase_Finish) return;
 	
 	ClearStageProcess();
 }
@@ -178,6 +206,41 @@ void ATwoMinEnemyCharacter::ClearStageProcess() const
 	GI->StateManager->ClearCurrentWorldStage();
 }
 
+void ATwoMinEnemyCharacter::OnShowCharacter()
+{
+	if (bIsHideCharacter == false) return;
+	
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
+	SetActorTickEnabled(true);
+	GetCombatComponent()->EnableWeaponsMesh(true);
+	
+	AAIController* AI = Cast<AAIController>(GetController());
+	if (!AI) return;
+	
+	AI->BrainComponent->RestartLogic();
+	UBehaviorTreeComponent* BTComp = Cast<UBehaviorTreeComponent>(AI->BrainComponent);
+	AI->RunBehaviorTree(BTComp->GetCurrentTree());
+	bIsHideCharacter = false;
+}
+
+void ATwoMinEnemyCharacter::OnHideCharacter()
+{
+	if (bIsHideCharacter) return;
+	
+	SetActorHiddenInGame(true);
+	SetActorEnableCollision(false);
+	SetActorTickEnabled(false);
+	GetCombatComponent()->EnableWeaponsMesh(false);
+	
+	AAIController* AI = Cast<AAIController>(GetController());
+	if (!AI) return;
+	
+	AI->StopMovement();
+	AI->BrainComponent->StopLogic(TEXT("AI Disabled"));
+	bIsHideCharacter = true;
+}
+
 void ATwoMinEnemyCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -191,11 +254,29 @@ void ATwoMinEnemyCharacter::PossessedBy(AController* NewController)
 	}
 }
 
+void ATwoMinEnemyCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	
+	if (bIsCinematic)
+	{
+		// 스폰 몬스터와 겹치지 방지.
+		InitCheckCinematic();
+	}
+}
+
 void ATwoMinEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
 	InitEnemyHealthWidget();
+}
+
+void ATwoMinEnemyCharacter::InitCheckCinematic()
+{
+	if (bIsCinematic == false)	return;
+	
+	OnHideCharacter();
 }
 
 void ATwoMinEnemyCharacter::InitEnemyHealthWidget()
@@ -214,4 +295,65 @@ void ATwoMinEnemyCharacter::InitEnemyHealthWidget()
 	{
 		HealthWidget->InitEnemyUIComponent(EnemyUIComponent);
 	}
+}
+
+void ATwoMinEnemyCharacter::InitPhaseConversion(EBossPhaseType NewBossPhase)
+{
+	const FString CurRealStageName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
+	if (!PhaseTargetCharacter.Contains(CurRealStageName)) return;
+	
+	FPhaseConversionData PhaseData = PhaseTargetCharacter[CurRealStageName];
+	
+	const TSubclassOf<ATwoMinEnemyCharacter> ConversionClass = PhaseData.BossPhaseType[NewBossPhase].PhaseTargetCharacter;
+	if (!ConversionClass) return;
+	
+	ATwoMinEnemyCharacter* SpawnNewPhaseCharacter = 
+		GetWorld()->SpawnActorDeferred<ATwoMinEnemyCharacter>(
+			ConversionClass, 
+			GetActorTransform(), 
+			nullptr,
+			nullptr,
+			ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn
+			);
+	
+	SpawnNewPhaseCharacter->SetCharacterCinematicData(HideCinematicMap);
+	SpawnNewPhaseCharacter->SetUseBossHealthBar(bUseBossHealthBar);
+	SpawnNewPhaseCharacter->SetBossPhaseType(NewBossPhase);
+	 
+	SpawnNewPhaseCharacter->FinishSpawning(GetActorTransform());
+	
+	if (const TSubclassOf<ATwoMinEnterEventBase> PhaseLevelSequence = PhaseData.BossPhaseType[NewBossPhase].PhaseLevelSequence)
+	{
+		ATwoMinEnterEventBase* LevelSequence = GetWorld()->SpawnActorDeferred<ATwoMinEnterEventBase>(
+		PhaseLevelSequence,
+		GetActorTransform(),
+		nullptr,
+		nullptr,
+		ESpawnActorCollisionHandlingMethod::AlwaysSpawn
+	);
+	
+		LevelSequence->SetIgnoreCollision(true);
+		LevelSequence->FinishSpawning(GetActorTransform());
+	
+		AActor* PlayerActor = GetWorld()->GetFirstPlayerController()->GetPawn();
+		LevelSequence->OutPlayLevelSequence(PlayerActor);
+	}
+	
+	TwoMinDebugHelper::Print(TEXT("새로운 페이즈 돌입."));
+	
+	OnHideCharacter();
+}
+
+bool ATwoMinEnemyCharacter::GetHideCinematic(const FString& PlayLevelSequenceName) const
+{
+	if (HideCinematicMap.Contains(PlayLevelSequenceName) == false) return false;
+		
+	return HideCinematicMap[PlayLevelSequenceName].bIsHide;
+}
+
+FString ATwoMinEnemyCharacter::GetSyncCinematicActorName(const FString& PlayLevelSequenceName) const
+{
+	if (HideCinematicMap.Contains(PlayLevelSequenceName) == false) return "";
+		
+	return HideCinematicMap[PlayLevelSequenceName].SyncCharacterName;
 }

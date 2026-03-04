@@ -265,3 +265,20 @@ enum class EDefeatType : uint8
 	Return = 1,
 	Retry = 2,
 };
+
+UENUM(Blueprintable)
+enum class EBossPhaseType : uint8
+{
+	Phase_Finish = 0,
+	Phase_1 = 1,			// 추가 페이즈가 1 있음.
+	Phase_2 = 2,
+};
+
+inline EBossPhaseType& operator--(EBossPhaseType& Phase)
+{
+	int Val = static_cast<int>(Phase);
+	if (Val > 0) {
+		Phase = static_cast<EBossPhaseType>(Val - 1);
+	}
+	return Phase;
+}

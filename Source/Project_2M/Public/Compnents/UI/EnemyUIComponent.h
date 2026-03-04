@@ -17,6 +17,7 @@ class PROJECT_2M_API UEnemyUIComponent : public UBaseUIComponent
 
 public:
 	void ShowBossHealthBar(const FString& BossName);
+	void HideBossHealthBar();
 	
 	FOnStringChangeDelegate OnEnemyStateChanged;
 	

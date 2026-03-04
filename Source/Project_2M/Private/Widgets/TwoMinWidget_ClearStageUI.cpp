@@ -86,6 +86,8 @@ FReply UTwoMinWidget_ClearStageUI::NativeOnPreviewKeyDown(const FGeometry& MyGeo
 
 void UTwoMinWidget_ClearStageUI::SettingClearStageUI()
 {
+	PlayClearStageAnim();
+	
 	UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
 	if (!GI) return;
 	
@@ -108,36 +110,37 @@ void UTwoMinWidget_ClearStageUI::SettingClearStageUI()
 	const FString GainExpStr = FText::AsNumber(GainExp).ToString();
 	GainExpTextBlock->SetText(FText::FromString(FString::Printf(TEXT("EXP +%s"), *GainExpStr)));
 	
-	TMap<int32, int32> ClearRewordItem = GI->ItemDataManager->TryGetDropItems(CurRealStageName);
-	if (ClearRewordItem.IsEmpty()) return;
-	
-	TArray<FItemEquipmentData> EquipmentList;
-	TArray<FItemConsumeData> ConsumeList;
-	TArray<FItemEtcData> EtcList;
-	for (auto RewordItem : ClearRewordItem)
-	{
-		GI->ItemDataManager->GetDropItemList(RewordItem, EquipmentList, ConsumeList, EtcList);
-	}
-	
 	ACharacter* Character = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	if (!Character) return;
 	
 	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(Character);
 	if (!PlayerCharacter) return;
 	
+	TMap<int32, int32> ClearRewordItem = GI->ItemDataManager->TryGetDropItems(CurRealStageName);
+	if (ClearRewordItem.IsEmpty() == false)
+	{
+		TArray<FItemEquipmentData> EquipmentList;
+		TArray<FItemConsumeData> ConsumeList;
+		TArray<FItemEtcData> EtcList;
+		for (auto RewordItem : ClearRewordItem)
+		{
+			GI->ItemDataManager->GetDropItemList(RewordItem, EquipmentList, ConsumeList, EtcList);
+		}
+		
+		GI->ItemDataManager->GiveToInventory(PlayerCharacter, EquipmentList, ConsumeList, EtcList, true);
+		ShowItemSlots(EquipmentList, ConsumeList, EtcList);
+	}
+	
 	UTwoMinAbilitySystemComponent* ASC = PlayerCharacter->GetAbilitySystemComponent();
 	if (!ASC) return;
+	
+	ASC->GiveGoldAmount(GainGold);
+	ASC->GiveExperienceAmount(GainExp);
 	
 	ATwoMinBaseGameMode* GM = Cast<ATwoMinBaseGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (!GM) return;
 	
 	GM->LockPlayerInput(true, this);
-	
-	PlayClearStageAnim();
-	ASC->GiveGoldAmount(GainGold);
-	ASC->GiveExperienceAmount(GainExp);
-	GI->ItemDataManager->GiveToInventory(PlayerCharacter, EquipmentList, ConsumeList, EtcList, true);
-	ShowItemSlots(EquipmentList, ConsumeList, EtcList);
 }
 
 void UTwoMinWidget_ClearStageUI::ShowItemSlots(TArray<FItemEquipmentData> InItemEquipmentList, 

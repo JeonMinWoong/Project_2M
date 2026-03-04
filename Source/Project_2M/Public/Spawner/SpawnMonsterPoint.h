@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/TargetPoint.h"
 #include "ToMinTypes/TwoMinEnumTypes.h"
+#include "ToMinTypes/TwoMinStructTypes.h"
 #include "SpawnMonsterPoint.generated.h"
 
 class ATwoMinEnemyCharacter;
@@ -30,6 +31,9 @@ public:
 	ATwoMinEnemyCharacter* SpawnMonsterPoint(int32& OutSpawnMonsterPointIndex);
 	
 private:
+	UPROPERTY(EditAnywhere, Category = "SpawnInfo|IsHideCinematicing")
+	TMap<FString, FCinematicCharacterData> CharacterCinematicMap;
+	
 	UPROPERTY(EditAnywhere, Category = "SpawnInfo|SpawnMonsterPointIndex")
 	int32 SpawnMonsterPointIndex = -1;
 	

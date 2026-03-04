@@ -3,10 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MovieSceneObjectBindingID.h"
 #include "Character/TwoMinBaseCharacter.h"
 #include "Components/WidgetComponent.h"
+#include "ToMinTypes/TwoMinStructTypes.h"
 #include "TwoMinEnemyCharacter.generated.h"
 
+class ATwoMinEnterEventBase;
+class AAIController;
+struct FCinematicCharacterData;
 class UTwoMinWidgetBoss;
 class ATwoMinPickUpItemBase;
 class UItemDropComponent;
@@ -33,20 +38,30 @@ public:
 	
 	void ClearStageProcess() const;
 	
+	void OnShowCharacter();
+	void OnHideCharacter();
+	
+	bool GetHideCinematic(const FString& PlayLevelSequenceName) const;
+	FString GetSyncCinematicActorName(const FString& PlayLevelSequenceName) const;
 	FTimerHandle DecreaseGroggyTimerHandle;
+	FTimerHandle PhaseConversionTimerHandle;
 	
 protected:
 	//~ Begin APawn Interface.
 	virtual void PossessedBy(AController* NewController) override;
 	//~ End APawn Interface
 
+	virtual void PostInitializeComponents() override;
+	
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere)
 	UEnemyUIComponent* EnemyUIComponent;
 	
 private:
+	void InitCheckCinematic();
 	void InitEnemyHealthWidget();
+	void InitPhaseConversion(EBossPhaseType NewBossPhase);
 	
 	/** Components **/
 	UPROPERTY(VisibleAnywhere)
@@ -60,7 +75,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category= "UI")
 	UWidgetComponent* EnemyExecutionWidgetComponent;
-	
+
 	/** CharacterInfo **/
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|Name")
 	FString MonsterName = "Monster";
@@ -77,8 +92,31 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "ItemDropClass")
 	TSubclassOf<ATwoMinPickUpItemBase> ItemDropClass; 
 	
-	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|IsBossHealthBar")
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|BossInfo|IsBossHealthBar")
 	bool bUseBossHealthBar = false;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|BossInfo|BossPaseType", meta = (EditCondition = "bUseBossHealthBar"))
+	EBossPhaseType BossPhase = EBossPhaseType::Phase_Finish;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|BossInfo|BossPhaseTarget", meta = (EditCondition = "bUseBossHealthBar"))
+	TMap<FString, FPhaseConversionData> PhaseTargetCharacter;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|BossInfo|PhaseConversionDelay", meta = (EditCondition = "bUseBossHealthBar"))
+	float PhaseConversionDelay;
+
+	// 시네마틱 캐릭터 인 지.
+	UPROPERTY(EditAnywhere, Category = "CharacterInfo|IsCinematic")
+	bool bIsCinematic = false;
+	
+	// 시네마틱 중 안 보이게 할 지.
+	UPROPERTY(VisibleAnywhere, Category = "CharacterInfo|IsHideCinematicing")
+	TMap<FString, FCinematicCharacterData> HideCinematicMap;
+	
+	UPROPERTY(VisibleAnywhere, Category = "CharacterInfo|IsHideCharacter")
+	bool bIsHideCharacter = false;
+	
+	UPROPERTY()
+	AActor* CinematicSyncActor;
 	
 public:
 	EMonsterType GetMonsterType() const { return MonsterType; };
@@ -86,7 +124,18 @@ public:
 	
 	FORCEINLINE void EnableExecutionWidget(bool bIsEnable) const { EnemyExecutionWidgetComponent->SetVisibility(bIsEnable); }
 	
+	FORCEINLINE void SetCharacterCinematicData(const TMap<FString, FCinematicCharacterData>& InHideCharacterMap)
+	{ HideCinematicMap = InHideCharacterMap; };
+	
+	FORCEINLINE bool GetIsHideCharacter() const { return bIsHideCharacter; };
+	
+	FORCEINLINE void SetCinematicSyncActor(AActor* InCinematicSyncActor)
+	{ CinematicSyncActor = InCinematicSyncActor; };
+	
+	FORCEINLINE AActor* GetCinematicSyncActor() const { return CinematicSyncActor; };
+	
 	FORCEINLINE void SetUseBossHealthBar(const bool bIsUse) { bUseBossHealthBar =  bIsUse; }
 	FORCEINLINE bool IsUseBossHealthBar() const { return bUseBossHealthBar; }
+	FORCEINLINE void SetBossPhaseType(EBossPhaseType NewBossPhaseType) { BossPhase = NewBossPhaseType; };
 	
 };

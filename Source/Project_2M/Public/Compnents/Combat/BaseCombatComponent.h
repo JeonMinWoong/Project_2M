@@ -32,6 +32,7 @@ public:
 	virtual UExecutionComponent* GetExecutionComponent() const;
 	void ClearOverlappingActors();
 	
+	UFUNCTION(BlueprintCallable)
 	void EnableWeaponsMesh(bool bIsEnable);
 	
 protected:

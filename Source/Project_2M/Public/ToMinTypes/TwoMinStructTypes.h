@@ -7,6 +7,8 @@
 
 #include "TwoMinStructTypes.generated.h"
 
+class ATwoMinEnterEventBase;
+class ATwoMinEnemyCharacter;
 class ATwoMinWeaponBase;
 class UImage;
 class ATargetPoint;
@@ -588,4 +590,37 @@ struct FSaveGameData
 	
 	UPROPERTY()
 	TArray<FItemInstance> PlayerCurrentItems;
+};
+
+USTRUCT(BlueprintType)
+struct FCinematicCharacterData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bIsHide;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString SyncCharacterName;
+};
+
+USTRUCT(BlueprintType)
+struct FCharacterConversionData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<ATwoMinEnemyCharacter> PhaseTargetCharacter;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<ATwoMinEnterEventBase> PhaseLevelSequence;
+};
+
+USTRUCT(BlueprintType)
+struct FPhaseConversionData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TMap<EBossPhaseType, FCharacterConversionData> BossPhaseType;
 };

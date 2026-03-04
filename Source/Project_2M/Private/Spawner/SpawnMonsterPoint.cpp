@@ -137,6 +137,7 @@ ATwoMinEnemyCharacter* ASpawnMonsterPoint::SpawnMonsterPoint(int32& OutSpawnMons
 		EnemyCombatComponent->InitPatrol(PatrolPoints, PatrolPathMode);	
 	}
 	
+	SpawnEnemy->SetCharacterCinematicData(CharacterCinematicMap);
 	SpawnEnemy->SetUseBossHealthBar(bIsBoss);
 	SpawnEnemy->FinishSpawning(GetActorTransform());
 	return SpawnEnemy;
