@@ -31,9 +31,7 @@ private:
 	
 	UFUNCTION()
 	void OnFinishLevelSequence();
-	
-	void OnIgnorePlayerInput(bool OnIgnore);
-	
+
 	UPROPERTY(EditDefaultsOnly)
 	UBoxComponent* BoxComponent;
 	

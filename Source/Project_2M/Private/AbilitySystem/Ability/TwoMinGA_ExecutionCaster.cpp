@@ -4,6 +4,7 @@
 #include "AbilitySystem/Ability/TwoMinGA_ExecutionCaster.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "TwoMinDebugHelper.h"
 #include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
@@ -12,6 +13,7 @@
 #include "Character/TwoMinBaseCharacter.h"
 #include "Character/TwoMinEnemyCharacter.h"
 #include "Compnents/ExecutionComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 FAttackInfoData& UTwoMinGA_ExecutionCaster::GetAttackInfoData()
 {
@@ -118,6 +120,7 @@ void UTwoMinGA_ExecutionCaster::ActivateAbility(const FGameplayAbilitySpecHandle
 		PayLoad
 	);
 	
+	PlayCinematicEvent(MyActor, ExecutionNumber);
 	PlayToAnimMontage(ExecutionMontage);
 	UAbilityTask_WaitGameplayEvent* Task = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
 	this, OnHitExecution, nullptr, false, true);
@@ -163,6 +166,36 @@ UAnimMontage* UTwoMinGA_ExecutionCaster::GetExecutionMontage(bool bIsExecutionFo
 	
 	ExecutionNumber = FMath::RandRange(1, ExecutionBackCasterMontages.Num());
 	return ExecutionBackCasterMontages[ExecutionNumber];
+}
+
+void UTwoMinGA_ExecutionCaster::PlayCinematicEvent(AActor* MyActor, int32 ExecutionNumber)
+{
+	ATwoMinPlayerCharacter* MyCharacter = Cast<ATwoMinPlayerCharacter>(MyActor);
+	if (!MyCharacter) return;
+	
+	if (FExecutionCinematicData.IsEmpty()) return;
+	
+	AActor* ExecutionDummyActor = MyCharacter->GetExecutionCinematicDummy();
+	if (!ExecutionDummyActor)
+	{
+		TArray<AActor*> OutActors;
+		UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AActor::StaticClass(), 
+			FName("ExecutionCinematicDummy"), OutActors);
+		ExecutionDummyActor = OutActors[0];
+		if (!ExecutionDummyActor)
+		{
+			TwoMinDebugHelper::Print(TEXT("Dummy is null"), FColor::Red);
+			return;
+		}
+	}
+	
+	const FVector CameraToLocation =  MyCharacter->GetActorLocation();
+	FRotator CameraToRotation = MyCharacter->GetActorRotation();
+	CameraToRotation.Yaw += 90;
+	
+	ExecutionDummyActor->SetActorLocationAndRotation(CameraToLocation, CameraToRotation);
+	PlayLevelSequence(MyCharacter, FExecutionCinematicData[ExecutionNumber].CinematicLevelSequence,
+		FExecutionCinematicData[ExecutionNumber].OriginCamConvertBlendDelay);
 }
 
 void UTwoMinGA_ExecutionCaster::StartAutoPosition()

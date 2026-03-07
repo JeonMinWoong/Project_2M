@@ -38,6 +38,8 @@ protected:
 private:
 	UAnimMontage* GetExecutionMontage(bool bIsExecutionForward, int32& ExecutionNumber);
 
+	void PlayCinematicEvent(AActor* MyActor, int32 ExecutionNumber);
+	
 	void StartAutoPosition();
 	void ExecutionTargetAutoPosition(float DeltaTime, ATwoMinBaseCharacter* ExecutionTarget, AActor* MyActor,
 		int32 ExecutionNumber, float SnapSpeed, FRotator& LookAtRot);
@@ -79,4 +81,8 @@ private:
 	
 	UPROPERTY()
 	UExecutionPayloadObject* CachedExecutionData;
+	
+	// 1 ~ 10 앞, 11 ~ 20 뒤
+	UPROPERTY(EditDefaultsOnly, Category = "ExecutionCaster|Cinematic")
+	TMap<int32, FExecutionCinematicData> FExecutionCinematicData;
 };

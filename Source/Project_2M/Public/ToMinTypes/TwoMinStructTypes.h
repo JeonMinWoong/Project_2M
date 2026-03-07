@@ -7,6 +7,7 @@
 
 #include "TwoMinStructTypes.generated.h"
 
+class ULevelSequence;
 class ATwoMinEnterEventBase;
 class ATwoMinEnemyCharacter;
 class ATwoMinWeaponBase;
@@ -623,4 +624,16 @@ struct FPhaseConversionData
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TMap<EBossPhaseType, FCharacterConversionData> BossPhaseType;
+};
+
+USTRUCT(BlueprintType)
+struct FExecutionCinematicData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	ULevelSequence* CinematicLevelSequence;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float OriginCamConvertBlendDelay;
 };

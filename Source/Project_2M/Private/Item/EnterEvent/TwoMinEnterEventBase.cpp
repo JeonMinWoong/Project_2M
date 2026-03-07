@@ -71,6 +71,7 @@ void ATwoMinEnterEventBase::PlayLevelSequence(AActor* OtherActor)
 	PlayerCharacter->SetActorHiddenInGame(true);
 	PlayerCharacter->GetCombatComponent()->EnableWeaponsMesh(false);
 	PlayerCharacter->GetHUDOverlay()->SetVisibility(ESlateVisibility::Hidden);
+	PlayerCharacter->OnIgnoreInputProcess(true);
 	
 	for (auto HideCharacter : HideEnemyCharacters)
 	{
@@ -97,8 +98,6 @@ void ATwoMinEnterEventBase::PlayLevelSequence(AActor* OtherActor)
 	if (!LevelSequencePlayer) return;
 	
 	bIsEventActivated = true;
-	OnIgnorePlayerInput(true);
-	
 	LevelSequencePlayer->Play();
 	LevelSequencePlayer->OnFinished.AddUniqueDynamic(this, &ATwoMinEnterEventBase::OnFinishLevelSequence);
 
@@ -140,8 +139,6 @@ void ATwoMinEnterEventBase::PlayLevelSequence(AActor* OtherActor)
 
 void ATwoMinEnterEventBase::OnFinishLevelSequence()
 {
-	OnIgnorePlayerInput(false);
-	
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	if (!PC) return;
 
@@ -151,6 +148,7 @@ void ATwoMinEnterEventBase::OnFinishLevelSequence()
 	PlayerCharacter->SetActorHiddenInGame(false);
 	PlayerCharacter->GetCombatComponent()->EnableWeaponsMesh(true);
 	PlayerCharacter->GetHUDOverlay()->SetVisibility(ESlateVisibility::Visible);
+	PlayerCharacter->OnIgnoreInputProcess(false);
 	
 	for (auto HideCharacter : HideEnemyCharacters)
 	{
@@ -188,28 +186,5 @@ void ATwoMinEnterEventBase::OnFinishLevelSequence()
 		Actor->Destroy();
 	}
 }
-
-void ATwoMinEnterEventBase::OnIgnorePlayerInput(bool OnIgnore)
-{
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	if (!PC) return;
-	
-	PC->SetIgnoreMoveInput(OnIgnore);
-	PC->SetIgnoreLookInput(OnIgnore);
-	PC->FlushPressedKeys();
-	
-	if (OnIgnore)
-	{
-		FInputModeUIOnly InputMode;
-		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-		
-		PC->SetInputMode(InputMode);	
-	}
-	else
-	{
-		PC->SetInputMode(FInputModeGameOnly());
-	}
-}
-
 
 

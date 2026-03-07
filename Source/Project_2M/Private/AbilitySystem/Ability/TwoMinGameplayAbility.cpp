@@ -5,6 +5,8 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "LevelSequenceActor.h"
+#include "LevelSequencePlayer.h"
 #include "MotionWarpingComponent.h"
 #include "RootMotionModifier_SkewWarp.h"
 #include "TwoMinFunctionLibrary.h"
@@ -95,8 +97,49 @@ bool UTwoMinGameplayAbility::bIsReTriggerSameAbility() const
 	return false;
 }
 
+void UTwoMinGameplayAbility::PlayLevelSequence(ATwoMinBaseCharacter* OwnerCharacter, ULevelSequence* LevelSequence, float BlendDelay)
+{
+	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(OwnerCharacter);
+	if (!PlayerCharacter) return;
+	
+	PlayerCharacter->OnIgnoreInputProcess(true);
+	
+	FMovieSceneSequencePlaybackSettings PlaybackSettings;
+	PlaybackSettings.bAutoPlay = true;
+	PlaybackSettings.PlayRate = 1.0f;       
+	
+	ALevelSequenceActor* OutActor = nullptr;
+	LevelSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(
+		GetWorld(),
+		LevelSequence,
+		PlaybackSettings,
+		OutActor
+	);
+	
+	if (!LevelSequencePlayer) return;
+
+	OriginCamConvertBlendDelay = BlendDelay;
+	LevelSequencePlayer->Play();
+	LevelSequencePlayer->OnFinished.AddUniqueDynamic(this, &UTwoMinGameplayAbility::OnFinishLevelSequence);
+}
+
+void UTwoMinGameplayAbility::OnFinishLevelSequence()
+{
+	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningActorFromActorInfo());
+	if (!PlayerCharacter) return;
+	
+	PlayerCharacter->OnIgnoreInputProcess(false);
+	
+	APlayerController* PC = Cast<APlayerController>(PlayerCharacter->GetController());
+	if (PC)
+	{
+		PC->SetViewTargetWithBlend(PlayerCharacter, OriginCamConvertBlendDelay, 
+			VTBlend_Cubic, 2.0f, true);
+	}
+}
+
 UAbilityTask_PlayMontageAndWait* UTwoMinGameplayAbility::PlayToAnimMontage(UAnimMontage* AnimMontage,
-	FName StartSectionName, bool bStopWhenAbilityEnds, bool bIsBlendOutCancel)
+                                                                           FName StartSectionName, bool bStopWhenAbilityEnds, bool bIsBlendOutCancel)
 {
 	UAbilityTask_PlayMontageAndWait* Task = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this, NAME_None, AnimMontage, 1.f, StartSectionName, bStopWhenAbilityEnds

@@ -48,6 +48,8 @@ public:
 	
 	void PlayCameraShakeOnHit(ECameraShakeType CameraShakeType);
 
+	void OnIgnoreInputProcess(bool bIsIgnore);
+	
 	FTimerHandle FightDecreaseTimerHandle;
 	
 protected:
@@ -112,6 +114,9 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Status_Effect")
 	TSubclassOf<UGameplayEffect> ConsumeStatusEffect;
+	
+	UPROPERTY()
+	AActor* ExecutionCinematicDummy;
 	
 	/** CharacterInfo **/
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|Capsule")
@@ -223,6 +228,9 @@ private:
 public:
 	bool GetIsRunning();
 	FORCEINLINE UCameraComponent* GetCamera() const { return CameraComponent; }
+	
+	FORCEINLINE void SetExecutionCinematicDummy(AActor* FoundExecutionCam) { ExecutionCinematicDummy = FoundExecutionCam; }
+	FORCEINLINE AActor* GetExecutionCinematicDummy() const { return ExecutionCinematicDummy; }
 
 	FORCEINLINE void AddMovePossibleCancelAbility(const FGameplayTag GameplayTag)
 	{ MovePossibleCancelAbilityTags.AddUnique(GameplayTag); }

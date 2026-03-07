@@ -8,6 +8,8 @@
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "TwoMinGameplayAbility.generated.h"
 
+class ULevelSequencePlayer;
+class ULevelSequence;
 class UAbilityTask_PlayMontageAndWait;
 class UMotionWarpingComponent;
 struct FAttackInfoData;
@@ -67,6 +69,11 @@ protected:
 	UTwoMinAbilitySystemComponent* GetTwoMinAbilitySystemComponentFromActorInfo() const;
 	
 	virtual bool bIsReTriggerSameAbility() const;
+	
+	void PlayLevelSequence(ATwoMinBaseCharacter* OwnerCharacter, ULevelSequence* LevelSequence, float BlendDelay);
+	
+	UFUNCTION()
+	void OnFinishLevelSequence();
 	
 	UAbilityTask_PlayMontageAndWait* PlayToAnimMontage(UAnimMontage* AnimMontage, FName StartSectionName = NAME_None,
 		bool bStopWhenAbilityEnds = false, bool bIsBlendOutCancel = false);
@@ -153,6 +160,12 @@ protected:
 
 	UPROPERTY()
 	mutable bool bIsEndAbilitySendToExhaustedEvent = false;
+	
+	UPROPERTY()
+	ULevelSequencePlayer* LevelSequencePlayer;
+	
+	UPROPERTY()
+	float OriginCamConvertBlendDelay;
 
 private:
 	

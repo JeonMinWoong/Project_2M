@@ -490,6 +490,28 @@ void ATwoMinPlayerCharacter::PlayCameraShakeOnHit(ECameraShakeType CameraShakeTy
 	CachedCameraShake = GetPlayerController()->PlayerCameraManager->StartCameraShake(CameraShakeMap[CameraShakeType]);
 }
 
+void ATwoMinPlayerCharacter::OnIgnoreInputProcess(bool bIsIgnore)
+{
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (!PC) return;
+	
+	PC->SetIgnoreMoveInput(bIsIgnore);
+	PC->SetIgnoreLookInput(bIsIgnore);
+	PC->FlushPressedKeys();
+	
+	if (bIsIgnore)
+	{
+		FInputModeUIOnly InputMode;
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		
+		PC->SetInputMode(InputMode);	
+	}
+	else
+	{
+		PC->SetInputMode(FInputModeGameOnly());
+	}
+}
+
 void ATwoMinPlayerCharacter::Input_UseItemTrigger(const FInputActionValue& InputActionValue)
 {
 	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitDowning)
