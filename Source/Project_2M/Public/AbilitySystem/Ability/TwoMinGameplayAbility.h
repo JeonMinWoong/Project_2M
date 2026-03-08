@@ -112,7 +112,7 @@ protected:
 	UFUNCTION()
 	virtual void CustomOnBlendOutAbility();
 
-	void MeleeOnHitEffectProcess(ATwoMinBaseCharacter* OwnerCharacter, bool bIsTargetGuard, int32 WeaponIndex);
+	void MeleeOnHitEffectProcess(ATwoMinBaseCharacter* OwnerCharacter, const bool bIsTargetGuard, const int32 WeaponIndex);
 	
 	UFUNCTION()
 	virtual void DamageToEffectSpecHandle(TSubclassOf<UGameplayEffect> EffectClass, FGameplayEventData Payload,

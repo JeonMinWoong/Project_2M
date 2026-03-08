@@ -32,8 +32,8 @@ public:
 	virtual void OnDestroyedProcess();
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
-	virtual void OnHitEffectSpawnPoint(bool bIsTargetGuard, int32 WeaponIndex);
-	virtual void OnHitEffectAttachToWeaponSocket(bool bIsTargetGuard, int32 WeaponIndex);
+	virtual void OnHitEffectSpawnPoint(int32 WeaponIndex);
+	virtual void OnHitEffectAttachToWeaponSocket(int32 WeaponIndex);
 	
 	FTimerHandle HitStopTimerHandle;
 	

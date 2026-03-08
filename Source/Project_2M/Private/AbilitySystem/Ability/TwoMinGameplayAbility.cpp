@@ -500,10 +500,13 @@ void UTwoMinGameplayAbility::CustomOnBlendOutAbility()
 		true);
 }
 
-void UTwoMinGameplayAbility::MeleeOnHitEffectProcess(ATwoMinBaseCharacter* OwnerCharacter, bool bIsTargetGuard, int32 WeaponIndex)
+void UTwoMinGameplayAbility::MeleeOnHitEffectProcess(ATwoMinBaseCharacter* OwnerCharacter, const bool bIsTargetGuard,
+	const int32 WeaponIndex)
 {
-	OwnerCharacter->OnHitEffectSpawnPoint(bIsTargetGuard, WeaponIndex);
-	OwnerCharacter->OnHitEffectAttachToWeaponSocket(bIsTargetGuard, WeaponIndex);
+	if (bIsTargetGuard) return;
+	
+	OwnerCharacter->OnHitEffectSpawnPoint(WeaponIndex);
+	OwnerCharacter->OnHitEffectAttachToWeaponSocket(WeaponIndex);
 }
 
 void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffect> EffectClass,

@@ -84,7 +84,7 @@ void ATwoMinBaseCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	GetWorldTimerManager().ClearAllTimersForObject(this);
 }
 
-void ATwoMinBaseCharacter::OnHitEffectSpawnPoint(bool bIsTargetGuard, int32 WeaponIndex)
+void ATwoMinBaseCharacter::OnHitEffectSpawnPoint(int32 WeaponIndex)
 {
 	if (HitEffect_PointSpawnEffect)
 	{
@@ -103,7 +103,7 @@ void ATwoMinBaseCharacter::OnHitEffectSpawnPoint(bool bIsTargetGuard, int32 Weap
 	}
 }
 
-void ATwoMinBaseCharacter::OnHitEffectAttachToWeaponSocket(bool bIsTargetGuard, int32 WeaponIndex)
+void ATwoMinBaseCharacter::OnHitEffectAttachToWeaponSocket(int32 WeaponIndex)
 {
 	if (HitEffect_AttachTrailEffect)
 	{
