@@ -53,6 +53,8 @@ private:
 	UFUNCTION()
 	void OnHitGuard(FGameplayEventData Payload);
 
+	bool IsHitGuarding(UAnimInstance* Anim) const;
+	
 	UFUNCTION()
 	void OnHitEnd();
 	

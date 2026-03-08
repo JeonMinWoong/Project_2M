@@ -25,7 +25,7 @@ bool UTwoMinGA_GuardBase::IsGuardCondition(const ATwoMinBaseCharacter* Attacker,
 		return false;
 	}
 
-	return true;
+	return bIsGuard;
 }
 
 void UTwoMinGA_GuardBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -36,7 +36,7 @@ void UTwoMinGA_GuardBase::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	
 	PlayToAnimMontage(GuardAnimMontage, FName("Guard_Start"));
 	WaitGameplayEvent(BeforeGuardEventTag, true);
-
+  
 	UAbilityTask_WaitGameplayEvent* HitEventTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
 			this, HitGuardEventTag, nullptr, false, true);
 	
@@ -51,20 +51,21 @@ void UTwoMinGA_GuardBase::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
 	if (IsActive() == false) return;
-	
+	   
+  	bIsGuard = false;  
   	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 void UTwoMinGA_GuardBase::CustomEventReceived(FGameplayEventData Payload)
 {
-	if (Payload.EventTag == BeforeGuardEventTag)
-	{
+	if (Payload.EventTag == BeforeGuardEventTag) 
+	{   
 		ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(GetAvatarActorFromActorInfo());
-		if (!MyCharacter)
+		if (!MyCharacter)   
 		{
 			CustomCancelAbility();
-			return;
-		}
+			return;   
+		}  
 		
 		MyCharacter->GetMesh()->GetAnimInstance()->Montage_JumpToSection(FName("Guard_Loop"), GuardAnimMontage);
 	}
@@ -167,7 +168,7 @@ void UTwoMinGA_GuardBase::OnHitGuard(FGameplayEventData Payload)
 	if (!Payload.OptionalObject->IsValidLowLevel())
 	{
 		CustomCancelAbility();
-		return;
+		return; 
 	}
 	
 	const UAttackPayloadObject* AttackPayload = Cast<UAttackPayloadObject>(Payload.OptionalObject);
@@ -196,15 +197,6 @@ void UTwoMinGA_GuardBase::OnHitGuard(FGameplayEventData Payload)
 		return;
 	}
 	
-	for (int i = 0; i < HitGuardAnimMontage.Num() - 1; ++i)
-	{
-		if (Anim->Montage_IsPlaying(HitGuardAnimMontage[i]))
-		{
-			CustomCancelAbility();
-			return;
-		}
-	}
-	
 	const FAttackInfoData& AttackInfoData = AttackPayload->Data;
 	FVector HitPos = InstigatorCharacter->GetActorLocation();
 	if (const UProjectilePayloadObject* ProjectilePayload = Cast<UProjectilePayloadObject>(Payload.OptionalObject2))
@@ -216,6 +208,8 @@ void UTwoMinGA_GuardBase::OnHitGuard(FGameplayEventData Payload)
 	
 	bIsHitGuard = true;
 	CustomApplyCost(AttackInfoData.AttackType);
+	
+	if (IsHitGuarding(Anim)) return;
 	
 	const int32 HitMontageNumber = GetHitMontageNumber(AttackInfoData);
 
@@ -245,6 +239,19 @@ void UTwoMinGA_GuardBase::OnHitGuard(FGameplayEventData Payload)
 	Hit->OnCancelled.AddDynamic(this, &ThisClass::OnHitEnd);
 
 	Hit->ReadyForActivation();
+}
+
+bool UTwoMinGA_GuardBase::IsHitGuarding(UAnimInstance* Anim) const
+{
+	for (int i = 0; i < HitGuardAnimMontage.Num() - 1; ++i)
+	{
+		if (Anim->Montage_IsPlaying(HitGuardAnimMontage[i]))
+		{
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 int UTwoMinGA_GuardBase::GetHitMontageNumber(const FAttackInfoData& AttackInfoData) const
@@ -286,6 +293,6 @@ void UTwoMinGA_GuardBase::OnHitEnd()
 		return;
 	}
 
-	bIsHitGuard = false;
+	bIsHitGuard = false;   
 	PlayToAnimMontage(GuardAnimMontage, FName("Guard_Loop"));
-}
+} 
