@@ -67,7 +67,7 @@ void AHitCollisionBase::Destroyed()
 
 void AHitCollisionBase::OnCheckHitActorCollision()
 {
-	
+	UTwoMinFunctionLibrary::PlaySoundAtLocation(this, HitSound, GetActorLocation());
 }
 
 void AHitCollisionBase::OnDamageToHitActor(AActor* HitActor)

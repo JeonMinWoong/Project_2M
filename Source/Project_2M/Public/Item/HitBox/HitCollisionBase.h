@@ -72,6 +72,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	float MaxTimer = 10.f;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "HitSound")
+	USoundBase* HitSound;
+	
 	FAttackInfoData AttackInfoData;
 	
 	FGameplayTag ActiveAbilityTag;

@@ -13,6 +13,7 @@
 #include "Character/TwoMinEnemyCharacter.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -311,6 +312,8 @@ void ATwoMinProjectileBase::PlayImpactEffect(const FHitResult& HitResult) const
 			HitResult.ImpactNormal.Rotation()
 		);
 	}
+	
+	UTwoMinFunctionLibrary::PlaySoundAtLocation(this, ImpactSound, HitResult.ImpactPoint);
 }
 
 void ATwoMinProjectileBase::Destroyed()

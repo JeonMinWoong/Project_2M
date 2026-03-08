@@ -67,4 +67,8 @@ public:
 	
 	UFUNCTION()
 	static bool IsLoadingData(const UObject* WorldContextObject);
+	
+	UFUNCTION()
+	static void PlaySoundAtLocation(const UObject* WorldContextObject, USoundBase* PlaySound, const FVector& PlayLocation, 
+		const float PlayVolume = 1);
 };

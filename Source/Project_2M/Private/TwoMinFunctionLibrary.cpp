@@ -228,3 +228,13 @@ bool UTwoMinFunctionLibrary::IsLoadingData(const UObject* WorldContextObject)
 	
 	return GM->IsLoadData();
 }
+
+void UTwoMinFunctionLibrary::PlaySoundAtLocation(const UObject* WorldContextObject, USoundBase* PlaySound, const FVector& PlayLocation,
+	const float PlayVolume)
+{
+	const UWorld* World = WorldContextObject->GetWorld();
+	if (!World) return;
+	if (!PlaySound) return;
+	
+	UGameplayStatics::PlaySoundAtLocation(World, PlaySound, PlayLocation, PlayVolume);
+}

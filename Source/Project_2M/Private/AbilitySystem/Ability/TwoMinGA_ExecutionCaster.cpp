@@ -187,6 +187,8 @@ void UTwoMinGA_ExecutionCaster::PlayCinematicEvent(AActor* MyActor, int32 Execut
 			TwoMinDebugHelper::Print(TEXT("Dummy is null"), FColor::Red);
 			return;
 		}
+		
+		MyCharacter->SetExecutionCinematicDummy(ExecutionDummyActor);
 	}
 	
 	const FVector CameraToLocation =  MyCharacter->GetActorLocation();
