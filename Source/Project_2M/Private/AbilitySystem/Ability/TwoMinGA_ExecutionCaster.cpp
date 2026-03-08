@@ -120,7 +120,7 @@ void UTwoMinGA_ExecutionCaster::ActivateAbility(const FGameplayAbilitySpecHandle
 		PayLoad
 	);
 	
-	PlayCinematicEvent(MyActor, ExecutionNumber);
+	PlayCinematicEvent(MyActor, ExecutionTarget, ExecutionNumber);
 	PlayToAnimMontage(ExecutionMontage);
 	UAbilityTask_WaitGameplayEvent* Task = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
 	this, OnHitExecution, nullptr, false, true);
@@ -168,8 +168,9 @@ UAnimMontage* UTwoMinGA_ExecutionCaster::GetExecutionMontage(bool bIsExecutionFo
 	return ExecutionBackCasterMontages[ExecutionNumber];
 }
 
-void UTwoMinGA_ExecutionCaster::PlayCinematicEvent(AActor* MyActor, int32 ExecutionNumber)
+void UTwoMinGA_ExecutionCaster::PlayCinematicEvent(AActor* MyActor, AActor* TargetActor, int32 ExecutionNumber)
 {
+	ExecutionNumber += CachedExecutionData->bIsExecutionForward ? 0 : 10;
 	ATwoMinPlayerCharacter* MyCharacter = Cast<ATwoMinPlayerCharacter>(MyActor);
 	if (!MyCharacter) return;
 	
@@ -191,11 +192,11 @@ void UTwoMinGA_ExecutionCaster::PlayCinematicEvent(AActor* MyActor, int32 Execut
 		MyCharacter->SetExecutionCinematicDummy(ExecutionDummyActor);
 	}
 	
-	const FVector CameraToLocation =  MyCharacter->GetActorLocation();
-	FRotator CameraToRotation = MyCharacter->GetActorRotation();
+	const FVector CameraToLocation = MyCharacter->GetActorLocation();
+	FRotator CameraToRotation = (TargetActor->GetActorLocation() - CameraToLocation).GetSafeNormal().Rotation();
 	CameraToRotation.Yaw += 90;
-	
-	ExecutionDummyActor->SetActorLocationAndRotation(CameraToLocation, CameraToRotation);
+
+	ExecutionDummyActor->SetActorLocationAndRotation(CameraToLocation, FRotator(0, CameraToRotation.Yaw, 0));
 	PlayLevelSequence(MyCharacter, FExecutionCinematicData[ExecutionNumber].CinematicLevelSequence,
 		FExecutionCinematicData[ExecutionNumber].OriginCamConvertBlendDelay);
 }
