@@ -105,7 +105,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Anger_Decrease")
 	TSubclassOf<UGameplayEffect> AngerDecreaseEffect;
 	
-	
 	UPROPERTY(VisibleAnywhere)
 	UInventoryComponent* InventoryComponent;
 	
@@ -117,6 +116,12 @@ private:
 	
 	UPROPERTY()
 	AActor* ExecutionCinematicDummy;
+	
+	UPROPERTY()
+	AActor* InteractionActor;
+	
+	UPROPERTY()
+	bool bIsIgnoreInput = false;
 	
 	/** CharacterInfo **/
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|Capsule")
@@ -232,6 +237,10 @@ public:
 	FORCEINLINE void SetExecutionCinematicDummy(AActor* FoundExecutionCam) { ExecutionCinematicDummy = FoundExecutionCam; }
 	FORCEINLINE AActor* GetExecutionCinematicDummy() const { return ExecutionCinematicDummy; }
 
+	FORCEINLINE void SetInteractionActor(AActor* NewInteractionActor) { InteractionActor = NewInteractionActor; }
+	FORCEINLINE AActor* GetInteractionActor() const { return InteractionActor; }
+
+	
 	FORCEINLINE void AddMovePossibleCancelAbility(const FGameplayTag GameplayTag)
 	{ MovePossibleCancelAbilityTags.AddUnique(GameplayTag); }
 	

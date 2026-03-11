@@ -637,3 +637,34 @@ struct FExecutionCinematicData
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float OriginCamConvertBlendDelay;
 };
+
+USTRUCT(BlueprintType)
+struct FInteractionTextData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<FString> InteractionTextGroup;
+};
+
+USTRUCT(BlueprintType)
+struct FNPCData : public FTableRowBase
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 NPC_ID;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TMap<int32, FInteractionTextData> NPC_InteractionMap;
+};
+
+USTRUCT(BlueprintType)
+struct FRichWidgetRow : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<UUserWidget> WidgetClass;
+};

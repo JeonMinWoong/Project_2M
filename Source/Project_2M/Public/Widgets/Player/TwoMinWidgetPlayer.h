@@ -3,10 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ToMinTypes/TwoMinEnumTypes.h"
 #include "Widgets/TwoMinCharacterWidgetBase.h"
 #include "Widgets/TwoMinWidget_BuffWindow.h"
 #include "TwoMinWidgetPlayer.generated.h"
 
+class UTwoMinWidget_InteractionChoice;
+class UTwoMinWidget_InteractionText;
 class UCanvasPanel;
 class UTwoMinWidget_FightBar;
 class UTwoMinWidget_BuffWindow;
@@ -65,12 +68,26 @@ protected:
 	void OnSetBuffItem(int32 ItemID);
 	
 	UFUNCTION()
-	void SetPossibleInteraction(bool bIsPossibleInteraction);
+	void SetPossibleInteraction(EInteractionType NewInteractionType, bool bIsPossibleInteraction);
+	
+	UFUNCTION()
+	void SetInteractionText(const FString& NewInteractionText, const bool bOn);
+	
+	UFUNCTION()
+	bool IsInteractionTexting();
+	
+	UFUNCTION()
+	void SetInteractionChoice(ENPCType InNPCType, bool bOn);
 	
 	UFUNCTION()
 	void OnStartManualSave();
 	
 private:
+	void StartInteractionText();
+	
+	UFUNCTION()
+	void OnFinishInteractionText();
+	
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* HealthBar;
 
@@ -103,6 +120,21 @@ private:
 	
 	UPROPERTY(meta=(BindWidget))
 	UTwoMinWidgetBase* Interaction;
+	
+	UPROPERTY(meta=(BindWidget))
+	UTwoMinWidgetBase* InteractionNPC;
+	
+	UPROPERTY(meta=(BindWidget))
+	UTwoMinWidget_InteractionText* InteractionText;
+	
+	UPROPERTY(meta=(BindWidget))
+	UTwoMinWidget_InteractionChoice* InteractionChoice;
+	
+	UPROPERTY(meta=(BindWidgetAnim), Transient)
+	UWidgetAnimation* OnStartInteractionTextAnim;
+	
+	UPROPERTY()
+	FWidgetAnimationDynamicEvent CompleteStartInteractionTextAnimEvent;
 	
 	UPROPERTY(meta=(BindWidgetAnim), Transient)
 	UWidgetAnimation* OnStartManualSaveAnim;

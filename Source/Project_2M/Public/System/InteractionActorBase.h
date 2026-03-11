@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "GameFramework/Actor.h"
+#include "ToMinTypes/TwoMinEnumTypes.h"
 #include "InteractionActorBase.generated.h"
 
 class ATwoMinPlayerCharacter;
@@ -22,6 +23,9 @@ public:
 	virtual void Interact(ATwoMinPlayerCharacter* PlayerCharacter);
 
 	bool IsPossibleInteraction() const;
+		
+	virtual void ResetInteractionProcess();
+	virtual bool IsHiddenCondition();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -34,6 +38,9 @@ protected:
 	virtual void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
 
+	UPROPERTY(EditDefaultsOnly, Category="Interaction|InteractionType")
+	EInteractionType InteractionType = EInteractionType::None;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "InteractionInfo|Radius")
 	float InteractionRadius = 100.f;
 
@@ -49,4 +56,7 @@ private:
 	
 	UPROPERTY(VisibleAnywhere, Category = "InteractionInfo|OverlapCharacter")
 	ATwoMinPlayerCharacter* OverlapCharacter;
+	
+public:
+	FORCEINLINE EInteractionType GetInteractionType() const { return InteractionType; }
 };

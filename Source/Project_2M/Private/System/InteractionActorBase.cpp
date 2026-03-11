@@ -34,8 +34,11 @@ void AInteractionActorBase::Tick(float DeltaTime)
 
 	if (OverlapCharacter)
 	{
-		if (IsPossibleInteraction() == false) return;
-		
+		if (IsPossibleInteraction() == false)
+		{
+			ResetInteractionProcess();
+			return;
+		}
 		UTwoMinAbilitySystemComponent* ASC = OverlapCharacter->GetAbilitySystemComponent();
 		if (!ASC) return;
 		
@@ -49,7 +52,7 @@ void AInteractionActorBase::Tick(float DeltaTime)
 
 void AInteractionActorBase::Interact(ATwoMinPlayerCharacter* PlayerCharacter)
 {
-	
+	PlayerCharacter->SetInteractionActor(this);
 }
 
 bool AInteractionActorBase::IsPossibleInteraction() const
@@ -61,6 +64,11 @@ bool AInteractionActorBase::IsPossibleInteraction() const
 	const float Angle = UKismetMathLibrary::DegAcos(FVector::DotProduct(ToTarget, TargetForward));
 	bool bIsPossible = Angle <= InteractionAngle;
 	return bIsPossible;
+}
+
+bool AInteractionActorBase::IsHiddenCondition()
+{
+	return false;
 }
 
 
@@ -77,4 +85,9 @@ void AInteractionActorBase::OnEndOverlap(UPrimitiveComponent* OverlappedComponen
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	OverlapCharacter = nullptr;
+}
+
+void AInteractionActorBase::ResetInteractionProcess()
+{
+	
 }

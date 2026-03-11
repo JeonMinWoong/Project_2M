@@ -49,7 +49,9 @@ private:
 	
 	bool bIsEventActivated = false;
 	
+	UPROPERTY(EditAnywhere, Category = "EnterEvent|IsIgnoreCollision")
 	bool bIsIgnoreCollision = false;
+	
 public:
 	FORCEINLINE void SetIgnoreCollision(bool bOn) { bIsIgnoreCollision = bOn; };
 };

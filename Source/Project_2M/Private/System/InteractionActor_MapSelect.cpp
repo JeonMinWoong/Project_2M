@@ -6,6 +6,13 @@
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/UI/PlayerUIComponent.h"
 
+void AInteractionActor_MapSelect::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	InteractionType = EInteractionType::MapSelect;
+}
+
 void AInteractionActor_MapSelect::Interact(ATwoMinPlayerCharacter* PlayerCharacter)
 {
 	Super::Interact(PlayerCharacter);

@@ -12,11 +12,6 @@ void UTwoMinGA_InteractionBase::ActivateAbility(const FGameplayAbilitySpecHandle
                                                 const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                                 const FGameplayEventData* TriggerEventData)
 {
-	if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo()))
-	{
-		PlayerCharacter->GetPlayerUIComponent()->OnPossibleInteraction.Broadcast(true);
-	}
-	
 	StartInteraction();
 	WaitGameplayEvent(TriggerEventTag);
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
@@ -28,7 +23,7 @@ void UTwoMinGA_InteractionBase::EndAbility(const FGameplayAbilitySpecHandle Hand
 {
 	if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo()))
 	{
-		PlayerCharacter->GetPlayerUIComponent()->OnPossibleInteraction.Broadcast(false);
+		PlayerCharacter->GetPlayerUIComponent()->OnPossibleInteraction.Broadcast(EInteractionType::None, false);
 	}
 	
 	bIsInteracting = false;
@@ -70,7 +65,7 @@ void UTwoMinGA_InteractionBase::UpdateInteraction(float DeltaTime)
 	{
 		if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo()))
 		{
-			PlayerCharacter->GetPlayerUIComponent()->OnPossibleInteraction.Broadcast(false);
+			PlayerCharacter->GetPlayerUIComponent()->OnPossibleInteraction.Broadcast(EInteractionType::None, false);
 		}
 		
 		CustomCancelAbility();
@@ -85,12 +80,31 @@ void UTwoMinGA_InteractionBase::UpdateInteraction(float DeltaTime)
 			if (!InteractionActorBase->IsPossibleInteraction()) continue;
 			
 			bIsPossibleInteraction = true;
+			CachedInteractionActor = InteractionActorBase;
 			break;
 		}
 		
 		if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo()))
 		{
-			PlayerCharacter->GetPlayerUIComponent()->OnPossibleInteraction.Broadcast(bIsPossibleInteraction);
+			EInteractionType InteractionType = CachedInteractionActor->GetInteractionType();
+			if (InteractionType == EInteractionType::None) return;
+			
+			if (InteractionType == EInteractionType::MapSelect)
+			{
+				PlayerCharacter->GetPlayerUIComponent()->OnPossibleInteraction.Broadcast(EInteractionType::NPC, false);
+				PlayerCharacter->GetPlayerUIComponent()->OnPossibleInteraction.Broadcast(InteractionType, bIsPossibleInteraction);
+			}
+			else
+			{
+				PlayerCharacter->GetPlayerUIComponent()->OnPossibleInteraction.Broadcast(EInteractionType::MapSelect, false);
+				
+				if (CachedInteractionActor->IsHiddenCondition())
+				{
+					bIsPossibleInteraction = false;
+				}
+				
+				PlayerCharacter->GetPlayerUIComponent()->OnPossibleInteraction.Broadcast(InteractionType, bIsPossibleInteraction);
+			}
 		}
 	}
 }

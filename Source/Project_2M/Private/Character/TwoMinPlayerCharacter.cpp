@@ -495,6 +495,9 @@ void ATwoMinPlayerCharacter::OnIgnoreInputProcess(bool bIsIgnore)
 	APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	if (!PC) return;
 	
+	if (bIsIgnoreInput == bIsIgnore) return;
+	
+	bIsIgnoreInput = bIsIgnore;
 	PC->SetIgnoreMoveInput(bIsIgnore);
 	PC->SetIgnoreLookInput(bIsIgnore);
 	PC->FlushPressedKeys();
@@ -502,8 +505,7 @@ void ATwoMinPlayerCharacter::OnIgnoreInputProcess(bool bIsIgnore)
 	if (bIsIgnore)
 	{
 		FInputModeUIOnly InputMode;
-		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-		
+		InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::LockOnCapture);
 		PC->SetInputMode(InputMode);	
 	}
 	else

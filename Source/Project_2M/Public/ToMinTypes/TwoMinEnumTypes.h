@@ -282,3 +282,18 @@ inline EBossPhaseType& operator--(EBossPhaseType& Phase)
 	}
 	return Phase;
 }
+
+UENUM(Blueprintable)
+enum class EInteractionType : uint8
+{
+	None = 0,
+	MapSelect = 1,
+	NPC = 2,
+};
+
+UENUM(Blueprintable)
+enum class ENPCType : uint8
+{
+	None = 0,
+	Store = 1,
+};

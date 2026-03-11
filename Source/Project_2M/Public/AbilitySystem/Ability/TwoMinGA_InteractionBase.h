@@ -57,4 +57,7 @@ private:
 	UPROPERTY()
 	bool bIsPossibleInteraction;
 	
+	UPROPERTY()
+	AInteractionActorBase* CachedInteractionActor;
+	
 };

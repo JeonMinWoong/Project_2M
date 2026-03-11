@@ -16,4 +16,8 @@ class PROJECT_2M_API AInteractionActor_MapSelect : public AInteractionActorBase
 	
 public:
 	virtual void Interact(ATwoMinPlayerCharacter* PlayerCharacter) override;
+	
+protected:
+	virtual void BeginPlay() override;
+	
 };

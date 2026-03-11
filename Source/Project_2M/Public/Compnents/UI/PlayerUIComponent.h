@@ -16,9 +16,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnSetWindowQuickSlot, FItemInsta
 	int32, SlotIndex, bool, bIsRegister);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetBuffItem, int32, ItemID);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSetAngerState, bool, bIsOnAngerMode);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPossibleInteraction, bool, bIsPossibleInteraction);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPossibleInteraction, EInteractionType, NewInTeractionType, bool, bIsPossibleInteraction);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInteractionText, const FString&, InteractionText, const bool, bOn);
+DECLARE_DYNAMIC_DELEGATE_RetVal(bool, FIsInteractionTexting);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCompleteInteractionText);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSetInteractionChoice, ENPCType, InNPCType, bool, bOn);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStartManualSaveAnim);
-
 
 /**
  * 
@@ -64,6 +67,18 @@ public:
 	
 	UPROPERTY()
 	FOnPossibleInteraction OnPossibleInteraction;
+	
+	UPROPERTY()
+	FOnInteractionText OnInteractionText;
+	
+	UPROPERTY()
+	FIsInteractionTexting OnIsInteractionTexting;
+
+	UPROPERTY()
+	FOnSetInteractionChoice OnSetInteractionChoice;
+	
+	UPROPERTY()
+	FOnCompleteInteractionText OnCompleteInteractionText;
 	
 	UPROPERTY()
 	FOnStartManualSaveAnim OnStartManualSaveAnim;

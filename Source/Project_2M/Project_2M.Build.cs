@@ -22,7 +22,9 @@ public class Project_2M : ModuleRules
 			"MotionWarping",
 			"NavigationSystem",
 			"LevelSequence", 
-			"MovieScene"
+			"MovieScene",
+			"Slate",
+			"SlateCore",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "MotionWarping", "Niagara" });

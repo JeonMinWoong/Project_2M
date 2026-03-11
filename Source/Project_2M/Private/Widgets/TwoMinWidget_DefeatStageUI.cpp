@@ -41,11 +41,6 @@ FReply UTwoMinWidget_DefeatStageUI::NativeOnPreviewKeyDown(const FGeometry& MyGe
 		return FReply::Handled();
 	}
 	
-	if (InKey == EKeys::P || InKey == EKeys::Gamepad_FaceButton_Right)
-	{
-		return FReply::Unhandled();
-	}
-	
 	if (InKey == EKeys::Right || InKey == EKeys::D || InKey == EKeys::Gamepad_LeftStick_Right)
 	{
 		if (IsButtonDown()) return FReply::Unhandled();
@@ -69,16 +64,6 @@ FReply UTwoMinWidget_DefeatStageUI::NativeOnPreviewKeyDown(const FGeometry& MyGe
 		CurFocusIndex--;
 		ReturnButton->SetFocus();
 		
-		return FReply::Unhandled();
-	}
-	
-	if (InKey == EKeys::Up || InKey == EKeys::W || InKey == EKeys::Gamepad_LeftStick_Up)
-	{
-		return FReply::Unhandled();
-	}
-	
-	if (InKey == EKeys::Down || InKey == EKeys::S || InKey == EKeys::Gamepad_LeftStick_Down)
-	{
 		return FReply::Unhandled();
 	}
 	
