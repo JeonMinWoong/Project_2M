@@ -15,6 +15,7 @@
 #include "Widgets/TwoMinWidget_BuffWindow.h"
 #include "Widgets/TwoMinWidget_FightBar.h"
 #include "Widgets/TwoMinWidget_GoldInfo.h"
+#include "Widgets/TwoMinWidget_InputKey_Notify.h"
 #include "Widgets/TwoMinWidget_InteractionChoice.h"
 #include "Widgets/TwoMinWidget_InteractionText.h"
 #include "Widgets/TwoMinWidget_ItemPickUpWindow.h"
@@ -113,6 +114,7 @@ void UTwoMinWidgetPlayer::SetPossiblePickUpItem(bool bIsPossiblePickUp)
 
 	ESlateVisibility EVisibility = bIsPossiblePickUp ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
 	
+	PickUpItem->OnEnable(bIsPossiblePickUp);
 	PickUpItem->SetVisibility(EVisibility);
 }
 
@@ -160,6 +162,7 @@ void UTwoMinWidgetPlayer::SetPossibleInteraction(EInteractionType NewInteraction
 	ESlateVisibility EVisibility = bIsPossibleInteraction ? ESlateVisibility::Visible : ESlateVisibility::Hidden;
 	if (NewInteractionType == EInteractionType::MapSelect)
 	{
+		Interaction->OnEnable(bIsPossibleInteraction);
 		Interaction->SetVisibility(EVisibility);
 	}
 	else
@@ -169,6 +172,7 @@ void UTwoMinWidgetPlayer::SetPossibleInteraction(EInteractionType NewInteraction
 			EVisibility = ESlateVisibility::Hidden;
 		}
 		
+		InteractionNPC->OnEnable(bIsPossibleInteraction);
 		InteractionNPC->SetVisibility(EVisibility);
 	}
 }

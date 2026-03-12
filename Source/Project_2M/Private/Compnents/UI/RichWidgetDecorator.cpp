@@ -32,6 +32,7 @@ protected:
 
 		if (UUserWidget* NewWidget = CreateWidget<UUserWidget>(Owner->GetWorld(), Row->WidgetClass))
 		{
+			Decorator->CachedWidget = NewWidget;
 			Decorator->OnWidgetCreated.Broadcast(WidgetID, NewWidget);
 			return NewWidget->TakeWidget();
 		}

@@ -8,6 +8,7 @@
 #include "Widgets/TwoMinWidget_BuffWindow.h"
 #include "TwoMinWidgetPlayer.generated.h"
 
+class UTwoMinWidget_InputKey_Notify;
 class UTwoMinWidget_InteractionChoice;
 class UTwoMinWidget_InteractionText;
 class UCanvasPanel;
@@ -104,7 +105,7 @@ private:
 	UTextBlock* LevelText;
 
 	UPROPERTY(meta=(BindWidget))
-	UTwoMinWidgetBase* PickUpItem;
+	UTwoMinWidget_InputKey_Notify* PickUpItem;
 	
 	UPROPERTY(meta=(BindWidget))
 	UTwoMinWidget_ItemPickUpWindow* ItemPickUpWindow;
@@ -119,10 +120,10 @@ private:
 	UTwoMinWidget_BuffWindow* BuffWindow;
 	
 	UPROPERTY(meta=(BindWidget))
-	UTwoMinWidgetBase* Interaction;
+	UTwoMinWidget_InputKey_Notify* Interaction;
 	
 	UPROPERTY(meta=(BindWidget))
-	UTwoMinWidgetBase* InteractionNPC;
+	UTwoMinWidget_InputKey_Notify* InteractionNPC;
 	
 	UPROPERTY(meta=(BindWidget))
 	UTwoMinWidget_InteractionText* InteractionText;

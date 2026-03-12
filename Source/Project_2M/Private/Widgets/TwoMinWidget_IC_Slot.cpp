@@ -3,20 +3,26 @@
 
 #include "Widgets/TwoMinWidget_IC_Slot.h"
 
+#include "TwoMinFunctionLibrary.h"
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
+#include "Widgets/TwoMinWidget_KeyType.h"
 
 void UTwoMinWidget_IC_Slot::SetFocusSlot(bool bOn)
 {
 	if (bOn)
 	{
 		SetFocus();
-		FocusBox->SetIsEnabled(true);
+		
+		OnEnable();
+		FocusKey->SetVisibility(ESlateVisibility::Visible);
+		FocusKey->SetIsEnabled(true);
 		TextBox->SetColorAndOpacity(FSlateColor(FLinearColor::White));
 	}
 	else
 	{
-		FocusBox->SetIsEnabled(false);
+		FocusKey->SetVisibility(ESlateVisibility::Hidden);
+		FocusKey->SetIsEnabled(false);
 		TextBox->SetColorAndOpacity(FSlateColor(FLinearColor::Gray));
 	}
 }
@@ -26,6 +32,7 @@ void UTwoMinWidget_IC_Slot::SetLocked(bool bOn)
 	if (bOn)
 	{
 		bLocked = true;
+		FocusKey->SetVisibility(ESlateVisibility::Collapsed);
 		SetVisibility(ESlateVisibility::Collapsed);
 	}
 	else
@@ -48,4 +55,11 @@ void UTwoMinWidget_IC_Slot::NativeOnRemovedFromFocusPath(const FFocusEvent& InFo
 		SetFocus();
 		return;
 	}
+}
+
+void UTwoMinWidget_IC_Slot::OnEnable()
+{
+	const bool bIsUsingGamePad = UTwoMinFunctionLibrary::IsUsingGamePad(GetWorld(), GetOwningPlayer()->GetPlatformUserId());
+	const FString KeyText = bIsUsingGamePad ? TEXT("A") : TEXT("F");
+	FocusKey->SetKeyTextValue(KeyText);
 }

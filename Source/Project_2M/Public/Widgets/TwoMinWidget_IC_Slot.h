@@ -7,6 +7,7 @@
 #include "Widgets/TwoMinWidgetBase.h"
 #include "TwoMinWidget_IC_Slot.generated.h"
 
+class UTwoMinWidget_KeyType;
 class USizeBox;
 class UTextBlock;
 /**
@@ -32,8 +33,10 @@ protected:
 	virtual void NativeOnRemovedFromFocusPath(const FFocusEvent& InFocusEvent) override;
 	
 private:
+	void OnEnable();
+	
 	UPROPERTY(meta=(BindWidget))
-	USizeBox* FocusBox;
+	UTwoMinWidget_KeyType* FocusKey;
 	
 	bool bLocked = false;
 	

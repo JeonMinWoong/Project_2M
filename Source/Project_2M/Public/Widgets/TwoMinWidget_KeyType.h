@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/TextBlock.h"
 #include "Widgets/TwoMinWidgetBase.h"
 #include "TwoMinWidget_KeyType.generated.h"
 
@@ -21,4 +22,7 @@ public:
 private:
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* KeyTypeTextBlock;
+	
+public:
+	FORCEINLINE FText GetKeyTextValue() const { return KeyTypeTextBlock->GetText(); };
 };

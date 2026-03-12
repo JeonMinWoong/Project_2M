@@ -25,6 +25,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "RichText|Event")
 	FOnRichWidgetCreated OnWidgetCreated;
 	
+	UPROPERTY()
+	UUserWidget* CachedWidget;
+	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Appearance")
 	UDataTable* WidgetSetTable;

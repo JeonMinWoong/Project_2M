@@ -21,10 +21,11 @@ void UTwoMinWidget_InteractionText::SetInteractionText(const FString& NewInterac
 	TextBlock->SetText(FText::FromString(Str));
 	
 	URichWidgetDecorator* Deco = Cast<URichWidgetDecorator>(TextBlock->GetDecoratorByClass(URichWidgetDecorator::StaticClass()));
-	if (Deco)
-	{
-		Deco->OnWidgetCreated.AddUniqueDynamic(this, &UTwoMinWidget_InteractionText::KeyTypeWidgetCreated);
-	}
+	if (!Deco) return;
+	if (!Deco->CachedWidget) return;
+	
+	Deco->OnWidgetCreated.AddUniqueDynamic(this, &UTwoMinWidget_InteractionText::KeyTypeWidgetCreated);
+	KeyTypeWidgetCreated(FString(""), Deco->CachedWidget);
 }
 
 FReply UTwoMinWidget_InteractionText::NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
@@ -72,5 +73,7 @@ void UTwoMinWidget_InteractionText::KeyTypeWidgetCreated(const FString& WidgetID
 	
 	const bool bIsUsingGamePad = UTwoMinFunctionLibrary::IsUsingGamePad(GetWorld(), GetOwningPlayer()->GetPlatformUserId());
 	const FString KeyText = bIsUsingGamePad ? TEXT("A") : TEXT("F");
+	if (KeyTypeWidget->GetKeyTextValue().ToString() == KeyText) return;
+	
 	KeyTypeWidget->SetKeyTextValue(KeyText);
 }
