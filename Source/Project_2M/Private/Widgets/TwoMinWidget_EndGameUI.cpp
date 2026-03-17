@@ -42,6 +42,16 @@ FReply UTwoMinWidget_EndGameUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 		return FReply::Handled();
 	}
 	
+	if (InKey == EKeys::Gamepad_FaceButton_Right)
+	{
+		ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningPlayerPawn());
+		if (!PlayerCharacter) return FReply::Unhandled();
+		
+		EndGameButton_1->SetFocus();
+		PlayerCharacter->OpenEndGameProcess();
+		return FReply::Handled();
+	}
+	
 	if (InKey == EKeys::Left || InKey == EKeys::A || InKey == EKeys::Gamepad_LeftStick_Left)
 	{
 		CurrentFocusIndex = 0;
