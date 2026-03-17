@@ -49,7 +49,7 @@ void UTwoMinWidget_ClearStageUI::NativeOnInitialized()
 FReply UTwoMinWidget_ClearStageUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
 {
 	const FKey InKey = InKeyEvent.GetKey();
-	if (InKey == EKeys::Enter || InKey == EKeys::Gamepad_FaceButton_Bottom)
+	if (InKey == EKeys::Enter || InKey == EKeys::F || InKey == EKeys::Gamepad_FaceButton_Bottom)
 	{
 		if (OnReturnButton() == false) return FReply::Unhandled();
 		

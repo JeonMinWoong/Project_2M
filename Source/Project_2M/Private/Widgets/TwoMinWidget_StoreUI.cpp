@@ -283,7 +283,7 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 		return FReply::Unhandled();
 	}
 	
-	if (InKey == EKeys::P || InKey == EKeys::Gamepad_FaceButton_Right)
+	if (InKey == EKeys::Escape || InKey == EKeys::Gamepad_FaceButton_Right)
 	{
 		if (bIsDealPopupOpen)
 		{

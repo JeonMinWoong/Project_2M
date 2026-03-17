@@ -41,7 +41,7 @@ void UTwoMinWidget_TitleUI::NativeOnInitialized()
 FReply UTwoMinWidget_TitleUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
 {
 	const FKey InKey = InKeyEvent.GetKey();
-	if (InKey == EKeys::Enter || InKey == EKeys::Gamepad_FaceButton_Bottom)
+	if (InKey == EKeys::Enter || InKey == EKeys::F || InKey == EKeys::Gamepad_FaceButton_Bottom)
 	{
 		if (CurrentFocusIndex == 0)
 		{

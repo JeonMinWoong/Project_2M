@@ -388,7 +388,7 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 		}
 	}
 	
-	if (InKey == EKeys::P || InKey == EKeys::Gamepad_FaceButton_Right)
+	if (InKey == EKeys::Escape || InKey == EKeys::Gamepad_FaceButton_Right)
 	{
 		if (bIsPopupOpen)
 		{

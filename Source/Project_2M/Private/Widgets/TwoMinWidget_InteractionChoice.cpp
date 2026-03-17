@@ -65,6 +65,25 @@ FReply UTwoMinWidget_InteractionChoice::NativeOnPreviewKeyDown(const FGeometry& 
 		return FReply::Handled();
 	}
 	
+	if (InKey == EKeys::Escape || InKey == EKeys::Gamepad_FaceButton_Right)
+	{
+		ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningPlayerPawn());
+		if (!PlayerCharacter) return FReply::Unhandled();
+	
+		UPlayerUIComponent* HeroUIComponent = PlayerCharacter->GetPlayerUIComponent();
+		if (!HeroUIComponent) return FReply::Unhandled();
+		if (!PlayerCharacter->GetInteractionActor()) return FReply::Unhandled();
+		
+		AInteractionActor_NPC* NPC = Cast<AInteractionActor_NPC>(PlayerCharacter->GetInteractionActor());
+		if (!NPC) return FReply::Unhandled();
+		
+		HeroUIComponent->OnSetInteractionChoice.Broadcast(NPC->GetNPCType(), false);		
+		PlayerCharacter->OnIgnoreInputProcess(false);
+		NPC->ResetInteractionProcess();
+		
+		return FReply::Handled();
+	}
+	
 	if (InKey == EKeys::Right || InKey == EKeys::D || InKey == EKeys::Gamepad_LeftStick_Right)
 	{
 		return FReply::Unhandled();

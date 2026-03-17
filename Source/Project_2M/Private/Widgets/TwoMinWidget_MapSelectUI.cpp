@@ -37,7 +37,7 @@ void UTwoMinWidget_MapSelectUI::NativeOnInitialized()
 FReply UTwoMinWidget_MapSelectUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
 {
 	const FKey InKey = InKeyEvent.GetKey();
-	if (InKey == EKeys::Enter || InKey == EKeys::Gamepad_FaceButton_Bottom)
+	if (InKey == EKeys::Enter || InKey == EKeys::F || InKey == EKeys::Gamepad_FaceButton_Bottom)
 	{
 		AGameModeBase* RawGM = UGameplayStatics::GetGameMode(GetWorld());
 		if (!RawGM) return FReply::Unhandled();
@@ -54,7 +54,7 @@ FReply UTwoMinWidget_MapSelectUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 		return FReply::Handled();
 	}
 	
-	if (InKey == EKeys::P || InKey == EKeys::Gamepad_FaceButton_Right)
+	if (InKey == EKeys::Escape || InKey == EKeys::Gamepad_FaceButton_Right)
 	{
 		if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningPlayerPawn()))
 		{
