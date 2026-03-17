@@ -6,12 +6,20 @@
 #include "Blueprint/UserWidget.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "System/InteractionActor_NPC.h"
 #include "Widgets/TwoMinWidget_MapSelectUI.h"
+#include "Widgets/TwoMinWidget_StoreUI.h"
 
 void UPlayerUIComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	InitMapSelectUI();
+	InitStoreUI();
+}
+
+void UPlayerUIComponent::InitMapSelectUI()
+{
 	if (!MapSelectWidgetClass)
 	{
 		return;
@@ -29,9 +37,6 @@ void UPlayerUIComponent::OpenMapSelectWidget(const ATwoMinPlayerCharacter* Playe
 	
 	if (!PlayerCharacter) return;
 	
-	ATwoMinPlayerController* PC = PlayerCharacter->GetPlayerController();
-	if (!PC) return;
-	
 	float TimeDilation;
 	if (bIsOpenMapSelectWidget)
 	{
@@ -47,5 +52,46 @@ void UPlayerUIComponent::OpenMapSelectWidget(const ATwoMinPlayerCharacter* Playe
 	}
 	
 	bIsMapSelectWidgetOpen = bIsOpenMapSelectWidget;
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), TimeDilation);
+}
+
+void UPlayerUIComponent::InitStoreUI()
+{
+	if (!StoreWidgetClass)
+	{
+		return;
+	}
+	
+	if (!StoreWidgetUI)
+	{
+		StoreWidgetUI = CreateWidget<UTwoMinWidget_StoreUI>(GetWorld(), StoreWidgetClass);	
+	}
+}
+
+void UPlayerUIComponent::OpenStoreWidget(ATwoMinPlayerCharacter* PlayerCharacter, AInteractionActor_NPC* NPC,
+                                         const bool bIsOpenStoreWidget)
+{
+	if (!StoreWidgetClass) return;
+	
+	if (!PlayerCharacter) return;
+	
+	float TimeDilation;
+	if (bIsOpenStoreWidget)
+	{
+		if (!NPC) return;
+		
+		TimeDilation = 0;
+		StoreWidgetUI->AddToViewport();
+		StoreWidgetUI->InitStoreUI(NPC, PlayerCharacter);
+	}
+	else
+	{
+		TimeDilation = 1.f;
+		StoreWidgetUI->RemoveFromParent();
+		PlayerCharacter->OnIgnoreInputProcess(false);
+		NPC->ResetInteractionProcess();
+	}
+	
+	bIsStoreWidgetOpen = bIsOpenStoreWidget;
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), TimeDilation);
 }

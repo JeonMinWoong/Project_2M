@@ -119,7 +119,7 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 		}
 	}
 	
-	if (InKey == EKeys::Enter || InKey == EKeys::Gamepad_FaceButton_Bottom)
+	if (InKey == EKeys::Enter || InKey == EKeys::F || InKey == EKeys::Gamepad_FaceButton_Bottom)
 	{
 		if (bIsPopupOpen)
 		{
@@ -164,15 +164,18 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 					RinkInventoryItem->UnRegister();
 				}
 				
-				InventorySlots[SelectInventoryIndex]->OnRegister(true, EInventorySlotType::Quick, CurQuickIndex);
+				//InventorySlots[SelectInventoryIndex]->OnRegister(true, EInventorySlotType::Quick, CurQuickIndex);
 				InventoryItem->OnRegister(true, EInventorySlotType::Quick, CurQuickIndex);
 				QuickSlots[CurQuickIndex]->SetInventorySlot(*InventoryItem);
 				
-				if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningPlayerPawn()))
-				{
-					UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetPlayerUIComponent();
-					PlayerUIComponent->OnSetWindowQuickSlot.Broadcast(*InventoryItem, CurQuickIndex, true);
-				}
+				ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningPlayerPawn());
+				if (!PlayerCharacter) return FReply::Unhandled();
+				
+				UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetPlayerUIComponent();
+				if (!PlayerUIComponent) return FReply::Unhandled();
+				
+				PlayerCharacter->GetInventoryComponent()->UpdateInventory();
+				PlayerUIComponent->OnSetWindowQuickSlot.Broadcast(*InventoryItem, CurQuickIndex, true);
 				
 				return FReply::Handled();
 			}
@@ -292,7 +295,12 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 				
 				InventorySlots[SelectInventoryIndex]->OnRegister(true, EInventorySlotType::Equipment, EquipmentIndex);
 				InventoryItem->OnRegister(true, EInventorySlotType::Equipment, EquipmentIndex);
-				EquipmentSlots[EquipmentIndex]->SetInventorySlot(*InventoryItem);
+				//EquipmentSlots[EquipmentIndex]->SetInventorySlot(*InventoryItem);
+				
+				ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningPlayerPawn());
+				if (!PlayerCharacter) return FReply::Unhandled();
+
+				PlayerCharacter->GetInventoryComponent()->UpdateInventory();
 				
 				OnEquipment(InventoryItem->ItemID);
 				
@@ -302,7 +310,6 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			{
 				HideInventorySelect();
 				
-				TwoMinDebugHelper::Print(TEXT("정보 팝업 열기"), FColor::Green);
 				FItemInstance ItemInstance;
 				if (CurInventoryWindowType == EInventoryWindowType::Inventory)
 				{
@@ -318,7 +325,7 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 					ItemInstance = QuickSlots[CurInventoryIndex]->GetItemInstance();
 				}
 				
-				ShowItemInfoPopup(ItemInstance);
+				ShowItemInfoPopup(ItemInstance.ItemID);
 			}
 			
 			return FReply::Unhandled();
@@ -701,10 +708,10 @@ void UTwoMinWidget_InventoryUI::HideInventorySelect()
 	OnFocusSlot();
 }
 
-void UTwoMinWidget_InventoryUI::ShowItemInfoPopup(const FItemInstance& ItemInstance)
+void UTwoMinWidget_InventoryUI::ShowItemInfoPopup(const int32 CurItemID)
 {
 	ItemInfoPopup->SetVisibility(ESlateVisibility::Visible);
-	ItemInfoPopup->SetItemInformation(ItemInstance);
+	ItemInfoPopup->SetItemInformation(CurItemID);
 }
 
 void UTwoMinWidget_InventoryUI::HideItemInfoPopup()

@@ -657,6 +657,12 @@ struct FNPCData : public FTableRowBase
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TMap<int32, FInteractionTextData> NPC_InteractionMap;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSet<int32> NPC_StoreItemIds;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TMap<EStoreDealTextType, FString> NPC_StoreDealTextGroup;
 };
 
 USTRUCT(BlueprintType)

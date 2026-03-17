@@ -87,16 +87,28 @@ void UItemDataManager::GetDropItemList(TPair<int32, int32> Item, TArray<FItemEqu
 	}
 }
 
+void UItemDataManager::GiveToInventoryBySingleItem(const ATwoMinPlayerCharacter* PlayerCharacter, const int32 ItemID, 
+	const int32 ItemCount)
+{
+	TPair<int32, int32> GiveItem(ItemID, ItemCount);
+	TArray<FItemEquipmentData> EquipmentList;
+	TArray<FItemConsumeData> ConsumeList;
+	TArray<FItemEtcData> EtcList;
+
+	GetDropItemList(GiveItem, EquipmentList, ConsumeList, EtcList);
+	GiveToInventory(PlayerCharacter, EquipmentList, ConsumeList, EtcList, true);
+}
+
 void UItemDataManager::GiveToInventory(const ATwoMinPlayerCharacter* PlayerCharacter, 
 	TArray<FItemEquipmentData> InItemEquipmentList, TArray<FItemConsumeData> InItemConsumeList, 
-	TArray<FItemEtcData> InItemEtcList, bool bIsClearStage) const
+	TArray<FItemEtcData> InItemEtcList, bool bIsNonPickUpWidget) const
 {
 	UInventoryComponent* Inventory = PlayerCharacter->GetInventoryComponent();
 	int32 SaveAllItemCount = 0;
 	for (const FItemEquipmentData& EquipmentList : InItemEquipmentList)
 	{
 		FItemEquipmentData NewEquipmentData = GetItemEquipmentData(EquipmentList.ItemDataBase.ItemID);
-		Inventory->SaveToEquipmentInventory(EquipmentList, NewEquipmentData.ItemDataBase.ItemName, bIsClearStage);	
+		Inventory->SaveToEquipmentInventory(EquipmentList, NewEquipmentData.ItemDataBase.ItemName, bIsNonPickUpWidget);	
 		SaveAllItemCount++;
 	}
 
@@ -105,7 +117,7 @@ void UItemDataManager::GiveToInventory(const ATwoMinPlayerCharacter* PlayerChara
 	for (const FItemConsumeData& ConsumeList : InItemConsumeList)
 	{
 		FItemConsumeData NewConsumeData = GetItemConsumeData(ConsumeList.ItemDataBase.ItemID);
-		Inventory->SaveToConsumeInventory(ConsumeList, NewConsumeData.ItemDataBase.ItemName, bIsClearStage);
+		Inventory->SaveToConsumeInventory(ConsumeList, NewConsumeData.ItemDataBase.ItemName, bIsNonPickUpWidget);
 		SaveAllItemCount++;
 	}
 
@@ -114,18 +126,42 @@ void UItemDataManager::GiveToInventory(const ATwoMinPlayerCharacter* PlayerChara
 	for (const FItemEtcData& EtcList : InItemEtcList)
 	{
 		FItemEtcData NewEtcData = GetItemEtcData(EtcList.ItemDataBase.ItemID);
-		Inventory->SaveToEtcInventory(EtcList, NewEtcData.ItemDataBase.ItemName, bIsClearStage);
+		Inventory->SaveToEtcInventory(EtcList, NewEtcData.ItemDataBase.ItemName, bIsNonPickUpWidget);
 		SaveAllItemCount++;
 	}
 
 	Inventory->UpdateInventory();
 	
-	if (bIsClearStage == false)
+	if (bIsNonPickUpWidget == false)
 	{
 		Inventory->ShowPickUpGetItem(SaveAllItemCount);	
 	}
 	
 	InItemEtcList.Empty();
+}
+
+FItemData UItemDataManager::GetItemDataBase(int32 ItemID) const
+{
+	EItemType ItemType = UTwoMinFunctionLibrary::GetItemType(ItemID);
+	if (ItemType == EItemType::Equipment)
+	{
+		FItemEquipmentData NewEquipmentData = GetItemEquipmentData(ItemID);
+		return NewEquipmentData.ItemDataBase;
+	}
+	
+	if (ItemType == EItemType::Consume)
+	{
+		FItemConsumeData NewConsumeData = GetItemConsumeData(ItemID);
+		return NewConsumeData.ItemDataBase;
+	}
+	
+	if (ItemType == EItemType::Etc)
+	{
+		FItemEtcData NewEtcData = GetItemEtcData(ItemID);
+		return NewEtcData.ItemDataBase;
+	}
+	
+	return FItemData();
 }
 
 void UItemDataManager::CalculateDropProbability(const FItemDropData* ItemDropData, int32& OutItemCode,

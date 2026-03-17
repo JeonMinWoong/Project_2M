@@ -64,4 +64,12 @@ private:
 public:
 	FORCEINLINE ENPCType GetNPCType() const { return NPCType; }
 	FORCEINLINE bool GetCompleteInteractionText() const { return bIsCompleteInteractionText; }
+	FORCEINLINE TSet<int32> GetStoreList() const { return NPCData->NPC_StoreItemIds; };
+	FORCEINLINE FString GetNPCDealTextStr(EStoreDealTextType InStoreDealSuccessType) const
+	{
+		if (NPCData->NPC_StoreDealTextGroup.IsEmpty()) return TEXT("");
+		if (NPCData->NPC_StoreDealTextGroup.Contains(InStoreDealSuccessType) == false) return TEXT("");
+		
+		return NPCData->NPC_StoreDealTextGroup[InStoreDealSuccessType];
+	};
 };

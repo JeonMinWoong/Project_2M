@@ -7,6 +7,8 @@
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "PlayerUIComponent.generated.h"
 
+class AInteractionActor_NPC;
+class UTwoMinWidget_StoreUI;
 class UTwoMinWidget_MapSelectUI;
 class ATwoMinPlayerCharacter;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPossiblePickUpItem, bool, bIsPossiblePickUp);
@@ -34,6 +36,7 @@ class PROJECT_2M_API UPlayerUIComponent : public UBaseUIComponent
 public:
 	virtual void BeginPlay() override;
 	void OpenMapSelectWidget(const ATwoMinPlayerCharacter* PlayerCharacter, const bool bIsOpenMapSelectWidget);
+	void OpenStoreWidget(ATwoMinPlayerCharacter* PlayerCharacter, AInteractionActor_NPC* NPC, const bool bIsOpenStoreWidget);
 	
 	UPROPERTY()
 	FOnPercentChangedDelegate OnCurrentStaminaChanged;
@@ -84,6 +87,9 @@ public:
 	FOnStartManualSaveAnim OnStartManualSaveAnim;
 	
 private:
+	void InitMapSelectUI();
+	void InitStoreUI();
+	
 	UPROPERTY(EditDefaultsOnly, Category = "UI|MapSelect")
 	TSubclassOf<UTwoMinWidget_MapSelectUI> MapSelectWidgetClass;
 	
@@ -93,6 +99,18 @@ private:
 	UPROPERTY()
 	bool bIsMapSelectWidgetOpen = false;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "UI|MapSelect")
+	TSubclassOf<UTwoMinWidget_StoreUI> StoreWidgetClass;
+	
+	UPROPERTY()
+	UTwoMinWidget_StoreUI* StoreWidgetUI;
+	
+	UPROPERTY()
+	bool bIsStoreWidgetOpen = false;
+	
 public:
+	FORCEINLINE UTwoMinWidget_StoreUI* GetStoreUI() const { return StoreWidgetUI; }
+	
 	FORCEINLINE bool IsMapSelectWidgetOpen() const { return bIsMapSelectWidgetOpen; }
+	FORCEINLINE bool IsStoreWidgetOpen() const { return bIsStoreWidgetOpen; }
 };

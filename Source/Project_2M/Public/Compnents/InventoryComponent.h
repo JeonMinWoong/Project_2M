@@ -7,6 +7,7 @@
 #include "InventoryComponent.generated.h"
 
 
+class UTwoMinWidget_InventoryWindow;
 class UTwoMinWidget_InventorySlot;
 class UTwoMinWidget_InventoryUI;
 class UTwoMinWidgetBase;
@@ -20,10 +21,11 @@ class PROJECT_2M_API UInventoryComponent : public UActorComponent
 public:	
 	UInventoryComponent();
 	
+	void InitStoreInventoryWindow();
 	void InitGiveItem();
 	void OpenInventory(const bool bIsOpenInventory);
 	
-	void SaveToEquipmentInventory(const FItemEquipmentData& EquipmentData, const FString& ItemName, bool bIsClearStage);
+	void SaveToEquipmentInventory(const FItemEquipmentData& EquipmentData, const FString& ItemName, bool bIsNonPickUpWidget);
 	void SaveToConsumeInventory(const FItemConsumeData& ConsumeData, const FString& ItemName, bool bIsClearStage);
 	void SaveToEtcInventory(const FItemEtcData& EtcData, const FString& ItemName, bool bIsClearStage);
 	int32 SaveToFinalInventory(const int32 ItemID, const int32 ItemCount, const int32 ItemMaxCount, UTexture2D* ItemTexture);
@@ -36,6 +38,9 @@ public:
 
 	FItemInstance GetQuickSlotItemInstance(int32 SlotIndex) const;
 	void UpdateStatus();
+	void SellInventoryItem(const int32 ItemID, const int32 SellCount);
+	void BuyInventoryItem(const int32 ItemID, const int32 BuyCount);
+
 protected:
 	virtual void BeginPlay() override;
 	
@@ -52,8 +57,23 @@ private:
 	UPROPERTY()
 	UTwoMinWidget_InventoryUI* InventoryUI;
 	
+	UPROPERTY()
+	UTwoMinWidget_InventoryWindow* StoreInventoryWindow;
+	
 public:
 	FORCEINLINE UTwoMinWidget_InventoryUI* GetInventoryUI() const { return InventoryUI; }
 	FORCEINLINE TArray<FItemInstance> GetInventory() const { return Inventory; }
 	FORCEINLINE void SetInventory(const TArray<FItemInstance>& LoadItems) { Inventory = LoadItems; }
+	FORCEINLINE int32 GetHaveSingleItemCount(const int32 ItemID)
+	{
+		for (const auto ItemInstance : Inventory)
+		{
+			if (ItemInstance.ItemID == ItemID)
+			{
+				return ItemInstance.HoldCount;
+			}
+		}
+		
+		return 0; 
+	}
 };

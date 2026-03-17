@@ -48,9 +48,7 @@ FReply UTwoMinWidget_InteractionChoice::NativeOnPreviewKeyDown(const FGeometry& 
 		if (CurrentFocusIndex == 0)
 		{
 			HeroUIComponent->OnSetInteractionChoice.Broadcast(NPC->GetNPCType(), false);	
-			PlayerCharacter->OnIgnoreInputProcess(false);
-			
-			TwoMinDebugHelper::Print(TEXT("상점 오픈 작업 해야함."), FColor::Green);
+			PlayerCharacter->GetPlayerUIComponent()->OpenStoreWidget(PlayerCharacter, NPC, true);
 			return FReply::Handled();
 		}
 		

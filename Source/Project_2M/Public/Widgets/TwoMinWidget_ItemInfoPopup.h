@@ -22,7 +22,7 @@ class PROJECT_2M_API UTwoMinWidget_ItemInfoPopup : public UTwoMinWidgetBase
 	GENERATED_BODY()
 	
 public:
-	void SetItemInformation(const FItemInstance ItemInstance);
+	void SetItemInformation(int32 CurItemID);
 	
 protected:
 	virtual void NativeOnRemovedFromFocusPath(const FFocusEvent& InFocusEvent) override;
@@ -36,8 +36,6 @@ private:
 	
 	void GetItemInformation(const FItemEtcData& EtcData, FText& OutName, FText& OutType, 
 		UTexture2D*& OutTexture, FText& OutStatus, FText& OutInfo);
-
-	void HighlightButton(bool bOn);
 	
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* ItemNameText;

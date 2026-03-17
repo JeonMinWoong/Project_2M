@@ -11,7 +11,7 @@
 #include "Managers/ItemDataManager.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 
-void UTwoMinWidget_ItemInfoPopup::SetItemInformation(const FItemInstance ItemInstance)
+void UTwoMinWidget_ItemInfoPopup::SetItemInformation(const int32 CurItemID)
 {
 	bIsPopupOpen = true;
 	
@@ -22,20 +22,20 @@ void UTwoMinWidget_ItemInfoPopup::SetItemInformation(const FItemInstance ItemIns
 	FText ItemInfo;
 	
 	UTwoMinGameInstance* GI = GetWorld()->GetGameInstance<UTwoMinGameInstance>();
-	EItemType CurItemType = UTwoMinFunctionLibrary::GetItemType(ItemInstance.ItemID);
+	EItemType CurItemType = UTwoMinFunctionLibrary::GetItemType(CurItemID);
 	if (CurItemType == EItemType::Equipment)
 	{
-		FItemEquipmentData EquipmentData = GI->ItemDataManager->GetItemEquipmentData(ItemInstance.ItemID);
+		FItemEquipmentData EquipmentData = GI->ItemDataManager->GetItemEquipmentData(CurItemID);
 		GetItemInformation(EquipmentData, ItemName, ItemType, ItemTexture, ItemStatus, ItemInfo);
 	}
 	else if (CurItemType == EItemType::Consume)
 	{
-		FItemConsumeData ConsumeData = GI->ItemDataManager->GetItemConsumeData(ItemInstance.ItemID);
+		FItemConsumeData ConsumeData = GI->ItemDataManager->GetItemConsumeData(CurItemID);
 		GetItemInformation(ConsumeData, ItemName, ItemType, ItemTexture, ItemStatus, ItemInfo);
 	}
 	else if (CurItemType == EItemType::Etc)
 	{
-		FItemEtcData EtcData = GI->ItemDataManager->GetItemEtcData(ItemInstance.ItemID);
+		FItemEtcData EtcData = GI->ItemDataManager->GetItemEtcData(CurItemID);
 		GetItemInformation(EtcData, ItemName, ItemType, ItemTexture, ItemStatus, ItemInfo);
 	}
 	

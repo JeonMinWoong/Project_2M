@@ -42,7 +42,7 @@ private:
 	void ShowInventorySelect(const UTwoMinWidget_InventorySlot* CurSlot, const EInventorySelectType NewInventorySelectType);
 	void HideInventorySelect();
 	
-	void ShowItemInfoPopup(const FItemInstance& ItemInstance);
+	void ShowItemInfoPopup(int32 CurItemID);
 	void HideItemInfoPopup();
 	
 	FItemInstance* FindInventoryItem(int32 ItemID);

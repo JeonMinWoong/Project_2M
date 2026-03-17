@@ -50,6 +50,12 @@ void UTwoMinWidget_IC_Slot::NativeOnAddedToFocusPath(const FFocusEvent& InFocusE
 void UTwoMinWidget_IC_Slot::NativeOnRemovedFromFocusPath(const FFocusEvent& InFocusEvent)
 {
 	Super::NativeOnRemovedFromFocusPath(InFocusEvent);
+	if (InFocusEvent.GetCause() == EFocusCause::Navigation)
+	{
+		SetFocus();
+		return;
+	}
+	
 	if (InFocusEvent.GetCause() == EFocusCause::Mouse)
 	{
 		SetFocus();

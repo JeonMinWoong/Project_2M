@@ -136,6 +136,7 @@ enum class EInventoryWindowType : uint8
 	Equipment,
 	Quick,
 	Inventory,
+	Store,
 };
 
 UENUM(Blueprintable)
@@ -159,7 +160,9 @@ enum class ESelectEventType : uint8
 	QuickToConsume_Use,
 	Cancel,
 	OpenItemPopup,
-	CloseItemPopup,
+
+	StoreToInventory_Buy,
+	InventoryToStore_Sell,
 };
 
 UENUM(Blueprintable)
@@ -296,4 +299,39 @@ enum class ENPCType : uint8
 {
 	None = 0,
 	Store = 1,
+};
+
+UENUM(Blueprintable)
+enum class EStoreSelectType : uint8
+{
+	InventoryToStore,
+	StoreToInventory,
+	
+	NoDeal,
+};
+
+UENUM(Blueprintable)
+enum class EStoreDealPopupType : uint8
+{
+	Sell,
+	Buy,
+};
+
+UENUM(Blueprintable)
+enum class EStoreDealTextType : uint8
+{
+	None,
+	Sell_Success,
+	Sell_Failure,
+	Buy_Success,
+	Buy_Failure_LackGold,
+	Buy_Failure_FullAmount,
+};
+
+UENUM(Blueprintable)
+enum class EStoreDealInputType : uint8
+{
+	None,
+	Decrease,
+	Increase,
 };
