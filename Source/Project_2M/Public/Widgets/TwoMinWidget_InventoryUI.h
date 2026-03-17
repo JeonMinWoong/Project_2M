@@ -79,12 +79,6 @@ private:
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* SaveButtonText;
 	
-	UPROPERTY(meta=(BindWidget))
-	USizeBox* EndGameKeyBoardBox;
-	
-	UPROPERTY(meta=(BindWidget))
-	USizeBox* EndGameGamePadBox;
-	
 public:
 	FORCEINLINE UTwoMinWidget_EquipmentWindow* GetEquipmentWindow() const { return EquipmentWindow; } 
 	FORCEINLINE UTwoMinWidget_InventoryWindow* GetInventoryWindow() const { return InventoryWindow; } 

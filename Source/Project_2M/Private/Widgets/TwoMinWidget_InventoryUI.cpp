@@ -40,8 +40,6 @@ void UTwoMinWidget_InventoryUI::NativeConstruct()
 	
 	SaveKeyBoardBox->SetVisibility(bIsUsingGamePad ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
 	SaveGamePadBox->SetVisibility(bIsUsingGamePad ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
-	EndGameKeyBoardBox->SetVisibility(bIsUsingGamePad ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
-	EndGameGamePadBox->SetVisibility(bIsUsingGamePad ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 	
 	const bool bIsVillageMap = UTwoMinFunctionLibrary::IsVillageMap(GetWorld());
 	const FString Str = FString::Printf(bIsVillageMap ? TEXT(": 수동 저장") : TEXT(": 전투 포기"));
