@@ -123,15 +123,7 @@ void UInventoryComponent::InitGiveItem()
 
 void UInventoryComponent::OpenInventory(const bool bIsOpenInventory)
 {
-	FString Str = bIsOpenInventory ? TEXT("Open Inventory") : TEXT("Close Inventory");
-	TwoMinDebugHelper::Print(Str, FColor::Green);
-	
 	if (!InventoryUI) return;
-	
-	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwner());
-	if (!PlayerCharacter) return;
-	ATwoMinPlayerController* PC = PlayerCharacter->GetPlayerController();
-	if (!PC) return;
 	
 	float TimeDilation;
 	if (bIsOpenInventory)
@@ -144,6 +136,7 @@ void UInventoryComponent::OpenInventory(const bool bIsOpenInventory)
 	else
 	{
 		TimeDilation = 1.f;
+		InventoryUI->ResetInventoryUI();
 		InventoryUI->RemoveFromParent();
 	}
 	

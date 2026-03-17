@@ -193,6 +193,8 @@ void UTwoMinWidget_InventorySelect::MoveToInventorySelectSlot(const int32 NextIn
 
 void UTwoMinWidget_InventorySelect::QuitInventorySelect()
 {
+	SetVisibility(ESlateVisibility::Hidden);
+	
 	bIsOpen = false;
 	if (InventorySelectType == EInventorySelectType::InventoryToConsume)
 	{

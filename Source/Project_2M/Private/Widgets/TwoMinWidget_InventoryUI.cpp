@@ -38,12 +38,39 @@ void UTwoMinWidget_InventoryUI::NativeConstruct()
 	const bool bIsUsingGamePad =
 		UTwoMinFunctionLibrary::IsUsingGamePad(GetWorld(), GetOwningPlayer()->GetPlatformUserId());
 	
-	KeyBoardBox->SetVisibility(bIsUsingGamePad ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
-	GamePadBox->SetVisibility(bIsUsingGamePad ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	SaveKeyBoardBox->SetVisibility(bIsUsingGamePad ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
+	SaveGamePadBox->SetVisibility(bIsUsingGamePad ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	EndGameKeyBoardBox->SetVisibility(bIsUsingGamePad ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
+	EndGameGamePadBox->SetVisibility(bIsUsingGamePad ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 	
 	const bool bIsVillageMap = UTwoMinFunctionLibrary::IsVillageMap(GetWorld());
 	const FString Str = FString::Printf(bIsVillageMap ? TEXT(": 수동 저장") : TEXT(": 전투 포기"));
-	AdditionalButtonText->SetText(FText::FromString(Str));
+	SaveButtonText->SetText(FText::FromString(Str));
+}
+
+void UTwoMinWidget_InventoryUI::ResetInventoryUI()
+{
+	if (ItemInfoPopup->IsPopupOpen())
+	{
+		HideItemInfoPopup();
+	}
+		
+	if (bIsQuickRegister)
+	{
+		bIsQuickRegister = false;
+			
+		InventorySelect->ResetAllSelectSlot();
+		int32 CurIndex = InventorySelect->GetInventorySelectIndex();
+		InventorySelect->MoveToInventorySelectSlot(CurIndex);
+		CurInventoryWindowType = EInventoryWindowType::Inventory;
+	}
+		
+	if (InventorySelect->IsOpen())
+	{
+		InventorySelect->QuitInventorySelect();
+		InventorySelect->SetVisibility(ESlateVisibility::Hidden);
+		OnFocusSlot();
+	}
 }
 
 FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
@@ -396,11 +423,6 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			return FReply::Handled();
 		}
 		
-		if (bIsSelectOpen == false)
-		{
-			return FReply::Unhandled();
-		}
-		
 		if (bIsQuickRegister)
 		{
 			bIsQuickRegister = false;
@@ -409,15 +431,21 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			int32 CurIndex = InventorySelect->GetInventorySelectIndex();
 			InventorySelect->MoveToInventorySelectSlot(CurIndex);
 			CurInventoryWindowType = EInventoryWindowType::Inventory;
-			
-			
 			return FReply::Handled();
 		}
 		
-		InventorySelect->QuitInventorySelect();
-		InventorySelect->SetVisibility(ESlateVisibility::Hidden);
-		OnFocusSlot();
+		if (bIsSelectOpen)
+		{
+			InventorySelect->QuitInventorySelect();
+			InventorySelect->SetVisibility(ESlateVisibility::Hidden);
+			OnFocusSlot();
+			return FReply::Handled();
+		}
 		
+		ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningPlayerPawn());
+		if (!PlayerCharacter) return FReply::Unhandled();
+		
+		PlayerCharacter->OpenInventoryProcess();
 		return FReply::Handled();
 	}
 	

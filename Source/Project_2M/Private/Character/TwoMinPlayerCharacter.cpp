@@ -220,6 +220,8 @@ void ATwoMinPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	
 	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_SpecialAttack_Check, 
 		ETriggerEvent::Started, this, &ThisClass::Input_SpecialAttack_Check_Trigger);
+	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_EndGame,
+		ETriggerEvent::Started, this, &ThisClass::Input_EndGameTrigger);
 }
 
 void ATwoMinPlayerCharacter::Input_Move(const FInputActionValue& InputActionValue)
@@ -439,14 +441,9 @@ void ATwoMinPlayerCharacter::Input_InteractTrigger(const FInputActionValue& Inpu
 
 void ATwoMinPlayerCharacter::Input_OpenInventory(const FInputActionValue& InputActionValue)
 {
-	if (PlayerUIComponent->IsMapSelectWidgetOpen())
-	{
-		PlayerUIComponent->OpenMapSelectWidget(this, false);
-	}
-	else
-	{
-		OpenInventoryProcess();	
-	}
+	if (bIsEndGameTrigger || PlayerUIComponent->IsMapSelectWidgetOpen() || PlayerUIComponent->IsStoreWidgetOpen()) return;
+	
+	OpenInventoryProcess();	
 }
 
 void ATwoMinPlayerCharacter::OpenInventoryProcess()
@@ -613,6 +610,19 @@ void ATwoMinPlayerCharacter::Input_SpecialAttack_Check_Trigger(const FInputActio
 	
 	bIsSpecialAttackCheck = true;
 	Input_AbilityInputPressed(InputTag);
+}
+
+void ATwoMinPlayerCharacter::Input_EndGameTrigger(const FInputActionValue& InputActionValue)
+{
+	if (bIsOpenInventory || PlayerUIComponent->IsMapSelectWidgetOpen() || PlayerUIComponent->IsStoreWidgetOpen()) return;
+	
+	OpenEndGameProcess();
+}
+
+void ATwoMinPlayerCharacter::OpenEndGameProcess()
+{
+	bIsEndGameTrigger = !bIsEndGameTrigger;
+	PlayerUIComponent->OpenEndGameWidget(this, bIsEndGameTrigger);
 }
 
 bool ATwoMinPlayerCharacter::GetIsRunning()

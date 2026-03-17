@@ -11,6 +11,7 @@
 #include "Widgets/TwoMinWidgetBase.h"
 #include "TwoMinWidget_InventoryUI.generated.h"
 
+class UCanvasPanel;
 class UTwoMinWidget_ItemInfoPopup;
 class UTwoMinWidget_InventoryWindow;
 /**
@@ -24,6 +25,7 @@ class PROJECT_2M_API UTwoMinWidget_InventoryUI : public UTwoMinWidgetBase
 public:
 	UTwoMinWidget_InventoryUI();
 	virtual void NativeConstruct() override;
+	void ResetInventoryUI();
 	
 	void OnFocusSlot();
 	void OnEquipment(int32 ItemID);
@@ -69,13 +71,19 @@ private:
 	bool bIsQuickRegister;
 	
 	UPROPERTY(meta=(BindWidget))
-	USizeBox* KeyBoardBox;
+	USizeBox* SaveKeyBoardBox;
 	
 	UPROPERTY(meta=(BindWidget))
-	USizeBox* GamePadBox;
+	USizeBox* SaveGamePadBox;
 	
 	UPROPERTY(meta=(BindWidget))
-	UTextBlock* AdditionalButtonText;
+	UTextBlock* SaveButtonText;
+	
+	UPROPERTY(meta=(BindWidget))
+	USizeBox* EndGameKeyBoardBox;
+	
+	UPROPERTY(meta=(BindWidget))
+	USizeBox* EndGameGamePadBox;
 	
 public:
 	FORCEINLINE UTwoMinWidget_EquipmentWindow* GetEquipmentWindow() const { return EquipmentWindow; } 

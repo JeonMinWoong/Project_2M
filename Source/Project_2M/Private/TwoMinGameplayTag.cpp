@@ -24,6 +24,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_SpecialAttack_OneHand, "InputTag.SpecialAttack.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_AngerMode_Inrush, "InputTag.AngerMode.Inrush");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_AngerMode_SpecialAttack_OneHand, "InputTag.AngerMode.SpecialAttack.OneHand");
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_EndGame, "InputTag.EndGame");
 
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Toggle, "InputTag.Toggle");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Toggle_LockOn, "InputTag.Toggle.LockOn");

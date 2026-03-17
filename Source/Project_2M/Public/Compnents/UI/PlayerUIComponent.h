@@ -7,6 +7,8 @@
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "PlayerUIComponent.generated.h"
 
+class UTwoMinWidget_EndGameUI;
+class UTwoMinWidgetBase;
 class AInteractionActor_NPC;
 class UTwoMinWidget_StoreUI;
 class UTwoMinWidget_MapSelectUI;
@@ -37,6 +39,7 @@ public:
 	virtual void BeginPlay() override;
 	void OpenMapSelectWidget(const ATwoMinPlayerCharacter* PlayerCharacter, const bool bIsOpenMapSelectWidget);
 	void OpenStoreWidget(ATwoMinPlayerCharacter* PlayerCharacter, AInteractionActor_NPC* NPC, const bool bIsOpenStoreWidget);
+	void OpenEndGameWidget(const ATwoMinPlayerCharacter* PlayerCharacter, const bool bIsOpenEndGameWidget);
 	
 	UPROPERTY()
 	FOnPercentChangedDelegate OnCurrentStaminaChanged;
@@ -89,6 +92,7 @@ public:
 private:
 	void InitMapSelectUI();
 	void InitStoreUI();
+	void InitEndGameUI();
 	
 	UPROPERTY(EditDefaultsOnly, Category = "UI|MapSelect")
 	TSubclassOf<UTwoMinWidget_MapSelectUI> MapSelectWidgetClass;
@@ -107,6 +111,15 @@ private:
 	
 	UPROPERTY()
 	bool bIsStoreWidgetOpen = false;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "UI|EndGame")
+	TSubclassOf<UTwoMinWidget_EndGameUI> EndGameWidgetClass;
+	
+	UPROPERTY()
+	UTwoMinWidget_EndGameUI* EndGameWidgetUI;
+	
+	UPROPERTY()
+	bool bIsEndGameWidgetOpen = false;
 	
 public:
 	FORCEINLINE UTwoMinWidget_StoreUI* GetStoreUI() const { return StoreWidgetUI; }

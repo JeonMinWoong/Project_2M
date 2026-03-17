@@ -45,6 +45,7 @@ public:
 	void PlayerLevelUp(int32 NewLevel);
 	
 	void OpenInventoryProcess();
+	void OpenEndGameProcess();
 	
 	void PlayCameraShakeOnHit(ECameraShakeType CameraShakeType);
 
@@ -227,6 +228,10 @@ private:
 	bool bIsSpecialAttackCheck = false;
 	float InputDelay = 0.1f;
 	float CurDelay = 0.f;
+	
+	void Input_EndGameTrigger(const FInputActionValue& InputActionValue);
+	
+	bool bIsEndGameTrigger = false;
 	
 #pragma endregion
 

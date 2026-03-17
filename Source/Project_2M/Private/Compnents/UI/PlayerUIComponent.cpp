@@ -7,6 +7,7 @@
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "System/InteractionActor_NPC.h"
+#include "Widgets/TwoMinWidget_EndGameUI.h"
 #include "Widgets/TwoMinWidget_MapSelectUI.h"
 #include "Widgets/TwoMinWidget_StoreUI.h"
 
@@ -16,6 +17,7 @@ void UPlayerUIComponent::BeginPlay()
 	
 	InitMapSelectUI();
 	InitStoreUI();
+	InitEndGameUI();
 }
 
 void UPlayerUIComponent::InitMapSelectUI()
@@ -93,5 +95,43 @@ void UPlayerUIComponent::OpenStoreWidget(ATwoMinPlayerCharacter* PlayerCharacter
 	}
 	
 	bIsStoreWidgetOpen = bIsOpenStoreWidget;
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), TimeDilation);
+}
+
+void UPlayerUIComponent::InitEndGameUI()
+{
+	if (!EndGameWidgetClass)
+	{
+		return;
+	}
+	
+	if (!EndGameWidgetUI)
+	{
+		EndGameWidgetUI = CreateWidget<UTwoMinWidget_EndGameUI>(GetWorld(), EndGameWidgetClass);	
+	}
+}
+
+void UPlayerUIComponent::OpenEndGameWidget(const ATwoMinPlayerCharacter* PlayerCharacter,
+	const bool bIsOpenEndGameWidget)
+{
+	if (!EndGameWidgetClass) return;
+	
+	if (!PlayerCharacter) return;
+	
+	float TimeDilation;
+	if (bIsOpenEndGameWidget)
+	{
+		TimeDilation = 0;
+		EndGameWidgetUI->AddToViewport();
+		EndGameWidgetUI->InitEndGameUI();
+	}
+	else
+	{
+		TimeDilation = 1.f;
+		EndGameWidgetUI->ResetEndGameUI();
+		EndGameWidgetUI->RemoveFromParent();
+	}
+	
+	bIsEndGameWidgetOpen = bIsOpenEndGameWidget;
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), TimeDilation);
 }
