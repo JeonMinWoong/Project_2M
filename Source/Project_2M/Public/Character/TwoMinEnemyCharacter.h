@@ -43,6 +43,8 @@ public:
 	
 	bool GetHideCinematic(const FString& PlayLevelSequenceName) const;
 	FString GetSyncCinematicActorName(const FString& PlayLevelSequenceName) const;
+	void BossDetectProcess();
+	
 	FTimerHandle DecreaseGroggyTimerHandle;
 	FTimerHandle PhaseConversionTimerHandle;
 	
@@ -94,6 +96,12 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|BossInfo|IsBossHealthBar")
 	bool bUseBossHealthBar = false;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|BossInfo|BossBGMType")
+	EBGMSoundType BossBGMSound = EBGMSoundType::None;
+	
+	UPROPERTY()
+	bool bIsNeedChangeBossBGMSound = false;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|BossInfo|BossPaseType", meta = (EditCondition = "bUseBossHealthBar"))
 	EBossPhaseType BossPhase = EBossPhaseType::Phase_Finish;

@@ -69,4 +69,10 @@ public:
 		const FString CurRealStageName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
 		return CurRealStageName.Equals(VillageName);
 	}
+	
+	FORCEINLINE bool IsDevelopMap() const
+	{
+		const FString CurRealStageName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
+		return CurRealStageName.Equals(WorldStageNameDataGroup[0].RealStageName);
+	}
 };

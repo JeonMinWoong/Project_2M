@@ -11,6 +11,7 @@
 #include "Compnents/InventoryComponent.h"
 #include "GameInstance/TwoMinGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Managers/SoundManager.h"
 #include "Managers/WorldStageManager.h"
 #include "Spawner/SpawnMonsterPointGroup.h"
 #include "Widgets/TwoMinWidget_ClearStageUI.h"
@@ -48,6 +49,10 @@ void ATwoMinBaseGameMode::BeginPlay()
 	
 	FadeInOutWidget->AddToViewport();
 	FadeInOutWidget->StartFadeIn();
+	
+	EBGMSoundType BGMSoundType = GI->StateManager->IsVillageMap() ? EBGMSoundType::Village : EBGMSoundType::Dungeon;
+	BGMSoundType = GI->StateManager->IsDevelopMap() ? EBGMSoundType::None : BGMSoundType;
+	GI->SoundManager->PlayBGMSound(BGMSoundType);
 }
 
 void ATwoMinBaseGameMode::LoadSaveDataProcess(FSaveGameData& LoadSaveGameData)

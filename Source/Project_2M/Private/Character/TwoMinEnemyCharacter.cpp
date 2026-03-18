@@ -20,6 +20,7 @@
 #include "Item/EnterEvent/TwoMinEnterEventBase.h"
 #include "Item/PickUp/TwoMinPickUpItemBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Managers/SoundManager.h"
 #include "Managers/WorldStageManager.h"
 #include "Spawner/SpawnMonsterPointGroup.h"
 #include "Widgets/Enemy/TwoMinWidgetEnemy.h"
@@ -106,6 +107,10 @@ void ATwoMinEnemyCharacter::BeforeDeathProcess()
 	{
 		if (BossPhase == EBossPhaseType::Phase_Finish)
 		{
+			UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
+			if (!GI) return;
+			
+			GI->SoundManager->StopBGMSound();
 			GM->GetSpawnMonsterPointGroup()->OpenBossStage();	
 		}
 		else
@@ -222,6 +227,15 @@ void ATwoMinEnemyCharacter::OnShowCharacter()
 	UBehaviorTreeComponent* BTComp = Cast<UBehaviorTreeComponent>(AI->BrainComponent);
 	AI->RunBehaviorTree(BTComp->GetCurrentTree());
 	bIsHideCharacter = false;
+	
+	if (bIsNeedChangeBossBGMSound)
+	{
+		UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetWorld()->GetGameInstance());
+		if (!GI) return;
+		
+		GI->SoundManager->PlayBGMSound(BossBGMSound);
+		bIsNeedChangeBossBGMSound = false;
+	}
 }
 
 void ATwoMinEnemyCharacter::OnHideCharacter()
@@ -320,6 +334,7 @@ void ATwoMinEnemyCharacter::InitPhaseConversion(EBossPhaseType NewBossPhase)
 	SpawnNewPhaseCharacter->SetUseBossHealthBar(bUseBossHealthBar);
 	SpawnNewPhaseCharacter->SetBossPhaseType(NewBossPhase);
 	 
+	SpawnNewPhaseCharacter->bIsNeedChangeBossBGMSound = true;
 	SpawnNewPhaseCharacter->FinishSpawning(GetActorTransform());
 	
 	if (const TSubclassOf<ATwoMinEnterEventBase> PhaseLevelSequence = PhaseData.BossPhaseType[NewBossPhase].PhaseLevelSequence)
@@ -356,4 +371,13 @@ FString ATwoMinEnemyCharacter::GetSyncCinematicActorName(const FString& PlayLeve
 	if (HideCinematicMap.Contains(PlayLevelSequenceName) == false) return "";
 		
 	return HideCinematicMap[PlayLevelSequenceName].SyncCharacterName;
+}
+
+void ATwoMinEnemyCharacter::BossDetectProcess()
+{
+	UTwoMinGameInstance* GI =  Cast<UTwoMinGameInstance>(GetWorld()->GetGameInstance());
+	if (!GI) return;
+	
+	GetEnemyUIComponent()->ShowBossHealthBar(GetMonsterName());
+	GI->SoundManager->PlayBGMSound(BossBGMSound);
 }

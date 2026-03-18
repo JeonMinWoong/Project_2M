@@ -335,3 +335,16 @@ enum class EStoreDealInputType : uint8
 	Decrease,
 	Increase,
 };
+
+UENUM(Blueprintable)
+enum class EBGMSoundType : uint8
+{
+	None,
+	Title,
+	Village,
+	Dungeon,
+	Boss_Stage_1_1,
+	Boss_Stage_1_2,
+	Boss_Stage_1_3_1,
+	Boss_Stage_1_3_2,
+};

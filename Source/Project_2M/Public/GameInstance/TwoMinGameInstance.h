@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "TwoMinGameInstance.generated.h"
 
+class USoundManager;
 class UWorldStageManager;
 class UItemDataManager;
 /**
@@ -24,6 +25,10 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Instanced)
 	UWorldStageManager* StateManager;
+	
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Instanced)
+	USoundManager* SoundManager;
 	
 	UPROPERTY(VisibleAnywhere)
 	bool bIsStageMoving = false;

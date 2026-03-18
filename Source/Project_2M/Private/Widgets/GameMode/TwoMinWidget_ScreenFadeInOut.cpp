@@ -5,6 +5,7 @@
 
 #include "GameInstance/TwoMinGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Managers/SoundManager.h"
 
 void UTwoMinWidget_ScreenFadeInOut::StartFadeOut(const FName StageName)
 {
@@ -83,6 +84,7 @@ void UTwoMinWidget_ScreenFadeInOut::CompleteFadeOutAnim()
 	NextStageName = NAME_None;
 	
 	UGameplayStatics::OpenLevel(GetWorld(), CachedNextStageName);
+	GI->SoundManager->StopBGMSound();
 }
 
 void UTwoMinWidget_ScreenFadeInOut::StartFadeInAnim()

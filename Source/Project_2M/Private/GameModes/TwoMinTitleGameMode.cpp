@@ -3,6 +3,8 @@
 
 #include "GameModes/TwoMinTitleGameMode.h"
 
+#include "GameInstance/TwoMinGameInstance.h"
+#include "Managers/SoundManager.h"
 #include "Widgets/TwoMinWidget_TitleUI.h"
 #include "Widgets/GameMode/TwoMinWidget_ScreenFadeInOut.h"
 
@@ -11,6 +13,11 @@ void ATwoMinTitleGameMode::BeginPlay()
 	Super::BeginPlay();
 	
 	ShowTitleWidget();
+	
+	UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
+	if (!GI) return;
+	
+	GI->SoundManager->PlayBGMSound(EBGMSoundType::Title);
 }
 
 void ATwoMinTitleGameMode::ShowTitleWidget()

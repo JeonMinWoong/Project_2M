@@ -14,6 +14,7 @@
 #include "GameInstance/TwoMinGameInstance.h"
 #include "GameModes/TwoMinBaseGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "Managers/SoundManager.h"
 #include "Managers/WorldStageManager.h"
 #include "SaveGame/TwoMinSaveGame.h"
 

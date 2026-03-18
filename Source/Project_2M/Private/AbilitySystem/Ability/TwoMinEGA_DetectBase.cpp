@@ -6,6 +6,7 @@
 #include "Character/TwoMinEnemyCharacter.h"
 #include "Compnents/Combat/EnemyCombatComponent.h"
 #include "Compnents/UI/EnemyUIComponent.h"
+#include "GameInstance/TwoMinGameInstance.h"
 
 class UEnemyCombatComponent;
 
@@ -14,8 +15,7 @@ void UTwoMinEGA_DetectBase::ActivateAbility(const FGameplayAbilitySpecHandle Han
                                            const FGameplayEventData* TriggerEventData)
 {
 	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(ActorInfo->OwnerActor);
-	UEnemyCombatComponent* EnemyCombatComponent = Cast<UEnemyCombatComponent>(EnemyCharacter->GetCombatComponent());
-	if (EnemyCombatComponent)
+	if (UEnemyCombatComponent* EnemyCombatComponent = Cast<UEnemyCombatComponent>(EnemyCharacter->GetCombatComponent()))
 	{
 		EnemyCombatComponent->SetIsBattlePossible(true);
 		EnemyCombatComponent->SetIsEquip(true);
@@ -23,8 +23,7 @@ void UTwoMinEGA_DetectBase::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	if (EnemyCharacter->IsUseBossHealthBar())
 	{
-		const FString BossName = EnemyCharacter->GetMonsterName();
-		EnemyCharacter->GetEnemyUIComponent()->ShowBossHealthBar(BossName);
+		EnemyCharacter->BossDetectProcess();
 	}
 	
 	if (DetectAnimMontage)
