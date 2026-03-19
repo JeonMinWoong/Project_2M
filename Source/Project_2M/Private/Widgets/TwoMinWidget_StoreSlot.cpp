@@ -8,6 +8,11 @@
 #include "Components/SizeBox.h"
 #include "Components/TextBlock.h"
 
+void UTwoMinWidget_StoreSlot::ShowStoreSlot(bool bOn)
+{
+	SetVisibility(bOn ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+}
+
 void UTwoMinWidget_StoreSlot::ClearSlot()
 {
 	SetIsFocusable(false);

@@ -3,7 +3,8 @@
 
 #include "Widgets/TwoMinWidget_StoreWindow.h"
 
-#include "Components/UniformGridPanel.h"
+#include "Components/ListView.h"
+#include "Components/ScrollBox.h"
 #include "Components/UniformGridSlot.h"
 #include "GameInstance/TwoMinGameInstance.h"
 #include "Managers/ItemDataManager.h"
@@ -13,16 +14,13 @@ void UTwoMinWidget_StoreWindow::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	
-	if (!StoreGrid) return;
+	if (!StoreScrollBox) return;
 	
-	TArray<UWidget*> StoreGroup = StoreGrid->GetAllChildren();
+	TArray<UWidget*> StoreGroup = StoreScrollBox->GetAllChildren();
 	if (StoreGroup.IsEmpty()) return;
 
 	for (UWidget* StoreSlot : StoreGroup)
 	{
-		UUniformGridSlot* GridSlot = Cast<UUniformGridSlot>(StoreSlot->Slot);
-		if (!GridSlot) continue;
-		
 		UTwoMinWidget_StoreSlot* CastSlot = Cast<UTwoMinWidget_StoreSlot>(StoreSlot);
 		if (!CastSlot) return;
 		
@@ -51,7 +49,22 @@ void UTwoMinWidget_StoreWindow::ResettingStoreList(const TSet<int32>& StoreList)
 		
 		StoreSlots[Index]->SetActiveSlot(ItemData);
 	}
+
+	for (int Index = 0; Index < FixedStoreSlotCount; ++Index)
+	{
+		StoreSlots[Index]->ShowStoreSlot(true);
+	}
 	
+	for (int Index = 0; Index < StoreSlots.Num(); ++Index)
+	{
+		if (Index <= FixedStoreSlotCount - 1 || StoreSlots[Index]->GetItemID() != 0)
+		{
+			StoreSlots[Index]->ShowStoreSlot(true);
+			continue;
+		}
+		
+		StoreSlots[Index]->ShowStoreSlot(false);
+	}
 		
 	CurStoreIndex = 0;
 	MaxStoreIndex = StoreArray.Num() - 1;
@@ -63,4 +76,21 @@ void UTwoMinWidget_StoreWindow::SetFocusSlot(const int32 NewCurStoreIndex)
 	
 	CurStoreIndex = NewCurStoreIndex;
 	StoreSlots[CurStoreIndex]->SetFocus();
+	
+	int32 LastSlotIndex = StoreSlots.Num() - 1 > MaxStoreIndex ? MaxStoreIndex : StoreSlots.Num() - 1;
+	if (NewCurStoreIndex == 0 || NewCurStoreIndex == LastSlotIndex)
+	{
+		if (NewCurStoreIndex == 0)
+		{
+			StoreScrollBox->ScrollToStart();	
+		}
+		else
+		{
+			StoreScrollBox->ScrollToEnd();	
+		}
+	}
+	else
+	{
+		StoreScrollBox->ScrollWidgetIntoView(StoreSlots[CurStoreIndex], true);	
+	}
 }

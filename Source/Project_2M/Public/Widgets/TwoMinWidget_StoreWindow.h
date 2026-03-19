@@ -6,8 +6,9 @@
 #include "Widgets/TwoMinWidgetBase.h"
 #include "TwoMinWidget_StoreWindow.generated.h"
 
+class UScrollBox;
 class UTwoMinWidget_StoreSlot;
-class UUniformGridPanel;
+
 /**
  * 
  */
@@ -25,7 +26,7 @@ protected:
 
 private:
 	UPROPERTY(meta=(BindWidget))
-	UUniformGridPanel* StoreGrid;
+	UScrollBox* StoreScrollBox;
 	
 	UPROPERTY()
 	TArray<TObjectPtr<UTwoMinWidget_StoreSlot>> StoreSlots;
@@ -35,6 +36,9 @@ private:
 	
 	UPROPERTY()
 	int32 MaxStoreIndex;
+	
+	UPROPERTY()
+	int32 FixedStoreSlotCount = 9;
 	
 public:
 	FORCEINLINE void SetCurStoreIndex(const int32 NewStoreIndex) { CurStoreIndex = NewStoreIndex; };

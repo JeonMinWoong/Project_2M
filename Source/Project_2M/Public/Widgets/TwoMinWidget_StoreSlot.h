@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Blueprint/IUserObjectListEntry.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "Widgets/TwoMinWidgetBase.h"
 #include "TwoMinWidget_StoreSlot.generated.h"
@@ -20,6 +21,7 @@ class PROJECT_2M_API UTwoMinWidget_StoreSlot : public UTwoMinWidgetBase
 	GENERATED_BODY()
 	
 public:
+	void ShowStoreSlot(bool bOn);
 	void ClearSlot();
 	void SetActiveSlot(const FItemData& NewItemData);
 
