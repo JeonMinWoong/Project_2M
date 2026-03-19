@@ -182,6 +182,12 @@ void UTwoMinGA_ExecutionCaster::PlayCinematicEvent(AActor* MyActor, AActor* Targ
 		TArray<AActor*> OutActors;
 		UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AActor::StaticClass(), 
 			FName("ExecutionCinematicDummy"), OutActors);
+		if (OutActors.Num() == 0)
+		{
+			TwoMinDebugHelper::Print(TEXT("BP_ExecutionCinematicDummy is necessary"), FColor::Red);
+			return;
+		}
+
 		ExecutionDummyActor = OutActors[0];
 		if (!ExecutionDummyActor)
 		{
@@ -197,7 +203,7 @@ void UTwoMinGA_ExecutionCaster::PlayCinematicEvent(AActor* MyActor, AActor* Targ
 	CameraToRotation.Yaw += 90;
 
 	ExecutionDummyActor->SetActorLocationAndRotation(CameraToLocation, FRotator(0, CameraToRotation.Yaw, 0));
-	PlayLevelSequence(MyCharacter, FExecutionCinematicData[ExecutionNumber].CinematicLevelSequence,
+	PlayLevelSequence(MyCharacter, FExecutionCinematicData[ExecutionNumber].CinematicLevelSequence, ExecutionDummyActor,
 		FExecutionCinematicData[ExecutionNumber].OriginCamConvertBlendDelay);
 }
 

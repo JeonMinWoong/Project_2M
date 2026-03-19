@@ -70,7 +70,8 @@ protected:
 	
 	virtual bool bIsReTriggerSameAbility() const;
 	
-	void PlayLevelSequence(ATwoMinBaseCharacter* OwnerCharacter, ULevelSequence* LevelSequence, float BlendDelay);
+	void PlayLevelSequence(ATwoMinBaseCharacter* OwnerCharacter, ULevelSequence* LevelSequence, AActor* NewBindTargetActor,
+		float BlendDelay);
 	
 	UFUNCTION()
 	void OnFinishLevelSequence();
