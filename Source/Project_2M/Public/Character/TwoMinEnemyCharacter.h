@@ -34,6 +34,8 @@ public:
 	virtual UEnemyUIComponent* GetEnemyUIComponent() const override;
 	virtual void BeforeDeathProcess() override;
 	virtual void AfterDeathProcess() override;
+	virtual void StartDissolveProcess() override;
+	void UpdateDissolveMaterial();
 	virtual void OnDestroyedProcess() override;
 	
 	void ClearStageProcess() const;
@@ -47,6 +49,7 @@ public:
 	
 	FTimerHandle DecreaseGroggyTimerHandle;
 	FTimerHandle PhaseConversionTimerHandle;
+	FTimerHandle DissolveTimerHandle;
 	
 protected:
 	//~ Begin APawn Interface.
@@ -125,6 +128,18 @@ private:
 	
 	UPROPERTY()
 	AActor* CinematicSyncActor;
+	
+	UPROPERTY()
+	float UpdateDissolveTime = 0.025f;
+	
+	UPROPERTY()
+	TArray<UMaterialInstanceDynamic*> CachedDynamicMaterials;
+	
+	UPROPERTY()
+	float CurDissolve = 0;
+	
+	UPROPERTY()
+	float UpdateDissolveValue = 0.01;
 	
 public:
 	EMonsterType GetMonsterType() const { return MonsterType; };

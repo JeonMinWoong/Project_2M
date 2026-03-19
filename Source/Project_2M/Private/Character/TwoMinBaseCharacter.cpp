@@ -52,6 +52,7 @@ void ATwoMinBaseCharacter::AfterDeathProcess()
 			if (RemoveDelay >= 0)
 			{
 				WeaponBase->SetLifeSpan(RemoveDelay);	
+				WeaponBase->StartDissolveProcess();
 			}
 		}
 	}
@@ -61,7 +62,13 @@ void ATwoMinBaseCharacter::AfterDeathProcess()
 		if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(this)) return;
 		
 		SetLifeSpan(RemoveDelay);	
+		StartDissolveProcess();
 	}
+	
+}
+
+void ATwoMinBaseCharacter::StartDissolveProcess()
+{
 	
 }
 

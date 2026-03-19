@@ -188,6 +188,37 @@ void ATwoMinEnemyCharacter::AfterDeathProcess()
 	}
 }
 
+void ATwoMinEnemyCharacter::StartDissolveProcess()
+{
+	Super::StartDissolveProcess();
+	
+	for (int32 Index = 0; Index < GetMesh()->GetNumMaterials(); Index++)
+	{
+		UMaterialInterface* Mat = GetMesh()->GetMaterial(Index);
+		UMaterialInstanceDynamic* DynMat = UMaterialInstanceDynamic::Create(Mat, this);
+    
+		GetMesh()->SetMaterial(Index, DynMat);
+		CachedDynamicMaterials.Add(DynMat);
+	}
+	
+	GetWorldTimerManager().SetTimer(DissolveTimerHandle, this, &ATwoMinEnemyCharacter::UpdateDissolveMaterial,
+		UpdateDissolveTime, true);
+}
+
+void ATwoMinEnemyCharacter::UpdateDissolveMaterial()
+{
+	CurDissolve += UpdateDissolveValue;
+	for (auto DynamicMaterialInstance : CachedDynamicMaterials)
+	{
+		DynamicMaterialInstance->SetScalarParameterValue(TEXT("DissolveAmount"), CurDissolve);
+	}
+
+	if (CurDissolve >= 1)
+	{
+		GetWorldTimerManager().ClearTimer(DissolveTimerHandle);
+	}
+}
+
 void ATwoMinEnemyCharacter::OnDestroyedProcess()
 {
 	Super::OnDestroyedProcess();

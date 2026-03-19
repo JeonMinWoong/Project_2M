@@ -33,8 +33,38 @@ FTwoMinPlayerWeaponData ATwoMinWeaponBase::GetWeaponData() const
 	return FTwoMinPlayerWeaponData();
 }
 
+void ATwoMinWeaponBase::StartDissolveProcess()
+{
+	for (int32 Index = 0; Index < WeaponMesh->GetNumMaterials(); Index++)
+	{
+		UMaterialInterface* Mat = WeaponMesh->GetMaterial(Index);
+		UMaterialInstanceDynamic* DynMat = UMaterialInstanceDynamic::Create(Mat, this);
+    
+		WeaponMesh->SetCastShadow(false);
+		WeaponMesh->SetMaterial(Index, DynMat);
+		CachedDynamicMaterials.Add(DynMat);
+	}
+	
+	GetWorldTimerManager().SetTimer(DissolveTimerHandle, this, &ATwoMinWeaponBase::UpdateDissolveMaterial,
+		UpdateDissolveTime, true);
+}
+
+void ATwoMinWeaponBase::UpdateDissolveMaterial()
+{
+	CurDissolve += UpdateDissolveValue;
+	for (auto DynamicMaterialInstance : CachedDynamicMaterials)
+	{
+		DynamicMaterialInstance->SetScalarParameterValue(TEXT("DissolveAmount"), CurDissolve);
+	}
+
+	if (CurDissolve >= 1)
+	{
+		GetWorldTimerManager().ClearTimer(DissolveTimerHandle);
+	}
+}
+
 void ATwoMinWeaponBase::OnCollisionBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	APawn* WeaponOwningPawn = GetInstigator<APawn>();
 

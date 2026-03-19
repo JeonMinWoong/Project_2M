@@ -24,9 +24,13 @@ public:
 	FOnTargetInteractedDelegate OnWeaponPulledFromTarget;
 
 	virtual FTwoMinPlayerWeaponData GetWeaponData() const;
+	void StartDissolveProcess();
+	void UpdateDissolveMaterial();
 
 	UPROPERTY(EditAnywhere, Category = "ToggleDamageType")
 	EToggleDamageType ToggleDamageType = EToggleDamageType::None;
+	
+	FTimerHandle DissolveTimerHandle;
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapons")
@@ -46,6 +50,18 @@ protected:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "WeaponIndex")
 	int32 WeaponIndex = 0;
+	
+	UPROPERTY()
+	float UpdateDissolveTime = 0.025f;
+	
+	UPROPERTY()
+	TArray<UMaterialInstanceDynamic*> CachedDynamicMaterials;
+	
+	UPROPERTY()
+	float CurDissolve = 0;
+	
+	UPROPERTY()
+	float UpdateDissolveValue = 0.01;
 	
 public:
 	FORCEINLINE UBoxComponent* GetWeaponCollisionBox() const { return WeaponCollisionBox; }

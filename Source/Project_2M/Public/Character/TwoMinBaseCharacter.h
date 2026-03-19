@@ -28,6 +28,7 @@ public:
 	virtual UBaseUIComponent* GetBaseUIComponent() const override;
 	virtual void BeforeDeathProcess();
 	virtual void AfterDeathProcess();
+	virtual void StartDissolveProcess();
 	virtual void Destroyed() override;
 	virtual void OnDestroyedProcess();
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
