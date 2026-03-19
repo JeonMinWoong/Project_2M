@@ -37,9 +37,9 @@ class PROJECT_2M_API UPlayerUIComponent : public UBaseUIComponent
 	
 public:
 	virtual void BeginPlay() override;
-	void OpenMapSelectWidget(const ATwoMinPlayerCharacter* PlayerCharacter, const bool bIsOpenMapSelectWidget);
+	void OpenMapSelectWidget(ATwoMinPlayerCharacter* PlayerCharacter, const bool bIsOpenMapSelectWidget);
 	void OpenStoreWidget(ATwoMinPlayerCharacter* PlayerCharacter, AInteractionActor_NPC* NPC, const bool bIsOpenStoreWidget);
-	void OpenEndGameWidget(const ATwoMinPlayerCharacter* PlayerCharacter, const bool bIsOpenEndGameWidget);
+	void OpenEndGameWidget(ATwoMinPlayerCharacter* PlayerCharacter, const bool bIsOpenEndGameWidget);
 	
 	UPROPERTY()
 	FOnPercentChangedDelegate OnCurrentStaminaChanged;

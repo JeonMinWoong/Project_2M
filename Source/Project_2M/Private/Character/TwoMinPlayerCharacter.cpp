@@ -515,7 +515,8 @@ void ATwoMinPlayerCharacter::Input_UseItemTrigger(const FInputActionValue& Input
 {
 	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitDowning)
 		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitThrowing)
-			|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_OpenInventory))
+			|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_OpenInventory)
+			|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_UseItem))
 	{
 		return;
 	}

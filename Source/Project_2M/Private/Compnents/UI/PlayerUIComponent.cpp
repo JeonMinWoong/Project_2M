@@ -33,7 +33,7 @@ void UPlayerUIComponent::InitMapSelectUI()
 	}
 }
 
-void UPlayerUIComponent::OpenMapSelectWidget(const ATwoMinPlayerCharacter* PlayerCharacter, const bool bIsOpenMapSelectWidget)
+void UPlayerUIComponent::OpenMapSelectWidget(ATwoMinPlayerCharacter* PlayerCharacter, const bool bIsOpenMapSelectWidget)
 {
 	if (!MapSelectWidgetClass) return;
 	
@@ -42,6 +42,7 @@ void UPlayerUIComponent::OpenMapSelectWidget(const ATwoMinPlayerCharacter* Playe
 	float TimeDilation;
 	if (bIsOpenMapSelectWidget)
 	{
+		PlayerCharacter->OnIgnoreInputProcess(true);
 		TimeDilation = 0;
 		MapSelectUI->AddToViewport();
 		MapSelectUI->InitStageButtons();
@@ -49,6 +50,7 @@ void UPlayerUIComponent::OpenMapSelectWidget(const ATwoMinPlayerCharacter* Playe
 	}
 	else
 	{
+		PlayerCharacter->OnIgnoreInputProcess(false);
 		TimeDilation = 1.f;
 		MapSelectUI->RemoveFromParent();
 	}
@@ -111,7 +113,7 @@ void UPlayerUIComponent::InitEndGameUI()
 	}
 }
 
-void UPlayerUIComponent::OpenEndGameWidget(const ATwoMinPlayerCharacter* PlayerCharacter,
+void UPlayerUIComponent::OpenEndGameWidget(ATwoMinPlayerCharacter* PlayerCharacter,
 	const bool bIsOpenEndGameWidget)
 {
 	if (!EndGameWidgetClass) return;
@@ -121,12 +123,14 @@ void UPlayerUIComponent::OpenEndGameWidget(const ATwoMinPlayerCharacter* PlayerC
 	float TimeDilation;
 	if (bIsOpenEndGameWidget)
 	{
+		PlayerCharacter->OnIgnoreInputProcess(true);
 		TimeDilation = 0;
 		EndGameWidgetUI->AddToViewport();
 		EndGameWidgetUI->InitEndGameUI();
 	}
 	else
 	{
+		PlayerCharacter->OnIgnoreInputProcess(false);
 		TimeDilation = 1.f;
 		EndGameWidgetUI->ResetEndGameUI();
 		EndGameWidgetUI->RemoveFromParent();
