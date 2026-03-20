@@ -11,8 +11,6 @@ void UTwoMinGA_AngerModeStateBase::ActivateAbility(const FGameplayAbilitySpecHan
                                                    const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                                    const FGameplayEventData* TriggerEventData)
 {
-	TwoMinDebugHelper::Print(TEXT("분노 모드 상태 활성화"), FColor::Red);
-	
 	UAbilityTask_WaitGameplayTagAdded* WaitTask = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(
 		this,
 		AngerModeEndTag,
@@ -36,7 +34,6 @@ void UTwoMinGA_AngerModeStateBase::EndAbility(const FGameplayAbilitySpecHandle H
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
-	TwoMinDebugHelper::Print(TEXT("분노 모드 상태 종료"), FColor::Red);
 	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo());
 	UTwoMinAbilitySystemComponent* ASC = Cast<UTwoMinAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
 	

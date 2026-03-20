@@ -143,11 +143,7 @@ void ATwoMinEnemyCharacter::AfterDeathProcess()
 	
 	TMap<int32, int32> DropItems = ItemDropComponent->TryGetCharacterDropItems();
 	
-	if (DropItems.IsEmpty())
-	{
-		TwoMinDebugHelper::Print(TEXT("아이템 드랍 없음."));
-		return;
-	}
+	if (DropItems.IsEmpty()) return;
 	
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
@@ -384,8 +380,6 @@ void ATwoMinEnemyCharacter::InitPhaseConversion(EBossPhaseType NewBossPhase)
 		AActor* PlayerActor = GetWorld()->GetFirstPlayerController()->GetPawn();
 		LevelSequence->OutPlayLevelSequence(PlayerActor);
 	}
-	
-	TwoMinDebugHelper::Print(TEXT("새로운 페이즈 돌입."));
 	
 	OnHideCharacter();
 }

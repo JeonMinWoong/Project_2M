@@ -119,6 +119,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "CharacterInfo|IsCinematic")
 	bool bIsCinematic = false;
 	
+	UPROPERTY(EditAnywhere, Category = "CharacterInfo|IsCinematic", meta= (EditCondition = "bIsCinematic"))
+	FString CinematicSyncName;
+	
 	// 시네마틱 중 안 보이게 할 지.
 	UPROPERTY(VisibleAnywhere, Category = "CharacterInfo|IsHideCinematicing")
 	TMap<FString, FCinematicCharacterData> HideCinematicMap;
@@ -160,5 +163,12 @@ public:
 	FORCEINLINE void SetUseBossHealthBar(const bool bIsUse) { bUseBossHealthBar =  bIsUse; }
 	FORCEINLINE bool IsUseBossHealthBar() const { return bUseBossHealthBar; }
 	FORCEINLINE void SetBossPhaseType(EBossPhaseType NewBossPhaseType) { BossPhase = NewBossPhaseType; };
+	
+	FORCEINLINE bool IsSameCinematicSyncActorName(const FString& InMachName) const
+	{
+		if (bIsCinematic == false) return false;
+		
+		return CinematicSyncName.Equals(InMachName);
+	}
 	
 };

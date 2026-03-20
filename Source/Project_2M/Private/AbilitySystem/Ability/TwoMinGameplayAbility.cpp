@@ -102,6 +102,8 @@ void UTwoMinGameplayAbility::PlayLevelSequence(ATwoMinBaseCharacter* OwnerCharac
 {
 	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(OwnerCharacter);
 	if (!PlayerCharacter) return;
+	if (!LevelSequence) return;
+	if (!NewBindTargetActor) return;
 	
 	PlayerCharacter->OnIgnoreInputProcess(true);
 	
@@ -123,21 +125,6 @@ void UTwoMinGameplayAbility::PlayLevelSequence(ATwoMinBaseCharacter* OwnerCharac
 	{
 		OutActor->SetBindingByTag(NewBindTargetActor->Tags[0], TArray<AActor*>{ NewBindTargetActor });
 	}
-	
-	// FMovieSceneObjectBindingID TargetBindingID = FMovieSceneObjectBindingID();
-	// for (const FMovieSceneBinding& Binding : LevelSequence->GetMovieScene()->GetBindings())
-	// {
-	// 	if (Binding.GetName() == NewBindTargetActor->GetActorNameOrLabel())
-	// 	{
-	// 		TargetBindingID = FMovieSceneObjectBindingID(Binding.GetObjectGuid());
-	// 		break;
-	// 	}
-	// }
-	//
-	// if (TargetBindingID.IsValid())
-	// {
-	// 	OutActor->SetBinding(TargetBindingID, TArray<AActor*>{ NewBindTargetActor });
-	// }
 
 	OriginCamConvertBlendDelay = BlendDelay;
 	LevelSequencePlayer->Play();

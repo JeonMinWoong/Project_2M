@@ -43,7 +43,7 @@ void UPlayerUIComponent::OpenMapSelectWidget(ATwoMinPlayerCharacter* PlayerChara
 	if (bIsOpenMapSelectWidget)
 	{
 		PlayerCharacter->OnIgnoreInputProcess(true);
-		TimeDilation = 0;
+		TimeDilation = 0.0001f;
 		MapSelectUI->AddToViewport();
 		MapSelectUI->InitStageButtons();
 		MapSelectUI->OnFocusSlot();
@@ -124,7 +124,7 @@ void UPlayerUIComponent::OpenEndGameWidget(ATwoMinPlayerCharacter* PlayerCharact
 	if (bIsOpenEndGameWidget)
 	{
 		PlayerCharacter->OnIgnoreInputProcess(true);
-		TimeDilation = 0;
+		TimeDilation = 0.0001f;
 		EndGameWidgetUI->AddToViewport();
 		EndGameWidgetUI->InitEndGameUI();
 	}

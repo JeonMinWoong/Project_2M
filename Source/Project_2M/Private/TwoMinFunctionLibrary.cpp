@@ -175,9 +175,6 @@ void UTwoMinFunctionLibrary::SaveGame(const FSaveGameData& NewSaveGameData)
 		TwoMinGameplayTag::Data_SaveGame_Slot_1.GetTag().ToString(),
 		0
 	);
-
-	const FString SaveStr = bWasSaved ? TEXT("저장 완료.") : TEXT("저장 실패.");
-	TwoMinDebugHelper::Print(SaveStr, FColor::Green);
 }
 
 bool UTwoMinFunctionLibrary::TryLoadGame(FSaveGameData& OutSaveGameData)
@@ -193,11 +190,9 @@ bool UTwoMinFunctionLibrary::TryLoadGame(FSaveGameData& OutSaveGameData)
 
 	if (OutSaveGameData.PlayerLevel <= 0)
 	{
-		TwoMinDebugHelper::Print(TEXT("불러오기 실패"), FColor::Red);
 		return false;
 	}
 	
-	TwoMinDebugHelper::Print(TEXT("불러오기 성공"), FColor::Green);
 	return true;
 }
 

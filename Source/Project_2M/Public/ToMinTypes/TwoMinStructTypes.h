@@ -41,7 +41,7 @@ struct FTwoMinPlayerWeaponData
 	TSubclassOf<UTwoMinPlayerLinkedAnimLayer> WeaponAnimLayerToLink;
 	
 	UPROPERTY(EditDefaultsOnly)
-	UInputMappingContext* WeaponInputMappingContext;
+	UInputMappingContext* WeaponInputMappingContext = nullptr;
 
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FTwoMinPlayerAbilitySet> DefaultWeaponAbilities;
@@ -53,16 +53,16 @@ struct FTwoMinPlayerAutoTargetingData
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int TargetingTotalScore;
+	int TargetingTotalScore = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float TargetingRange;
+	float TargetingRange = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float TargetingAngle;
+	float TargetingAngle = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float TargetingRotationSpeed;
+	float TargetingRotationSpeed = 0.f;
 };
 
 USTRUCT(BlueprintType)
@@ -71,19 +71,19 @@ struct FExecutionData
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int ExecutionTotalScore;
+	int ExecutionTotalScore = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float ExecutionRange;
+	float ExecutionRange = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float ExecutionFrontAngle;
+	float ExecutionFrontAngle = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float ExecutionBackAngle;
+	float ExecutionBackAngle = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float ExecutionDistance;
+	float ExecutionDistance = 0.f;
 };
 
 USTRUCT(BlueprintType)
@@ -92,10 +92,10 @@ struct FTwoMinPlayerAttackApproachData
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float ReachDistance;
+	float ReachDistance = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float ApproachSpeed;
+	float ApproachSpeed = 0.f;
 };
 
 USTRUCT(BlueprintType)
@@ -104,10 +104,10 @@ struct FTwoMinEnemyAttackApproachData
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float ReachDistance;
+	float ReachDistance = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float ApproachSpeed;
+	float ApproachSpeed = 0.f;
 };
 
 USTRUCT(BlueprintType)
@@ -125,7 +125,7 @@ struct FHitData
 	float PushTime = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UCurveFloat* KnockBackCurve;
+	UCurveFloat* KnockBackCurve = nullptr;
 };
 
 USTRUCT(BlueprintType)
@@ -140,7 +140,7 @@ struct FGuardHitData
 	float PushTime = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UCurveFloat* KnockBackCurve;
+	UCurveFloat* KnockBackCurve = nullptr;
 };
 
 USTRUCT(BlueprintType)
@@ -181,7 +181,7 @@ struct FAttackInfoData : public FGameplayAbilityTargetData
 	EAttackType AttackType = EAttackType::Light;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float AttackDamageCoef;
+	float AttackDamageCoef = 0.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(EditCondition="AttackType != EAttackType::Execution"))
 	FHitData HitData;
@@ -193,7 +193,7 @@ struct FAttackInfoData : public FGameplayAbilityTargetData
 	FHitStopVictimData HitStopVictimData;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(EditCondition="AttackType != EAttackType::Execution"))
-	int HitDirectionNumber;
+	int HitDirectionNumber = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	ECameraShakeType CameraShakeType = ECameraShakeType::None;
@@ -255,7 +255,7 @@ struct FEnemyAIPatrolData
 	GENERATED_BODY()
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	ATargetPoint* PatrolPoint;
+	ATargetPoint* PatrolPoint = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float WaitTime = 0.0f;
@@ -267,13 +267,13 @@ struct FEnemyAIAttackConditionData
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float MinAttackRange;
+	float MinAttackRange = 0.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float MaxAttackRange;
+	float MaxAttackRange = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (ClampMin = "0.0", ClampMax = "180.0"))
-	float TargetAngle;
+	float TargetAngle = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FGameplayTag AbilityCooldownTag;
@@ -295,13 +295,13 @@ struct FExecutionInfoData : public FGameplayAbilityTargetData
 	TMap<int32, FAttackInfoData> AttackInfosData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
-	float SnapSpeed;
+	float SnapSpeed = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
-	float SnapMaxDuration;
+	float SnapMaxDuration = 0.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
-	float SnapDistance;
+	float SnapDistance = 0.f;
 };
 
 UCLASS(BlueprintType)
@@ -314,7 +314,7 @@ public:
 	bool bIsExecutionForward;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Payload")
-	int32 ExecutionNumber;
+	int32 ExecutionNumber = 0;
 };
 
 USTRUCT(BlueprintType)
@@ -326,16 +326,16 @@ struct FItemDropData : public FTableRowBase
 	FName ItemDropOwner;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemDrop|ID")
-	int32 ItemID;
+	int32 ItemID = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemDrop|Weight")
-	float Weight;
+	float Weight = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemDrop|MinDropRange")
-	int32 MinDropRange;
+	int32 MinDropRange = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemDrop|MaxCount")
-	int32 MaxDropRangeCount;
+	int32 MaxDropRangeCount = 0;
 };
 
 USTRUCT(BlueprintType)
@@ -344,28 +344,28 @@ struct FItemData : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FItemData|ID")
-	int32 ItemID;
+	int32 ItemID = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FItemData|Name")
 	FString ItemName;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FItemData|Type")
-	EItemType ItemType;
+	EItemType ItemType = EItemType::None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FItemData|CurrentCount")
-	int32 CurrentCount;
+	int32 CurrentCount = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FItemData|MaxCount")
-	int32 MaxCount;
+	int32 MaxCount = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FItemData|SellPrice")
-	int32 SellPrice;
+	int32 SellPrice = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FItemData|BuyPrice")
-	int32 BuyPrice;
+	int32 BuyPrice = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemDrop|ItemTexture")
-	UTexture2D* ItemTexture;
+	UTexture2D* ItemTexture = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemDrop|ItemInformation")
 	FString ItemInformation;
@@ -380,7 +380,7 @@ struct FItemEquipmentData : public FTableRowBase
 	FItemData ItemDataBase;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Equipment|ET")
-	EEquipmentType EquipmentType;
+	EEquipmentType EquipmentType = EEquipmentType::Weapon_Left;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Equipment|Power")
 	TMap<EStatusType, int32> EquipmentPower;
@@ -404,7 +404,7 @@ struct FItemConsumeData : public FTableRowBase
 	TMap<EStatusType, float> ConsumePower;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemData|Consume|Duration", meta=(EditCondition="ConsumeType == EConsumeType::Buff"))
-	float BuffDuration;
+	float BuffDuration = 0.f;
 };
 
 USTRUCT(BlueprintType)
@@ -424,13 +424,13 @@ struct FItemInstance
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ItemID")
-	int32 ItemID;
+	int32 ItemID = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "HoldCount")
-	int32 HoldCount;
+	int32 HoldCount = 0;
 	
 	UPROPERTY(BlueprintReadWrite)
-	UTexture2D* ItemTexture;
+	UTexture2D* ItemTexture = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsRegister = false;
@@ -463,16 +463,16 @@ struct FItemPickUpEntry
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite)
-	int32 ItemID;
+	int32 ItemID = 0;
 	
 	UPROPERTY(BlueprintReadWrite)
 	FString ItemName;
 
 	UPROPERTY(BlueprintReadWrite)
-	int32 ItemCount;
+	int32 ItemCount = 0;
 	
 	UPROPERTY(BlueprintReadWrite)
-	UTexture2D* ItemTexture;
+	UTexture2D* ItemTexture = nullptr;
 };
 
 UCLASS(BlueprintType)
@@ -497,7 +497,7 @@ struct FAngerBuffData
 	bool bIsPercent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float BuffAmount;
+	float BuffAmount = 0.f;
 };
 
 USTRUCT(BlueprintType)
@@ -506,16 +506,16 @@ struct FEnemyAIEvasionConditionDate
 	GENERATED_BODY()
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float PossibleMinAngle;
+	float PossibleMinAngle = 0.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float PossibleMaxAngle;
+	float PossibleMaxAngle = 0.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float PossibleMinDistance;
+	float PossibleMinDistance = 0.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float PossibleMaxDistance;
+	float PossibleMaxDistance = 0.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FGameplayTag AbilityCooldownTag;
@@ -533,13 +533,13 @@ struct FTeleportData
 	GENERATED_BODY()
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float TeleportStartDelay;
+	float TeleportStartDelay = 0.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float TeleportFinishDelay;
+	float TeleportFinishDelay = 0.f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float TeleportDistance;
+	float TeleportDistance = 0.f;
 	
 };
 
@@ -565,10 +565,10 @@ struct FWorldStageClearGainData : public FTableRowBase
 	FName ClearItemOwner;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 GainGold;
+	int32 GainGold = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 GainExp;
+	int32 GainExp = 0;
 	
 };
 
@@ -581,13 +581,13 @@ struct FSaveGameData
 	TMap<FString, bool> WorldStageMap;
 	
 	UPROPERTY()
-	int32 PlayerLevel;
+	int32 PlayerLevel = 0;
 	
 	UPROPERTY()
-	int32 PlayerCurrentExp;
+	int32 PlayerCurrentExp = 0;
 	
 	UPROPERTY()
-	int32 PlayerCurrentGold;
+	int32 PlayerCurrentGold = 0;
 	
 	UPROPERTY()
 	TArray<FItemInstance> PlayerCurrentItems;
@@ -599,7 +599,7 @@ struct FCinematicCharacterData
 	GENERATED_BODY()
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool bIsHide;
+	bool bIsHide = false;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FString SyncCharacterName;
@@ -632,10 +632,10 @@ struct FExecutionCinematicData
 	GENERATED_BODY()
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	ULevelSequence* CinematicLevelSequence;
+	ULevelSequence* CinematicLevelSequence = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float OriginCamConvertBlendDelay;
+	float OriginCamConvertBlendDelay = 0.f;
 };
 
 USTRUCT(BlueprintType)
@@ -653,7 +653,7 @@ struct FNPCData : public FTableRowBase
 	GENERATED_BODY()
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 NPC_ID;
+	int32 NPC_ID = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TMap<int32, FInteractionTextData> NPC_InteractionMap;

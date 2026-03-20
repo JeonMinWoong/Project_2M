@@ -182,18 +182,10 @@ void UTwoMinGA_ExecutionCaster::PlayCinematicEvent(AActor* MyActor, AActor* Targ
 		TArray<AActor*> OutActors;
 		UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AActor::StaticClass(), 
 			FName("ExecutionCinematicDummy"), OutActors);
-		if (OutActors.Num() == 0)
-		{
-			TwoMinDebugHelper::Print(TEXT("BP_ExecutionCinematicDummy is necessary"), FColor::Red);
-			return;
-		}
+		if (OutActors.Num() == 0) return;
 
 		ExecutionDummyActor = OutActors[0];
-		if (!ExecutionDummyActor)
-		{
-			TwoMinDebugHelper::Print(TEXT("Dummy is null"), FColor::Red);
-			return;
-		}
+		if (!ExecutionDummyActor) return;
 		
 		MyCharacter->SetExecutionCinematicDummy(ExecutionDummyActor);
 	}

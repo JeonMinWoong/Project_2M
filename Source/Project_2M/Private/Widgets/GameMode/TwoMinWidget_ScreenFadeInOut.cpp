@@ -63,7 +63,7 @@ void UTwoMinWidget_ScreenFadeInOut::LockPlayerInput(const bool bLock)
 	PC->SetIgnoreLookInput(bLock);
 	if (bLock)
 	{
-		PC->SetInputMode(FInputModeUIOnly().SetWidgetToFocus(TakeWidget()));
+		PC->SetInputMode(FInputModeUIOnly());
 	}
 	else
 	{

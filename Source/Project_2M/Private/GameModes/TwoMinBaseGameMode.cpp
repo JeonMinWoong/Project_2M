@@ -154,7 +154,7 @@ void ATwoMinBaseGameMode::ShowClearStageUI()
 	ClearStageWidget->AddToViewport();
 	ClearStageWidget->SettingClearStageUI();
 	
-	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0);
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.0001f);
 }
 
 void ATwoMinBaseGameMode::ShowDefeatStageUI()
@@ -169,7 +169,7 @@ void ATwoMinBaseGameMode::ShowDefeatStageUI()
 	DefeatStageWidget->AddToViewport();
 	DefeatStageWidget->SettingDefeatStageUI();
 	
-	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0);
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.0001f);
 }
 
 void ATwoMinBaseGameMode::LockPlayerInput(bool bLock, UTwoMinWidgetBase* InWidget) const

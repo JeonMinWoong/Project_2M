@@ -33,4 +33,7 @@ private:
 	UPROPERTY()
 	int32 CurrentFocusIndex = 0;
 	
+	UPROPERTY()
+	bool bIsLockInputKey = false;
+	
 };

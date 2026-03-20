@@ -37,9 +37,7 @@ void ATwoMinEnterEventBase::OnBeginOverlap(UPrimitiveComponent* OverlappedCompon
                                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (bIsEventActivated || bIsIgnoreCollision) return;
-	
-	TwoMinDebugHelper::Print(TEXT("EnterEvent BeginOverlap"));
-	
+
 	CheckHideCharacters();
 	PlayLevelSequence(OtherActor);
 }
@@ -128,10 +126,13 @@ void ATwoMinEnterEventBase::PlayLevelSequence(AActor* OtherActor)
 		
 		for (auto Actor : LevelActorGroup)
 		{
-			if (Actor->GetActorLabel() == HideCharacterName)
+			if (ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(Actor))
 			{
-				HideEnemyCharacter->SetCinematicSyncActor(Actor);
-				break;
+				if (EnemyCharacter->IsSameCinematicSyncActorName(HideCharacterName))
+				{
+					HideEnemyCharacter->SetCinematicSyncActor(Actor);
+					break;
+				}	
 			}
 		}
 	}

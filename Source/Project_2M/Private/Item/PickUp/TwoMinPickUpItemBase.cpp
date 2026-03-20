@@ -14,6 +14,8 @@ ATwoMinPickUpItemBase::ATwoMinPickUpItemBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+	
 	SphereComponent = CreateDefaultSubobject<USphereComponent>("SphereComponent");
 	SphereComponent->SetupAttachment(GetRootComponent());
 	SphereComponent->InitSphereRadius(PickUpRange);

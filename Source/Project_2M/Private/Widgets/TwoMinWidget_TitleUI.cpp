@@ -15,6 +15,7 @@ void UTwoMinWidget_TitleUI::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	
+	bIsLockInputKey = false;
 	if (!TitleMenuGridPanel) return;
 	
 	TArray<UWidget*> ButtonGroup = TitleMenuGridPanel->GetAllChildren();
@@ -40,6 +41,8 @@ void UTwoMinWidget_TitleUI::NativeOnInitialized()
 
 FReply UTwoMinWidget_TitleUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
 {
+	if (bIsLockInputKey) return FReply::Handled();
+	
 	const FKey InKey = InKeyEvent.GetKey();
 	if (InKey == EKeys::Enter || InKey == EKeys::F || InKey == EKeys::Gamepad_FaceButton_Bottom)
 	{
@@ -64,6 +67,7 @@ FReply UTwoMinWidget_TitleUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 		const UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
 		if (!GI) return FReply::Unhandled();
 		
+		bIsLockInputKey = true;
 		const FName GoStageName = FName(*GI->StateManager->GetVillageName());
 		TitleGM->OnEnterInGame(GoStageName);
 		

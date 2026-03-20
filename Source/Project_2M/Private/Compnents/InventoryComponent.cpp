@@ -128,7 +128,7 @@ void UInventoryComponent::OpenInventory(const bool bIsOpenInventory)
 	float TimeDilation;
 	if (bIsOpenInventory)
 	{
-		TimeDilation = 0;
+		TimeDilation = 0.0001f;
 		InventoryUI->AddToViewport();
 		InventoryUI->OnFocusSlot();
 		UpdateStatus();

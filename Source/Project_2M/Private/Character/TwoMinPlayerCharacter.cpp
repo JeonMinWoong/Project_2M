@@ -107,7 +107,11 @@ FVector ATwoMinPlayerCharacter::GetInputDirection() const
 
 void ATwoMinPlayerCharacter::PlayerLevelUp(int32 NewLevel)
 {
-	CharacterStartUpData->StartUpDataLevelUp(AbilitySystemComponent, NewLevel);
+	UDataAsset_StartUpDataBase* LoadData = CharacterStartUpData.LoadSynchronous();
+	if (LoadData)
+	{
+		LoadData->StartUpDataLevelUp(AbilitySystemComponent, NewLevel);	
+	}
 }
 
 void ATwoMinPlayerCharacter::PossessedBy(AController* NewController)

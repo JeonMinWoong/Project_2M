@@ -45,7 +45,6 @@ void AInteractionActorBase::Tick(float DeltaTime)
 		if (ASC->IsPlayingAbility(InteractionTag) == false)
 		{
 			ASC->TryActivateAbilityByTag(InteractionTag);
-			TwoMinDebugHelper::Print(TEXT("상호 작용 가능"));	
 		}
 	}
 }

@@ -3,8 +3,6 @@
 
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 
-#include "IDetailTreeNode.h"
-#include "TwoMinDebugHelper.h"
 #include "TwoMinGameplayTag.h"
 #include "AbilitySystem/TwoMinAttributeSet.h"
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
@@ -334,9 +332,6 @@ void UTwoMinAbilitySystemComponent::GiveHealthPercent(float InHealthPercent)
 
 	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Gain_Health, GiveHealthAmount);
 	ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
-	
-	FString Str = FString::Printf(TEXT("Give Health : %d"), GiveHealthAmount);
-	TwoMinDebugHelper::Print(Str, FColor::Green);
 }
 
 void UTwoMinAbilitySystemComponent::GiveFightValue(FName InFightRowName)

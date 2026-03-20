@@ -9,7 +9,6 @@ void UTwoMinGA_CounterAttack_Player::ActivateAbility(const FGameplayAbilitySpecH
                                                      const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                                      const FGameplayEventData* TriggerEventData)
 {
-	TwoMinDebugHelper::Print(TEXT("Counter Attack Player ActivateAbility"));
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
@@ -17,6 +16,5 @@ void UTwoMinGA_CounterAttack_Player::EndAbility(const FGameplayAbilitySpecHandle
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
-	TwoMinDebugHelper::Print(TEXT("Counter Attack Player EndAbility"));
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }

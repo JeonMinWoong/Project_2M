@@ -9,8 +9,6 @@ void UTwoMinGA_ExhaustedBase::ActivateAbility(const FGameplayAbilitySpecHandle H
                                               const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                               const FGameplayEventData* TriggerEventData)
 {
-	TwoMinDebugHelper::Print(TEXT("Exhausted Ability Activated"), FColor::Red);
-	
 	if (!ExhaustedAnimMontage)
 	{
 		CustomCancelAbility();
