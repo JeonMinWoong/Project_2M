@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MovieSceneObjectBindingID.h"
 #include "Character/TwoMinBaseCharacter.h"
 #include "Components/WidgetComponent.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
+#include "Widgets/Enemy/TwoMinWidgetEnemy.h"
 #include "TwoMinEnemyCharacter.generated.h"
 
+class UTwoMinWidgetEnemy;
 class ATwoMinEnterEventBase;
 class AAIController;
 struct FCinematicCharacterData;
@@ -32,6 +33,8 @@ public:
 	virtual UBaseCombatComponent* GetCombatComponent() const override;
 	virtual UBaseUIComponent* GetBaseUIComponent() const override;
 	virtual UEnemyUIComponent* GetEnemyUIComponent() const override;
+	UTwoMinWidgetEnemy* GetEnemyHealthWidget() const;
+	
 	virtual void BeforeDeathProcess() override;
 	virtual void AfterDeathProcess() override;
 	virtual void StartDissolveProcess() override;

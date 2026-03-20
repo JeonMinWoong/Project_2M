@@ -9,6 +9,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/InventoryComponent.h"
+#include "GameFramework/GameUserSettings.h"
 #include "GameInstance/TwoMinGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Managers/SoundManager.h"
@@ -21,7 +22,7 @@
 void ATwoMinBaseGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	AActor* FindSpawnGroup = UGameplayStatics::GetActorOfClass(GetWorld(), ASpawnMonsterPointGroup::StaticClass());
 	SpawnMonsterPointGroup = Cast<ASpawnMonsterPointGroup>(FindSpawnGroup);
 	

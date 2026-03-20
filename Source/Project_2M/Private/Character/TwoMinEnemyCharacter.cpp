@@ -322,10 +322,7 @@ void ATwoMinEnemyCharacter::InitCheckCinematic()
 
 void ATwoMinEnemyCharacter::InitEnemyHealthWidget()
 {
-	UUserWidget* UserWidget = EnemyHealthWidgetComponent->GetUserWidgetObject();
-	if (!UserWidget) return;
-		
-	UTwoMinWidgetEnemy* HealthWidget = Cast<UTwoMinWidgetEnemy>(UserWidget);
+	UTwoMinWidgetEnemy* HealthWidget = GetEnemyHealthWidget();
 	if (!HealthWidget) return;
 	
 	if (bUseBossHealthBar)
@@ -336,6 +333,15 @@ void ATwoMinEnemyCharacter::InitEnemyHealthWidget()
 	{
 		HealthWidget->InitEnemyUIComponent(EnemyUIComponent);
 	}
+}
+
+UTwoMinWidgetEnemy* ATwoMinEnemyCharacter::GetEnemyHealthWidget() const
+{
+	UUserWidget* UserWidget = EnemyHealthWidgetComponent->GetUserWidgetObject();
+	if (!UserWidget) return nullptr;
+		
+	UTwoMinWidgetEnemy* HealthWidget = Cast<UTwoMinWidgetEnemy>(UserWidget);
+	return HealthWidget;
 }
 
 void ATwoMinEnemyCharacter::InitPhaseConversion(EBossPhaseType NewBossPhase)

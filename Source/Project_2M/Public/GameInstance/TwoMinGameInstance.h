@@ -26,11 +26,17 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Instanced)
 	UWorldStageManager* StateManager;
 	
-	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Instanced)
 	USoundManager* SoundManager;
 	
 	UPROPERTY(VisibleAnywhere)
 	bool bIsStageMoving = false;
 	
+	FTimerHandle ApplyInitSettingsTimerHandle;
+	
+private:
+	void ApplyInitSettings();
+	
+	UPROPERTY()
+	int32 GeneralValue = 1;
 };

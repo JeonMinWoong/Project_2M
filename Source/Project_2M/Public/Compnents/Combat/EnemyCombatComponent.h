@@ -3,11 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Character/TwoMinEnemyCharacter.h"
 #include "Compnents/Combat/BaseCombatComponent.h"
 #include "Engine/TargetPoint.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "EnemyCombatComponent.generated.h"
 
+class UTwoMinWidgetEnemy;
 class ATwoMinBaseCharacter;
 /**
  * 
@@ -111,7 +113,21 @@ private:
 public:
 	FORCEINLINE float GetCustomBattleRange() const { return CustomBattleRange; }
 	FORCEINLINE bool IsBattlePossible() const { return bIsBattlePossible; }
-	FORCEINLINE void SetIsBattlePossible(bool InIsBattlePossible) { bIsBattlePossible = InIsBattlePossible; }
+	FORCEINLINE void SetIsBattlePossible(bool InIsBattlePossible)
+	{
+		if (InIsBattlePossible == false)
+		{
+			if (const ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(GetOwner()))
+			{
+				if (UTwoMinWidgetEnemy* HealthWidget = EnemyCharacter->GetEnemyHealthWidget())
+				{
+					HealthWidget->HideWorldHealthBar();
+				}
+			}
+		}
+		
+		bIsBattlePossible = InIsBattlePossible;
+	}
 	
 	FORCEINLINE bool IsBanAttack() const { return bIsBanAttack; }
 	
