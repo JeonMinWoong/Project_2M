@@ -56,8 +56,12 @@ public:
 	}
 	FORCEINLINE TMap<FString, bool> GetWorldStageMap() { return WorldStageMap; }
 	
-	FORCEINLINE void SetWorldStage(FString WorldStageName, const bool bIsClear) 
-	{ WorldStageMap.Add(WorldStageName, bIsClear); }
+	FORCEINLINE void SetWorldStage(FString WorldStageName, const bool bIsClear)
+	{
+		if (bIsTestClear) return;
+		
+		WorldStageMap.Add(WorldStageName, bIsClear);
+	}
 	
 	FORCEINLINE bool GetWorldStage(FString WorldStageName) const 
 	{ return WorldStageMap.FindRef(WorldStageName); }

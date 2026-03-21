@@ -34,6 +34,7 @@ void UTwoMinWidget_StoreUI::InitStoreUI(const AInteractionActor_NPC* NPC, const 
 	HideStoreSelect();
 	HideStoreInfoPopup();
 	StoreDealText->SetVisibility(ESlateVisibility::Hidden);
+	PlayUISound(EUISoundType::Inventory_Open);
 }
 
 void UTwoMinWidget_StoreUI::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -100,6 +101,8 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 			if (ButtonIndex == 1)
 			{
 				HideStoreInfoPopup();
+				PlayUISound(EUISoundType::Cancel);
+				
 				return FReply::Handled();
 			}
 			
@@ -127,6 +130,8 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 				StoreDealText->SetTextValue(NPC->GetNPCDealTextStr(EStoreDealTextType::Sell_Success));
 				
 				HideStoreInfoPopup();
+				PlayUISound(EUISoundType::Focus_Select);				
+				
 				return FReply::Handled();
 			}
 			
@@ -151,12 +156,16 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 			StoreDealText->SetTextValue(NPC->GetNPCDealTextStr(EStoreDealTextType::Buy_Success));
 
 			HideStoreInfoPopup();
+			PlayUISound(EUISoundType::Focus_Select);
+			
 			return FReply::Handled();
 		}
 		
 		if (bIsPopupOpen)
 		{
 			HideItemInfoPopup();
+			PlayUISound(EUISoundType::Focus_Select);
+			
 			return FReply::Handled();
 		}
 		
@@ -167,6 +176,8 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 			if (SelectEvent == ESelectEventType::Cancel)
 			{
 				HideStoreSelect();
+				PlayUISound(EUISoundType::Cancel);
+				
 				return FReply::Handled();
 			}
 			else if (SelectEvent == ESelectEventType::OpenItemPopup)
@@ -184,6 +195,8 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 				}
 				
 				ShowItemInfoPopup(CurItemID);
+				PlayUISound(EUISoundType::Popup_Open);
+				
 				return FReply::Handled();
 			}
 			else if (SelectEvent == ESelectEventType::InventoryToStore_Sell)
@@ -198,6 +211,7 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 					return FReply::Unhandled();
 				}
 				
+				PlayUISound(EUISoundType::Popup_Open);
 				return FReply::Handled();
 			}
 			else if (SelectEvent == ESelectEventType::StoreToInventory_Buy)
@@ -224,6 +238,7 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 					return FReply::Unhandled();
 				}
 				
+				PlayUISound(EUISoundType::Popup_Open);
 				return FReply::Handled();
 			}
 			
@@ -246,15 +261,21 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 					if (FindItemInstance->bIsRegister)
 					{
 						ShowStoreSelect(StoreSlots[CurStoreIndex], EStoreSelectType::NoDeal);
+						PlayUISound(EUISoundType::Focus_Select);
+						
 						return FReply::Handled();
 					}
 				}
 				
 				ShowStoreSelect(StoreSlots[CurStoreIndex], EStoreSelectType::StoreToInventory);
+				PlayUISound(EUISoundType::Focus_Select);
+				
 				return FReply::Handled();
 			}
 			
 			ShowStoreSelect(StoreSlots[CurStoreIndex], EStoreSelectType::StoreToInventory);
+			PlayUISound(EUISoundType::Focus_Select);
+			
 			return FReply::Handled();
 		}
 		else if (CurStoreWindowType == EInventoryWindowType::Inventory)
@@ -269,14 +290,20 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 				if (InventorySlots[CurInventoryIndex]->IsRegister())
 				{
 					ShowStoreSelect(InventorySlots[CurInventoryIndex], EStoreSelectType::NoDeal);
+					PlayUISound(EUISoundType::Focus_Select);
+					
 					return FReply::Handled();
 				}
 
 				ShowStoreSelect(InventorySlots[CurInventoryIndex], EStoreSelectType::InventoryToStore);
+				PlayUISound(EUISoundType::Focus_Select);
+				
 				return FReply::Handled();
 			}
 
 			ShowStoreSelect(InventorySlots[CurInventoryIndex], EStoreSelectType::InventoryToStore);
+			PlayUISound(EUISoundType::Focus_Select);
+			
 			return FReply::Handled();
 		}
 		
@@ -288,12 +315,16 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 		if (bIsDealPopupOpen)
 		{
 			HideStoreInfoPopup();
+			PlayUISound(EUISoundType::Cancel);
+			
 			return FReply::Handled();	
 		}
 		
 		if (bIsPopupOpen)
 		{
 			HideItemInfoPopup();
+			PlayUISound(EUISoundType::Cancel);
+			
 			return FReply::Handled();
 		}
 		
@@ -301,6 +332,8 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 		{
 			StoreSelect->QuitInventorySelect();
 			UpdateFocusSlot();
+			PlayUISound(EUISoundType::Cancel);
+			
 			return FReply::Handled();
 		}
 		
@@ -317,6 +350,8 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 			
 			StoreSlots[0]->SetFocus();
 			PlayerUIComponent->OpenStoreWidget(PlayerCharacter, NPC, false);	
+			PlayUISound(EUISoundType::Cancel);
+			
 			return FReply::Handled();
 		}
 		
@@ -399,7 +434,11 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 	{
 		if (bIsDealPopupOpen)
 		{
+			if (StoreDealPopup->GetCurButtonIndex() == 1) return FReply::Unhandled();
+			
 			StoreDealPopup->SetSelectButton(1);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();	
 		}
 		
@@ -420,6 +459,8 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 			
 			InventorySlots[NextInventoryIndex]->SetFocus();
 			InventoryWindow->SetCurInventoryIndex(NextInventoryIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();
 		}
 		else if (CurStoreWindowType == EInventoryWindowType::Store)
@@ -430,6 +471,8 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 			CurInventoryIndex = 0;
 			InventorySlots[CurInventoryIndex]->SetFocus();
 			InventoryWindow->SetCurInventoryIndex(CurInventoryIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();
 		}
 		
@@ -440,7 +483,11 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 	{
 		if (bIsDealPopupOpen)
 		{
+			if (StoreDealPopup->GetCurButtonIndex() == 0) return FReply::Unhandled();
+			
 			StoreDealPopup->SetSelectButton(0);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();	
 		}
 		
@@ -463,11 +510,15 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 
 				CurStoreIndex = 0;
 				StoreWindow->SetFocusSlot(CurStoreIndex);
+				PlayUISound(EUISoundType::Focus_Move);
+				
 				return FReply::Handled();
 			}		
 			
 			InventorySlots[NextInventoryIndex]->SetFocus();
 			InventoryWindow->SetCurInventoryIndex(NextInventoryIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();
 		}
 		
@@ -488,9 +539,13 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 		
 		if (bIsSelectOpen)
 		{
+			if (StoreSelect->GetStoreSelectIndex() == 0) return FReply::Unhandled();
+			
 			StoreSelect->SetStoreSelectIndex(-1);
 			const int32 NextIndex = StoreSelect->GetStoreSelectIndex();
 			StoreSelect->OnFocusStoreSelectSlot(NextIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();
 		}
 		
@@ -501,6 +556,8 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 		
 			InventorySlots[NextInventoryIndex]->SetFocus();
 			InventoryWindow->SetCurInventoryIndex(NextInventoryIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();	
 		}
 		else if (CurStoreWindowType == EInventoryWindowType::Store)
@@ -510,6 +567,8 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 			if (StoreWindow->IsEmptySlotIndex(NextStoreIndex)) return FReply::Unhandled();
 		
 			StoreWindow->SetFocusSlot(NextStoreIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();
 		}
 		
@@ -530,9 +589,13 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 		
 		if (bIsSelectOpen)
 		{
+			if (StoreSelect->GetStoreSelectIndex() == StoreSelect->GetMaxSelectSlotIndex()) return FReply::Unhandled();
+			
 			StoreSelect->SetStoreSelectIndex(1);
 			const int32 NextIndex = StoreSelect->GetStoreSelectIndex();
 			StoreSelect->OnFocusStoreSelectSlot(NextIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();
 		}
 		
@@ -543,6 +606,8 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 		
 			InventorySlots[NextInventoryIndex]->SetFocus();
 			InventoryWindow->SetCurInventoryIndex(NextInventoryIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();	
 		}
 		else if (CurStoreWindowType == EInventoryWindowType::Store)
@@ -552,6 +617,8 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 			if (StoreWindow->IsEmptySlotIndex(NextStoreIndex)) return FReply::Unhandled();
 		
 			StoreWindow->SetFocusSlot(NextStoreIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();	
 		}
 		

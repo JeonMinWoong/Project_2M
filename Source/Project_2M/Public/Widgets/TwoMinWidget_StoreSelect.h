@@ -24,14 +24,15 @@ public:
 	void OnFocusStoreSelectSlot(int32 NextIndex);
 	void QuitInventorySelect();
 	ESelectEventType OnTriggerEvent(int32 CurIndex);
-
+	
+	int32 GetMaxSelectSlotIndex() const;
+	
 protected:
 	virtual void NativeOnInitialized() override;
 	
 private:
 	void InitStoreSelectSlots(const UVerticalBox* VerticalBox, TArray<TObjectPtr<UTwoMinWidget_SelectSlot>>& SlotGroup);
-	
-	int32 GetMaxSelectSlotIndex() const;
+
 	
 	void ResetAllSelectSlot();
 	void OnFocusFirstSlot();

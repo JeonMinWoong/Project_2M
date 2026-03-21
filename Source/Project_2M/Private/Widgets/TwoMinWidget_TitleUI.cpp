@@ -70,6 +70,7 @@ FReply UTwoMinWidget_TitleUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 		bIsLockInputKey = true;
 		const FName GoStageName = FName(*GI->StateManager->GetVillageName());
 		TitleGM->OnEnterInGame(GoStageName);
+		PlayUISound(EUISoundType::Focus_Select);
 		
 		return FReply::Handled();
 	}
@@ -85,6 +86,7 @@ FReply UTwoMinWidget_TitleUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 		
 		CurrentFocusIndex = NextInventoryIndex;
 		OnFocusSlot();
+		PlayUISound(EUISoundType::Focus_Move);
 		
 		return FReply::Handled();
 	}
@@ -100,6 +102,7 @@ FReply UTwoMinWidget_TitleUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 		
 		CurrentFocusIndex = NextInventoryIndex;
 		OnFocusSlot();
+		PlayUISound(EUISoundType::Focus_Move);
 		
 		return FReply::Handled();
 	}

@@ -348,3 +348,18 @@ enum class EBGMSoundType : uint8
 	Boss_Stage_1_3_1,
 	Boss_Stage_1_3_2,
 };
+
+UENUM(Blueprintable)
+enum class EUISoundType : uint8
+{
+	None,
+	Focus_Move,
+	Focus_Select,
+	Equip_Weapon,
+	Equip_Shield,
+	Map_Open,
+	Stage_Select,
+	Inventory_Open,
+	Popup_Open,
+	Cancel,
+};

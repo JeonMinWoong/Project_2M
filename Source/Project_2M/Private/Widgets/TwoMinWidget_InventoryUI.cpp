@@ -33,6 +33,7 @@ void UTwoMinWidget_InventoryUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
+PlayUISound(EUISoundType::Inventory_Open);
 	InventorySelect->SetVisibility(ESlateVisibility::Hidden);
 
 	const bool bIsUsingGamePad =
@@ -123,6 +124,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			GM->CreateNewSaveGameData(NewSaveGameData);
 	
 			UTwoMinFunctionLibrary::SaveGame(NewSaveGameData);
+			PlayUISound(EUISoundType::Focus_Select);
+			
 			return FReply::Handled();
 		}
 		else
@@ -140,6 +143,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			}
 
 			GM->OpenStageProcess(GoStageName, false);
+			PlayUISound(EUISoundType::Focus_Select);
+			
 			return FReply::Handled();
 		}
 	}
@@ -149,6 +154,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 		if (bIsPopupOpen)
 		{
 			HideItemInfoPopup();
+			PlayUISound(EUISoundType::Focus_Select);
+			
 			return FReply::Handled();
 		}
 		
@@ -201,6 +208,7 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 				
 				PlayerCharacter->GetInventoryComponent()->UpdateInventory();
 				PlayerUIComponent->OnSetWindowQuickSlot.Broadcast(*InventoryItem, CurQuickIndex, true);
+				PlayUISound(EUISoundType::Focus_Select);
 				
 				return FReply::Handled();
 			}
@@ -210,6 +218,7 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			if (SelectEvent == ESelectEventType::Cancel)
 			{
 				HideInventorySelect();
+				PlayUISound(EUISoundType::Focus_Select);
 				
 				return FReply::Handled();
 			}
@@ -220,6 +229,7 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 				CurInventoryWindowType = EInventoryWindowType::Quick;
 				int32 NextInventoryIndex = 0;
 				MoveToQuickSlot(QuickSlots[NextInventoryIndex], NextInventoryIndex);
+				PlayUISound(EUISoundType::Focus_Select);
 				
 				return FReply::Handled();
 			}
@@ -241,6 +251,7 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 						PlayerUIComponent->OnSetWindowQuickSlot.Broadcast(ItemInstance, ItemInstance.RegisterCount, false);
 					}
 				}
+				PlayUISound(EUISoundType::Focus_Select);
 				
 				return FReply::Handled();
 			}
@@ -263,6 +274,7 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 				RinkInventorySlot->UnRegister();
 				FItemInstance* InventoryItem = FindInventoryItem(ItemInstance.ItemID);
 				InventoryItem->UnRegister();
+				PlayUISound(EUISoundType::Focus_Select);
 				
 				return FReply::Handled();
 			}
@@ -284,6 +296,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 						UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetPlayerUIComponent();
 						PlayerUIComponent->OnSetWindowQuickSlot.Broadcast(ItemInstance, ItemInstance.RegisterCount, false);
 					}
+					
+					PlayUISound(EUISoundType::Focus_Select);
 				}
 				
 				return FReply::Handled();
@@ -328,6 +342,7 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 				PlayerCharacter->GetInventoryComponent()->UpdateInventory();
 				
 				OnEquipment(InventoryItem->ItemID);
+				PlayUISound(EquipmentIndex > 0 ? EUISoundType::Equip_Shield : EUISoundType::Equip_Weapon);
 				
 				return FReply::Handled();
 			}
@@ -351,6 +366,7 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 				}
 				
 				ShowItemInfoPopup(ItemInstance.ItemID);
+				PlayUISound(EUISoundType::Popup_Open);
 			}
 			
 			return FReply::Unhandled();
@@ -368,6 +384,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			if (ItemType == EItemType::Consume)
 			{
 				ShowInventorySelect(InventorySlots[CurInventoryIndex], EInventorySelectType::InventoryToConsume);
+				PlayUISound(EUISoundType::Focus_Select);
+				
 				return FReply::Handled();	
 			}
 			else if (ItemType == EItemType::Equipment)
@@ -375,15 +393,21 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 				if (InventorySlots[CurInventoryIndex]->IsRegister())
 				{
 					ShowInventorySelect(InventorySlots[CurInventoryIndex], EInventorySelectType::InventoryToEquipped);
+					PlayUISound(EUISoundType::Focus_Select);
+					
 					return FReply::Handled();
 				}
 
 				ShowInventorySelect(InventorySlots[CurInventoryIndex], EInventorySelectType::InventoryToEquipment);
+				PlayUISound(EUISoundType::Focus_Select);
+				
 				return FReply::Handled();
 			}
 			else if (ItemType == EItemType::Etc)
 			{
 				ShowInventorySelect(InventorySlots[CurInventoryIndex], EInventorySelectType::InventoryToEtc);
+				PlayUISound(EUISoundType::Focus_Select);
+				
 				return FReply::Handled();
 			}
 			
@@ -398,6 +422,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			}
 			
 			ShowInventorySelect(EquipmentSlots[CurInventoryIndex], EInventorySelectType::EquipToEquipment);
+			PlayUISound(EUISoundType::Focus_Select);
+			
 			return FReply::Handled();
 		}
 		else if (CurInventoryWindowType == EInventoryWindowType::Quick)
@@ -409,6 +435,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			}
 			
 			ShowInventorySelect(QuickSlots[CurInventoryIndex], EInventorySelectType::QuickToConsume);
+			PlayUISound(EUISoundType::Focus_Select);
+			
 			return FReply::Handled();
 		}
 	}
@@ -418,6 +446,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 		if (bIsPopupOpen)
 		{
 			HideItemInfoPopup();
+			PlayUISound(EUISoundType::Cancel);
+			
 			return FReply::Handled();
 		}
 		
@@ -429,6 +459,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			int32 CurIndex = InventorySelect->GetInventorySelectIndex();
 			InventorySelect->MoveToInventorySelectSlot(CurIndex);
 			CurInventoryWindowType = EInventoryWindowType::Inventory;
+			PlayUISound(EUISoundType::Cancel);
+			
 			return FReply::Handled();
 		}
 		
@@ -437,6 +469,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			InventorySelect->QuitInventorySelect();
 			InventorySelect->SetVisibility(ESlateVisibility::Hidden);
 			OnFocusSlot();
+			PlayUISound(EUISoundType::Cancel);
+			
 			return FReply::Handled();
 		}
 		
@@ -444,6 +478,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 		if (!PlayerCharacter) return FReply::Unhandled();
 		
 		PlayerCharacter->OpenInventoryProcess();
+		PlayUISound(EUISoundType::Cancel);
+		
 		return FReply::Handled();
 	}
 	
@@ -470,6 +506,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 				}
 				
 				MoveToQuickSlot(QuickSlots[NextInventoryIndex], NextInventoryIndex);
+				PlayUISound(EUISoundType::Focus_Move);
+				
 				return FReply::Handled();
 			}
 			
@@ -482,6 +520,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			if (NextInventoryIndex % (MaxColumnIndex + 1) == 0) return FReply::Unhandled();	
 			
 			MoveToInventorySlot(InventorySlots[NextInventoryIndex], NextInventoryIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();
 		}
 		else if (CurInventoryWindowType == EInventoryWindowType::Equipment)
@@ -491,10 +531,14 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 				CurInventoryWindowType = EInventoryWindowType::Inventory;
 				NextInventoryIndex = 0;
 				MoveToInventorySlot(InventorySlots[NextInventoryIndex], NextInventoryIndex);
+				PlayUISound(EUISoundType::Focus_Move);
+				
 				return FReply::Handled();
 			}
 			
 			MoveToEquipmentSlot(EquipmentSlots[NextInventoryIndex], NextInventoryIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();
 		}
 		else
@@ -504,10 +548,14 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 				CurInventoryWindowType = EInventoryWindowType::Inventory;
 				NextInventoryIndex = 20;
 				MoveToInventorySlot(InventorySlots[NextInventoryIndex], NextInventoryIndex);
+				PlayUISound(EUISoundType::Focus_Move);
+				
 				return FReply::Handled();
 			}
 			
 			MoveToQuickSlot(QuickSlots[NextInventoryIndex], NextInventoryIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();
 		}
 	}
@@ -535,6 +583,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 				}
 				
 				MoveToQuickSlot(QuickSlots[NextInventoryIndex], NextInventoryIndex);
+				PlayUISound(EUISoundType::Focus_Move);
+				
 				return FReply::Handled();
 			}
 			
@@ -552,6 +602,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 					// 즉시 가야하는 곳.
 					NextInventoryIndex = EquipmentSlots.Max() - 1;
 					MoveToEquipmentSlot(EquipmentSlots[NextInventoryIndex], NextInventoryIndex);
+					PlayUISound(EUISoundType::Focus_Move);
+					
 					return FReply::Handled();
 				}
 				else if (NextInventoryIndex >= 15 && NextInventoryIndex < MaxInventoryIndex)
@@ -559,6 +611,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 					CurInventoryWindowType = EInventoryWindowType::Quick;
 					NextInventoryIndex = QuickSlots.Max() - 1;
 					MoveToQuickSlot(QuickSlots[NextInventoryIndex], NextInventoryIndex);
+					PlayUISound(EUISoundType::Focus_Move);
+					
 					return FReply::Handled();
 				}
 				
@@ -566,6 +620,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			}		
 			
 			MoveToInventorySlot(InventorySlots[NextInventoryIndex], NextInventoryIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();
 		}
 		else if (CurInventoryWindowType == EInventoryWindowType::Equipment)
@@ -573,6 +629,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			if (NextInventoryIndex < 0) return FReply::Unhandled();
 			
 			MoveToEquipmentSlot(EquipmentSlots[NextInventoryIndex], NextInventoryIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();
 		}
 		else
@@ -580,6 +638,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			if (NextInventoryIndex < 0) return FReply::Unhandled();
 			
 			MoveToQuickSlot(QuickSlots[NextInventoryIndex], NextInventoryIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();
 		}
 	}
@@ -598,6 +658,7 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			InventorySelect->SetInventorySelectIndex(-1);
 			int32 NextIndex = InventorySelect->GetInventorySelectIndex();
 			InventorySelect->MoveToInventorySelectSlot(NextIndex);
+			PlayUISound(EUISoundType::Focus_Move);
 			
 			return FReply::Handled();
 		}
@@ -608,6 +669,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			if (NextInventoryIndex < 0) return FReply::Unhandled();
 		
 			MoveToInventorySlot(InventorySlots[NextInventoryIndex], NextInventoryIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();	
 		}
 		else if (CurInventoryWindowType == EInventoryWindowType::Quick)
@@ -615,6 +678,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			CurInventoryWindowType = EInventoryWindowType::Equipment;
 			NextInventoryIndex = 0;
 			MoveToEquipmentSlot(EquipmentSlots[NextInventoryIndex], NextInventoryIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();
 		}
 		
@@ -635,6 +700,7 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			InventorySelect->SetInventorySelectIndex(1);
 			int32 NextIndex = InventorySelect->GetInventorySelectIndex();
 			InventorySelect->MoveToInventorySelectSlot(NextIndex);
+			PlayUISound(EUISoundType::Focus_Move);
 			
 			return FReply::Handled();
 		}
@@ -645,6 +711,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			if (NextInventoryIndex > MaxInventoryIndex) return FReply::Unhandled();
 		
 			MoveToInventorySlot(InventorySlots[NextInventoryIndex], NextInventoryIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();	
 		}
 		else if (CurInventoryWindowType == EInventoryWindowType::Equipment)
@@ -652,6 +720,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			CurInventoryWindowType = EInventoryWindowType::Quick;
 			NextInventoryIndex = 0;
 			MoveToQuickSlot(QuickSlots[NextInventoryIndex], NextInventoryIndex);
+			PlayUISound(EUISoundType::Focus_Move);
+			
 			return FReply::Handled();
 		}
 		

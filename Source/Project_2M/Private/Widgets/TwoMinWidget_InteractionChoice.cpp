@@ -49,6 +49,8 @@ FReply UTwoMinWidget_InteractionChoice::NativeOnPreviewKeyDown(const FGeometry& 
 		{
 			HeroUIComponent->OnSetInteractionChoice.Broadcast(NPC->GetNPCType(), false);	
 			PlayerCharacter->GetPlayerUIComponent()->OpenStoreWidget(PlayerCharacter, NPC, true);
+			PlayUISound(EUISoundType::Focus_Select);
+			
 			return FReply::Handled();
 		}
 		
@@ -58,6 +60,7 @@ FReply UTwoMinWidget_InteractionChoice::NativeOnPreviewKeyDown(const FGeometry& 
 			HeroUIComponent->OnSetInteractionChoice.Broadcast(NPC->GetNPCType(), false);		
 			PlayerCharacter->OnIgnoreInputProcess(false);
 			NPC->ResetInteractionProcess();
+			PlayUISound(EUISoundType::Focus_Select);
 			
 			return FReply::Handled();
 		}
@@ -80,6 +83,7 @@ FReply UTwoMinWidget_InteractionChoice::NativeOnPreviewKeyDown(const FGeometry& 
 		HeroUIComponent->OnSetInteractionChoice.Broadcast(NPC->GetNPCType(), false);		
 		PlayerCharacter->OnIgnoreInputProcess(false);
 		NPC->ResetInteractionProcess();
+		PlayUISound(EUISoundType::Cancel);
 		
 		return FReply::Handled();
 	}
@@ -102,6 +106,7 @@ FReply UTwoMinWidget_InteractionChoice::NativeOnPreviewKeyDown(const FGeometry& 
 		
 		CurrentFocusIndex = NextInventoryIndex;
 		OnFocusSlot();
+		PlayUISound(EUISoundType::Focus_Move);
 		
 		return FReply::Handled();
 	}
@@ -114,6 +119,7 @@ FReply UTwoMinWidget_InteractionChoice::NativeOnPreviewKeyDown(const FGeometry& 
 		
 		CurrentFocusIndex = NextInventoryIndex;
 		OnFocusSlot();
+		PlayUISound(EUISoundType::Focus_Move);
 		
 		return FReply::Handled();
 	}

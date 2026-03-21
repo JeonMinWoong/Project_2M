@@ -32,6 +32,7 @@ void UTwoMinWidget_MapSelectUI::NativeOnInitialized()
 	}
 	
 	CurrentFocusIndex = 0;
+	PlayUISound(EUISoundType::Map_Open);
 }
 
 FReply UTwoMinWidget_MapSelectUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
@@ -50,6 +51,7 @@ FReply UTwoMinWidget_MapSelectUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 		
 		const FName GoStageName = FName(*GI->StateManager->GetIndexRealStageName(CurrentFocusIndex + 1));
 		GM->OpenStageProcess(GoStageName);
+		PlayUISound(EUISoundType::Stage_Select);
 		
 		return FReply::Handled();
 	}
@@ -61,7 +63,8 @@ FReply UTwoMinWidget_MapSelectUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetPlayerUIComponent();
 			if (PlayerUIComponent->IsMapSelectWidgetOpen())
 			{
-				PlayerUIComponent->OpenMapSelectWidget(PlayerCharacter, false);	
+				PlayerUIComponent->OpenMapSelectWidget(PlayerCharacter, false);
+				PlayUISound(EUISoundType::Cancel);
 			}
 		}
 		
@@ -86,6 +89,7 @@ FReply UTwoMinWidget_MapSelectUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 		
 		CurrentFocusIndex = NextInventoryIndex;
 		OnFocusSlot();
+		PlayUISound(EUISoundType::Focus_Move);
 		
 		return FReply::Handled();
 	}
@@ -98,6 +102,7 @@ FReply UTwoMinWidget_MapSelectUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 		
 		CurrentFocusIndex = NextInventoryIndex;
 		OnFocusSlot();
+		PlayUISound(EUISoundType::Focus_Move);
 		
 		return FReply::Handled();
 	}

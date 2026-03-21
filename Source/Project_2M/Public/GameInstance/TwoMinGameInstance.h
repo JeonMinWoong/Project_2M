@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "TwoMinGameInstance.generated.h"
 
+enum class EUISoundType : uint8;
 class USoundManager;
 class UWorldStageManager;
 class UItemDataManager;
@@ -19,6 +20,8 @@ class PROJECT_2M_API UTwoMinGameInstance : public UGameInstance
 	
 public:
 	virtual void Init() override;
+	
+	void PlayUISound(const EUISoundType NewUISoundType) const;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Instanced)
 	UItemDataManager* ItemDataManager;

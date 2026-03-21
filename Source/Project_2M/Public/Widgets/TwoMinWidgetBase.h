@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "TwoMinWidgetBase.generated.h"
 
+enum class EUISoundType : uint8;
 /**
  * 
  */
@@ -17,4 +18,6 @@ class PROJECT_2M_API UTwoMinWidgetBase : public UUserWidget
 protected:
 	virtual void NativeOnInitialized() override;
 
+	void PlayUISound(const EUISoundType NewUISoundType) const;
+	
 };

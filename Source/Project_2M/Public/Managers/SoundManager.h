@@ -28,4 +28,15 @@ private:
 	UPROPERTY()
 	EBGMSoundType CurBGMSoundType;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "SoundInfo|UISound")
+	TMap<EUISoundType, USoundBase*> UISoundGroups;
+	
+public:
+	FORCEINLINE USoundBase* GetUISound(const EUISoundType NewUISoundType)
+	{
+		if (NewUISoundType == EUISoundType::None) return nullptr;
+		if (UISoundGroups.Contains(NewUISoundType) == false) return nullptr;
+		
+		return UISoundGroups[NewUISoundType];
+	};
 };

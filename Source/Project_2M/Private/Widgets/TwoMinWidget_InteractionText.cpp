@@ -43,6 +43,8 @@ FReply UTwoMinWidget_InteractionText::NativeOnPreviewKeyDown(const FGeometry& My
 		if (!NPC) return FReply::Unhandled();
 
 		NPC->Interact(PlayerCharacter);
+		PlayUISound(EUISoundType::Focus_Select);
+		
 		return FReply::Handled();
 	}
 	

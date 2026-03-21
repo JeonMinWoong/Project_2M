@@ -4,6 +4,8 @@
 #include "GameInstance/TwoMinGameInstance.h"
 
 #include "GameFramework/GameUserSettings.h"
+#include "Kismet/GameplayStatics.h"
+#include "Managers/SoundManager.h"
 #include "Managers/WorldStageManager.h"
 
 void UTwoMinGameInstance::Init()
@@ -46,9 +48,20 @@ void UTwoMinGameInstance::ApplyInitSettings()
 		QualityLevels.EffectsQuality = 1;
 		QualityLevels.FoliageQuality = 1;
 		QualityLevels.ShadingQuality = 1;
+		QualityLevels.LandscapeQuality = 1;
 		Scalability::SetQualityLevels(QualityLevels);
 		Scalability::SaveState(GGameUserSettingsIni);
         
 		Settings->SaveSettings();
 	}
 }
+
+void UTwoMinGameInstance::PlayUISound(const EUISoundType NewUISoundType) const
+{
+	USoundBase* UISound = SoundManager->GetUISound(NewUISoundType);
+	if (!UISound) return;
+	
+	UGameplayStatics::PlaySound2D(this, UISound, 1.0f, 1.0f, 0.0f, 
+		nullptr, nullptr, true);
+}
+

@@ -18,7 +18,7 @@ void UWorldStageManager::InitStage()
 	{
 		if (TestClearArray.IsEmpty()) return;
 		
-		for (int32 Index = 1; Index < TestClearArray.Num(); ++Index)
+		for (int32 Index = 1; Index <= TestClearArray.Num(); ++Index)
 		{
 			WorldStageMap[WorldStageNameDataGroup[Index].RealStageName] = TestClearArray[Index - 1]; 
 		}

@@ -14,6 +14,7 @@ void UTwoMinWidget_EndGameUI::InitEndGameUI()
 	
 	CurrentFocusIndex = 0;
 	EndGameButton_1->SetFocus();
+	PlayUISound(EUISoundType::Popup_Open);
 }
 
 void UTwoMinWidget_EndGameUI::ResetEndGameUI()
@@ -39,6 +40,8 @@ FReply UTwoMinWidget_EndGameUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 		
 		EndGameButton_1->SetFocus();
 		PlayerCharacter->OpenEndGameProcess();
+		PlayUISound(EUISoundType::Focus_Select);
+		
 		return FReply::Handled();
 	}
 	
@@ -49,20 +52,30 @@ FReply UTwoMinWidget_EndGameUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 		
 		EndGameButton_1->SetFocus();
 		PlayerCharacter->OpenEndGameProcess();
+		PlayUISound(EUISoundType::Cancel);
+		
 		return FReply::Handled();
 	}
 	
 	if (InKey == EKeys::Left || InKey == EKeys::A || InKey == EKeys::Gamepad_LeftStick_Left)
 	{
+		if (CurrentFocusIndex == 0) return FReply::Unhandled();
+		
 		CurrentFocusIndex = 0;
 		EndGameButton_1->SetFocus();
+		PlayUISound(EUISoundType::Focus_Move);
+		
 		return FReply::Handled();
 	}
 	
 	if (InKey == EKeys::Right || InKey == EKeys::D || InKey == EKeys::Gamepad_LeftStick_Right)
 	{
+		if (CurrentFocusIndex == 1) return FReply::Unhandled();
+		
 		CurrentFocusIndex = 1;
 		EndGameButton_2->SetFocus();
+		PlayUISound(EUISoundType::Focus_Move);
+		
 		return FReply::Handled();
 	}
 	
