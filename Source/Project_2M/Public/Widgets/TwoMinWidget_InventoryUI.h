@@ -79,6 +79,9 @@ private:
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* SaveButtonText;
 	
+	UPROPERTY()
+	bool bIsGiveUpBattle = false;
+	
 public:
 	FORCEINLINE UTwoMinWidget_EquipmentWindow* GetEquipmentWindow() const { return EquipmentWindow; } 
 	FORCEINLINE UTwoMinWidget_InventoryWindow* GetInventoryWindow() const { return InventoryWindow; } 

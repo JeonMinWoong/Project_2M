@@ -16,7 +16,7 @@ class PROJECT_2M_API UTwoMinWidget_ScreenFadeInOut : public UTwoMinWidgetBase
 	GENERATED_BODY()
 
 public:
-	void StartFadeOut(const FName StageName);
+	void StartFadeOut(const FName StagePath, const FName StageName);
 	void StartFadeIn();
 	bool IsPlayingFadeOut() const;
 	
@@ -50,6 +50,9 @@ private:
 	UPROPERTY()
 	FWidgetAnimationDynamicEvent CompleteFadeInAnimEvent;
 
+	UPROPERTY()
+	FName NextStagePath;
+	
 	UPROPERTY()
 	FName NextStageName;
 	

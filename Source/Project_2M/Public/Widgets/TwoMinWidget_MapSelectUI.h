@@ -22,6 +22,7 @@ public:
 	
 protected:
 	virtual void NativeOnInitialized() override;
+	virtual void NativeDestruct() override;
 	virtual FReply NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent) override;
 	
 private:
@@ -33,4 +34,7 @@ private:
 	
 	UPROPERTY()
 	int32 CurrentFocusIndex = 0;
+	
+	UPROPERTY()
+	bool bIsMoveStage = false;
 };

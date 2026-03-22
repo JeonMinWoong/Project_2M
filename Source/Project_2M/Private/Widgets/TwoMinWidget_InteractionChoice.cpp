@@ -49,8 +49,6 @@ FReply UTwoMinWidget_InteractionChoice::NativeOnPreviewKeyDown(const FGeometry& 
 		{
 			HeroUIComponent->OnSetInteractionChoice.Broadcast(NPC->GetNPCType(), false);	
 			PlayerCharacter->GetPlayerUIComponent()->OpenStoreWidget(PlayerCharacter, NPC, true);
-			PlayUISound(EUISoundType::Focus_Select);
-			
 			return FReply::Handled();
 		}
 		

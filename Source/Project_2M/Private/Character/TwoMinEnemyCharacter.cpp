@@ -235,7 +235,7 @@ void ATwoMinEnemyCharacter::ClearStageProcess() const
 	if (!GI) return;
 	
 	GM->ShowClearStageUI();
-	GI->StateManager->ClearCurrentWorldStage();
+	GI->StageManager->ClearCurrentWorldStage();
 }
 
 void ATwoMinEnemyCharacter::OnShowCharacter()

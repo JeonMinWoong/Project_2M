@@ -159,7 +159,7 @@ bool UTwoMinFunctionLibrary::IsVillageMap(const UWorld* World)
 	const UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(World->GetGameInstance());
 	if (!GI) return false;
 	
-	return GI->StateManager->IsVillageMap();
+	return GI->StageManager->IsVillageMap();
 }
 
 void UTwoMinFunctionLibrary::SaveGame(const FSaveGameData& NewSaveGameData)

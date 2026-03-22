@@ -7,7 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Managers/SoundManager.h"
 
-void UTwoMinWidget_ScreenFadeInOut::StartFadeOut(const FName StageName)
+void UTwoMinWidget_ScreenFadeInOut::StartFadeOut(const FName StagePath, const FName StageName)
 {
 	if (IsAnimationPlaying(OnFadeOutAnim))
 	{
@@ -15,6 +15,7 @@ void UTwoMinWidget_ScreenFadeInOut::StartFadeOut(const FName StageName)
 	}
 	
 	LockPlayerInput(true);
+	NextStagePath = StagePath;
 	NextStageName = StageName;
 	PlayAnimation(OnFadeOutAnim);
 }
@@ -80,10 +81,13 @@ void UTwoMinWidget_ScreenFadeInOut::CompleteFadeOutAnim()
 	if (!GI) return;
 	
 	GI->bIsStageMoving = true;
+	
+	const FName CachedNextStagePath = NextStagePath;
+	NextStagePath = NAME_None;
 	const FName CachedNextStageName = NextStageName;
 	NextStageName = NAME_None;
 	
-	UGameplayStatics::OpenLevel(GetWorld(), CachedNextStageName);
+	GI->ShowLoadingScreen(CachedNextStagePath, CachedNextStageName);
 	GI->SoundManager->StopBGMSound();
 }
 

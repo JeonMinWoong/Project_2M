@@ -33,7 +33,7 @@ void UTwoMinWidget_InventoryUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-PlayUISound(EUISoundType::Inventory_Open);
+	PlayUISound(EUISoundType::Inventory_Open);
 	InventorySelect->SetVisibility(ESlateVisibility::Hidden);
 
 	const bool bIsUsingGamePad =
@@ -70,6 +70,8 @@ void UTwoMinWidget_InventoryUI::ResetInventoryUI()
 		InventorySelect->SetVisibility(ESlateVisibility::Hidden);
 		OnFocusSlot();
 	}
+	
+	PlayUISound(EUISoundType::Cancel);
 }
 
 FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
@@ -103,6 +105,8 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 		MaxColumnIndex = QuickWindow->GetMaxColumnIndex();
 	}
 	
+	if (bIsGiveUpBattle) return FReply::Unhandled();
+
 	bool bIsSelectOpen = InventorySelect->IsOpen();
 	bool bIsPopupOpen = ItemInfoPopup->IsPopupOpen();
 	const FKey InKey = InKeyEvent.GetKey();
@@ -135,14 +139,17 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 
 			FString CurRealStageName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
 
-			const int32 CurStageIndex = GI->StateManager->GetWorldStageIndex(CurRealStageName);
-			FName GoStageName = FName(*GI->StateManager->GetIndexRealStageName(0));
+			const int32 CurStageIndex = GI->StageManager->GetWorldStageIndex(CurRealStageName);
+			FName GoStageName = FName(*GI->StageManager->GetIndexRealStageName(0));
+			EMapLevelType MapLevelType = GI->StageManager->IsDevelopMap() ? EMapLevelType::Develop : EMapLevelType::None;
 			if (CurStageIndex != 0)
 			{
-				GoStageName = FName(*GI->StateManager->GetVillageName());
+				GoStageName = FName(*GI->StageManager->GetVillageName());
+				MapLevelType = EMapLevelType::Village;
 			}
 
-			GM->OpenStageProcess(GoStageName, false);
+			bIsGiveUpBattle = true;
+			GM->OpenStageProcess(MapLevelType, GoStageName, false);
 			PlayUISound(EUISoundType::Focus_Select);
 			
 			return FReply::Handled();
@@ -238,6 +245,11 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 				HideInventorySelect();
 				if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningPlayerPawn()))
 				{
+					if (PlayerCharacter->IsPossibleUseItem() == false)
+					{
+						PlayUISound(EUISoundType::Cancel);
+						return FReply::Unhandled();
+					}
 					int32 SelectInventoryIndex = InventoryWindow->GetCurInventoryIndex();
 					FItemInstance ItemInstance = InventorySlots[SelectInventoryIndex]->GetItemInstance();
 					
@@ -478,8 +490,6 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 		if (!PlayerCharacter) return FReply::Unhandled();
 		
 		PlayerCharacter->OpenInventoryProcess();
-		PlayUISound(EUISoundType::Cancel);
-		
 		return FReply::Handled();
 	}
 	

@@ -31,6 +31,7 @@ FReply UTwoMinWidget_EndGameUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 	{
 		if (CurrentFocusIndex == 0)
 		{
+			PlayUISound(EUISoundType::Focus_Select);
 			UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
 			return FReply::Handled();
 		}

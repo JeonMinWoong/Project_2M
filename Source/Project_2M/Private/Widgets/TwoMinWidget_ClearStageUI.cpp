@@ -67,13 +67,13 @@ void UTwoMinWidget_ClearStageUI::SettingClearStageUI()
 	if (!GI) return;
 	
 	FString CurRealStageName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
-	int32 Index = GI->StateManager->GetWorldStageIndex(CurRealStageName);
+	int32 Index = GI->StageManager->GetWorldStageIndex(CurRealStageName);
 	if (Index < 0) return;
 
-	const FString ShowStageName = GI->StateManager->GetIndexShowStageName(Index);
+	const FString ShowStageName = GI->StageManager->GetIndexShowStageName(Index);
 	ClearStageTextBlock->SetText(FText::FromString(FString::Printf(TEXT("%s 토벌 완료."), *ShowStageName)));
 	
-	FWorldStageClearGainData* ClearData = GI->StateManager->GetCurrentWorldClearStageData(CurRealStageName);
+	FWorldStageClearGainData* ClearData = GI->StageManager->GetCurrentWorldClearStageData(CurRealStageName);
 	if (!ClearData) return;
 
 	int32 GainGold = ClearData->GainGold;
@@ -202,14 +202,16 @@ bool UTwoMinWidget_ClearStageUI::OnReturnButton()
 
 	FString CurRealStageName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
 
-	const int32 CurStageIndex = GI->StateManager->GetWorldStageIndex(CurRealStageName);
-	FName GoStageName = FName(*GI->StateManager->GetIndexRealStageName(0));
+	const int32 CurStageIndex = GI->StageManager->GetWorldStageIndex(CurRealStageName);
+	FName GoStageName = FName(*GI->StageManager->GetIndexRealStageName(0));
+	EMapLevelType MapLevelType = GI->StageManager->IsDevelopMap() ? EMapLevelType::Develop : EMapLevelType::None;
 	if (CurStageIndex != 0)
 	{
-		GoStageName = FName(*GI->StateManager->GetVillageName());
+		GoStageName = FName(*GI->StageManager->GetVillageName());
+		MapLevelType = EMapLevelType::Village;
 	}
 	
 	bIsGoingVillage = true;
-	GM->OpenStageProcess(GoStageName);
+	GM->OpenStageProcess(MapLevelType, GoStageName);
 	return true;
 }

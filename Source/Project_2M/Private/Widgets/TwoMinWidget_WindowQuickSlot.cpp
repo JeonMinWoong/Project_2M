@@ -21,6 +21,7 @@ void UTwoMinWidget_WindowQuickSlot::SetCurrentSlotIndex(int32 InIndex)
 {
 	CurrentSlotIndex = InIndex;
 	UpdateQuickSlotWidget(InIndex);
+	PlayUISound(EUISoundType::Focus_Move);
 }
 
 void UTwoMinWidget_WindowQuickSlot::SetQuickSlotRegisterItems(FItemInstance QuickSlotRegisterItem, int32 SlotIndex,

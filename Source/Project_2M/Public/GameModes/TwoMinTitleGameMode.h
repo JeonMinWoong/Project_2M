@@ -19,7 +19,7 @@ class PROJECT_2M_API ATwoMinTitleGameMode : public AGameModeBase
 public:
 	virtual void BeginPlay() override;
 	void ShowTitleWidget();
-	void OnEnterInGame(FName NextStageName);
+	void OnEnterInGame(const FName NextStagePath, const FName NextStageName);
 	
 private:
 	UPROPERTY(EditDefaultsOnly)

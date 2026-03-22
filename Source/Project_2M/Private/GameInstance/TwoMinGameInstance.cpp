@@ -7,13 +7,14 @@
 #include "Kismet/GameplayStatics.h"
 #include "Managers/SoundManager.h"
 #include "Managers/WorldStageManager.h"
+#include "Widgets/TwoMinWidget_LoadingUI.h"
 
 void UTwoMinGameInstance::Init()
 {
 	Super::Init();
 	
 	ApplyInitSettings();
-	StateManager->InitStage();
+	StageManager->InitStage();
 }
 
 void UTwoMinGameInstance::ApplyInitSettings()
@@ -63,5 +64,45 @@ void UTwoMinGameInstance::PlayUISound(const EUISoundType NewUISoundType) const
 	
 	UGameplayStatics::PlaySound2D(this, UISound, 1.0f, 1.0f, 0.0f, 
 		nullptr, nullptr, true);
+}
+
+void UTwoMinGameInstance::ShowLoadingScreen(const FName& NextStagePath, const FName& NextStageName)
+{
+	if (!LoadingWidgetClass || LoadingWidget) return;
+	
+	UGameplayStatics::SetGlobalTimeDilation(this, 1.f);
+	LoadingWidget = CreateWidget<UTwoMinWidget_LoadingUI>(this, LoadingWidgetClass);
+	LoadingWidget->AddToViewport(ToZOrder(EWidgetZOrderType::Loading));
+	
+	PendingLevelName = NextStageName;
+	CurLoadingTime = GetWorld()->GetUnpausedTimeSeconds();
+	
+	LoadPackageAsync(NextStagePath.ToString(), 
+		FLoadPackageAsyncDelegate::CreateUObject(this, &UTwoMinGameInstance::OnLevelLoaded), 
+		0, 
+		PKG_ContainsMap);
+}
+
+void UTwoMinGameInstance::OnLevelLoaded(const FName& PackageName,
+	UPackage* Package, EAsyncLoadingResult::Type Result)
+{
+	if (Result != EAsyncLoadingResult::Succeeded) return;
+
+	const float Elapsed = GetWorld()->GetUnpausedTimeSeconds() - CurLoadingTime;
+	const float Remaining = FMath::Max(0.f, MinLoadingTime - Elapsed);
+	
+	FName LevelName = PendingLevelName;
+	GetWorld()->GetTimerManager().SetTimer(OpenLevelTimerHandle, [this, LevelName]()
+	{
+		UGameplayStatics::OpenLevel(this, LevelName);
+	}, FMath::Max(Remaining, 0.05f), false);
+}
+
+void UTwoMinGameInstance::HideLoadingScreen()
+{
+	if (!LoadingWidget) return;
+	
+	LoadingWidget->RemoveFromParent();
+	LoadingWidget = nullptr;
 }
 

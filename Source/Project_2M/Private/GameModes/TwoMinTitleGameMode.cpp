@@ -33,7 +33,7 @@ void ATwoMinTitleGameMode::ShowTitleWidget()
 	TitleWidget->OnFocusSlot();
 }
 
-void ATwoMinTitleGameMode::OnEnterInGame(FName NextStageName)
+void ATwoMinTitleGameMode::OnEnterInGame(const FName NextStagePath, const FName NextStageName)
 {
 	if (!FadeInOutWidgetClass) return;
 	
@@ -42,6 +42,6 @@ void ATwoMinTitleGameMode::OnEnterInGame(FName NextStageName)
 		FadeInOutWidget = CreateWidget<UTwoMinWidget_ScreenFadeInOut>(GetWorld(), FadeInOutWidgetClass);	
 	}
 	
-	FadeInOutWidget->AddToViewport(1000);
-	FadeInOutWidget->StartFadeOut(NextStageName);
+	FadeInOutWidget->AddToViewport(ToZOrder(EWidgetZOrderType::FadeInOut));
+	FadeInOutWidget->StartFadeOut(NextStagePath, NextStageName);
 }

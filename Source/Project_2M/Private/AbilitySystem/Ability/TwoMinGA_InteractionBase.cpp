@@ -5,8 +5,10 @@
 
 #include "AbilitySystem/Ability/PlayerTask/TwoMinAT_UpdateInteraction.h"
 #include "Compnents/UI/PlayerUIComponent.h"
+#include "GameInstance/TwoMinGameInstance.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "System/InteractionActorBase.h"
+#include "System/InteractionActor_NPC.h"
 
 void UTwoMinGA_InteractionBase::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                                 const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
@@ -156,4 +158,12 @@ void UTwoMinGA_InteractionBase::InteractionTriggerEvent(AInteractionActorBase* I
 	
 	bIsInteracting = true;
 	InteractionActor->Interact(PlayerCharacter);
+	
+	if (Cast<AInteractionActor_NPC>(InteractionActor))
+	{
+		const UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetWorld()->GetGameInstance());
+		if (!GI) return;
+	
+		GI->PlayUISound(EUISoundType::Focus_Select);	
+	}
 }

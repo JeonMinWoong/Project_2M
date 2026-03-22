@@ -31,7 +31,7 @@ void ASpawnMonsterPointGroup::BeginPlay()
 
 	const FString CurrentName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
 	const int32 IndexValue = static_cast<int32>(SpawnMonsterLevel) - 1;
-	bool bIsMatchLevel = CurrentName == GI->StateManager->GetIndexRealStageName(IndexValue);
+	bool bIsMatchLevel = CurrentName == GI->StageManager->GetIndexRealStageName(IndexValue);
 	
 	if (bIsMatchLevel == false)
 	{

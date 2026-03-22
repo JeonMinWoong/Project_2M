@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "ToMinTypes/TwoMinEnumTypes.h"
 #include "TwoMinBaseGameMode.generated.h"
 
 struct FSaveGameData;
@@ -25,7 +26,7 @@ public:
 	void LoadSaveDataProcess(FSaveGameData& LoadSaveGameData);
 	void AfterBeginPlay();
 	
-	void OpenStageProcess(const FName StageName, bool bIsSaveData = true);
+	void OpenStageProcess(const EMapLevelType NewMapLevelType, const FName StageName, bool bIsSaveData = true);
 	void CreateNewSaveGameData(FSaveGameData& NewSaveGameData) const;
 	
 	bool IsOpeningStage() const;

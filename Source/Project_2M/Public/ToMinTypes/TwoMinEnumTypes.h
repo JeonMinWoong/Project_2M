@@ -363,3 +363,25 @@ enum class EUISoundType : uint8
 	Popup_Open,
 	Cancel,
 };
+
+UENUM(Blueprintable)
+enum class EMapLevelType : uint8
+{
+	None = 0,
+	Develop,
+	Village,
+	Dungeon,
+};
+
+UENUM(Blueprintable)
+enum class EWidgetZOrderType : uint8
+{
+	None = 0,
+	FadeInOut = 100,
+	Loading = 200,
+};
+
+FORCEINLINE int32 ToZOrder(EWidgetZOrderType Type)
+{
+	return static_cast<int32>(Type);
+}

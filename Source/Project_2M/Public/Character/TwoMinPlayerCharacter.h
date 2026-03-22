@@ -50,6 +50,7 @@ public:
 	void PlayCameraShakeOnHit(ECameraShakeType CameraShakeType);
 
 	void OnIgnoreInputProcess(bool bIsIgnore);
+	bool IsPossibleUseItem();
 	
 	FTimerHandle FightDecreaseTimerHandle;
 	

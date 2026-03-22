@@ -32,11 +32,19 @@ void UTwoMinWidget_MapSelectUI::NativeOnInitialized()
 	}
 	
 	CurrentFocusIndex = 0;
-	PlayUISound(EUISoundType::Map_Open);
+}
+
+void UTwoMinWidget_MapSelectUI::NativeDestruct()
+{
+	Super::NativeDestruct();
+	
+	PlayUISound(EUISoundType::Cancel);
 }
 
 FReply UTwoMinWidget_MapSelectUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
 {
+	if (bIsMoveStage) return FReply::Unhandled();
+	
 	const FKey InKey = InKeyEvent.GetKey();
 	if (InKey == EKeys::Enter || InKey == EKeys::F || InKey == EKeys::Gamepad_FaceButton_Bottom)
 	{
@@ -49,8 +57,9 @@ FReply UTwoMinWidget_MapSelectUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 		UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
 		if (!GI) return FReply::Unhandled();
 		
-		const FName GoStageName = FName(*GI->StateManager->GetIndexRealStageName(CurrentFocusIndex + 1));
-		GM->OpenStageProcess(GoStageName);
+		bIsMoveStage = true;
+		const FName GoStageName = FName(*GI->StageManager->GetIndexRealStageName(CurrentFocusIndex + 1));
+		GM->OpenStageProcess(EMapLevelType::Dungeon, GoStageName);
 		PlayUISound(EUISoundType::Stage_Select);
 		
 		return FReply::Handled();
@@ -64,7 +73,6 @@ FReply UTwoMinWidget_MapSelectUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 			if (PlayerUIComponent->IsMapSelectWidgetOpen())
 			{
 				PlayerUIComponent->OpenMapSelectWidget(PlayerCharacter, false);
-				PlayUISound(EUISoundType::Cancel);
 			}
 		}
 		
@@ -122,12 +130,14 @@ void UTwoMinWidget_MapSelectUI::InitStageButtons()
 	UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
 	if (!GI) return;
 	
-	if (!GI->StateManager) return;
+	if (!GI->StageManager) return;
 	
-	TMap<FString, bool> WorldStageMap = GI->StateManager->GetWorldStageMap();
+	TMap<FString, bool> WorldStageMap = GI->StageManager->GetWorldStageMap();
 	for (int32 Index = 0; Index < StageButtonSlots.Num(); ++Index)
 	{
-		bool bIsLocked = !WorldStageMap[GI->StateManager->GetIndexRealStageName(Index + 1)];
+		bool bIsLocked = !WorldStageMap[GI->StageManager->GetIndexRealStageName(Index + 1)];
 		StageButtonSlots[Index]->SetLocked(bIsLocked);
 	}
+	
+	PlayUISound(EUISoundType::Map_Open);
 }

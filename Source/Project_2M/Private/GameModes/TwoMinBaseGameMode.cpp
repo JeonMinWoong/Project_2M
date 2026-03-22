@@ -3,6 +3,7 @@
 
 #include "GameModes/TwoMinBaseGameMode.h"
 
+#include "TwoMinDebugHelper.h"
 #include "TwoMinFunctionLibrary.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "AbilitySystem/TwoMinAttributeSet.h"
@@ -40,6 +41,7 @@ void ATwoMinBaseGameMode::BeginPlay()
 	if (!GI->bIsStageMoving) return;
 	
 	GI->bIsStageMoving = false;
+	GI->HideLoadingScreen();
 	
 	if (!FadeInOutWidgetClass) return;
 	
@@ -51,8 +53,8 @@ void ATwoMinBaseGameMode::BeginPlay()
 	FadeInOutWidget->AddToViewport();
 	FadeInOutWidget->StartFadeIn();
 	
-	EBGMSoundType BGMSoundType = GI->StateManager->IsVillageMap() ? EBGMSoundType::Village : EBGMSoundType::Dungeon;
-	BGMSoundType = GI->StateManager->IsDevelopMap() ? EBGMSoundType::None : BGMSoundType;
+	EBGMSoundType BGMSoundType = GI->StageManager->IsVillageMap() ? EBGMSoundType::Village : EBGMSoundType::Dungeon;
+	BGMSoundType = GI->StageManager->IsDevelopMap() ? EBGMSoundType::None : BGMSoundType;
 	GI->SoundManager->PlayBGMSound(BGMSoundType);
 }
 
@@ -64,7 +66,7 @@ void ATwoMinBaseGameMode::LoadSaveDataProcess(FSaveGameData& LoadSaveGameData)
 
 	for (const auto WorldStateData : LoadSaveGameData.WorldStageMap)
 	{
-		GI->StateManager->SetWorldStage(WorldStateData.Key, WorldStateData.Value);
+		GI->StageManager->SetWorldStage(WorldStateData.Key, WorldStateData.Value);
 	}
 	
 	const APlayerController* PC = GetWorld()->GetFirstPlayerController();
@@ -94,7 +96,7 @@ void ATwoMinBaseGameMode::AfterBeginPlay()
 	bIsCompleteLoadSaveData = false;
 }
 
-void ATwoMinBaseGameMode::OpenStageProcess(const FName StageName, bool bIsSaveData)
+void ATwoMinBaseGameMode::OpenStageProcess(const EMapLevelType NewMapLevelType, const FName StageName, bool bIsSaveData)
 {
 	if (IsOpeningStage()) return;
 
@@ -104,9 +106,25 @@ void ATwoMinBaseGameMode::OpenStageProcess(const FName StageName, bool bIsSaveDa
 	{
 		FadeInOutWidget = CreateWidget<UTwoMinWidget_ScreenFadeInOut>(GetWorld(), FadeInOutWidgetClass);	
 	}
+
+	FName StagePath;
+	switch (NewMapLevelType) {
+	case EMapLevelType::None:
+		TwoMinDebugHelper::Print("MapLevelType is None", FColor::Red);
+		return;
+	case EMapLevelType::Develop:
+		StagePath = FName(FString::Printf(TEXT("/Game/Maps/%s"), *StageName.ToString()));
+		break;
+	case EMapLevelType::Village:
+		StagePath = FName(FString::Printf(TEXT("/Game/Maps/Village_Map/%s"), *StageName.ToString()));
+		break;
+	case EMapLevelType::Dungeon:
+		StagePath = FName(FString::Printf(TEXT("/Game/Maps/Stage_Map/%s"), *StageName.ToString()));
+		break;
+	}
 	
-	FadeInOutWidget->AddToViewport(1000);
-	FadeInOutWidget->StartFadeOut(StageName);
+	FadeInOutWidget->AddToViewport(ToZOrder(EWidgetZOrderType::FadeInOut));
+	FadeInOutWidget->StartFadeOut(StagePath, StageName);
 	
 	if (bIsSaveData)
 	{
@@ -122,7 +140,7 @@ void ATwoMinBaseGameMode::CreateNewSaveGameData(FSaveGameData& NewSaveGameData) 
 	UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
 	if (!GI) return;
 	
-	NewSaveGameData.WorldStageMap = GI->StateManager->GetWorldStageMap();
+	NewSaveGameData.WorldStageMap = GI->StageManager->GetWorldStageMap();
 	const APlayerController* PC = GetWorld()->GetFirstPlayerController();
 	if (!PC) return;
 	

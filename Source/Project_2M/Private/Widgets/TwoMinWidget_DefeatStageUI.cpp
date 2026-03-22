@@ -137,15 +137,17 @@ bool UTwoMinWidget_DefeatStageUI::OnReturnButton()
 
 	FString CurRealStageName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
 
-	const int32 CurStageIndex = GI->StateManager->GetWorldStageIndex(CurRealStageName);
-	FName GoStageName = FName(*GI->StateManager->GetIndexRealStageName(0));
+	const int32 CurStageIndex = GI->StageManager->GetWorldStageIndex(CurRealStageName);
+	FName GoStageName = FName(*GI->StageManager->GetIndexRealStageName(0));
+	EMapLevelType MapLevelType = GI->StageManager->IsDevelopMap() ? EMapLevelType::Develop : EMapLevelType::None;
 	if (CurStageIndex != 0)
 	{
-		GoStageName = FName(*GI->StateManager->GetVillageName());
+		GoStageName = FName(*GI->StageManager->GetVillageName());
+		MapLevelType = EMapLevelType::Village;
 	}
 	
 	CheckDefeatType = EDefeatType::Return;
-	GM->OpenStageProcess(GoStageName);
+	GM->OpenStageProcess(MapLevelType, GoStageName);
 	return true;
 }
 
@@ -160,15 +162,17 @@ bool UTwoMinWidget_DefeatStageUI::OnRetryButton()
 	if (!GI) return false;
 
 	FString CurRealStageName = GetWorld()->RemovePIEPrefix(GetWorld()->GetMapName());
-	if (GI->StateManager->GetWorldStage(CurRealStageName) == false)
+	EMapLevelType MapLevelType = GI->StageManager->IsDevelopMap() ? EMapLevelType::Develop : EMapLevelType::Dungeon;
+	if (GI->StageManager->GetWorldStage(CurRealStageName) == false)
 	{
-		if (GI->StateManager->GetWorldStageIndex(CurRealStageName) == -1)
+		if (GI->StageManager->GetWorldStageIndex(CurRealStageName) == -1)
 		{
 			return false;	
 		}
 	}
+	
 	CheckDefeatType = EDefeatType::Retry;
-	GM->OpenStageProcess(FName(CurRealStageName));
+	GM->OpenStageProcess(MapLevelType, FName(CurRealStageName));
 	return true;
 }
 

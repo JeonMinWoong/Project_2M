@@ -515,32 +515,38 @@ void ATwoMinPlayerCharacter::OnIgnoreInputProcess(bool bIsIgnore)
 	}
 }
 
-void ATwoMinPlayerCharacter::Input_UseItemTrigger(const FInputActionValue& InputActionValue)
+bool ATwoMinPlayerCharacter::IsPossibleUseItem()
 {
 	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitDowning)
 		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitThrowing)
-			|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_OpenInventory)
 			|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_UseItem))
 	{
-		return;
+		return false;
 	}
 	
 	for (auto GameplayTag : IgnoreTagContainer)
 	{
 		if (UTwoMinFunctionLibrary::HasGameplayTag(this, GameplayTag))
 		{
-			return;
+			return false;
 		}
 	}
 	
+	return true;
+}
+
+void ATwoMinPlayerCharacter::Input_UseItemTrigger(const FInputActionValue& InputActionValue)
+{
+	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_OpenInventory)) return;
+	
 	UTwoMinWidgetPlayer* WidgetPlayer = Cast<UTwoMinWidgetPlayer>(HUDOverlay);
 	if (!WidgetPlayer) return;
+	if (IsPossibleUseItem() == false) return;
 	
 	int32 SlotIndex = WidgetPlayer->GetWindowQuickSlot()->GetCurrentSlotIndex();
 	FItemInstance ItemInstance = InventoryComponent->GetQuickSlotItemInstance(SlotIndex);
 	if (ItemInstance.ItemID == 0) return;
 	
-	// todo : 퀵 슬롯 작업.
 	bool bIsRemoved = false;
 	InventoryComponent->UseItem(ItemInstance.ItemID, bIsRemoved); // Test Health Potion
 	

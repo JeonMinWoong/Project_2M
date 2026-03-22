@@ -68,8 +68,9 @@ FReply UTwoMinWidget_TitleUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 		if (!GI) return FReply::Unhandled();
 		
 		bIsLockInputKey = true;
-		const FName GoStageName = FName(*GI->StateManager->GetVillageName());
-		TitleGM->OnEnterInGame(GoStageName);
+		FString GoStageName = *GI->StageManager->GetVillageName();
+		const FName GoStagePath = FName(FString::Printf(TEXT("/Game/Maps/Village_Map/%s"), *GoStageName));
+		TitleGM->OnEnterInGame(GoStagePath, FName(*GoStageName));
 		PlayUISound(EUISoundType::Focus_Select);
 		
 		return FReply::Handled();
