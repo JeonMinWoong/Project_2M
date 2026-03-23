@@ -6,6 +6,7 @@
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "TwoMinPickUpItemBase.generated.h"
 
+class UNiagaraComponent;
 class ATwoMinPlayerCharacter;
 
 UCLASS()
@@ -37,6 +38,9 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	USphereComponent* SphereComponent;
 
+	UPROPERTY(EditDefaultsOnly)
+	UNiagaraComponent* NiagaraComponent;
+	
 	UPROPERTY(EditDefaultsOnly, Category="PickUpRange")
 	float PickUpRange = 50.f;
 

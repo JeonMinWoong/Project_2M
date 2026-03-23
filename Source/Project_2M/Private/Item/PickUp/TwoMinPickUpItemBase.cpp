@@ -1,6 +1,8 @@
 
 #include "Item/PickUp/TwoMinPickUpItemBase.h"
 
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "TwoMinDebugHelper.h"
 #include "TwoMinGameplayTag.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
@@ -21,6 +23,9 @@ ATwoMinPickUpItemBase::ATwoMinPickUpItemBase()
 	SphereComponent->InitSphereRadius(PickUpRange);
 	SphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnBeginOverlap);
 	SphereComponent->OnComponentEndOverlap.AddUniqueDynamic(this, &ThisClass::OnEndOverlap);
+	
+	NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>("NiagaraComponent");
+	NiagaraComponent->SetupAttachment(GetRootComponent());
 }
 
 void ATwoMinPickUpItemBase::BeginPlay()
@@ -44,6 +49,16 @@ void ATwoMinPickUpItemBase::GetUpItem(const ATwoMinPlayerCharacter* PlayerCharac
 	if (!GI) return;
 	
 	GI->ItemDataManager->GiveToInventory(PlayerCharacter, ItemEquipmentList, ItemConsumeList, ItemEtcList, false);
+	
+	if (NiagaraComponent)
+	{
+		NiagaraComponent->Rename(nullptr, GetWorld());
+
+		NiagaraComponent->SetAutoDestroy(true);
+		NiagaraComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+		NiagaraComponent->Deactivate();
+	}
+	
 	Destroy();
 }
 
