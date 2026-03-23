@@ -44,9 +44,14 @@ private:
 	UPROPERTY()
 	int32 ExecutionNumber;
 	
+	UPROPERTY()
+	bool bIsPlayingExecution = false;
+	
 public:
 	FORCEINLINE ATwoMinBaseCharacter* GetExecutionTarget() const { return ExecutionTarget; }
 	FORCEINLINE bool IsExecutionForward() const { return bIsExecutionForward; }
 	FORCEINLINE void SetExecutionNumber(int32 Value) { ExecutionNumber = Value; }
 	FORCEINLINE int32 GetExecutionNumber() const { return ExecutionNumber; }
+	FORCEINLINE void SetIsPlayingExecution(bool Value) { bIsPlayingExecution = Value; }
+	
 };

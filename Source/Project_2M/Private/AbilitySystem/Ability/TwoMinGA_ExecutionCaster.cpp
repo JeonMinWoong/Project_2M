@@ -94,7 +94,7 @@ void UTwoMinGA_ExecutionCaster::ActivateAbility(const FGameplayAbilitySpecHandle
 		CustomCancelAbility();
 		return;
 	}
-
+	
 	int32 ExecutionNumber = 0;
 	bool bIsExecutionForward = ExecutionComponent->IsExecutionForward();
 	UAnimMontage* ExecutionMontage = GetExecutionMontage(bIsExecutionForward, ExecutionNumber);
@@ -119,6 +119,8 @@ void UTwoMinGA_ExecutionCaster::ActivateAbility(const FGameplayAbilitySpecHandle
 		TwoMinGameplayTag::Shared_Event_Execution_Target,
 		PayLoad
 	);
+	
+	ExecutionComponent->SetIsPlayingExecution(true);
 	
 	PlayCinematicEvent(MyActor, ExecutionTarget, ExecutionNumber);
 	PlayToAnimMontage(ExecutionMontage);
@@ -147,6 +149,7 @@ void UTwoMinGA_ExecutionCaster::EndAbility(const FGameplayAbilitySpecHandle Hand
 	ExecutionNumber += ExecutionComponent->IsExecutionForward() ? 0 : 10;
 	
 	CurComboCount[ExecutionNumber] = 1;
+	ExecutionComponent->SetIsPlayingExecution(false);
 	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }

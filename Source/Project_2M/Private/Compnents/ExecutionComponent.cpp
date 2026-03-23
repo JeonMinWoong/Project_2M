@@ -28,6 +28,8 @@ void UExecutionComponent::TickComponent(float DeltaTime, enum ELevelTick TickTyp
 
 void UExecutionComponent::UpdateGroggyEnemies()
 {
+	if (bIsPlayingExecution) return;
+	
 	GroggyEnemies.Empty();
 	
 	ATwoMinBaseCharacter* MyCharacter = Cast<ATwoMinBaseCharacter>(GetOwner());
