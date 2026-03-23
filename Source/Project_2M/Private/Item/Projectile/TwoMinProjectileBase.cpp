@@ -244,6 +244,8 @@ void ATwoMinProjectileBase::HandleApplyProjectileDamage(APawn* HitPawn, FGamepla
 	AActor* MyActor = const_cast<AActor*>(PayLoad.Instigator.Get());
 	AActor* TargetActor = const_cast<AActor*>(PayLoad.Target.Get());
 	if (!MyActor || !TargetActor) return;
+
+	if (UTwoMinFunctionLibrary::HasGameplayTag(TargetActor, TwoMinGameplayTag::Shared_State_Invincible)) return;
 	
 	ATwoMinBaseCharacter* BaseCharacter = Cast<ATwoMinBaseCharacter>(MyActor);
 	ATwoMinBaseCharacter* OtherCharacter = Cast<ATwoMinBaseCharacter>(TargetActor);
