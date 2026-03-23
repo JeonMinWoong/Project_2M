@@ -129,6 +129,7 @@ ATwoMinEnemyCharacter* ASpawnMonsterPoint::SpawnMonsterPoint(int32& OutSpawnMons
 		return nullptr;
 	}
 	
+	SpawnEnemy->SetMonsterLevel(bIsBoss ? 1 : SpawnMonsterLevel);
 	UEnemyCombatComponent* EnemyCombatComponent = Cast<UEnemyCombatComponent>(SpawnEnemy->GetCombatComponent());
 	if (!EnemyCombatComponent) return nullptr;
 	

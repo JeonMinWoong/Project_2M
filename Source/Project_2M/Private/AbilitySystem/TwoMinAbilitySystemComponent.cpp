@@ -334,6 +334,24 @@ void UTwoMinAbilitySystemComponent::GiveHealthPercent(float InHealthPercent)
 	ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
 }
 
+void UTwoMinAbilitySystemComponent::GiveStaminaPercent(float InStaminaPercent)
+{
+	ATwoMinBaseCharacter* Character = Cast<ATwoMinBaseCharacter>(GetAvatarActor());
+	if (!Character) return;
+	
+	FGameplayEffectSpecHandle Spec = MakeOutgoingSpec(
+		Character->GetStaminaGainEffect()->GetClass(),
+		1,
+		MakeEffectContext()
+	);
+	
+	int32 GiveStaminaAmount = 
+		FMath::FloorToInt32(GetNumericAttribute(UTwoMinAttributeSet::GetMaxStaminaAttribute()) * InStaminaPercent);
+
+	Spec.Data->SetSetByCallerMagnitude(TwoMinGameplayTag::Data_Gain_Stamina, GiveStaminaAmount);
+	ApplyGameplayEffectSpecToSelf(*Spec.Data.Get());
+}
+
 void UTwoMinAbilitySystemComponent::GiveFightValue(FName InFightRowName)
 {
 	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActor());

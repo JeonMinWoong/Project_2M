@@ -22,4 +22,5 @@ public:
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "StartUpData", meta = (TitleProperty = "InputTag"))
 	TArray<TSubclassOf<UTwoMinEnemyGameplayAbility>> EnemyStartUpAbilities;
+
 };

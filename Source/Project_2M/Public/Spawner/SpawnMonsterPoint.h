@@ -46,6 +46,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "SpawnInfo|SpawnMonsterType")
 	ESpawnMonsterType SpawnMonsterType;
 	
+	UPROPERTY(EditAnywhere, Category = "SpawnInfo|SpawnMonsterLevel", meta=(ClampMin = 1, ClampMax = 3, EditCondition = "bIsBoss == false"))
+	int32 SpawnMonsterLevel;
+	
 	UPROPERTY(EditAnywhere, Category = "SpawnInfo|Patrol")
 	TArray<FEnemyAIPatrolData> PatrolPoints;
 

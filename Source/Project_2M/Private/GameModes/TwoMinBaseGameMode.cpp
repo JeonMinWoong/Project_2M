@@ -87,6 +87,8 @@ void ATwoMinBaseGameMode::LoadSaveDataProcess(FSaveGameData& LoadSaveGameData)
 	TotalExperience += LoadSaveGameData.PlayerCurrentExp;
 	ASC->GiveExperienceAmount(TotalExperience);
 	ASC->GiveGoldAmount(LoadSaveGameData.PlayerCurrentGold);
+	ASC->GiveHealthPercent(1.f);
+	ASC->GiveStaminaPercent(1.f);
 	
 	PlayerCharacter->GetInventoryComponent()->SetInventory(LoadSaveGameData.PlayerCurrentItems);
 }

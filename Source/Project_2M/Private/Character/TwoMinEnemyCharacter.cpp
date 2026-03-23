@@ -286,13 +286,15 @@ void ATwoMinEnemyCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	if (!CharacterStartUpData.IsNull())
-	{
-		if (UDataAsset_StartUpDataBase* LoadedData = CharacterStartUpData.LoadSynchronous())
-		{
-			LoadedData->GiveToAbilitySystemComponent(AbilitySystemComponent);
-		}
-	}
+	if (bIsCinematic) return;
+	
+	TSoftObjectPtr<UDataAsset_StartUpDataBase> CurStartUpData = GetCharacterStartUpData();
+	if (CurStartUpData.IsNull()) return;
+	
+	UDataAsset_StartUpDataBase* LoadedData = CurStartUpData.LoadSynchronous();
+	if (!LoadedData) return;
+	
+	LoadedData->GiveToAbilitySystemComponent(AbilitySystemComponent, MonsterLevel);
 }
 
 void ATwoMinEnemyCharacter::PostInitializeComponents()
@@ -388,6 +390,11 @@ void ATwoMinEnemyCharacter::InitPhaseConversion(EBossPhaseType NewBossPhase)
 	}
 	
 	OnHideCharacter();
+}
+
+TSoftObjectPtr<UDataAsset_StartUpDataBase> ATwoMinEnemyCharacter::GetCharacterStartUpData() const
+{
+	return bUseBossHealthBar ? BossCharacterStartUpData : CharacterStartUpData;
 }
 
 bool ATwoMinEnemyCharacter::GetHideCinematic(const FString& PlayLevelSequenceName) const

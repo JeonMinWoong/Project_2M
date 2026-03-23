@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "TwoMinConstant.h"
 #include "Character/TwoMinBaseCharacter.h"
 #include "Components/WidgetComponent.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
@@ -49,7 +50,7 @@ public:
 	bool GetHideCinematic(const FString& PlayLevelSequenceName) const;
 	FString GetSyncCinematicActorName(const FString& PlayLevelSequenceName) const;
 	void BossDetectProcess();
-	
+
 	FTimerHandle DecreaseGroggyTimerHandle;
 	FTimerHandle PhaseConversionTimerHandle;
 	FTimerHandle DissolveTimerHandle;
@@ -66,11 +67,14 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UEnemyUIComponent* EnemyUIComponent;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData")
+	TSoftObjectPtr<UDataAsset_StartUpDataBase> BossCharacterStartUpData;
+	
 private:
 	void InitCheckCinematic();
 	void InitEnemyHealthWidget();
 	void InitPhaseConversion(EBossPhaseType NewBossPhase);
-	
+	TSoftObjectPtr<UDataAsset_StartUpDataBase> GetCharacterStartUpData() const;
 	/** Components **/
 	UPROPERTY(VisibleAnywhere)
 	UEnemyCombatComponent* EnemyCombatComponent;
@@ -91,6 +95,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|MonsterType")
 	EMonsterType MonsterType = EMonsterType::Normal;
 
+	UPROPERTY(VisibleAnywhere, Category = "CharacterInfo|MonsterLevel")
+	int32 MonsterLevel = 1;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|CharacterMovement")
 	float MaxWalkSpeed = 300.f;
 	
@@ -148,8 +155,13 @@ private:
 	float UpdateDissolveValue = 0.01;
 	
 public:
-	EMonsterType GetMonsterType() const { return MonsterType; };
-	FString GetMonsterName() const { return MonsterName; };
+	FORCEINLINE EMonsterType GetMonsterType() const { return MonsterType; };
+	FORCEINLINE FString GetMonsterName() const { return MonsterName; };
+	FORCEINLINE void SetMonsterLevel(int32 InLevel)
+	{
+		InLevel = FMath::Clamp(InLevel, TwoMinConstant::MaxMonsterLevel, TwoMinConstant::MaxMonsterLevel);
+		MonsterLevel = InLevel;
+	};
 	
 	FORCEINLINE void EnableExecutionWidget(bool bIsEnable) const { EnemyExecutionWidgetComponent->SetVisibility(bIsEnable); }
 	

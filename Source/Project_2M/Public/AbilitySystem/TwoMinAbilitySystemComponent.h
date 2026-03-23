@@ -58,6 +58,7 @@ public:
 	// Player 전용
 	UFUNCTION()
 	void GiveHealthPercent(float InHealthPercent);
+	void GiveStaminaPercent(float InStaminaPercent);
 	
 	UFUNCTION()
 	void GiveFightValue(FName InFightRowName);

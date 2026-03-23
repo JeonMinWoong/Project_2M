@@ -51,7 +51,7 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharacterData")
 	TSoftObjectPtr<UDataAsset_StartUpDataBase> CharacterStartUpData;
-
+	
 	UPROPERTY(VisibleAnywhere, Category = "MotionWarping")
 	UMotionWarpingComponent* MotionWarpingComponent;
 
@@ -77,6 +77,10 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Health_Gain")
 	TSubclassOf<UGameplayEffect> HealthGainEffect;
 
+	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Stamina_Gain")
+	TSubclassOf<UGameplayEffect> StaminaGainEffect;
+
+	
 	UPROPERTY()
 	int32 GainGold;
 	
@@ -92,6 +96,9 @@ public:
 	
 	FORCEINLINE UGameplayEffect* GetHealthGainEffect() const
 	{ return HealthGainEffect->GetDefaultObject<UGameplayEffect>(); }
+	
+	FORCEINLINE UGameplayEffect* GetStaminaGainEffect() const
+	{ return StaminaGainEffect->GetDefaultObject<UGameplayEffect>(); }
 	
 	FORCEINLINE void SetGainGold(int32 InGainGold) { GainGold = InGainGold; }
 	FORCEINLINE int32 GetGainGold() const { return GainGold; }

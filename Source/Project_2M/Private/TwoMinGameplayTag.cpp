@@ -209,6 +209,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Data_Gain_Experience, "Data.Gain.Experience");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Gain_Gold, "Data.Gain.Gold");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Gain_Health, "Data.Gain.Health");
+	UE_DEFINE_GAMEPLAY_TAG(Data_Gain_Stamina, "Data.Gain.Stamina");
 	UE_DEFINE_GAMEPLAY_TAG(Data_Gain_Fight, "Data.Gain.Fight");
 	
 	UE_DEFINE_GAMEPLAY_TAG(Data_Equipment_AttackPower, "Data.Equipment.AttackPower");
