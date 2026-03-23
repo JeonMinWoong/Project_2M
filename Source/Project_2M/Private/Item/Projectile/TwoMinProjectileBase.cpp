@@ -155,12 +155,24 @@ AActor* ATwoMinProjectileBase::UpdateHomingTarget()
 		EmptyLockOnTargetGroup
 	);
 
-	if (IsFindActor == false)
+	if (IsFindActor == false) return nullptr;
+	
+	APawn* OwnerPawn = Cast<APawn>(GetOwner());
+	TArray<AActor*> EnemyActors;
+	for (AActor* TargetActor : EmptyLockOnTargetGroup)
 	{
-		return nullptr;
+		APawn* TargetPawn = Cast<APawn>(TargetActor);
+		if (UTwoMinFunctionLibrary::IsTargetPawnHostile(OwnerPawn, TargetPawn) == false) continue;
+		
+		ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(TargetActor);
+		if (!TargetCharacter) continue;
+		
+		EnemyActors.Emplace(TargetActor);
 	}
 	
-	return EmptyLockOnTargetGroup[0];
+	if (EnemyActors.IsEmpty()) return nullptr;
+	
+	return EnemyActors[0];
 }
 
 void ATwoMinProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
