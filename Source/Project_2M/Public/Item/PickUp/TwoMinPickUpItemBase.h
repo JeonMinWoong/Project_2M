@@ -19,7 +19,6 @@ public:
 	virtual void BeginPlay() override;
 	
 	void MakeItemDropBox(TPair<int32, int32> Item);
-	
 	void GetUpItem(const ATwoMinPlayerCharacter* PlayerCharacter);
 protected:
 	UFUNCTION()
@@ -62,5 +61,13 @@ private:
 	UPROPERTY()
 	ATwoMinPlayerCharacter* CachedPlayerCharacter;
 
+	UPROPERTY()
 	bool bIsTryPickUpAbility = true;
+	
+	UPROPERTY()
+	bool bIsPickUpItem = false;
+	
+public:
+	FORCEINLINE void SetIsPickUpItem(bool bOn) { bIsPickUpItem = bOn; } 
+	FORCEINLINE bool IsPickUpItem() const { return bIsPickUpItem; }
 };

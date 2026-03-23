@@ -65,6 +65,7 @@ namespace TwoMinGameplayTag
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_UseItem);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_AngerMode_Start);
 	
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_CompletePickUpItem);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_Interaction);
 	
 	// Player State Tags

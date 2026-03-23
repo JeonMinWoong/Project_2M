@@ -35,6 +35,9 @@ protected:
 	
 	virtual void CustomEventReceived(FGameplayEventData Payload) override;
 	
+	UFUNCTION()
+	void CompletePickUpItem(FGameplayEventData Payload);
+	
 	void PickUpTriggerEvent();
 	ATwoMinPickUpItemBase* TryGetPickUpItem() const;
 	
@@ -56,8 +59,9 @@ private:
 
 	UPROPERTY()
 	UTwoMinAT_UpdatePickUpItem_Player* PickUpItemPlayer;
-
+	
+	UPROPERTY()
+	ATwoMinPickUpItemBase* CachedPickUpItem;
+	
 	bool bIsPickUpItemPlayer = false;
-
-	int32 MAX_ITEM_COUNT = 999;
 };

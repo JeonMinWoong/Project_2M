@@ -4,6 +4,7 @@
 #include "AbilitySystem/Ability/TwoMinGA_ItemPickUpBase.h"
 
 #include "TwoMinGameplayTag.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystem/Ability/Task/TwoMinAbilityTask.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/UI/PlayerUIComponent.h"
@@ -31,6 +32,12 @@ void UTwoMinGA_ItemPickUpBase::EndAbility(const FGameplayAbilitySpecHandle Handl
 	if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo()))
 	{
 		PlayerCharacter->GetPlayerUIComponent()->OnPossiblePickUpItem.Broadcast(false);
+	}
+	
+	if (CachedPickUpItem)
+	{
+		CachedPickUpItem->SetIsPickUpItem(false);
+		CachedPickUpItem = nullptr;
 	}
 	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
@@ -90,6 +97,30 @@ void UTwoMinGA_ItemPickUpBase::UpdateRangePickUpItem(float DeltaTime)
 		
 		CustomCancelAbility();
 	}
+	else
+	{
+		bool bIsPickUpItem = false;
+		for (auto PickUpItem : PickUpItemGroup)
+		{
+			ATwoMinPickUpItemBase* PickUpItemBase = Cast<ATwoMinPickUpItemBase>(PickUpItem);
+			if (!PickUpItemBase) continue;
+			if (PickUpItemBase->IsPickUpItem() == false)
+			{
+				bIsPickUpItem = true;
+				break;
+			}
+		}
+		
+		if (bIsPickUpItem == false)
+		{
+			if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo()))
+			{
+				PlayerCharacter->GetPlayerUIComponent()->OnPossiblePickUpItem.Broadcast(false);
+			}
+			
+			return;
+		}
+	}
 }
 
 void UTwoMinGA_ItemPickUpBase::CustomEventReceived(FGameplayEventData Payload)
@@ -97,22 +128,34 @@ void UTwoMinGA_ItemPickUpBase::CustomEventReceived(FGameplayEventData Payload)
 	PickUpTriggerEvent();
 }
 
+void UTwoMinGA_ItemPickUpBase::CompletePickUpItem(FGameplayEventData Payload)
+{
+	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo());
+	if (!PlayerCharacter) return;
+	
+	if (!CachedPickUpItem) return;
+	
+	CachedPickUpItem->GetUpItem(PlayerCharacter);
+}
+
 void UTwoMinGA_ItemPickUpBase::PickUpTriggerEvent()
 {
 	PlayToAnimMontage(PickUpItemMontage, NAME_None, false, true);
-	ATwoMinPickUpItemBase* PickUpItem = TryGetPickUpItem();
-	if (PickUpItem == nullptr)
+	CachedPickUpItem = TryGetPickUpItem();
+	if (CachedPickUpItem == nullptr)
 	{
 		CustomCancelAbility();
 		return;
 	}
-
-	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo());
-	if (!PlayerCharacter) return;
-		
 	
 	bIsPickUpItemPlayer = true;
-	PickUpItem->GetUpItem(PlayerCharacter);
+	CachedPickUpItem->SetIsPickUpItem(true);
+	
+	UAbilityTask_WaitGameplayEvent* CompleteEventTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(
+		this, TwoMinGameplayTag::Player_Event_CompletePickUpItem, nullptr, 
+		true, true);
+	CompleteEventTask->EventReceived.AddDynamic(this, &ThisClass::CompletePickUpItem);
+	CompleteEventTask->ReadyForActivation();
 }
 
 ATwoMinPickUpItemBase* UTwoMinGA_ItemPickUpBase::TryGetPickUpItem() const
