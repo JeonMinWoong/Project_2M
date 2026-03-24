@@ -58,6 +58,7 @@ namespace TwoMinGameplayTag
 	// Player Event Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_SwitchTarget_Left, "Player.Event.SwitchTarget.Left");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_SwitchTarget_Right, "Player.Event.SwitchTarget.Right");
+	UE_DEFINE_GAMEPLAY_TAG(Player_Event_BeforeGuard, "Player.Event.BeforeGuard");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_ChargingUp, "Player.Event.ChargingUp");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_ChargingEnd, "Player.Event.ChargingEnd");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_ItemPickUp, "Player.Event.ItemPickUp");
