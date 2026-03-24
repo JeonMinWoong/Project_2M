@@ -6,6 +6,7 @@
 #include "AbilitySystem/Ability/TwoMinGameplayAbility.h"
 #include "TwoMinGA_AngerModeStateBase.generated.h"
 
+class UNiagaraComponent;
 /**
  * 
  */
@@ -27,11 +28,13 @@ private:
 	UFUNCTION()
 	void OnEndAngerMode();
 	
+	void InitNiagaraComp(const FGameplayEventData* TriggerEventData);
 	void ApplyAngerBuff(UTwoMinAbilitySystemComponent* ASC);
 	void RemoveAngerBuff(UTwoMinAbilitySystemComponent* ASC);
 	
 	void OnSetFightBarUI(const ATwoMinPlayerCharacter* PlayerCharacter, const bool bIsOnAngerMode) const;
 	
+	void RemoveNiagaraComp();
 	void StartDecreaseAngerEffect(UTwoMinAbilitySystemComponent* ASC, const ATwoMinPlayerCharacter* PlayerCharacter);
 	void EndDecreaseAngerEffect(UTwoMinAbilitySystemComponent* ASC);
 	
@@ -40,4 +43,7 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Buffs")
 	TArray<FAngerBuffData> AngerBuffData;
+	
+	UPROPERTY()
+	UNiagaraComponent* CachedAngerModeComp;
 };

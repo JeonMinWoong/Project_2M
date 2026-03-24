@@ -142,7 +142,7 @@ protected:
 
 	void SendToExhaustedEvent() const;
 	
-	void EnableHitCollision(ATwoMinBaseCharacter* BaseCharacter, FVector TargetLocation = FVector::ZeroVector);
+	void EnableHitCollision(ATwoMinBaseCharacter* BaseCharacter, const FVector& TargetLocation = FVector::ZeroVector);
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AbilityPoicy")
 	EToMinAbilityActivationPolicy AbilityActivationPolicy = EToMinAbilityActivationPolicy::OnTriggered;

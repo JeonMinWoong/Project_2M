@@ -63,6 +63,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_ItemPickUp, "Player.Event.ItemPickUp");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_UseItem, "Player.Event.UseItem");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_AngerMode_Start, "Player.Event.AngerMode.Start");
+	UE_DEFINE_GAMEPLAY_TAG(Player_Event_AngerMode_Effect, "Player.Event.AngerMode.Effect");
 	
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_CompletePickUpItem, "Player.Event.CompletePickUpItem");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_Interaction, "Player.Event.Interaction");

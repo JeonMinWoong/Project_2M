@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/Ability/TwoMinGA_AngerModeStateBase.h"
 
+#include "NiagaraComponent.h"
 #include "TwoMinDebugHelper.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayTag.h"
 #include "Compnents/UI/PlayerUIComponent.h"
@@ -11,6 +12,7 @@ void UTwoMinGA_AngerModeStateBase::ActivateAbility(const FGameplayAbilitySpecHan
                                                    const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                                    const FGameplayEventData* TriggerEventData)
 {
+	
 	UAbilityTask_WaitGameplayTagAdded* WaitTask = UAbilityTask_WaitGameplayTagAdded::WaitGameplayTagAdd(
 		this,
 		AngerModeEndTag,
@@ -23,6 +25,7 @@ void UTwoMinGA_AngerModeStateBase::ActivateAbility(const FGameplayAbilitySpecHan
 	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo());
 	UTwoMinAbilitySystemComponent* ASC = Cast<UTwoMinAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
 	
+	InitNiagaraComp(TriggerEventData);
 	ApplyAngerBuff(ASC);
 	OnSetFightBarUI(PlayerCharacter, true);
 	StartDecreaseAngerEffect(ASC, PlayerCharacter);
@@ -37,6 +40,7 @@ void UTwoMinGA_AngerModeStateBase::EndAbility(const FGameplayAbilitySpecHandle H
 	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetAvatarActorFromActorInfo());
 	UTwoMinAbilitySystemComponent* ASC = Cast<UTwoMinAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
 	
+	RemoveNiagaraComp();
 	RemoveAngerBuff(ASC);
 	EndDecreaseAngerEffect(ASC);
 	OnSetFightBarUI(PlayerCharacter, false);
@@ -47,6 +51,14 @@ void UTwoMinGA_AngerModeStateBase::EndAbility(const FGameplayAbilitySpecHandle H
 void UTwoMinGA_AngerModeStateBase::OnEndAngerMode()
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+}
+
+void UTwoMinGA_AngerModeStateBase::InitNiagaraComp(const FGameplayEventData* TriggerEventData)
+{
+	UObject* NiagaraObj = const_cast<UObject*>(TriggerEventData->OptionalObject.Get());
+	if (!NiagaraObj) return;
+	
+	CachedAngerModeComp = Cast<UNiagaraComponent>(NiagaraObj);
 }
 
 void UTwoMinGA_AngerModeStateBase::ApplyAngerBuff(UTwoMinAbilitySystemComponent* ASC)
@@ -71,8 +83,20 @@ void UTwoMinGA_AngerModeStateBase::OnSetFightBarUI(const ATwoMinPlayerCharacter*
 	PlayerCharacter->GetPlayerUIComponent()->OnSetAngerState.Broadcast(bIsOnAngerMode);
 }
 
+void UTwoMinGA_AngerModeStateBase::RemoveNiagaraComp()
+{
+	if (!CachedAngerModeComp) return;
+	
+	CachedAngerModeComp->Rename(nullptr, GetWorld());
+
+	CachedAngerModeComp->SetAutoDestroy(true);
+	CachedAngerModeComp->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	CachedAngerModeComp->Deactivate();
+	CachedAngerModeComp = nullptr;
+}
+
 void UTwoMinGA_AngerModeStateBase::StartDecreaseAngerEffect(UTwoMinAbilitySystemComponent* ASC,
-	const ATwoMinPlayerCharacter* PlayerCharacter)
+                                                            const ATwoMinPlayerCharacter* PlayerCharacter)
 {
 	FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(
 		PlayerCharacter->GetAngerDecreaseEffect()->GetClass(), 

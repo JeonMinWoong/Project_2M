@@ -15,6 +15,7 @@
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "AbilitySystem/TwoMinAttributeSet.h"
+#include "AbilitySystem/Ability/TwoMinGA_AngerModeInrushBase.h"
 #include "AbilitySystem/Ability/TwoMinGA_AttackBase.h"
 #include "AbilitySystem/Ability/TwoMinGA_ExecutionCaster.h"
 #include "AbilitySystem/Ability/TwoMinGA_GuardBase.h"
@@ -833,7 +834,7 @@ void UTwoMinGameplayAbility::SendToExhaustedEvent() const
 	);
 }
 
-void UTwoMinGameplayAbility::EnableHitCollision(ATwoMinBaseCharacter* BaseCharacter, FVector TargetLocation)
+void UTwoMinGameplayAbility::EnableHitCollision(ATwoMinBaseCharacter* BaseCharacter, const FVector& TargetLocation)
 {
 	UAttackPayloadObject* AttackPayload = NewObject<UAttackPayloadObject>(BaseCharacter);
 	TSubclassOf<AHitCollisionBase> CollisionBase = nullptr;
@@ -851,11 +852,16 @@ void UTwoMinGameplayAbility::EnableHitCollision(ATwoMinBaseCharacter* BaseCharac
 	}
 	else if (CharacterType == ECharacterType::Player)
 	{
-		UTwoMinGA_SpecialAttackBase* SpecialAttackBase = Cast<UTwoMinGA_SpecialAttackBase>(this);
-		if (!SpecialAttackBase) return;
-		
-		CollisionBase = SpecialAttackBase->GetHitCollisionBase();
-		AttackPayload->Data = SpecialAttackBase->GetAttackInfoData();
+		if (UTwoMinGA_SpecialAttackBase* SpecialAttackBase = Cast<UTwoMinGA_SpecialAttackBase>(this))
+		{
+			CollisionBase = SpecialAttackBase->GetHitCollisionBase();
+			AttackPayload->Data = SpecialAttackBase->GetAttackInfoData();	
+		}
+		else if (UTwoMinGA_AngerModeInrushBase* AngerModeInrushBase = Cast<UTwoMinGA_AngerModeInrushBase>(this))
+		{
+		    CollisionBase =	AngerModeInrushBase->GetHitCollisionBase();
+			AttackPayload->Data = AngerModeInrushBase->GetAttackInfoData();
+		}
 	}
 	
 	if (!CollisionBase) return;
