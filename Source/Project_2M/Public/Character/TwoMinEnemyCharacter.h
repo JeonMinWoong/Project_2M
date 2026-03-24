@@ -159,7 +159,7 @@ public:
 	FORCEINLINE FString GetMonsterName() const { return MonsterName; };
 	FORCEINLINE void SetMonsterLevel(int32 InLevel)
 	{
-		InLevel = FMath::Clamp(InLevel, TwoMinConstant::MaxMonsterLevel, TwoMinConstant::MaxMonsterLevel);
+		InLevel = FMath::Clamp(InLevel, TwoMinConstant::MinMonsterLevel, TwoMinConstant::MaxMonsterLevel);
 		MonsterLevel = InLevel;
 	};
 	
