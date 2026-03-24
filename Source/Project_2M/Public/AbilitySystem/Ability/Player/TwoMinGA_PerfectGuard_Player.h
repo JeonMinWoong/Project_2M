@@ -26,9 +26,26 @@ protected:
 	//~ End UGameplayAbility Interface
 	
 private:
+	UFUNCTION()
+	void FadeOutOutline();
+	
+	void StartOutline(const ATwoMinPlayerCharacter* PlayerCharacter);
+	void FinishOutline();
+	
 	UPROPERTY(EditAnywhere, Category = "CheckInputAction")
 	TObjectPtr<const UInputAction> InputActionToCheck;
 
 	UPROPERTY(EditAnywhere, Category = "CheckAbility")
 	TSubclassOf<UGameplayAbility> GuardAbilityClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Outline|Material")
+	UMaterialInterface* OutlineMaterial;
+	
+	UPROPERTY(EditAnywhere, Category = "Outline|Thickness")
+	float ThicknessValue;
+	
+	UPROPERTY()
+	UMaterialInstanceDynamic* OutlineDynamicMaterial;
+	
+	FTimerHandle OutlineFadeOutTimerHandle;
 };
