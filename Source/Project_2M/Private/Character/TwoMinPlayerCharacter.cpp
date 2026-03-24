@@ -8,6 +8,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "TwoMinDebugHelper.h"
 #include "TwoMinFunctionLibrary.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "AbilitySystem/TwoMinAttributeSet.h"
@@ -142,7 +143,7 @@ void ATwoMinPlayerCharacter::PlayerLevelUp(int32 NewLevel)
 				LevelUpNiagaraComp->Deactivate();
 				LevelUpNiagaraComp = nullptr;
 			}
-		}, 1.5f, false);
+		}, 1.f, false);
 	}
 	
 	if (LevelUpSound)
@@ -183,6 +184,12 @@ void ATwoMinPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
+	CheckSpecialAttack(DeltaTime);
+	CheckRunState(DeltaTime);
+}
+
+void ATwoMinPlayerCharacter::CheckSpecialAttack(float DeltaTime)
+{
 	if (bIsSpecialAttackCheck == false)
 	{
 		return;
@@ -194,6 +201,23 @@ void ATwoMinPlayerCharacter::Tick(float DeltaTime)
 		bIsSpecialAttackCheck = false;
 		CurDelay = 0.f;
 	}
+}
+
+void ATwoMinPlayerCharacter::CheckRunState(float DeltaTime)
+{
+	if (bIsRunning == false)
+	{
+		InputRunningTime = 0;
+		Stoped(FInputActionValue());
+		return;
+	}
+	
+	InputRunningTime += DeltaTime;
+	if (InputRunningTime < MaxInputRunningTime) return;
+	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_Running)) return;
+	
+	UTwoMinFunctionLibrary::AddGameplayTagToActor(this, TwoMinGameplayTag::Player_State_Running);
+	GetCharacterMovement()->MaxWalkSpeed = MaxRunSpeed;
 }
 
 void ATwoMinPlayerCharacter::AfterDeathProcess()
@@ -360,19 +384,40 @@ void ATwoMinPlayerCharacter::Input_SwitchTargetComplete(const FInputActionValue&
 void ATwoMinPlayerCharacter::Stoped(const FInputActionValue& InputActionValue)
 {
 	bIsWalk = false;
+	bIsRunning = false;
 	UTwoMinFunctionLibrary::RemoveGameplayTagToActor(this, TwoMinGameplayTag::Player_State_Running);
 	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
 }
 
 void ATwoMinPlayerCharacter::Input_OnRun(const FInputActionValue& InputActionValue)
 {
-	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_Attacking))
+	for (auto GameplayTag : RunIgnoreTagContainer)
 	{
+		if (UTwoMinFunctionLibrary::HasGameplayTag(this, GameplayTag))
+		{
+			Stoped(FInputActionValue());
+			return;
+		}
+	}
+	
+	float CurStaminaValue =
+		GetAbilitySystemComponent()->GetNumericAttribute(UTwoMinAttributeSet::GetCurrentStaminaAttribute());
+	if (CurStaminaValue <= 0.f) 
+	{
+		Stoped(FInputActionValue());
+		FGameplayEventData EventData;
+		EventData.Instigator = this;
+		
+		UTwoMinFunctionLibrary::SendToGameplayEffectEvent(
+			this, 
+			TwoMinGameplayTag::Shared_Event_Exhausted,
+			EventData
+		);
+		
 		return;
 	}
 	
-	UTwoMinFunctionLibrary::AddGameplayTagToActor(this, TwoMinGameplayTag::Player_State_Running);
-	GetCharacterMovement()->MaxWalkSpeed = MaxRunSpeed;
+	bIsRunning = true;
 }
 
 bool ATwoMinPlayerCharacter::IsUsingGamepad() const

@@ -76,6 +76,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Charging, "Player.State.Charging");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_BeforeAttacking, "Player.State.BeforeAttacking");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Attacking, "Player.State.Attacking");
+	UE_DEFINE_GAMEPLAY_TAG(Player_State_RunAttacking, "Player.State.RunAttacking");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_ItemPickUp, "Player.State.ItemPickUp");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_UseItem, "Player.State.UseItem");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_FullFight, "Player.State.FullFight");

@@ -68,6 +68,9 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
 private:
+	void CheckSpecialAttack(float DeltaTime);
+	void CheckRunState(float DeltaTime);
+	
 	/** Components **/
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* CameraBoom;
@@ -202,6 +205,15 @@ private:
 	bool bIsWalk = false;
 	
 	UPROPERTY()
+	bool bIsRunning = false;
+	
+	UPROPERTY()
+	float InputRunningTime;
+	
+	UPROPERTY()
+	float MaxInputRunningTime = 0.05f;
+	
+	UPROPERTY()
 	TArray<FGameplayTag> MovePossibleCancelAbilityTags;
 	
 	UPROPERTY()
@@ -225,7 +237,10 @@ private:
 	void Input_PickUpTrigger(const FInputActionValue& InputActionValue);
 	void Input_InteractTrigger(const FInputActionValue& InputActionValue);
 	
-	UPROPERTY(EditDefaultsOnly, Category= "IgnoreTag_ItemPickUpTrigger")
+	UPROPERTY(EditDefaultsOnly, Category= "IgnoreTag|Run")
+	FGameplayTagContainer RunIgnoreTagContainer;
+	
+	UPROPERTY(EditDefaultsOnly, Category= "IgnoreTag|ItemPickUpTrigger")
 	FGameplayTagContainer IgnoreTagContainer;
 
 	void Input_OpenInventory(const FInputActionValue& InputActionValue);
