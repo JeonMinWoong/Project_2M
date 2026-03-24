@@ -3,6 +3,17 @@
 
 namespace TwoMinConstant
 {
+	
+#pragma region Monster
+	
 	constexpr int32 MinMonsterLevel = 1;
 	constexpr int32 MaxMonsterLevel = 3;
+	
+#pragma endregion
+	
+#pragma region Player
+	
+	const FName Player_Center = TEXT("spine_03");
+	
+#pragma endregion
 }

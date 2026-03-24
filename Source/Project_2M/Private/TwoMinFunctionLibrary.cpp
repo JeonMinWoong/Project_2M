@@ -234,3 +234,12 @@ void UTwoMinFunctionLibrary::PlaySoundAtLocation(const UObject* WorldContextObje
 	
 	UGameplayStatics::PlaySoundAtLocation(World, PlaySound, PlayLocation, PlayVolume);
 }
+
+void UTwoMinFunctionLibrary::PlaySound2D(const UObject* WorldContextObject, USoundBase* PlaySound, const float PlayVolume)
+{
+	const UWorld* World = WorldContextObject->GetWorld();
+	if (!World) return;
+	if (!PlaySound) return;
+	
+	UGameplayStatics::PlaySound2D(World, PlaySound, PlayVolume);
+}

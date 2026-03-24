@@ -6,6 +6,8 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "EnhancedInputSubsystems.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "TwoMinFunctionLibrary.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "AbilitySystem/TwoMinAttributeSet.h"
@@ -111,6 +113,41 @@ void ATwoMinPlayerCharacter::PlayerLevelUp(int32 NewLevel)
 	if (LoadData)
 	{
 		LoadData->StartUpDataLevelUp(AbilitySystemComponent, NewLevel);	
+	}
+	
+	if (LevelUpEffect)
+	{
+		if (LevelUpNiagaraComp && LevelUpTimerHandle.IsValid())
+		{
+			LevelUpNiagaraComp->DestroyComponent();
+			LevelUpNiagaraComp = nullptr;
+			
+			GetWorld()->GetTimerManager().ClearTimer(LevelUpTimerHandle);	
+		}
+		
+		LevelUpNiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAttached(
+			LevelUpEffect,
+			GetMesh(),
+			TwoMinConstant::Player_Center,       
+			FVector::ZeroVector,
+			FRotator::ZeroRotator,
+			EAttachLocation::SnapToTarget,
+			true
+		);
+		
+		GetWorld()->GetTimerManager().SetTimer(LevelUpTimerHandle, [this]()
+		{
+			if (LevelUpNiagaraComp)
+			{
+				LevelUpNiagaraComp->Deactivate();
+				LevelUpNiagaraComp = nullptr;
+			}
+		}, 1.5f, false);
+	}
+	
+	if (LevelUpSound)
+	{
+		UTwoMinFunctionLibrary::PlaySound2D(this, LevelUpSound);
 	}
 }
 

@@ -7,6 +7,7 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraSystem.h"
+#include "TwoMinConstant.h"
 #include "TwoMinDebugHelper.h"
 #include "TwoMinGameplayTag.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
@@ -78,7 +79,7 @@ void UTwoMinGA_AngerModeInrushBase::AttachEffect(FGameplayEventData Payload)
 	CachedAngerModeComp = UNiagaraFunctionLibrary::SpawnSystemAttached(
 		AngerModeEffect,
 		PlayerCharacter->GetMesh(),
-		FName(TEXT("spine_03")),       
+		TwoMinConstant::Player_Center,       
 		FVector::ZeroVector,
 		FRotator::ZeroRotator,
 		EAttachLocation::SnapToTarget,

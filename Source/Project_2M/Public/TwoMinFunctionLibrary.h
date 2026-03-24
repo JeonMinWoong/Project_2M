@@ -71,4 +71,7 @@ public:
 	UFUNCTION()
 	static void PlaySoundAtLocation(const UObject* WorldContextObject, USoundBase* PlaySound, const FVector& PlayLocation, 
 		const float PlayVolume = 1);
+	
+	UFUNCTION()
+	static void PlaySound2D(const UObject* WorldContextObject, USoundBase* PlaySound, const float PlayVolume = 1);
 };

@@ -10,6 +10,7 @@
 #include "Widgets/TwoMinWidget_WindowQuickSlot.h"
 #include "TwoMinPlayerCharacter.generated.h"
 
+class UNiagaraComponent;
 class UInventoryComponent;
 class UGameplayEffect;
 class UPlayerUIComponent;
@@ -115,6 +116,18 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Status_Effect")
 	TSubclassOf<UGameplayEffect> ConsumeStatusEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "NiagaraEffect|LevelUp|Effect")
+	UNiagaraSystem* LevelUpEffect;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "NiagaraEffect|LevelUp|Sound")
+	USoundBase* LevelUpSound;
+	
+	UPROPERTY()
+	TObjectPtr<UNiagaraComponent> LevelUpNiagaraComp;
+	
+	UPROPERTY()
+	FTimerHandle LevelUpTimerHandle;
 	
 	UPROPERTY()
 	AActor* ExecutionCinematicDummy;
