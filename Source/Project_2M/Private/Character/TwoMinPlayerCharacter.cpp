@@ -116,6 +116,10 @@ void ATwoMinPlayerCharacter::PlayerLevelUp(int32 NewLevel)
 		LoadData->StartUpDataLevelUp(AbilitySystemComponent, NewLevel);	
 	}
 	
+	ATwoMinBaseGameMode* GM =Cast<ATwoMinBaseGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!GM) return;
+	if (GM->IsLoadData()) return;
+	
 	if (LevelUpEffect)
 	{
 		if (LevelUpNiagaraComp && LevelUpTimerHandle.IsValid())
