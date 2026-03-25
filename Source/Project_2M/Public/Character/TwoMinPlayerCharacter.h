@@ -43,6 +43,8 @@ public:
 	
 	void CancelInputToggle();
 	FVector GetInputDirection() const;
+	void MoveStop(const FInputActionValue& InputActionValue);
+	
 	void PlayerLevelUp(int32 NewLevel);
 	
 	void OpenInventoryProcess();
@@ -223,8 +225,6 @@ private:
 	void Input_Look(const FInputActionValue& InputActionValue);
 	void Input_SwitchTargetTrigger(const FInputActionValue& InputActionValue);
 	void Input_SwitchTargetComplete(const FInputActionValue& InputActionValue);
-	
-	void Stoped(const FInputActionValue& InputActionValue);
 
 	void Input_OnRun(const FInputActionValue& InputActionValue);
 

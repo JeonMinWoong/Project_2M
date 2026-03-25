@@ -212,7 +212,7 @@ void ATwoMinPlayerCharacter::CheckRunState(float DeltaTime)
 	if (bIsRunning == false)
 	{
 		InputRunningTime = 0;
-		Stoped(FInputActionValue());
+		MoveStop(FInputActionValue());
 		return;
 	}
 	
@@ -255,7 +255,7 @@ void ATwoMinPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_Move,
 		ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
 	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_Move,
-	ETriggerEvent::Completed, this, &ThisClass::Stoped);
+	ETriggerEvent::Completed, this, &ThisClass::MoveStop);
 
 	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_Look,
 		ETriggerEvent::Triggered, this, &ThisClass::Input_Look);
@@ -270,7 +270,7 @@ void ATwoMinPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 		ETriggerEvent::Triggered, this, &ThisClass::Input_OnRun);
 
 	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_MustBeHold_Run,
-	ETriggerEvent::Completed, this, &ThisClass::Stoped);
+	ETriggerEvent::Completed, this, &ThisClass::MoveStop);
 
 	CharacterInputComponent->BindAbilityInputAction(InputConfigDataAsset, this,
 			&ThisClass::Input_AbilityInputPressed, &ThisClass::Input_AbilityInputReleased);
@@ -385,7 +385,7 @@ void ATwoMinPlayerCharacter::Input_SwitchTargetComplete(const FInputActionValue&
 	);
 }
 
-void ATwoMinPlayerCharacter::Stoped(const FInputActionValue& InputActionValue)
+void ATwoMinPlayerCharacter::MoveStop(const FInputActionValue& InputActionValue)
 {
 	bIsWalk = false;
 	bIsRunning = false;
@@ -399,7 +399,7 @@ void ATwoMinPlayerCharacter::Input_OnRun(const FInputActionValue& InputActionVal
 	{
 		if (UTwoMinFunctionLibrary::HasGameplayTag(this, GameplayTag))
 		{
-			Stoped(FInputActionValue());
+			MoveStop(FInputActionValue());
 			return;
 		}
 	}
@@ -408,7 +408,7 @@ void ATwoMinPlayerCharacter::Input_OnRun(const FInputActionValue& InputActionVal
 		GetAbilitySystemComponent()->GetNumericAttribute(UTwoMinAttributeSet::GetCurrentStaminaAttribute());
 	if (CurStaminaValue <= 0.f) 
 	{
-		Stoped(FInputActionValue());
+		MoveStop(FInputActionValue());
 		FGameplayEventData EventData;
 		EventData.Instigator = this;
 		

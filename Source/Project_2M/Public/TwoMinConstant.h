@@ -15,5 +15,8 @@ namespace TwoMinConstant
 	
 	const FName Player_Center = TEXT("spine_03");
 	
+	constexpr float ComputeBlockValue = 0.3f; 
+	constexpr float StopThreshold = -0.866f;
+	
 #pragma endregion
 }
