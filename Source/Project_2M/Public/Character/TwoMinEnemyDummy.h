@@ -15,7 +15,7 @@ class PROJECT_2M_API ATwoMinEnemyDummy : public ATwoMinEnemyCharacter
 	GENERATED_BODY()
 
 public:
-	ATwoMinEnemyDummy();
+	ATwoMinEnemyDummy(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void BeginPlay() override;

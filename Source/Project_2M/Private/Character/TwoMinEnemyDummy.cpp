@@ -6,7 +6,7 @@
 #include "Components/WidgetComponent.h"
 #include "Widgets/Enemy/TwoMinWidgetDummy.h"
 
-ATwoMinEnemyDummy::ATwoMinEnemyDummy()
+ATwoMinEnemyDummy::ATwoMinEnemyDummy(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	AIStateWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("AIStateWidgetComponent"));
 	AIStateWidgetComponent->SetupAttachment(GetMesh());

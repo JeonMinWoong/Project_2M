@@ -31,7 +31,7 @@ class PROJECT_2M_API ATwoMinPlayerCharacter : public ATwoMinBaseCharacter
 	GENERATED_BODY()
 
 public:
-	ATwoMinPlayerCharacter();
+	ATwoMinPlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
 	virtual UBaseCombatComponent* GetCombatComponent() const override;
 	virtual UBaseUIComponent* GetBaseUIComponent() const override;

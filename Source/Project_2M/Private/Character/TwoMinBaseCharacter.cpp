@@ -10,7 +10,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Item/Weapon/TwoMinWeaponBase.h"
 
-ATwoMinBaseCharacter::ATwoMinBaseCharacter()
+ATwoMinBaseCharacter::ATwoMinBaseCharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	GetMesh()->bReceivesDecals = false;
 

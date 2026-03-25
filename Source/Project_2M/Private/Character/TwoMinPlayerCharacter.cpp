@@ -17,21 +17,21 @@
 #include "Camera/CameraComponent.h"
 #include "Compnents/AutoTargetingComponent.h"
 #include "Compnents/InventoryComponent.h"
+#include "Compnents/TwoMinPlayerMovementComp.h"
 #include "Compnents/Combat/PlayerCombatComponent.h"
 #include "Compnents/UI/PlayerUIComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Controller/TwoMinPlayerController.h"
 #include "DataAssets/StartUpData/DataAsset_StartUpDataBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/InputDeviceSubsystem.h"
-#include "GameFramework/InputSettings.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameModes/TwoMinBaseGameMode.h"
 #include "Input/CharacterInputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Player/TwoMinWidgetPlayer.h"
 
-ATwoMinPlayerCharacter::ATwoMinPlayerCharacter()
+ATwoMinPlayerCharacter::ATwoMinPlayerCharacter(const FObjectInitializer& ObjectInitializer) 
+ : Super(ObjectInitializer.SetDefaultSubobjectClass<UTwoMinPlayerMovementComp>(ACharacter::CharacterMovementComponentName))
 {
 	GetCapsuleComponent()->InitCapsuleSize(CapsuleRadius, CapsuleHalfHeight);
 

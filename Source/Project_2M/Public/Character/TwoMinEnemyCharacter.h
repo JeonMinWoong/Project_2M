@@ -28,7 +28,7 @@ class PROJECT_2M_API ATwoMinEnemyCharacter : public ATwoMinBaseCharacter
 	GENERATED_BODY()
 
 public:
-	ATwoMinEnemyCharacter();
+	ATwoMinEnemyCharacter(const FObjectInitializer& ObjectInitializer);
 
 	virtual void Tick(float DeltaSeconds) override;
 	virtual UBaseCombatComponent* GetCombatComponent() const override;

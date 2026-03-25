@@ -25,7 +25,7 @@
 #include "Spawner/SpawnMonsterPointGroup.h"
 #include "Widgets/Enemy/TwoMinWidgetEnemy.h"
 
-ATwoMinEnemyCharacter::ATwoMinEnemyCharacter()
+ATwoMinEnemyCharacter::ATwoMinEnemyCharacter(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	PrimaryActorTick.bCanEverTick = true;

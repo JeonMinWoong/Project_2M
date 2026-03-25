@@ -280,6 +280,11 @@ void UTwoMinGA_LockOn_Player::SetTargetLockOnWidgetPosition()
 	}
 
 	ATwoMinPlayerController* PlayerController = Cast<ATwoMinPlayerController>(CurrentActorInfo->PlayerController);
+	if (!PlayerController)
+	{
+		CustomCancelAbility();
+		return;
+	}
 	
 	FVector2D ScreenPosition;
 	UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(
