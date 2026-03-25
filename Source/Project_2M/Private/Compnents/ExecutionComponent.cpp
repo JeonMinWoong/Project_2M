@@ -3,12 +3,10 @@
 
 #include "Compnents/ExecutionComponent.h"
 
-#include "TwoMinDebugHelper.h"
 #include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "AbilitySystem/Ability/Player/TwoMinGA_LockOn_Player.h"
-#include "Camera/CameraComponent.h"
 #include "Character/TwoMinEnemyCharacter.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -51,13 +49,17 @@ void UExecutionComponent::UpdateGroggyEnemies()
 
 	for (auto Enemy : Enemies)
 	{
-		if (ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(Enemy))
+		ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(Enemy);
+		if (!EnemyCharacter) continue;
+		if (UTwoMinFunctionLibrary::HasGameplayTag(EnemyCharacter, TwoMinGameplayTag::Enemy_State_Groggy) == false) continue;
+		
+		if (UTwoMinFunctionLibrary::HasGameplayTag(EnemyCharacter, TwoMinGameplayTag::Enemy_State_RecoveryGroggy))
 		{
-			if (UTwoMinFunctionLibrary::HasGameplayTag(EnemyCharacter, TwoMinGameplayTag::Enemy_State_Groggy))
-			{
-				GroggyEnemies.AddUnique(EnemyCharacter);
-			}	
+			GroggyEnemies.Remove(EnemyCharacter);
+			continue;	
 		}
+		
+		GroggyEnemies.AddUnique(EnemyCharacter);
 	}
 
 	if (GroggyEnemies.IsEmpty())

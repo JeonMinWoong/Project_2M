@@ -135,12 +135,14 @@ namespace TwoMinGameplayTag
 
 	// Enemy Event Tag
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Event_Groggy, "Enemy.Event.Groggy");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_Event_RecoveryGroggy, "Enemy.Event.RecoveryGroggy");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Event_Evasion, "Enemy.Event.Evasion");
 	
 	// Enemy State Tags
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_Running, "Enemy.State.Running");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_Groggy, "Enemy.State.Groggy");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_DecreaseGroggy, "Enemy.State.DecreaseGroggy");
+	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_RecoveryGroggy, "Enemy.State.RecoveryGroggy");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_Evasion, "Enemy.State.Evasion");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_BanAttack, "Enemy.State.BanAttack");
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_State_NoBanAttack, "Enemy.State.NoBanAttack");

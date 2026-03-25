@@ -55,21 +55,6 @@ void UTwoMinGA_PerfectGuard_Player::EndAbility(const FGameplayAbilitySpecHandle 
 	}
 }
 
-void UTwoMinGA_PerfectGuard_Player::FadeOutOutline()
-{
-	if (!OutlineDynamicMaterial) return;
-		
-	float CurrentOutlineOpacity = 0;
-	OutlineDynamicMaterial->GetScalarParameterValue(TEXT("Outline"), CurrentOutlineOpacity);
-		
-	CurrentOutlineOpacity -= 0.05f;
-	OutlineDynamicMaterial->SetScalarParameterValue(TEXT("Outline"), CurrentOutlineOpacity);
-
-	if (CurrentOutlineOpacity > 0.0f) return;
-	
-	FinishOutline();
-}
-
 void UTwoMinGA_PerfectGuard_Player::StartOutline(const ATwoMinPlayerCharacter* PlayerCharacter)
 {
 	if (!PlayerCharacter->GetMesh() || !OutlineMaterial) return;
@@ -84,6 +69,22 @@ void UTwoMinGA_PerfectGuard_Player::StartOutline(const ATwoMinPlayerCharacter* P
 	GetWorld()->GetTimerManager().ClearTimer(OutlineFadeOutTimerHandle);
 	GetWorld()->GetTimerManager().SetTimer(OutlineFadeOutTimerHandle, this, 
 		&UTwoMinGA_PerfectGuard_Player::FadeOutOutline, 0.01f, true);
+}
+
+
+void UTwoMinGA_PerfectGuard_Player::FadeOutOutline()
+{
+	if (!OutlineDynamicMaterial) return;
+		
+	float CurrentOutlineOpacity = 0;
+	OutlineDynamicMaterial->GetScalarParameterValue(TEXT("Outline"), CurrentOutlineOpacity);
+		
+	CurrentOutlineOpacity -= 0.05f;
+	OutlineDynamicMaterial->SetScalarParameterValue(TEXT("Outline"), CurrentOutlineOpacity);
+
+	if (CurrentOutlineOpacity > 0.0f) return;
+	
+	FinishOutline();
 }
 
 void UTwoMinGA_PerfectGuard_Player::FinishOutline()

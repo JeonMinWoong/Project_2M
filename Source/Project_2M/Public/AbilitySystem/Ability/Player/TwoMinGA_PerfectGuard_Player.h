@@ -26,10 +26,11 @@ protected:
 	//~ End UGameplayAbility Interface
 	
 private:
+	void StartOutline(const ATwoMinPlayerCharacter* PlayerCharacter);
+	
 	UFUNCTION()
 	void FadeOutOutline();
 	
-	void StartOutline(const ATwoMinPlayerCharacter* PlayerCharacter);
 	void FinishOutline();
 	
 	UPROPERTY(EditAnywhere, Category = "CheckInputAction")

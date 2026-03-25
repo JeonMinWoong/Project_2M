@@ -23,8 +23,33 @@ protected:
 		const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	//~ End UGameplayAbility Interface.
 
+	virtual void CustomEventReceived(FGameplayEventData Payload) override;
+	
 private:
+	void StartOutline(const ATwoMinEnemyCharacter* EnemyCharacter);
+	
+	UFUNCTION()
+	void FadeOutOutline();
+	
+	void FinishOutline(const ATwoMinEnemyCharacter* EnemyCharacter);
+
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* GroggyAnimMontage;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "Outline|FinishOutlineEventTag")
+	FGameplayTag FinishOutlineEventTag;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Outline|Material")
+	UMaterialInterface* OutlineMaterial;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Outline|Thickness")
+	float ThicknessValue;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Outline|LineColor")
+	FVector4 LineColor;
+	
+	UPROPERTY()
+	UMaterialInstanceDynamic* OutlineDynamicMaterial;
+	
+	FTimerHandle OutlineFadeOutTimerHandle;
 };
