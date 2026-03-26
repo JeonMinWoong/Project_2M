@@ -286,10 +286,18 @@ void UTwoMinGA_LockOn_Player::SetTargetLockOnWidgetPosition()
 		return;
 	}
 	
+	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(LockOnTarget);
+	if (!EnemyCharacter)
+	{
+		CustomCancelAbility();
+		return;
+	}
+	
+	FVector TargetPos = EnemyCharacter->GetLockOnPos();
 	FVector2D ScreenPosition;
 	UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(
 		PlayerController,
-		LockOnTarget->GetActorLocation(),
+		TargetPos,
 		ScreenPosition,
 		true
 	);

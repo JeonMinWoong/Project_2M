@@ -154,6 +154,12 @@ private:
 	UPROPERTY()
 	float UpdateDissolveValue = 0.01;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|LockOnSocket")
+	FName LockOnSocketName;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|LockOnUpPos")
+	float LockOnUpPos = 0;
+	
 public:
 	FORCEINLINE EMonsterType GetMonsterType() const { return MonsterType; };
 	FORCEINLINE FString GetMonsterName() const { return MonsterName; };
@@ -186,4 +192,5 @@ public:
 		return CinematicSyncName.Equals(InMachName);
 	}
 	
+	FORCEINLINE FVector GetLockOnPos() const { return GetMesh()->GetSocketLocation(LockOnSocketName) + GetActorUpVector() * LockOnUpPos;}
 };
