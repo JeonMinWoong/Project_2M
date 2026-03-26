@@ -7,9 +7,11 @@
 #include "Character/TwoMinBaseCharacter.h"
 #include "Components/WidgetComponent.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
+#include "Widgets/TwoMinWidget_PossibleExecution.h"
 #include "Widgets/Enemy/TwoMinWidgetEnemy.h"
 #include "TwoMinEnemyCharacter.generated.h"
 
+class UTwoMinWidget_PossibleExecution;
 class UTwoMinWidgetEnemy;
 class ATwoMinEnterEventBase;
 class AAIController;
@@ -29,7 +31,7 @@ class PROJECT_2M_API ATwoMinEnemyCharacter : public ATwoMinBaseCharacter
 
 public:
 	ATwoMinEnemyCharacter(const FObjectInitializer& ObjectInitializer);
-
+	
 	virtual void Tick(float DeltaSeconds) override;
 	virtual UBaseCombatComponent* GetCombatComponent() const override;
 	virtual UBaseUIComponent* GetBaseUIComponent() const override;
@@ -50,6 +52,8 @@ public:
 	bool GetHideCinematic(const FString& PlayLevelSequenceName) const;
 	FString GetSyncCinematicActorName(const FString& PlayLevelSequenceName) const;
 	void BossDetectProcess();
+	
+	void EnableExecutionWidget(bool bIsEnable);
 
 	FTimerHandle DecreaseGroggyTimerHandle;
 	FTimerHandle PhaseConversionTimerHandle;
@@ -75,6 +79,10 @@ private:
 	void InitEnemyHealthWidget();
 	void InitPhaseConversion(EBossPhaseType NewBossPhase);
 	TSoftObjectPtr<UDataAsset_StartUpDataBase> GetCharacterStartUpData() const;
+	
+	void UpdateHealthWidgetPosition();
+	void UpdateExecutionWidgetPosition();
+	
 	/** Components **/
 	UPROPERTY(VisibleAnywhere)
 	UEnemyCombatComponent* EnemyCombatComponent;
@@ -88,6 +96,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category= "UI")
 	UWidgetComponent* EnemyExecutionWidgetComponent;
 
+	UPROPERTY()
+	UTwoMinWidget_PossibleExecution* PossibleExecutionWidget;
+	
 	/** CharacterInfo **/
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|Name")
 	FString MonsterName = "Monster";
@@ -168,8 +179,6 @@ public:
 		InLevel = FMath::Clamp(InLevel, TwoMinConstant::MinMonsterLevel, TwoMinConstant::MaxMonsterLevel);
 		MonsterLevel = InLevel;
 	};
-	
-	FORCEINLINE void EnableExecutionWidget(bool bIsEnable) const { EnemyExecutionWidgetComponent->SetVisibility(bIsEnable); }
 	
 	FORCEINLINE void SetCharacterCinematicData(const TMap<FString, FCinematicCharacterData>& InHideCharacterMap)
 	{ HideCinematicMap = InHideCharacterMap; };

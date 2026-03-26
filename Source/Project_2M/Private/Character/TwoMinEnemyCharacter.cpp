@@ -60,13 +60,8 @@ void ATwoMinEnemyCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (!EnemyExecutionWidgetComponent || EnemyExecutionWidgetComponent->IsVisible() == false) return;
-
-	FVector Location = GetLockOnPos();
-	FVector PlayerCameraPos = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
-	FRotator Rotation = (PlayerCameraPos - GetActorLocation()).Rotation();
-	
-	EnemyExecutionWidgetComponent->SetWorldLocationAndRotation(Location, Rotation);
+	UpdateHealthWidgetPosition();
+	UpdateExecutionWidgetPosition();
 }
 
 UBaseCombatComponent* ATwoMinEnemyCharacter::GetCombatComponent() const
@@ -419,4 +414,46 @@ void ATwoMinEnemyCharacter::BossDetectProcess()
 	
 	GetEnemyUIComponent()->ShowBossHealthBar(GetMonsterName());
 	GI->SoundManager->PlayBGMSound(BossBGMSound);
+}
+
+
+void ATwoMinEnemyCharacter::UpdateHealthWidgetPosition()
+{
+	if (!EnemyHealthWidgetComponent || EnemyHealthWidgetComponent->IsVisible() == false) return;
+	
+	FVector PlayerCameraPos = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
+	FRotator Rotation = (PlayerCameraPos - GetActorLocation()).Rotation();
+	
+	EnemyHealthWidgetComponent->SetWorldRotation(Rotation);
+}
+
+void ATwoMinEnemyCharacter::EnableExecutionWidget(bool bIsEnable)
+{
+	if (!PossibleExecutionWidget)
+	{
+		UUserWidget* UserWidget = EnemyExecutionWidgetComponent->GetUserWidgetObject();
+			
+		UTwoMinWidget_PossibleExecution* CachedWidget = Cast<UTwoMinWidget_PossibleExecution>(UserWidget);
+		if (!CachedWidget) return;
+			
+		PossibleExecutionWidget = CachedWidget;	
+	}
+		
+	EnemyExecutionWidgetComponent->SetVisibility(bIsEnable);
+	
+	if (PossibleExecutionWidget)
+	{
+		PossibleExecutionWidget->ShowPossibleExecution();
+	}
+}
+
+void ATwoMinEnemyCharacter::UpdateExecutionWidgetPosition()
+{
+	if (!EnemyExecutionWidgetComponent || EnemyExecutionWidgetComponent->IsVisible() == false) return;
+
+	FVector Location = GetLockOnPos();
+	FVector PlayerCameraPos = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
+	FRotator Rotation = (PlayerCameraPos - GetActorLocation()).Rotation();
+	
+	EnemyExecutionWidgetComponent->SetWorldLocationAndRotation(Location, Rotation);
 }
