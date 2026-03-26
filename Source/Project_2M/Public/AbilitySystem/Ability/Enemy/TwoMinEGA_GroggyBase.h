@@ -31,7 +31,7 @@ private:
 	UFUNCTION()
 	void FadeOutOutline();
 	
-	void FinishOutline(const ATwoMinEnemyCharacter* EnemyCharacter);
+	void FinishOutline(ATwoMinEnemyCharacter* EnemyCharacter);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Montages")
 	UAnimMontage* GroggyAnimMontage;

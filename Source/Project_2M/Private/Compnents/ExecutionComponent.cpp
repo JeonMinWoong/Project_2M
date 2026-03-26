@@ -103,6 +103,11 @@ ATwoMinBaseCharacter* UExecutionComponent::IsExecutionCondition(ATwoMinBaseChara
 
 	if (AutoTargetActor)
 	{
+		if (UTwoMinFunctionLibrary::HasGameplayTag(AutoTargetActor, TwoMinGameplayTag::Enemy_State_RecoveryGroggy))
+		{
+			return nullptr;
+		}
+		
 		FVector TargetForward = AutoTargetActor->GetActorForwardVector();
 		FVector ToCaster = (MyCaster->GetActorLocation() - AutoTargetActor->GetActorLocation()).GetSafeNormal();
 		float Dot = FVector::DotProduct(TargetForward, ToCaster);
@@ -126,6 +131,11 @@ ATwoMinBaseCharacter* UExecutionComponent::IsExecutionCondition(ATwoMinBaseChara
 	for (AActor* Target : GroggyEnemies)
 	{
 		if (!Target) continue;
+		
+		if (UTwoMinFunctionLibrary::HasGameplayTag(Target, TwoMinGameplayTag::Enemy_State_RecoveryGroggy))
+		{
+			return nullptr;
+		}
 
 		FVector TargetForward = Target->GetActorForwardVector();
 		FVector ToCaster = (MyCaster->GetActorLocation() - Target->GetActorLocation()).GetSafeNormal();

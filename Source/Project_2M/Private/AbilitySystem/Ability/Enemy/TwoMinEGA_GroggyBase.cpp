@@ -39,6 +39,7 @@ void UTwoMinEGA_GroggyBase::EndAbility(const FGameplayAbilitySpecHandle Handle,
 	if (ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(GetOwningActorFromActorInfo()))
 	{
 		FinishOutline(EnemyCharacter);
+		UTwoMinFunctionLibrary::RemoveGameplayTagToActor(EnemyCharacter, TwoMinGameplayTag::Enemy_State_RecoveryGroggy);
 	}
 	
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
@@ -51,7 +52,7 @@ void UTwoMinEGA_GroggyBase::CustomEventReceived(FGameplayEventData Payload)
 	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(GetAvatarActorFromActorInfo());
 	if (!EnemyCharacter) return;
 	
-	UTwoMinFunctionLibrary::AddGameplayTagToActor(EnemyCharacter, TwoMinGameplayTag::Enemy_State_DecreaseGroggy);
+	UTwoMinFunctionLibrary::AddGameplayTagToActor(EnemyCharacter, TwoMinGameplayTag::Enemy_State_RecoveryGroggy);
 	GetWorld()->GetTimerManager().ClearTimer(OutlineFadeOutTimerHandle);
 	GetWorld()->GetTimerManager().SetTimer(OutlineFadeOutTimerHandle, this, 
 		&UTwoMinEGA_GroggyBase::FadeOutOutline, 0.01f, true);
@@ -90,7 +91,7 @@ void UTwoMinEGA_GroggyBase::FadeOutOutline()
 }
 
 
-void UTwoMinEGA_GroggyBase::FinishOutline(const ATwoMinEnemyCharacter* EnemyCharacter)
+void UTwoMinEGA_GroggyBase::FinishOutline(ATwoMinEnemyCharacter* EnemyCharacter)
 {
 	if (!EnemyCharacter || !EnemyCharacter->GetMesh()) return;
 			

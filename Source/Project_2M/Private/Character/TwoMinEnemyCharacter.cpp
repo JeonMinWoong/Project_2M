@@ -62,10 +62,11 @@ void ATwoMinEnemyCharacter::Tick(float DeltaSeconds)
 
 	if (!EnemyExecutionWidgetComponent || EnemyExecutionWidgetComponent->IsVisible() == false) return;
 
-	EnemyExecutionWidgetComponent->SetWorldRotation(
-		(GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation() - 
-		 EnemyExecutionWidgetComponent->GetComponentLocation()).Rotation()
-	);
+	FVector Location = GetLockOnPos();
+	FVector PlayerCameraPos = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
+	FRotator Rotation = (PlayerCameraPos - GetActorLocation()).Rotation();
+	
+	EnemyExecutionWidgetComponent->SetWorldLocationAndRotation(Location, Rotation);
 }
 
 UBaseCombatComponent* ATwoMinEnemyCharacter::GetCombatComponent() const
