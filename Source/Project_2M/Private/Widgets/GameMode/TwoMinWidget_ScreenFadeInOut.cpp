@@ -4,7 +4,6 @@
 #include "Widgets/GameMode/TwoMinWidget_ScreenFadeInOut.h"
 
 #include "GameInstance/TwoMinGameInstance.h"
-#include "Kismet/GameplayStatics.h"
 #include "Managers/SoundManager.h"
 
 void UTwoMinWidget_ScreenFadeInOut::StartFadeOut(const FName StagePath, const FName StageName)
@@ -14,7 +13,11 @@ void UTwoMinWidget_ScreenFadeInOut::StartFadeOut(const FName StagePath, const FN
 		StopAnimation(OnFadeOutAnim);	
 	}
 	
-	LockPlayerInput(true);
+	UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
+	if (!GI) return;
+	
+	GI->LockPlayerInput(true);
+	
 	NextStagePath = StagePath;
 	NextStageName = StageName;
 	PlayAnimation(OnFadeOutAnim);
@@ -55,24 +58,6 @@ void UTwoMinWidget_ScreenFadeInOut::NativeOnInitialized()
 	}
 }
 
-void UTwoMinWidget_ScreenFadeInOut::LockPlayerInput(const bool bLock)
-{
-	APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	if (!PC) return;
-	
-	PC->SetIgnoreMoveInput(bLock);
-	PC->SetIgnoreLookInput(bLock);
-	if (bLock)
-	{
-		PC->SetInputMode(FInputModeUIOnly());
-	}
-	else
-	{
-		PC->SetInputMode(FInputModeGameOnly());
-	}
-}
-
-
 void UTwoMinWidget_ScreenFadeInOut::CompleteFadeOutAnim()
 {
 	if (NextStageName.IsNone()) return;
@@ -93,11 +78,18 @@ void UTwoMinWidget_ScreenFadeInOut::CompleteFadeOutAnim()
 
 void UTwoMinWidget_ScreenFadeInOut::StartFadeInAnim()
 {
-	LockPlayerInput(true);
+	UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
+	if (!GI) return;
+	
+	GI->LockPlayerInput(true);
 }
 
 void UTwoMinWidget_ScreenFadeInOut::CompleteFadeInAnim()
 {
-	LockPlayerInput(false);
+	UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
+	if (!GI) return;
+	
+	GI->LockPlayerInput(false);
+	
 	RemoveFromParent();
 }

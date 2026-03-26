@@ -24,8 +24,6 @@ protected:
 	virtual void NativeOnInitialized() override;
 	
 private:
-	void LockPlayerInput(const bool bLock);
-	
 	UFUNCTION()
 	void CompleteFadeOutAnim();
 	

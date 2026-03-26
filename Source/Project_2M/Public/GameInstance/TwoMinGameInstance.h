@@ -22,6 +22,7 @@ class PROJECT_2M_API UTwoMinGameInstance : public UGameInstance
 public:
 	virtual void Init() override;
 	
+	void LockPlayerInput(bool bLock) const;
 	void PlayUISound(const EUISoundType NewUISoundType) const;
 	
 	void ShowLoadingScreen(const FName& NextStagePath, const FName& NextStageName);
@@ -52,7 +53,7 @@ public:
 	
 private:
 	void ApplyInitSettings();
-	
+
 	void OnLevelLoaded(const FName& PackageName, UPackage* Package, EAsyncLoadingResult::Type Result);
 	
 	UPROPERTY()

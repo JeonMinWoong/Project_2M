@@ -4,7 +4,7 @@
 #include "Widgets/TwoMinWidget_EndGameUI.h"
 
 #include "Character/TwoMinPlayerCharacter.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "GameInstance/TwoMinGameInstance.h"
 #include "Widgets/TwoMinWidget_BaseButton.h"
 
 void UTwoMinWidget_EndGameUI::InitEndGameUI()
@@ -32,7 +32,18 @@ FReply UTwoMinWidget_EndGameUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 		if (CurrentFocusIndex == 0)
 		{
 			PlayUISound(EUISoundType::Focus_Select);
-			UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
+			
+			UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
+			if (!GI) return FReply::Unhandled();
+	
+			GI->bIsStageMoving = true;
+			GI->LockPlayerInput(true);
+			
+			const FName CachedNextStagePath = FName(TEXT("/Game/Maps/Title_Map/Title_Map"));
+			const FName CachedNextStageName = FName(TEXT("Title_Map"));
+			
+			GI->ShowLoadingScreen(CachedNextStagePath, CachedNextStageName);
+			
 			return FReply::Handled();
 		}
 		

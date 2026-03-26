@@ -12,10 +12,18 @@ void ATwoMinTitleGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	InitGISetting();
 	ShowTitleWidget();
-	
+}
+
+void ATwoMinTitleGameMode::InitGISetting() const
+{
 	UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
 	if (!GI) return;
+	
+	GI->bIsStageMoving = false;
+	GI->HideLoadingScreen();
+	GI->LockPlayerInput(false);
 	
 	GI->SoundManager->PlayBGMSound(EBGMSoundType::Title);
 }

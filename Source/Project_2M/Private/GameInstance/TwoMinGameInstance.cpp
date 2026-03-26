@@ -57,6 +57,23 @@ void UTwoMinGameInstance::ApplyInitSettings()
 	}
 }
 
+void UTwoMinGameInstance::LockPlayerInput(const bool bLock) const
+{
+	APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	if (!PC) return;
+	
+	PC->SetIgnoreMoveInput(bLock);
+	PC->SetIgnoreLookInput(bLock);
+	if (bLock)
+	{
+		PC->SetInputMode(FInputModeUIOnly());
+	}
+	else
+	{
+		PC->SetInputMode(FInputModeGameOnly());
+	}
+}
+
 void UTwoMinGameInstance::PlayUISound(const EUISoundType NewUISoundType) const
 {
 	USoundBase* UISound = SoundManager->GetUISound(NewUISoundType);
