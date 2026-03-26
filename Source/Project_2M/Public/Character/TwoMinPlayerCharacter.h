@@ -44,7 +44,8 @@ public:
 	void CancelInputToggle();
 	FVector GetInputDirection() const;
 	void MoveStop(const FInputActionValue& InputActionValue);
-	
+	bool CheckRunConditions();
+
 	void PlayerLevelUp(int32 NewLevel);
 	
 	void OpenInventoryProcess();

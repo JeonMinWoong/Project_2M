@@ -211,10 +211,11 @@ void ATwoMinPlayerCharacter::CheckRunState(float DeltaTime)
 {
 	if (bIsRunning == false)
 	{
-		InputRunningTime = 0;
 		MoveStop(FInputActionValue());
 		return;
 	}
+	
+	if (CheckRunConditions() == false) return;
 	
 	InputRunningTime += DeltaTime;
 	if (InputRunningTime < MaxInputRunningTime) return;
@@ -266,11 +267,8 @@ void ATwoMinPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_SwitchTarget,
 	ETriggerEvent::Completed, this, &ThisClass::Input_SwitchTargetComplete);
 
-	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_MustBeHold_Run,
-		ETriggerEvent::Triggered, this, &ThisClass::Input_OnRun);
-
-	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_MustBeHold_Run,
-	ETriggerEvent::Completed, this, &ThisClass::MoveStop);
+	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_Toggle_Run,
+		ETriggerEvent::Completed, this, &ThisClass::Input_OnRun);
 
 	CharacterInputComponent->BindAbilityInputAction(InputConfigDataAsset, this,
 			&ThisClass::Input_AbilityInputPressed, &ThisClass::Input_AbilityInputReleased);
@@ -387,6 +385,8 @@ void ATwoMinPlayerCharacter::Input_SwitchTargetComplete(const FInputActionValue&
 
 void ATwoMinPlayerCharacter::MoveStop(const FInputActionValue& InputActionValue)
 {
+	InputRunningTime = 0;
+	
 	bIsWalk = false;
 	bIsRunning = false;
 	UTwoMinFunctionLibrary::RemoveGameplayTagToActor(this, TwoMinGameplayTag::Player_State_Running);
@@ -395,17 +395,31 @@ void ATwoMinPlayerCharacter::MoveStop(const FInputActionValue& InputActionValue)
 
 void ATwoMinPlayerCharacter::Input_OnRun(const FInputActionValue& InputActionValue)
 {
+	if (bIsWalk == false) return;
+	
+	if (bIsRunning)
+	{
+		MoveStop(FInputActionValue());
+		return;
+	}
+	
+	if (CheckRunConditions() == false) return;
+	
+	bIsRunning = true;
+}
+
+bool ATwoMinPlayerCharacter::CheckRunConditions()
+{
 	for (auto GameplayTag : RunIgnoreTagContainer)
 	{
 		if (UTwoMinFunctionLibrary::HasGameplayTag(this, GameplayTag))
 		{
 			MoveStop(FInputActionValue());
-			return;
+			return false;
 		}
 	}
 	
-	float CurStaminaValue =
-		GetAbilitySystemComponent()->GetNumericAttribute(UTwoMinAttributeSet::GetCurrentStaminaAttribute());
+	float CurStaminaValue = GetAbilitySystemComponent()->GetNumericAttribute(UTwoMinAttributeSet::GetCurrentStaminaAttribute());
 	if (CurStaminaValue <= 0.f) 
 	{
 		MoveStop(FInputActionValue());
@@ -418,10 +432,10 @@ void ATwoMinPlayerCharacter::Input_OnRun(const FInputActionValue& InputActionVal
 			EventData
 		);
 		
-		return;
+		return false;
 	}
 	
-	bIsRunning = true;
+	return true;
 }
 
 bool ATwoMinPlayerCharacter::IsUsingGamepad() const

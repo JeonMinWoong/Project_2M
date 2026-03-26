@@ -28,9 +28,9 @@ namespace TwoMinGameplayTag
 
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Toggle, "InputTag.Toggle");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Toggle_LockOn, "InputTag.Toggle.LockOn");
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_Toggle_Run, "InputTag.Toggle.Run");
 
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_MustBeHold, "InputTag.MustBeHold");
-	UE_DEFINE_GAMEPLAY_TAG(InputTag_MustBeHold_Run, "InputTag.MustBeHold.Run");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_MustBeHold_Guard, "InputTag.MustBeHold.Guard");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_MustBeHold_ChargeAttack_OneHand, "InputTag.MustBeHold.ChargeAttack.OneHand");
 
