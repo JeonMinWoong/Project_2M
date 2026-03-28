@@ -188,7 +188,9 @@ int32 UTwoMinWidget_StoreDealPopup::GetCalculateMaxDealValue(const ATwoMinPlayer
 	}
 	
 	const int32 HaveGold = ASC->GetNumericAttribute(UTwoMinAttributeSet::GetCurrentGoldAttribute());
-	const int32 PossibleBuyCount = HaveGold / ItemData.BuyPrice;
+	int32 BuyPrice = ItemData.BuyPrice <= 0 ? 1 : ItemData.BuyPrice;
+
+	const int32 PossibleBuyCount = HaveGold / BuyPrice;
 	if (PossibleBuyCount <= 0)
 	{
 		StoreDealTextType = EStoreDealTextType::Buy_Failure_LackGold;

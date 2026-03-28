@@ -6,6 +6,7 @@
 #include "Widgets/TwoMinWidgetBase.h"
 #include "TwoMinWidget_MapSelectUI.generated.h"
 
+class UTwoMinWidget_BaseButton;
 class UTwoMinWidget_MapSelectSlot;
 class UCanvasPanel;
 /**
@@ -24,8 +25,10 @@ protected:
 	virtual void NativeOnInitialized() override;
 	virtual void NativeDestruct() override;
 	virtual FReply NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent) override;
-	
+
 private:
+	void CloseMapSelectUI() const;
+	
 	UPROPERTY(meta=(BindWidget))
 	UCanvasPanel* ButtonCanvas;
 	
@@ -37,4 +40,10 @@ private:
 	
 	UPROPERTY()
 	bool bIsMoveStage = false;
+	
+	UPROPERTY(meta=(BindWidget))
+	UTwoMinWidget_BaseButton* ReturnButton;
+	
+	UPROPERTY()
+	bool bIsFocusBackButton = false;
 };

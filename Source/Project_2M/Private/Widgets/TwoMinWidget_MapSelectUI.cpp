@@ -10,6 +10,7 @@
 #include "GameModes/TwoMinBaseGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Managers/WorldStageManager.h"
+#include "Widgets/TwoMinWidget_BaseButton.h"
 #include "Widgets/TwoMinWidget_BuffSlot.h"
 #include "Widgets/TwoMinWidget_MapSelectSlot.h"
 
@@ -48,6 +49,15 @@ FReply UTwoMinWidget_MapSelectUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 	const FKey InKey = InKeyEvent.GetKey();
 	if (InKey == EKeys::Enter || InKey == EKeys::F || InKey == EKeys::Gamepad_FaceButton_Bottom)
 	{
+		if (bIsFocusBackButton)
+		{
+			bIsFocusBackButton = false;
+			OnFocusSlot();
+			CloseMapSelectUI();
+			
+			return FReply::Handled();
+		}
+		
 		AGameModeBase* RawGM = UGameplayStatics::GetGameMode(GetWorld());
 		if (!RawGM) return FReply::Unhandled();
 		
@@ -67,15 +77,8 @@ FReply UTwoMinWidget_MapSelectUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 	
 	if (InKey == EKeys::Escape || InKey == EKeys::Gamepad_FaceButton_Right)
 	{
-		if (ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningPlayerPawn()))
-		{
-			UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetPlayerUIComponent();
-			if (PlayerUIComponent->IsMapSelectWidgetOpen())
-			{
-				PlayerUIComponent->OpenMapSelectWidget(PlayerCharacter, false);
-			}
-		}
-		
+		OnFocusSlot();
+		CloseMapSelectUI();
 		return FReply::Handled();
 	}
 	
@@ -92,6 +95,16 @@ FReply UTwoMinWidget_MapSelectUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 	if (InKey == EKeys::Up || InKey == EKeys::W || InKey == EKeys::Gamepad_LeftStick_Up)
 	{
 		int32 NextInventoryIndex = CurrentFocusIndex + 1;
+		if (bIsFocusBackButton)
+		{
+			bIsFocusBackButton = false;
+			CurrentFocusIndex = 0;
+			OnFocusSlot();
+			PlayUISound(EUISoundType::Focus_Move);
+			
+			return FReply::Handled();
+		}
+		
 		if (NextInventoryIndex > StageButtonSlots.Num() - 1) return FReply::Unhandled();
 		if (StageButtonSlots[NextInventoryIndex]->IsLocked()) return FReply::Unhandled();
 		
@@ -105,7 +118,15 @@ FReply UTwoMinWidget_MapSelectUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 	if (InKey == EKeys::Down || InKey == EKeys::S || InKey == EKeys::Gamepad_LeftStick_Down)
 	{
 		int32 NextInventoryIndex = CurrentFocusIndex - 1;
-		if (NextInventoryIndex < 0) return FReply::Unhandled();
+		if (NextInventoryIndex < 0)
+		{
+			bIsFocusBackButton = true;
+			ReturnButton->SetFocus();
+			PlayUISound(EUISoundType::Focus_Move);
+			
+			return FReply::Handled();
+		}
+		
 		if (StageButtonSlots[NextInventoryIndex]->IsLocked()) return FReply::Unhandled();
 		
 		CurrentFocusIndex = NextInventoryIndex;
@@ -118,6 +139,18 @@ FReply UTwoMinWidget_MapSelectUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 	return Super::NativeOnPreviewKeyDown(MyGeometry, InKeyEvent);
 }
 
+void UTwoMinWidget_MapSelectUI::CloseMapSelectUI() const
+{
+	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(GetOwningPlayerPawn());
+	if (!PlayerCharacter) return;
+	
+	UPlayerUIComponent* PlayerUIComponent = PlayerCharacter->GetPlayerUIComponent();
+	if (PlayerUIComponent->IsMapSelectWidgetOpen())
+	{
+		PlayerUIComponent->OpenMapSelectWidget(PlayerCharacter, false);
+	}
+}
+
 void UTwoMinWidget_MapSelectUI::OnFocusSlot()
 {
 	StageButtonSlots[CurrentFocusIndex]->SetFocus();
@@ -125,6 +158,7 @@ void UTwoMinWidget_MapSelectUI::OnFocusSlot()
 
 void UTwoMinWidget_MapSelectUI::InitStageButtons()
 {
+	bIsFocusBackButton = false;
 	CurrentFocusIndex = 0;
 	
 	UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
