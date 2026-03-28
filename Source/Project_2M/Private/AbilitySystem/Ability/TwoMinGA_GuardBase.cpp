@@ -224,6 +224,7 @@ void UTwoMinGA_GuardBase::OnHitGuard(FGameplayEventData Payload)
 		PushCurve = AttackInfoData.HitData.KnockBackCurve;
 	}
 	
+	MyCharacter->SetActorRotation(UKismetMathLibrary::FindLookAtRotation(MyCharacter->GetActorLocation(), HitPos));
 	CameraShakeToShakeType(MyCharacter, 
 		GetCameraShakeType(AttackInfoData.AttackType, bIsEndAbilitySendToExhaustedEvent));
 	OnStartKnockBack(MyCharacter, HitGuardAnimMontage[HitMontageNumber], ToImpact, PushDistance,

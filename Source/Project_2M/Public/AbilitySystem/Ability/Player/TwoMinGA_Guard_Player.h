@@ -6,6 +6,8 @@
 #include "AbilitySystem/Ability/TwoMinGA_GuardBase.h"
 #include "TwoMinGA_Guard_Player.generated.h"
 
+class UTwoMinAT_UpdateRotation;
+
 /**
  * 
  */
@@ -20,4 +22,18 @@ protected:
 
 	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 		OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
+	
+private:
+	UFUNCTION()
+	void OnUpdateRotationTick(float DeltaSeconds);
+	
+	UPROPERTY(EditDefaultsOnly, Category = "RotationTime")
+	float RotationTime = 0.1f;
+
+	UPROPERTY()
+	float CurTime = 0;
+	
+	UPROPERTY()
+	UTwoMinAT_UpdateRotation* UpdateRotationTickTask;
+	
 };
