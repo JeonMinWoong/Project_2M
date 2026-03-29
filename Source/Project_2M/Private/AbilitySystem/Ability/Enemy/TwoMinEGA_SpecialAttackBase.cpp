@@ -107,9 +107,10 @@ void UTwoMinEGA_SpecialAttackBase::OnAttackGameplayEventReceivedByLocation(FGame
 {
 	AActor* Target = const_cast<AActor*>(Payload.Target.Get());
 	if (!Target) return;
+	ATwoMinBaseCharacter* TargetBaseCharacter = Cast<ATwoMinBaseCharacter>(Target);
+	if (!TargetBaseCharacter) return;
 	
-	FVector TargetLocation = Target->GetActorLocation();
-	TargetLocation.Z = 0;
+	FVector TargetLocation = TargetBaseCharacter->GetMesh()->GetComponentLocation();
 	
 	CachedTargetLocation = TargetLocation;
 	if (!CachedLocationEffect) return;
