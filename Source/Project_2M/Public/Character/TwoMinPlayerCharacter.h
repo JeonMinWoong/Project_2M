@@ -219,6 +219,9 @@ private:
 	UPROPERTY()
 	TArray<FGameplayTag> MovePossibleCancelAbilityTags;
 	
+	UPROPERTY(EditDefaultsOnly, Category= "IgnoreTag|Move")
+	FGameplayTagContainer MoveIgnoreTagContainer;
+	
 	UPROPERTY()
 	FVector2D SwitchDirection = FVector2D::ZeroVector;
 	

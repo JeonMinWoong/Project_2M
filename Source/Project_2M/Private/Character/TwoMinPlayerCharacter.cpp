@@ -314,13 +314,12 @@ void ATwoMinPlayerCharacter::Input_Move(const FInputActionValue& InputActionValu
 		}
 	}
 
-	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_Exhausted)
-		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitDowning)
-		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitThrowing)
-		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_Death)
-		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_OpenInventory))
+	for (auto GameplayTag : MoveIgnoreTagContainer)
 	{
-		return;
+		if (UTwoMinFunctionLibrary::HasGameplayTag(this, GameplayTag))
+		{
+			return;
+		}
 	}
 	
 	if (MovementVector.Y != 0.f)
