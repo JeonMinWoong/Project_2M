@@ -25,9 +25,11 @@
 #include "DataAssets/StartUpData/DataAsset_StartUpDataBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameInstance/TwoMinGameInstance.h"
 #include "GameModes/TwoMinBaseGameMode.h"
 #include "Input/CharacterInputComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Managers/WorldStageManager.h"
 #include "Widgets/Player/TwoMinWidgetPlayer.h"
 
 ATwoMinPlayerCharacter::ATwoMinPlayerCharacter(const FObjectInitializer& ObjectInitializer) 
@@ -182,6 +184,18 @@ void ATwoMinPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(GetGameInstance());
+	if (!GI) return;
+	
+	FGameplayEventData EventData;
+	EventData.Instigator = this;
+	EventData.EventMagnitude = GI->StageManager->IsVillageMap() ? 0 : 1;
+
+	UTwoMinFunctionLibrary::SendToGameplayEffectEvent(
+	this,
+	TwoMinGameplayTag::Player_Event_EquipWeapon,
+		EventData
+	);
 }
 
 void ATwoMinPlayerCharacter::Tick(float DeltaTime)

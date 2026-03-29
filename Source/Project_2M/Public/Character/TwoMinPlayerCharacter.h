@@ -144,6 +144,9 @@ private:
 	UPROPERTY()
 	bool bIsIgnoreInput = false;
 	
+	UPROPERTY()
+	bool bIsEquipWeapon = false;
+	
 	/** CharacterInfo **/
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|Capsule")
 	float CapsuleRadius = 42.f;
@@ -313,5 +316,8 @@ public:
 	{ return ConsumeStatusEffect; }
 	
 	FORCEINLINE UUserWidget* GetHUDOverlay() const { return HUDOverlay; }
+	
+	FORCEINLINE void SetEquipWeapon(bool bOn) { bIsEquipWeapon = bOn; }
+	FORCEINLINE bool GetEquipWeapon() const { return bIsEquipWeapon; };
 };
 

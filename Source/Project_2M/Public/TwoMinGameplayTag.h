@@ -55,6 +55,7 @@ namespace TwoMinGameplayTag
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_AngerMode_SpecialAttack_OneHand);
 	
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_Interaction);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Ability_EquipWeapon);
 
 	// Player Event Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_SwitchTarget_Left);
@@ -69,6 +70,7 @@ namespace TwoMinGameplayTag
 	
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_CompletePickUpItem);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_Interaction);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Event_EquipWeapon);
 	
 	// Player State Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_State_Running);
@@ -87,6 +89,7 @@ namespace TwoMinGameplayTag
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_State_OpenInventory);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_State_Possible_ItemPickUp);
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_State_Possible_Interaction);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_State_EquipWeapon);
 	
 	// Enemy Weapon Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Enemy_Weapon);

@@ -54,6 +54,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_AngerMode_SpecialAttack_OneHand, "Player.Ability.AngerMode.SpecialAttack.OneHand");
 
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_Interaction, "Player.Ability.Interaction");
+	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_EquipWeapon, "Player.Ability.EquipWeapon");
 	
 	// Player Event Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_SwitchTarget_Left, "Player.Event.SwitchTarget.Left");
@@ -68,6 +69,7 @@ namespace TwoMinGameplayTag
 	
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_CompletePickUpItem, "Player.Event.CompletePickUpItem");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_Interaction, "Player.Event.Interaction");
+	UE_DEFINE_GAMEPLAY_TAG(Player_Event_EquipWeapon, "Player.Event.EquipWeapon");
 	
 	// Player State Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Running, "Player.State.Running");
@@ -86,6 +88,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_OpenInventory, "Player.State.OpenInventory");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Possible_ItemPickUp, "Player.State.Possible.ItemPickUp");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Possible_Interaction, "Player.State.Possible.Interaction");
+	UE_DEFINE_GAMEPLAY_TAG(Player_State_EquipWeapon, "Player.State.EquipWeapon");
 
 	// Enemy Weapon Tags
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Weapon, "Enemy.Weapon");
