@@ -54,7 +54,7 @@ public:
 	void BossDetectProcess();
 	
 	void EnableExecutionWidget(bool bIsEnable);
-
+	
 	FTimerHandle DecreaseGroggyTimerHandle;
 	FTimerHandle PhaseConversionTimerHandle;
 	FTimerHandle DissolveTimerHandle;

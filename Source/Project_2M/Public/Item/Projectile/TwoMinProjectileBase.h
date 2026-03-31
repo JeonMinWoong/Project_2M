@@ -7,6 +7,7 @@
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "TwoMinProjectileBase.generated.h"
 
+class USphereComponent;
 class ATwoMinBaseCharacter;
 class UNiagaraSystem;
 class UProjectileMovementComponent;
@@ -24,10 +25,23 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	
 	FVector GetSpawnLocation();
+	void SetCustomMesh(UStaticMesh* NewMesh) const;
+	
+	void RecallProjectile();
 	
 protected:
 	void HomingTick(float DeltaSeconds);
 	AActor* UpdateHomingTarget();
+	
+	void FallingTick(float DeltaSeconds);
+	
+	void UpdateStaticMeshRotation(float DeltaSeconds) const;
+	
+	void UpdateTargetTick();
+	
+	UFUNCTION()
+	virtual void OnCollisionBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	
 	UFUNCTION()
 	virtual void OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
@@ -42,6 +56,9 @@ protected:
 	UBoxComponent* ProjectileCollisionBox;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
+	USphereComponent* ProjectileOverlapSphere;
+	
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
 	UProjectileMovementComponent* ProjectileMovementComp;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
@@ -49,7 +66,10 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
 	EProjectilePierceType ProjectilePierceType = EProjectilePierceType::NonPiercing;
-
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile")
+	bool bIsCustomMesh = false;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Effect")
 	UNiagaraSystem* ImpactEffect;
 	
@@ -107,8 +127,67 @@ protected:
 	float CurHomingActivationDelay = 0.f;
 	float CurHomingRetargetInterval = 0.f;
 	
+	TFunction<void()> DestroyCallback;
+	
+#pragma region FallingData
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails|FallingType",
+		meta = (EditCondition = "ProjectileType == EProjectileType::Falling"))
+	float FallingStartTime = 0;
+	
+	UPROPERTY()
+	float CurFallingTime;
+	
+	UPROPERTY()
+	bool bIsFallingStart = false;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails|FallingType",
+		meta = (EditCondition = "ProjectileType == EProjectileType::Falling"))
+	float FallingGravityCoef;
+
+	UPROPERTY()
+	float CurFallingGravity;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails|FallingType",
+		meta = (EditCondition = "ProjectileType == EProjectileType::Falling"))
+	bool bIsKeepHitFloorProjectile = false;
+	
+	UPROPERTY()
+	bool bIsHitFloor = false;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails|FallingType",
+		meta = (EditCondition = "ProjectileType == EProjectileType::Falling"))
+	bool bIsOverlapEvent = false;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails|RecallProjectile")
+	bool bIsPossibleRecallProjectile = false;
+	
+	UPROPERTY()
+	bool bIsRecallProjectile = false;
+	
+#pragma endregion
+	
+	
+#pragma region RotationStaticMesh
+
+	UPROPERTY()
+	UStaticMeshComponent* CachedStaticMeshComp;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails|StaticMesh")
+	bool bIsRotationStaticMesh = false;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Projectile|Deails|StaticMesh", 
+		meta=(EditCondition = "bIsRotationStaticMesh"))
+	FRotator RotationSpeed;
+	
+#pragma endregion
+
+	
 private:
 	FVector GetDirection() const;
+	
+	void PickUpProjectileProcess(AActor* OwnerActor);
+	void DestroyProjectile();
 	
 	FAttackInfoData ProjectileAttackInfoData;
 	
@@ -136,4 +215,10 @@ public:
 	FORCEINLINE void SetActiveAbilityLevel(const int InLevel) { AbilityLevel = InLevel; }
 	
 	FORCEINLINE void SetTargetCharacter(ATwoMinBaseCharacter* InCharacter) { CachedTargetCharacter = InCharacter; }
+	
+	FORCEINLINE bool IsCustomMesh() const { return bIsCustomMesh; }
+	
+	FORCEINLINE void SetOnDestroyedCallback(TFunction<void()> InCallback) { DestroyCallback = InCallback; }
+	
+	FORCEINLINE bool IsPossibleRecallProjectile() const { return bIsPossibleRecallProjectile && bIsHitFloor; }
 };

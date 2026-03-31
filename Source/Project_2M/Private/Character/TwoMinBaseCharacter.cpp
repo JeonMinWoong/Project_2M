@@ -131,6 +131,16 @@ void ATwoMinBaseCharacter::OnHitEffectAttachToWeaponSocket(int32 WeaponIndex)
 	}
 }
 
+void ATwoMinBaseCharacter::SetIsAiming(bool bOn)
+{
+	
+}
+
+void ATwoMinBaseCharacter::SetThrowProjectile(ATwoMinProjectileBase* NewThrowProjectile)
+{
+	
+}
+
 void ATwoMinBaseCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);

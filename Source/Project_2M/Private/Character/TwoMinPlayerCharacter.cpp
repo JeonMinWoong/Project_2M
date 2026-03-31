@@ -28,6 +28,7 @@
 #include "GameInstance/TwoMinGameInstance.h"
 #include "GameModes/TwoMinBaseGameMode.h"
 #include "Input/CharacterInputComponent.h"
+#include "Item/Projectile/TwoMinProjectileBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Managers/WorldStageManager.h"
 #include "Widgets/Player/TwoMinWidgetPlayer.h"
@@ -102,7 +103,7 @@ void ATwoMinPlayerCharacter::CancelInputToggle()
 {
 	bIsWalk = false;
 	UTwoMinFunctionLibrary::RemoveGameplayTagToActor(this, TwoMinGameplayTag::Player_State_Running);
-	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? MaxAimingSpeed : MaxWalkSpeed;
 }
 
 FVector ATwoMinPlayerCharacter::GetInputDirection() const
@@ -204,6 +205,7 @@ void ATwoMinPlayerCharacter::Tick(float DeltaTime)
 	
 	CheckSpecialAttack(DeltaTime);
 	CheckRunState(DeltaTime);
+	CheckAimingZoom(DeltaTime);
 }
 
 void ATwoMinPlayerCharacter::CheckSpecialAttack(float DeltaTime)
@@ -303,6 +305,8 @@ void ATwoMinPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerIn
 		ETriggerEvent::Started, this, &ThisClass::Input_SpecialAttack_Check_Trigger);
 	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_EndGame,
 		ETriggerEvent::Started, this, &ThisClass::Input_EndGameTrigger);
+	CharacterInputComponent->BindNativeInputAction(InputConfigDataAsset, TwoMinGameplayTag::InputTag_Recall_OneHand,
+	ETriggerEvent::Started, this, &ThisClass::Input_RecallTrigger);
 }
 
 void ATwoMinPlayerCharacter::Input_Move(const FInputActionValue& InputActionValue)
@@ -403,7 +407,7 @@ void ATwoMinPlayerCharacter::MoveStop(const FInputActionValue& InputActionValue)
 	bIsWalk = false;
 	bIsRunning = false;
 	UTwoMinFunctionLibrary::RemoveGameplayTagToActor(this, TwoMinGameplayTag::Player_State_Running);
-	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? MaxAimingSpeed : MaxWalkSpeed;
 }
 
 void ATwoMinPlayerCharacter::Input_OnRun(const FInputActionValue& InputActionValue)
@@ -580,6 +584,8 @@ void ATwoMinPlayerCharacter::OpenInventoryProcess()
 			this,
 			TwoMinGameplayTag::Player_State_OpenInventory
 		);
+		
+		CancelAimingAbility();
 	}
 	
 	InventoryComponent->OpenInventory(bIsOpenInventory);
@@ -646,6 +652,34 @@ bool ATwoMinPlayerCharacter::IsPossibleUseItem()
 	}
 	
 	return true;
+}
+
+void ATwoMinPlayerCharacter::SetIsAiming(bool bOn)
+{
+	bIsAiming = bOn;
+}
+
+void ATwoMinPlayerCharacter::CheckAimingZoom(float DeltaTime)
+{
+	float CurrentFOV = CameraComponent->FieldOfView;
+	if (bIsAiming)
+	{
+		if (CurrentFOV <= AimingFieldOfView) return;
+	}
+	else
+	{
+		if (CurrentFOV >= OriginFieldOfView) return;
+	}
+	
+	float TargetFOV = bIsAiming ? AimingFieldOfView : OriginFieldOfView;
+	
+	float NewFOV = FMath::FInterpTo(CurrentFOV, TargetFOV, DeltaTime, CameraInterpSpeed);
+	CameraComponent->SetFieldOfView(NewFOV);
+}
+
+void ATwoMinPlayerCharacter::SetThrowProjectile(ATwoMinProjectileBase* NewThrowProjectile)
+{
+	ThrowProjectile = NewThrowProjectile;
 }
 
 void ATwoMinPlayerCharacter::Input_UseItemTrigger(const FInputActionValue& InputActionValue)
@@ -746,10 +780,31 @@ void ATwoMinPlayerCharacter::Input_EndGameTrigger(const FInputActionValue& Input
 void ATwoMinPlayerCharacter::OpenEndGameProcess()
 {
 	bIsEndGameTrigger = !bIsEndGameTrigger;
+	if (bIsEndGameTrigger == false)
+	{
+		CancelAimingAbility();
+	}
+	
 	PlayerUIComponent->OpenEndGameWidget(this, bIsEndGameTrigger);
+}
+
+void ATwoMinPlayerCharacter::Input_RecallTrigger(const FInputActionValue& InputActionValue)
+{
+	if (!ThrowProjectile) return;
+	if (ThrowProjectile->IsPossibleRecallProjectile() == false) return;
+	
+	ThrowProjectile->RecallProjectile();
 }
 
 bool ATwoMinPlayerCharacter::GetIsRunning()
 {
 	return UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_Running);
+}
+
+void ATwoMinPlayerCharacter::CancelAimingAbility() const
+{
+	UTwoMinGameplayAbility* AimingAbility = GetAbilitySystemComponent()->GetPlayingAbilityTag(TwoMinGameplayTag::Player_Ability_Aiming_OneHand);
+	if (!AimingAbility) return;
+	
+	AimingAbility->CustomCancelAbility();
 }

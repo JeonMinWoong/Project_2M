@@ -12,6 +12,8 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_HeavyAttack_OneHand, "InputTag.HeavyAttack.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_CounterAttack_OneHand, "InputTag.CounterAttack.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_RunAttack_OneHand, "InputTag.RunAttack.OneHand");
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_ThrowAttack_OneHand, "InputTag.ThrowAttack.OneHand");
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_Recall_OneHand, "InputTag.Recall.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_SwitchTarget, "InputTag.SwitchTarget");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_Roll, "InputTag.Roll");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_ObjectTargeting, "InputTag.ObjectTargeting");
@@ -33,6 +35,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_MustBeHold, "InputTag.MustBeHold");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_MustBeHold_Guard, "InputTag.MustBeHold.Guard");
 	UE_DEFINE_GAMEPLAY_TAG(InputTag_MustBeHold_ChargeAttack_OneHand, "InputTag.MustBeHold.ChargeAttack.OneHand");
+	UE_DEFINE_GAMEPLAY_TAG(InputTag_MustBeHold_Aiming_OneHand, "InputTag.MustBeHold.Aiming.OneHand");
 
 	// Weapon Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Weapon_Sword, "Player.Weapon.Sword");
@@ -44,6 +47,8 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_CountAttack_OneHand, "Player.Ability.CounterAttack.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_ChargeAttack_OneHand, "Player.Ability.ChargeAttack.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_RunAttack_OneHand, "Player.Ability.RunAttack.OneHand");
+	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_ThrowAttack_OneHand, "Player.Ability.ThrowAttack.OneHand");
+	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_Recall_OneHand, "Player.Ability.Recall.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_SpecialAttack_OneHand, "Player.Ability.SpecialAttack.OneHand");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_LockOn, "Player.Ability.LockOn");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_Roll, "Player.Ability.Roll");
@@ -55,6 +60,7 @@ namespace TwoMinGameplayTag
 
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_Interaction, "Player.Ability.Interaction");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_EquipWeapon, "Player.Ability.EquipWeapon");
+	UE_DEFINE_GAMEPLAY_TAG(Player_Ability_Aiming_OneHand, "Player.Ability.Aiming.OneHand");
 	
 	// Player Event Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_SwitchTarget_Left, "Player.Event.SwitchTarget.Left");
@@ -70,6 +76,7 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_CompletePickUpItem, "Player.Event.CompletePickUpItem");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_Interaction, "Player.Event.Interaction");
 	UE_DEFINE_GAMEPLAY_TAG(Player_Event_EquipWeapon, "Player.Event.EquipWeapon");
+	UE_DEFINE_GAMEPLAY_TAG(Player_Event_PickUpThrowWeapon, "Player.Event.PickUpThrowWeapon");
 	
 	// Player State Tags
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Running, "Player.State.Running");
@@ -89,6 +96,8 @@ namespace TwoMinGameplayTag
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Possible_ItemPickUp, "Player.State.Possible.ItemPickUp");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_Possible_Interaction, "Player.State.Possible.Interaction");
 	UE_DEFINE_GAMEPLAY_TAG(Player_State_EquipWeapon, "Player.State.EquipWeapon");
+	UE_DEFINE_GAMEPLAY_TAG(Player_State_Aiming, "Player.State.Aiming");
+	UE_DEFINE_GAMEPLAY_TAG(Player_State_ThrownWeapon, "Player.State.ThrownWeapon");
 
 	// Enemy Weapon Tags
 	UE_DEFINE_GAMEPLAY_TAG(Enemy_Weapon, "Enemy.Weapon");

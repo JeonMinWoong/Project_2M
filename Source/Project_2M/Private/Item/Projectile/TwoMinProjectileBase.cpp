@@ -3,6 +3,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "NiagaraFunctionLibrary.h"
+#include "TwoMinDebugHelper.h"
 #include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "Abilities/GameplayAbilityTypes.h"
@@ -11,10 +12,10 @@
 #include "AbilitySystem/Ability/TwoMinGA_GuardBase.h"
 #include "Character/TwoMinBaseCharacter.h"
 #include "Character/TwoMinEnemyCharacter.h"
+#include "Compnents/Combat/BaseCombatComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 ATwoMinProjectileBase::ATwoMinProjectileBase()
@@ -32,7 +33,15 @@ ATwoMinProjectileBase::ATwoMinProjectileBase()
 	
 	ProjectileCollisionBox->OnComponentHit.AddUniqueDynamic(this, &ThisClass::OnProjectileHit);
 	SetRootComponent(ProjectileCollisionBox);
-
+	
+	ProjectileOverlapSphere = CreateDefaultSubobject<USphereComponent>(TEXT("ProjectileOverlapSphere"));
+	ProjectileOverlapSphere->SetCollisionObjectType(ECC_GameTraceChannel1);
+	ProjectileOverlapSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	ProjectileOverlapSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
+	
+	ProjectileOverlapSphere->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnCollisionBoxBeginOverlap);
+	ProjectileOverlapSphere->SetupAttachment(ProjectileCollisionBox);
+	
 	ProjectileMovementComp = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComp"));
 	ProjectileMovementComp->InitialSpeed = InitialSpeed;
 	ProjectileMovementComp->MaxSpeed = MaxSpeed;
@@ -43,7 +52,9 @@ ATwoMinProjectileBase::ATwoMinProjectileBase()
 void ATwoMinProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
+	CachedStaticMeshComp = FindComponentByClass<UStaticMeshComponent>();
+	
 	SetLifeSpan(LifeTime);
 	IgnoreActors.Emplace(GetOwner());
 	ProjectileCollisionBox->IgnoreActorWhenMoving(GetOwner(), true);
@@ -53,6 +64,8 @@ void ATwoMinProjectileBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	UpdateStaticMeshRotation(DeltaSeconds);
+	
 	if (CurHoverTime < HoverTime)
 	{
 		CurHoverTime += DeltaSeconds;
@@ -80,6 +93,14 @@ void ATwoMinProjectileBase::Tick(float DeltaSeconds)
 	{
 		HomingTick(DeltaSeconds);
 	}
+	else if (ProjectileType == EProjectileType::Falling)
+	{
+		FallingTick(DeltaSeconds);
+	}
+	else if (ProjectileType == EProjectileType::Target)
+	{
+		UpdateTargetTick();
+	}
 }
 
 FVector ATwoMinProjectileBase::GetSpawnLocation()
@@ -103,6 +124,29 @@ FVector ATwoMinProjectileBase::GetSpawnLocation()
 		FMath::FRandRange(-HalfLocalZ, HalfLocalZ));
 	
 	return FinalLocation + SpawnLocation + OwnerRotation.RotateVector(RandomVector);
+}
+
+void ATwoMinProjectileBase::SetCustomMesh(UStaticMesh* NewMesh) const
+{
+	if (!NewMesh) return;
+	if (!CachedStaticMeshComp) return;
+	
+	CachedStaticMeshComp->SetStaticMesh(NewMesh);
+}
+
+void ATwoMinProjectileBase::RecallProjectile()
+{
+	if (bIsRecallProjectile) return;
+	
+	ProjectileType = EProjectileType::Target;
+	bIsRecallProjectile = true;
+	bIsHitFloor = false;
+	
+	ProjectileMovementComp->ProjectileGravityScale = 0;
+	ProjectileMovementComp->StopSimulating(FHitResult());
+	ProjectileMovementComp->SetUpdatedComponent(RootComponent);
+	
+	ProjectileCollisionBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void ATwoMinProjectileBase::HomingTick(float DeltaSeconds)
@@ -175,14 +219,98 @@ AActor* ATwoMinProjectileBase::UpdateHomingTarget()
 	return EnemyActors[0];
 }
 
+void ATwoMinProjectileBase::FallingTick(float DeltaSeconds)
+{
+	if (bIsHitFloor) return;
+	
+	if (bIsFallingStart == false)
+	{
+		CurFallingTime += DeltaSeconds;
+		if (CurFallingTime >= FallingStartTime)
+		{
+			bIsFallingStart = true;
+		}
+	}
+	else
+	{
+		CurFallingGravity += FallingGravityCoef * DeltaSeconds;
+		ProjectileMovementComp->ProjectileGravityScale = CurFallingGravity;
+	}
+}
+
+void ATwoMinProjectileBase::UpdateStaticMeshRotation(float DeltaSeconds) const
+{
+	if (bIsHitFloor) return;
+	if (bIsRotationStaticMesh == false) return;
+	
+	CachedStaticMeshComp->AddLocalRotation(RotationSpeed * DeltaSeconds);
+}
+
+void ATwoMinProjectileBase::UpdateTargetTick()
+{
+	if (!Owner)
+	{
+		DestroyProjectile();
+		return;
+	}
+	
+	ATwoMinBaseCharacter* OwnerCharacter = Cast<ATwoMinBaseCharacter>(Owner);
+	if (!OwnerCharacter)
+	{
+		DestroyProjectile();
+		return;
+	}
+	
+	if (OwnerCharacter->GetCombatComponent()->GetIsAlive() == false)
+	{
+		DestroyProjectile();
+		return;
+	}
+	
+	FVector Direction = (Owner->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+	FVector ToTarget = Direction * ProjectileMovementComp->InitialSpeed;
+	ProjectileMovementComp->Velocity = ToTarget;
+	
+	SetActorRotation(ToTarget.Rotation());
+}
+
+void ATwoMinProjectileBase::OnCollisionBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (bIsOverlapEvent == false) return;
+	if (bIsRecallProjectile == false) return;
+	
+	APawn* HitPawn = Cast<APawn>(OtherActor);
+	APawn* OwnerPawn = Cast<APawn>(GetOwner());
+	if (!HitPawn || !OwnerPawn) return;
+	if (UTwoMinFunctionLibrary::IsTargetPawnHostile(OwnerPawn, HitPawn)) return;
+	
+	PickUpProjectileProcess(OwnerPawn);
+}
+
 void ATwoMinProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, AActor* OtherActor,
                                             UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult)
 {
+	if (bIsKeepHitFloorProjectile)
+	{
+		ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+		if (ProjectileMovementComp->bShouldBounce)
+		{
+			if (HitResult.ImpactNormal.Z > 0.7f)
+			{
+				bIsHitFloor = true;
+				ProjectileMovementComp->bShouldBounce = false;
+				ProjectileMovementComp->Velocity = FVector(0.f, 0.f, 0.f);
+				return;
+			}
+		}	
+	}
+	
 	APawn* HitPawn = Cast<APawn>(OtherActor);
 	APawn* OwnerPawn = Cast<APawn>(GetOwner());
 	if (!OwnerPawn)
 	{
-		Destroy();
+		DestroyProjectile();
 		return;
 	}
 	
@@ -192,8 +320,8 @@ void ATwoMinProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 		{
 			return;
 		}
-		
-		Destroy();
+
+		DestroyProjectile();
 		return;
 	}
 
@@ -235,7 +363,7 @@ void ATwoMinProjectileBase::OnProjectileHit(UPrimitiveComponent* HitComponent, A
 
 	OnHitPlayEffect(HitResult);
 	HandleApplyProjectileDamage(HitPawn, EventData, bIsTargetGuard);
-	Destroy();
+	DestroyProjectile();
 }
 
 void ATwoMinProjectileBase::HandleApplyProjectileDamage(APawn* HitPawn, FGameplayEventData& PayLoad,
@@ -334,6 +462,11 @@ void ATwoMinProjectileBase::Destroyed()
 {
 	Super::Destroyed();
 
+	if (DestroyCallback)
+	{
+		DestroyCallback();
+	}
+	
 	if (bIsHit)
 	{
 		return;
@@ -361,4 +494,25 @@ FVector ATwoMinProjectileBase::GetDirection() const
 
 	const FVector Direction = (CachedTargetCharacter->GetActorLocation() - GetActorLocation()).GetSafeNormal();
 	return Direction;
+}
+
+void ATwoMinProjectileBase::PickUpProjectileProcess(AActor* OwnerActor)
+{
+	FGameplayEventData EventData;
+	EventData.Instigator = OwnerActor;
+
+	UTwoMinFunctionLibrary::SendToGameplayEffectEvent(
+		OwnerActor,
+		TwoMinGameplayTag::Player_Event_PickUpThrowWeapon,
+		EventData
+	);
+	
+	DestroyProjectile();
+}
+
+void ATwoMinProjectileBase::DestroyProjectile()
+{
+	if (ProjectileMovementComp->bShouldBounce) return;
+	
+	Destroy();
 }

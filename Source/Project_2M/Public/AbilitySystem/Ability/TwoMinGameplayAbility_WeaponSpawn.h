@@ -35,6 +35,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "AttachSocket")
 	FName AttachSocketName = "";
 
+	UPROPERTY(EditDefaultsOnly, Category = "AttachSocket")
+	FName EquipAttachSocketName = "";
+	
 	UPROPERTY(EditDefaultsOnly, Category = "GameplayTag")
 	FGameplayTag WeaponSpawnTag = FGameplayTag::EmptyTag;
 	

@@ -31,9 +31,12 @@ void UTwoMinGameplayAbility_WeaponSpawn::OnChangeWeapon(TSubclassOf<ATwoMinWeapo
 {
 	if (!InWeaponClass) return;
 	
+	ATwoMinBaseCharacter* OwnerCharacter = Cast<ATwoMinBaseCharacter>(GetOwningActorFromActorInfo());
+	if (!OwnerCharacter) return;
+	
 	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.Owner = GetAvatarActorFromActorInfo();
-	SpawnParameters.Instigator = Cast<APawn>(GetAvatarActorFromActorInfo());
+	SpawnParameters.Owner = OwnerCharacter;
+	SpawnParameters.Instigator = Cast<APawn>(OwnerCharacter);
 	SpawnParameters.SpawnCollisionHandlingOverride =
 		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	SpawnParameters.TransformScaleMethod = ESpawnActorScaleMethod::MultiplyWithRoot;
@@ -53,16 +56,14 @@ void UTwoMinGameplayAbility_WeaponSpawn::OnChangeWeapon(TSubclassOf<ATwoMinWeapo
 		EAttachmentRule::KeepRelative,
 		EAttachmentRule::KeepWorld,
 		true);
-
+	
 	SpawnWeapon->AttachToComponent(
 		GetOwningComponentFromActorInfo(),
 		AttachmentRules,
-		AttachSocketName
+		UTwoMinFunctionLibrary::HasGameplayTag(OwnerCharacter, TwoMinGameplayTag::Player_State_EquipWeapon)
+		? EquipAttachSocketName : AttachSocketName
 	);
-
-	ATwoMinBaseCharacter* OwnerCharacter = Cast<ATwoMinBaseCharacter>(GetOwningActorFromActorInfo());
-	if (!OwnerCharacter) return;
-
+	
 	if (bIsFirst == false)
 	{
 		OwnerCharacter->GetCombatComponent()->UnRegisterWeapon(WeaponSpawnTag);

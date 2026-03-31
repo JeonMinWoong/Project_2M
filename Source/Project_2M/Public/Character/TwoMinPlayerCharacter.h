@@ -10,6 +10,7 @@
 #include "Widgets/TwoMinWidget_WindowQuickSlot.h"
 #include "TwoMinPlayerCharacter.generated.h"
 
+class ATwoMinProjectileBase;
 class UNiagaraComponent;
 class UInventoryComponent;
 class UGameplayEffect;
@@ -56,6 +57,10 @@ public:
 	void OnIgnoreInputProcess(bool bIsIgnore);
 	bool IsPossibleUseItem();
 	
+	virtual void SetIsAiming(bool bOn) override;
+	void CheckAimingZoom(float DeltaTime);
+	virtual void SetThrowProjectile(ATwoMinProjectileBase* NewThrowProjectile);
+	
 	FTimerHandle FightDecreaseTimerHandle;
 	
 protected:
@@ -73,6 +78,7 @@ protected:
 private:
 	void CheckSpecialAttack(float DeltaTime);
 	void CheckRunState(float DeltaTime);
+	void CancelAimingAbility() const;
 	
 	/** Components **/
 	UPROPERTY(VisibleAnywhere)
@@ -147,6 +153,15 @@ private:
 	UPROPERTY()
 	bool bIsEquipWeapon = false;
 	
+	UPROPERTY(EditDefaultsOnly, Category = "CameraInfo|OriginFieldOfView")
+	float OriginFieldOfView = 100.f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "CameraInfo|AimingFieldOfView")
+	float AimingFieldOfView = 45.f;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "CameraInfo|Speed")
+	float CameraInterpSpeed = 15.f;
+	
 	/** CharacterInfo **/
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|Capsule")
 	float CapsuleRadius = 42.f;
@@ -189,7 +204,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|CharacterMovement")
 	float MaxRunSpeed = 600.f;
-
+	
+	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|CharacterMovement")
+	float MaxAimingSpeed = 150.f;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "CharacterInfo|CharacterMovement")
 	FRotator CharacterRotationRate = FRotator(0.f, 500.f, 0.f);
 
@@ -218,6 +236,9 @@ private:
 	
 	UPROPERTY()
 	float MaxInputRunningTime = 0.05f;
+	
+	UPROPERTY()
+	bool bIsAiming = false;
 	
 	UPROPERTY()
 	TArray<FGameplayTag> MovePossibleCancelAbilityTags;
@@ -268,6 +289,11 @@ private:
 	void Input_EndGameTrigger(const FInputActionValue& InputActionValue);
 	
 	bool bIsEndGameTrigger = false;
+	
+	void Input_RecallTrigger(const FInputActionValue& InputActionValue);
+	
+	UPROPERTY()
+	ATwoMinProjectileBase* ThrowProjectile;
 	
 #pragma endregion
 

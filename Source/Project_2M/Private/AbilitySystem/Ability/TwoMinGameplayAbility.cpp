@@ -22,6 +22,7 @@
 #include "AbilitySystem/Ability/Enemy/TwoMinEGA_AttackBase.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEGA_SpecialAttackBase.h"
 #include "AbilitySystem/Ability/Player/TwoMinGA_SpecialAttackBase.h"
+#include "AbilitySystem/Ability/Player/TwoMinGA_ThrowBase.h"
 #include "Character/TwoMinEnemyCharacter.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/ExecutionComponent.h"
@@ -369,7 +370,11 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByRange(FGameplayEvent
 	UAttackPayloadObject* AttackPayload = NewObject<UAttackPayloadObject>(BaseCharacter);
 	TSubclassOf<ATwoMinProjectileBase> ProjectileBase = nullptr;
 	FName SocketName = NAME_None;
+	UStaticMesh* NewStaticMesh = nullptr;
 	ATwoMinBaseCharacter* TargetCharacter = nullptr;
+	TFunction<void()> DestroyCallback = nullptr;
+	FVector SpawnLocation = FVector::ZeroVector;
+	FRotator SpawnRotation = FRotator::ZeroRotator;
 	
 	if (CharacterType == ECharacterType::Enemy)
 	{
@@ -384,19 +389,25 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByRange(FGameplayEvent
 		ProjectileBase = EnemyAttackBase->GetProjectile();
 		SocketName = EnemyAttackBase->GetShootSocketName();
 		TargetCharacter = EnemyAttackBase->GetCachedAbilityTargetCharacter();
+		SpawnLocation = BaseCharacter->GetMesh()->GetSocketLocation(SocketName);
+		SpawnRotation = BaseCharacter->GetMesh()->GetSocketRotation(SocketName);
 	}
 	else if (CharacterType == ECharacterType::Player)
 	{
 		//DebugTwoMin::Print(TEXT("Player Ability Event Received"), FColor::Green);
 
-		UTwoMinGA_AttackBase* PlayerAttackBase = Cast<UTwoMinGA_AttackBase>(this);
-		if (!PlayerAttackBase) return;
+		UTwoMinGA_ThrowBase* PlayerThrowBase = Cast<UTwoMinGA_ThrowBase>(this);
+		if (!PlayerThrowBase) return;
 
-		const FAttackInfoData& AttackInfoData = PlayerAttackBase->GetAttackInfoData();
+		const FAttackInfoData& AttackInfoData = PlayerThrowBase->GetAttackInfoData();
 		AttackPayload->Data = AttackInfoData;
 
-		//ProjectileBase = PlayerAttackBase->GetProjectile();
-		//TargetCharacter = PlayerAttackBase->GetCachedAbilityTargetCharacter();
+		ProjectileBase = PlayerThrowBase->GetProjectile();
+		SocketName = PlayerThrowBase->GetShootSocketName();
+		NewStaticMesh = PlayerThrowBase->GetCustomStaticMesh();
+		SpawnLocation = BaseCharacter->GetMesh()->GetSocketLocation(SocketName);
+		SpawnRotation = PlayerThrowBase->GetThrowRotator();
+		DestroyCallback = [PlayerThrowBase]{ if (IsValid(PlayerThrowBase)) { PlayerThrowBase->DestroyProjectile();	}};
 	}
 	
 	if (!ProjectileBase || SocketName.IsNone()) return;
@@ -404,9 +415,6 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByRange(FGameplayEvent
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = BaseCharacter;
 	
-	FVector SpawnLocation = BaseCharacter->GetMesh()->GetSocketLocation(SocketName);
-	FRotator SpawnRotation = BaseCharacter->GetMesh()->GetSocketRotation(SocketName);
-
 	ATwoMinProjectileBase* Projectile = GetWorld()->SpawnActor<ATwoMinProjectileBase>(
 		ProjectileBase,
 		SpawnLocation,
@@ -416,10 +424,15 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByRange(FGameplayEvent
 
 	if (Projectile)
 	{
+		BaseCharacter->SetThrowProjectile(Projectile);
 		Projectile->SetProjectileAttackInfoData(AttackPayload->Data);
 		Projectile->SetActiveAbilityTag(AbilityTags.First());
 		Projectile->SetProjectileAttackGameplayEffectClass(GetAttackGameplayEffectClass());
 		Projectile->SetActiveAbilityLevel(GetAbilityLevel());
+		if (Projectile->IsCustomMesh())
+		{
+			Projectile->SetCustomMesh(NewStaticMesh);
+		}
 		
 		if (Projectile->GetProjectileType() == EProjectileType::Location)
 		{
@@ -429,6 +442,8 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByRange(FGameplayEvent
 			
 			Projectile->SetActorLocation(CustomSpawnLocation);
 		}
+		
+		Projectile->SetOnDestroyedCallback(DestroyCallback);
 	}
 }
 

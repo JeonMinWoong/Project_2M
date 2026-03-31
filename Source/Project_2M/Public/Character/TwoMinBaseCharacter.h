@@ -8,6 +8,7 @@
 #include "ToMinTypes/TwoMinEnumTypes.h"
 #include "TwoMinBaseCharacter.generated.h"
 
+class ATwoMinProjectileBase;
 class UNiagaraSystem;
 class UGameplayEffect;
 class UTwoMinAttributeSet;
@@ -36,6 +37,9 @@ public:
 	virtual void OnHitEffectSpawnPoint(int32 WeaponIndex);
 	virtual void OnHitEffectAttachToWeaponSocket(int32 WeaponIndex);
 	
+	virtual void SetIsAiming(bool bOn);
+	virtual void SetThrowProjectile(ATwoMinProjectileBase* NewThrowProjectile);
+
 	FTimerHandle HitStopTimerHandle;
 	
 protected:
@@ -102,5 +106,4 @@ public:
 	
 	FORCEINLINE void SetGainGold(int32 InGainGold) { GainGold = InGainGold; }
 	FORCEINLINE int32 GetGainGold() const { return GainGold; }
-	
 };
