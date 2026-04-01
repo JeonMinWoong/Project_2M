@@ -88,3 +88,5 @@ Saved/
 .vsconfig
 global.json
 Project_2M.sln.DotSettings.user
+.claude/settings.local.json
+CLAUDE.md

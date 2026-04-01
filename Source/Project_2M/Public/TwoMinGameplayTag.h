@@ -241,6 +241,7 @@ namespace TwoMinGameplayTag
 	
 	// SaveGame Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Data_SaveGame_Slot_1);
+	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Data_SaveGame_SoundData);
 
 	// GameplayEffect Tags
 	PROJECT_2M_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(GE_Player_Stats);

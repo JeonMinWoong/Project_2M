@@ -19,6 +19,7 @@ class PROJECT_2M_API ATwoMinTitleGameMode : public AGameModeBase
 public:
 	virtual void BeginPlay() override;
 
+	void ReFocusingTitleUI() const;
 	void OnEnterInGame(const FName NextStagePath, const FName NextStageName);
 	
 private:

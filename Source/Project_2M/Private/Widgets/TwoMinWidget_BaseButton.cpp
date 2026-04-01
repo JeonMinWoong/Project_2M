@@ -14,12 +14,28 @@ void UTwoMinWidget_BaseButton::SetLocked(bool Locked)
 		FLinearColor tColor = FLinearColor(0.072f, 0.072f, 0.072f, 1.f);
 		TextBox->SetColorAndOpacity(FSlateColor(tColor));
 		bIsLocked = true;
+		SetKeepSelect(false);
 	}
 	else
 	{
 		LockImage->SetVisibility(ESlateVisibility::Hidden);
 		TextBox->SetColorAndOpacity(FSlateColor(FLinearColor::White));
 		bIsLocked = false;
+		SetKeepSelect(true);
+	}
+}
+
+void UTwoMinWidget_BaseButton::SetKeepSelect(bool bOn)
+{
+	if (bIsKeepSelect == false) return; 
+	
+	if (bOn)
+	{
+		SelectImage->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		SelectImage->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 

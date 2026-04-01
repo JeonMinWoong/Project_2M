@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
 #include "ToMinTypes/TwoMinEnumTypes.h"
+#include "ToMinTypes/TwoMinStructTypes.h"
 #include "TwoMinSaveGame.generated.h"
 
 struct FSaveGameData;
@@ -18,9 +19,12 @@ class PROJECT_2M_API UTwoMinSaveGame : public USaveGame
 	GENERATED_BODY()
 	
 public:
-	void SaveGameData(const FSaveGameData& NewSaveGameData);
-	FSaveGameData LoadGameData() const;
-	bool IsExistSaveGameData() const;
+	void SavePlayerGameData(const FSaveGameData& NewSaveGameData);
+	FSaveGameData LoadPlayerGameData() const;
+	bool IsExistSavePlayerGameData() const;
+	
+	void SaveSoundData(const FSoundSaveData& NewSoundSaveData);
+	FSoundSaveData LoadSoundData() const;
 
 private:
 	UPROPERTY()
@@ -37,4 +41,7 @@ private:
 	
 	UPROPERTY()
 	TArray<FItemInstance> PlayerCurrentItems;
+	
+	UPROPERTY()
+	FSoundSaveData SoundSaveData;
 };

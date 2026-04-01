@@ -241,6 +241,7 @@ namespace TwoMinGameplayTag
 	
 	// SaveGame Tags
 	UE_DEFINE_GAMEPLAY_TAG(Data_SaveGame_Slot_1, "Data.SaveGame.Slot.1");
+	UE_DEFINE_GAMEPLAY_TAG(Data_SaveGame_SoundData, "Data.SaveGame.SoundData");
 	
 	// GameplayEffect Tags
 	UE_DEFINE_GAMEPLAY_TAG(GE_Player_Stats, "GE.Player.Stats");

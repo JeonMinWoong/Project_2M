@@ -6,18 +6,17 @@
 #include "TwoMinDebugHelper.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 
-void UTwoMinSaveGame::SaveGameData(const FSaveGameData& NewSaveGameData)
+void UTwoMinSaveGame::SavePlayerGameData(const FSaveGameData& NewSaveGameData)
 {
 	WorldStageMap = NewSaveGameData.WorldStageMap;
 	PlayerLevel = NewSaveGameData.PlayerLevel;
 	PlayerCurrentExp = NewSaveGameData.PlayerCurrentExp;
 	PlayerCurrentGold = NewSaveGameData.PlayerCurrentGold;
 	PlayerCurrentItems = NewSaveGameData.PlayerCurrentItems;
-	
 	//TwoMinDebugHelper::Print(TEXT("저장 중..."), FColor::Green);
 }
 
-FSaveGameData UTwoMinSaveGame::LoadGameData() const
+FSaveGameData UTwoMinSaveGame::LoadPlayerGameData() const
 {
 	FSaveGameData NewSaveGameData;
 	NewSaveGameData.WorldStageMap = WorldStageMap;
@@ -30,7 +29,17 @@ FSaveGameData UTwoMinSaveGame::LoadGameData() const
 	return NewSaveGameData;
 }
 
-bool UTwoMinSaveGame::IsExistSaveGameData() const
+bool UTwoMinSaveGame::IsExistSavePlayerGameData() const
 {
 	return PlayerLevel > 0;
+}
+
+void UTwoMinSaveGame::SaveSoundData(const FSoundSaveData& NewSoundSaveData)
+{
+	SoundSaveData = NewSoundSaveData;
+}
+
+FSoundSaveData UTwoMinSaveGame::LoadSoundData() const
+{
+	return SoundSaveData;
 }

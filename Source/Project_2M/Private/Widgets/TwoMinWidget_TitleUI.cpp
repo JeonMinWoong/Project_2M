@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Managers/WorldStageManager.h"
 #include "Widgets/TwoMinWidget_BaseButton.h"
+#include "Widgets/TwoMinWidget_SettingUI.h"
 
 void UTwoMinWidget_TitleUI::NativeOnInitialized()
 {
@@ -36,6 +37,7 @@ void UTwoMinWidget_TitleUI::NativeOnInitialized()
 	}
 	
 	CurrentFocusIndex = IsExistSaveData ? 1 : 0;
+	
 	OnFocusSlot();
 }
 
@@ -53,6 +55,11 @@ FReply UTwoMinWidget_TitleUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 		else if (CurrentFocusIndex == 2)
 		{
 			// todo : Setting Window
+			if (!UTwoMinWidget_SettingUIClass) return FReply::Unhandled();
+				
+			SettingUI = CreateWidget<UTwoMinWidget_SettingUI>(GetWorld(), UTwoMinWidget_SettingUIClass);
+			SettingUI->AddToViewport();
+			
 			return FReply::Unhandled();
 		}
 		else if (CurrentFocusIndex == 3)

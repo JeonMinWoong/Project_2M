@@ -17,8 +17,22 @@ class PROJECT_2M_API USoundManager : public UObject
 public:
 	void PlayBGMSound(EBGMSoundType NewBGMSoundType);
 	void StopBGMSound();
+	void ApplySoundVolume(const UObject* WorldContextObject, float MasterVolume, bool bMasterMute, float MusicVolume, 
+		bool bMusicMute, float SFXVolume, bool bSFXMute);
 	
 private:
+	UPROPERTY(EditDefaultsOnly, Category = "SoundInfo|SoundMix")
+	USoundMix* SoundMix;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SoundInfo|SoundClass")
+	USoundClass* MasterSoundClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SoundInfo|SoundClass")
+	USoundClass* MusicSoundClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "SoundInfo|SoundClass")
+	USoundClass* SFXSoundClass;
+
 	UPROPERTY(EditDefaultsOnly, Category = "SoundInfo|BGM")
 	TMap<EBGMSoundType, USoundBase*> BGNGroups;
 	

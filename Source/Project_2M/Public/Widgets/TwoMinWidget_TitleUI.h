@@ -6,6 +6,7 @@
 #include "Widgets/TwoMinWidgetBase.h"
 #include "TwoMinWidget_TitleUI.generated.h"
 
+class UTwoMinWidget_SettingUI;
 class UTwoMinWidget_BaseButton;
 class UUniformGridPanel;
 /**
@@ -18,6 +19,9 @@ class PROJECT_2M_API UTwoMinWidget_TitleUI : public UTwoMinWidgetBase
 	
 public:
 	void OnFocusSlot();
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "SettingUI")
+	TSubclassOf<UTwoMinWidget_SettingUI> UTwoMinWidget_SettingUIClass;
 	
 protected:
 	virtual void NativeOnInitialized() override;
@@ -35,5 +39,8 @@ private:
 	
 	UPROPERTY()
 	bool bIsLockInputKey = false;
+	
+	UPROPERTY()
+	UTwoMinWidget_SettingUI* SettingUI;
 	
 };

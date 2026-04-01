@@ -18,9 +18,13 @@ class PROJECT_2M_API UTwoMinWidget_BaseButton : public UTwoMinWidgetBase
 
 public:
 	void SetLocked(bool Locked);
+	void SetKeepSelect(bool bOn);
 
 	UPROPERTY(meta=(BindWidget), BlueprintReadWrite)
 	UTextBlock* TextBox;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "KeepSelect")
+	bool bIsKeepSelect = false;
 	
 protected:
 	virtual void NativeOnAddedToFocusPath(const FFocusEvent& InFocusEvent) override;
@@ -31,6 +35,9 @@ private:
 	
 	UPROPERTY(meta=(BindWidget))
 	UImage* FocusImage;
+	
+	UPROPERTY(meta=(BindWidget))
+	UImage* SelectImage;
 	
 	UPROPERTY(meta=(BindWidget))
 	UImage* LockImage;

@@ -572,6 +572,30 @@ struct FWorldStageClearGainData : public FTableRowBase
 	
 };
 
+USTRUCT(BlueprintType)
+struct FSoundSaveData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float MasterVolume = 1.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bIsMasterMute = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float MusicVolume = 1.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bIsMusicMute = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float SFXVolume = 1.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bIsSFXMute = false;
+};
+
 USTRUCT(NotBlueprintType)
 struct FSaveGameData
 {

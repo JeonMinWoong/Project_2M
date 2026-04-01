@@ -7,11 +7,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "Managers/SoundManager.h"
 #include "Managers/WorldStageManager.h"
+#include "TwoMinFunctionLibrary.h"
+#include "ToMinTypes/TwoMinStructTypes.h"
 #include "Widgets/TwoMinWidget_LoadingUI.h"
 
-void UTwoMinGameInstance::Init()
+void UTwoMinGameInstance::OnStart()
 {
-	Super::Init();
+	Super::OnStart();
 	
 	ApplyInitSettings();
 	StageManager->InitStage();
@@ -20,40 +22,53 @@ void UTwoMinGameInstance::Init()
 void UTwoMinGameInstance::ApplyInitSettings()
 {
 	UGameUserSettings* Settings = UGameUserSettings::GetGameUserSettings();
-	if (Settings)
+	if (!Settings)
 	{
-		Settings->SetOverallScalabilityLevel(GeneralValue);
-		Settings->SetViewDistanceQuality(1);
-		Settings->SetAntiAliasingQuality(1);
-		Settings->SetPostProcessingQuality(1);
-		Settings->SetShadowQuality(1);
-		Settings->SetGlobalIlluminationQuality(1);
-		Settings->SetReflectionQuality(1);
-		Settings->SetTextureQuality(1);
-		Settings->SetVisualEffectQuality(1);
-		Settings->SetFoliageQuality(1);
-		Settings->SetShadingQuality(1);
-		Settings->SetFrameRateLimit(144.0f);
-		Settings->SetResolutionScaleValueEx(100.0f);
+		Settings->SetOverallScalabilityLevel(InitGeneralValue);
+		Settings->SetViewDistanceQuality(InitGeneralValue);
+		Settings->SetAntiAliasingQuality(InitGeneralValue);
+		Settings->SetPostProcessingQuality(InitGeneralValue);
+		Settings->SetShadowQuality(InitGeneralValue);
+		Settings->SetGlobalIlluminationQuality(InitGeneralValue);
+		Settings->SetReflectionQuality(InitGeneralValue);
+		Settings->SetTextureQuality(InitGeneralValue);
+		Settings->SetVisualEffectQuality(InitGeneralValue);
+		Settings->SetFoliageQuality(InitGeneralValue);
+		Settings->SetShadingQuality(InitGeneralValue);
+		Settings->SetFrameRateLimit(InitFrameRate);
+		Settings->SetResolutionScaleValueEx(InitResolutionScaleValue);
+		Settings->SetScreenResolution(InitScreenSize);
+		Settings->SetVSyncEnabled(bIsInitVSync);
+		Settings->SetFullscreenMode(bIsInitScreenFullMode ? EWindowMode::Fullscreen : EWindowMode::Windowed);
         
 		// ApplySettings 대신 직접 적용
 		Scalability::FQualityLevels QualityLevels;
-		QualityLevels.ResolutionQuality = 100.f;
-		QualityLevels.ViewDistanceQuality = 1;
-		QualityLevels.AntiAliasingQuality = 1;
-		QualityLevels.PostProcessQuality = 1;
-		QualityLevels.ShadowQuality = 1;
-		QualityLevels.GlobalIlluminationQuality = 1;
-		QualityLevels.ReflectionQuality = 1;
-		QualityLevels.TextureQuality = 1;
-		QualityLevels.EffectsQuality = 1;
-		QualityLevels.FoliageQuality = 1;
-		QualityLevels.ShadingQuality = 1;
-		QualityLevels.LandscapeQuality = 1;
+		QualityLevels.ResolutionQuality = InitResolutionScaleValue;
+		QualityLevels.ViewDistanceQuality = InitGeneralValue;
+		QualityLevels.AntiAliasingQuality = InitGeneralValue;
+		QualityLevels.PostProcessQuality = InitGeneralValue;
+		QualityLevels.ShadowQuality = InitGeneralValue;
+		QualityLevels.GlobalIlluminationQuality = InitGeneralValue;
+		QualityLevels.ReflectionQuality = InitGeneralValue;
+		QualityLevels.TextureQuality = InitGeneralValue;
+		QualityLevels.EffectsQuality = InitGeneralValue;
+		QualityLevels.FoliageQuality = InitGeneralValue;
+		QualityLevels.ShadingQuality = InitGeneralValue;
+		QualityLevels.LandscapeQuality = InitGeneralValue;
 		Scalability::SetQualityLevels(QualityLevels);
 		Scalability::SaveState(GGameUserSettingsIni);
         
 		Settings->SaveSettings();
+	}
+
+	FSoundSaveData LoadedSoundData;
+	if (UTwoMinFunctionLibrary::TryLoadSoundData(LoadedSoundData))
+	{
+		UTwoMinFunctionLibrary::ApplySoundVolume(this, LoadedSoundData);
+	}
+	else
+	{
+		UTwoMinFunctionLibrary::ApplySoundVolume(this, FSoundSaveData());
 	}
 }
 

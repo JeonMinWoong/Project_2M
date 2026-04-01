@@ -41,6 +41,14 @@ void ATwoMinTitleGameMode::ShowTitleWidget()
 	TitleWidget->OnFocusSlot();
 }
 
+void ATwoMinTitleGameMode::ReFocusingTitleUI() const
+{
+	if (!TitleWidget) return;
+	
+	TitleWidget->OnFocusSlot();
+}
+
+
 void ATwoMinTitleGameMode::OnEnterInGame(const FName NextStagePath, const FName NextStageName)
 {
 	if (!FadeInOutWidgetClass) return;

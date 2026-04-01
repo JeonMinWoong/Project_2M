@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "TwoMinConstant.h"
 #include "Engine/GameInstance.h"
 #include "TwoMinGameInstance.generated.h"
 
@@ -20,7 +21,7 @@ class PROJECT_2M_API UTwoMinGameInstance : public UGameInstance
 	GENERATED_BODY()
 	
 public:
-	virtual void Init() override;
+	virtual void OnStart() override;
 	
 	void LockPlayerInput(bool bLock) const;
 	void PlayUISound(const EUISoundType NewUISoundType) const;
@@ -57,7 +58,22 @@ private:
 	void OnLevelLoaded(const FName& PackageName, UPackage* Package, EAsyncLoadingResult::Type Result);
 	
 	UPROPERTY()
-	int32 GeneralValue = 1;
+	int32 InitGeneralValue = 1;
+	
+	UPROPERTY()
+	float InitFrameRate = 144.f;
+	
+	UPROPERTY()
+	float InitResolutionScaleValue = 100.f;
+	
+	UPROPERTY()
+	FIntPoint InitScreenSize = TwoMinConstant::SupportedResolutions[3]; 
+	
+	UPROPERTY()
+	bool bIsInitVSync = false;
+	
+	UPROPERTY()
+	bool bIsInitScreenFullMode = true;
 	
 	UPROPERTY()
 	float MinLoadingTime = 1.f;

@@ -18,5 +18,14 @@ namespace TwoMinConstant
 	constexpr float ComputeBlockValue = 0.3f; 
 	constexpr float StopThreshold = -0.866f;
 	
+	
+	static const TArray<FIntPoint> SupportedResolutions =
+	{
+		FIntPoint(1280, 720),
+		FIntPoint(1600, 900),
+		FIntPoint(1920, 1080),
+		FIntPoint(2560, 1440),
+	};
+	
 #pragma endregion
 }

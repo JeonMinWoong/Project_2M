@@ -168,7 +168,7 @@ void UTwoMinFunctionLibrary::SaveGame(const FSaveGameData& NewSaveGameData)
 	UTwoMinSaveGame* TwoMinSaveGame = Cast<UTwoMinSaveGame>(SaveGameObject);
 	if (!TwoMinSaveGame) return;
 	
-	TwoMinSaveGame->SaveGameData(NewSaveGameData);
+	TwoMinSaveGame->SavePlayerGameData(NewSaveGameData);
 	
 	const bool bWasSaved = UGameplayStatics::SaveGameToSlot(
 		TwoMinSaveGame,
@@ -186,7 +186,7 @@ bool UTwoMinFunctionLibrary::TryLoadGame(FSaveGameData& OutSaveGameData)
 	UTwoMinSaveGame* TwoMinSaveGame = Cast<UTwoMinSaveGame>(SaveGameObject);
 	if (!TwoMinSaveGame) return false;
 	
-	OutSaveGameData = TwoMinSaveGame->LoadGameData();
+	OutSaveGameData = TwoMinSaveGame->LoadPlayerGameData();
 
 	if (OutSaveGameData.PlayerLevel <= 0)
 	{
@@ -202,6 +202,50 @@ bool UTwoMinFunctionLibrary::IsExistSaveGameData()
 	const bool IsFindSaveData = UGameplayStatics::DoesSaveGameExist(SlotName, 0);
 	
 	return IsFindSaveData;
+}
+
+void UTwoMinFunctionLibrary::SaveSoundData(const FSoundSaveData& NewSoundSaveData)
+{
+	USaveGame* SaveGameObject = UGameplayStatics::CreateSaveGameObject(UTwoMinSaveGame::StaticClass());
+	UTwoMinSaveGame* TwoMinSaveGame = Cast<UTwoMinSaveGame>(SaveGameObject);
+	if (!TwoMinSaveGame) return;
+	
+	TwoMinSaveGame->SaveSoundData(NewSoundSaveData);
+	
+	const bool bWasSaved = UGameplayStatics::SaveGameToSlot(
+		TwoMinSaveGame,
+		TwoMinGameplayTag::Data_SaveGame_SoundData.GetTag().ToString(),
+		0
+	);
+}
+
+bool UTwoMinFunctionLibrary::TryLoadSoundData(FSoundSaveData& OutSoundSaveData)
+{
+	const FString SlotName = TwoMinGameplayTag::Data_SaveGame_SoundData.GetTag().ToString();
+	USaveGame* SaveGameObject = UGameplayStatics::LoadGameFromSlot(SlotName, 0);
+	UTwoMinSaveGame* TwoMinSaveGame = Cast<UTwoMinSaveGame>(SaveGameObject);
+	if (!TwoMinSaveGame) return false;
+
+	OutSoundSaveData = TwoMinSaveGame->LoadSoundData();
+	return true;
+}
+
+void UTwoMinFunctionLibrary::ApplySoundVolume(const UObject* WorldContextObject, const FSoundSaveData& SoundData)
+{
+	if (!WorldContextObject) return;
+
+	const UWorld* World = WorldContextObject->GetWorld();
+	if (!World) return;
+
+	const UTwoMinGameInstance* GI = Cast<UTwoMinGameInstance>(World->GetGameInstance());
+	if (!GI || !GI->SoundManager) return;
+
+	GI->SoundManager->ApplySoundVolume(
+		WorldContextObject,
+		SoundData.MasterVolume, SoundData.bIsMasterMute,
+		SoundData.MusicVolume, SoundData.bIsMusicMute,
+		SoundData.SFXVolume, SoundData.bIsSFXMute
+	);
 }
 
 void UTwoMinFunctionLibrary::RemoveSaveGameData()

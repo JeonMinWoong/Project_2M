@@ -7,6 +7,7 @@
 #include "ToMinTypes/TwoMinEnumTypes.h"
 #include "TwoMinFunctionLibrary.generated.h"
 
+struct FSoundSaveData;
 struct FSaveGameData;
 struct FGameplayEventData;
 struct FGameplayTag;
@@ -61,6 +62,15 @@ public:
 	
 	UFUNCTION()
 	static bool IsExistSaveGameData();
+	
+	UFUNCTION()
+	static void SaveSoundData(const FSoundSaveData& NewSoundSaveData);
+
+	UFUNCTION()
+	static bool TryLoadSoundData(FSoundSaveData& OutSoundSaveData);
+
+	UFUNCTION()
+	static void ApplySoundVolume(const UObject* WorldContextObject, const FSoundSaveData& SoundData);
 	
 	UFUNCTION()
 	static void RemoveSaveGameData();
