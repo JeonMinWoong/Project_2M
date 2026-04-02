@@ -25,13 +25,14 @@ public:
 	void SetModifyInputText() const;
 	
 	void SetFocusMuteButton() const;
+	void SetEnableInputText(bool bOn) const;
 	void SetCheckMuteButton(bool bOn) const;
 protected:
 	virtual void NativeOnAddedToFocusPath(const FFocusEvent& InFocusEvent) override;
 	virtual void NativeOnRemovedFromFocusPath(const FFocusEvent& InFocusEvent) override;
 
 private:
-	void HighlightFocusSlot(bool bOn);
+	void HighlightFocusSlot(bool bOn) const;
 	
 	UPROPERTY(meta=(BindWidget))
 	UProgressBar* ProgressBar;

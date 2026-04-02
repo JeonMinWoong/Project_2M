@@ -113,6 +113,15 @@ void UTwoMinWidget_SettingUI::InitSettingUI()
 		
 		SetScreenSizeText();
 		ScreenSizeButton->SetKeepSelect(true);
+		if (ScreenSizeDecreaseText)
+		{
+			ScreenSizeDecreaseText->SetVisibility(ESlateVisibility::Hidden);
+		}
+		
+		if (ScreenSizeIncreaseText)
+		{
+			ScreenSizeIncreaseText->SetVisibility(ESlateVisibility::Hidden);
+		}
 	}
 	
 	if (GraphicQualityCanvas)
@@ -205,6 +214,17 @@ void UTwoMinWidget_SettingUI::SetScreenSizeText() const
 {
 	FString ScreenSizeString = FString::Printf(TEXT("%d x %d"), ScreenSize.X, ScreenSize.Y);
 	ScreenSizeButton->TextBox->SetText(FText::FromString(ScreenSizeString));
+	
+	const bool bIsUsingGamePad = UTwoMinFunctionLibrary::IsUsingGamePad(GetWorld(), GetOwningPlayer()->GetPlatformUserId());
+	const FString DecreaseKeyText = bIsUsingGamePad ? TEXT("◀ LB") : TEXT("◀ Q");
+	const FString IncreaseKeyText = bIsUsingGamePad ? TEXT("RB ▶") : TEXT("E ▶");
+	
+	if (ScreenSizeDecreaseText->GetText().ToString() == DecreaseKeyText) return;
+	if (ScreenSizeIncreaseText->GetText().ToString() == IncreaseKeyText) return;
+	
+	ScreenSizeDecreaseText->SetText(FText::FromString(DecreaseKeyText));
+	ScreenSizeIncreaseText->SetText(FText::FromString(IncreaseKeyText));
+	
 }
 
 FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent)
@@ -282,7 +302,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 		
 		return FReply::Handled();
 	}
-	else if (InKey == EKeys::Q || InKey == EKeys::Gamepad_LeftTrigger)
+	else if (InKey == EKeys::Q || InKey == EKeys::Gamepad_LeftShoulder)
 	{
 		if (CurCategoryIndex == 1)
 		{
@@ -297,6 +317,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 		}
 		else if (CurCategoryIndex == 4)
 		{
+			if (MasterVolumeIndex != 0) return FReply::Unhandled();
 			if (MasterVolume <= 0) return FReply::Unhandled();
 			
 			MasterVolume += DecreaseValue;
@@ -308,6 +329,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 		}
 		else if (CurCategoryIndex == 5)
 		{
+			if (MusicVolumeIndex != 0) return FReply::Unhandled();
 			if (MusicVolume <= 0) return FReply::Unhandled();
 			
 			MusicVolume += DecreaseValue;
@@ -319,6 +341,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 		}
 		else if (CurCategoryIndex == 6)
 		{
+			if (SFXVolumeIndex != 0) return FReply::Unhandled();
 			if (SFXVolume <= 0) return FReply::Unhandled();
 			
 			SFXVolume += DecreaseValue;
@@ -331,7 +354,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 		
 		return FReply::Unhandled();
 	}
-	else if (InKey == EKeys::E || InKey == EKeys::Gamepad_RightTrigger)
+	else if (InKey == EKeys::E || InKey == EKeys::Gamepad_RightShoulder)
 	{
 		if (CurCategoryIndex == 1)
 		{
@@ -346,6 +369,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 		}
 		if (CurCategoryIndex == 4)
 		{
+			if (MasterVolumeIndex != 0) return FReply::Unhandled();
 			if (MasterVolume >= 1) return FReply::Unhandled();
 			
 			MasterVolume += IncreaseValue;
@@ -357,6 +381,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 		}
 		else if (CurCategoryIndex == 5)
 		{
+			if (MusicVolumeIndex != 0) return FReply::Unhandled();
 			if (MusicVolume >= 1) return FReply::Unhandled();
 			
 			MusicVolume += IncreaseValue;
@@ -368,6 +393,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 		}
 		else if (CurCategoryIndex == 6)
 		{
+			if (SFXVolumeIndex != 0) return FReply::Unhandled();
 			if (SFXVolume >= 1) return FReply::Unhandled();
 			
 			SFXVolume += IncreaseValue;
@@ -435,7 +461,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			if (MasterVolumeIndex >= 1) return FReply::Unhandled();
 			
 			MasterVolumeIndex = 1;
-			
+			 
 			PlayUISound(EUISoundType::Focus_Move);
 			OnFocusSlot();
 			
@@ -599,8 +625,6 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 	return Super::NativeOnPreviewKeyDown(MyGeometry, InKeyEvent);
 }
 
-
-
 void UTwoMinWidget_SettingUI::ApplySettingData() const
 {
 	UGameUserSettings* Settings = GEngine->GetGameUserSettings();
@@ -666,6 +690,9 @@ void UTwoMinWidget_SettingUI::ResetSettingData()
 
 void UTwoMinWidget_SettingUI::OnFocusSlot()
 {
+	ScreenSizeDecreaseText->SetVisibility(CurCategoryIndex == 1 ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	ScreenSizeIncreaseText->SetVisibility(CurCategoryIndex == 1 ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	
 	if (CurCategoryIndex == 0)
 	{
 		for (int32 Index = 0; Index < ScreenModeButtons.Num(); ++Index)
@@ -673,6 +700,7 @@ void UTwoMinWidget_SettingUI::OnFocusSlot()
 			if (Index == ScreenModeIndex)
 			{
 				ScreenModeButtons[ScreenModeIndex]->SetLocked(false);
+				ScreenModeButtons[ScreenModeIndex]->SetKeepSelect(true);
 				ScreenModeButtons[ScreenModeIndex]->SetFocus();
 				continue;
 			}	
@@ -683,6 +711,7 @@ void UTwoMinWidget_SettingUI::OnFocusSlot()
 	else if (CurCategoryIndex == 1)
 	{
 		ScreenSizeButton->SetLocked(false);
+		ScreenSizeButton->SetKeepSelect(true);
 		ScreenSizeButton->SetFocus();
 	}
 	else if (CurCategoryIndex == 2)
@@ -692,6 +721,7 @@ void UTwoMinWidget_SettingUI::OnFocusSlot()
 			if (Index == GraphicQualityIndex)
 			{
 				GraphicQualityButtons[GraphicQualityIndex]->SetLocked(false);
+				GraphicQualityButtons[GraphicQualityIndex]->SetKeepSelect(true);
 				GraphicQualityButtons[GraphicQualityIndex]->SetFocus();
 				continue;
 			}	
@@ -709,6 +739,7 @@ void UTwoMinWidget_SettingUI::OnFocusSlot()
 	{
 		if (MasterVolumeIndex == 0)
 		{
+			MasterVolumeProgressbar->SetEnableInputText(true);
 			MasterVolumeProgressbar->SetFocus();	
 		}
 		else
@@ -720,6 +751,7 @@ void UTwoMinWidget_SettingUI::OnFocusSlot()
 	{
 		if (MusicVolumeIndex == 0)
 		{
+			MusicVolumeProgressbar->SetEnableInputText(true);
 			MusicVolumeProgressbar->SetFocus();
 		}
 		else
@@ -731,6 +763,7 @@ void UTwoMinWidget_SettingUI::OnFocusSlot()
 	{
 		if (SFXVolumeIndex == 0)
 		{
+			SFXVolumeProgressbar->SetEnableInputText(true);
 			SFXVolumeProgressbar->SetFocus();
 		}
 		else

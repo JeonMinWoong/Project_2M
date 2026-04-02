@@ -48,6 +48,13 @@ void UTwoMinWidget_CustomProgressbar::SetModifyInputText() const
 void UTwoMinWidget_CustomProgressbar::SetFocusMuteButton() const
 {
 	MuteButton->SetFocus();
+	SetEnableInputText(false);
+}
+
+void UTwoMinWidget_CustomProgressbar::SetEnableInputText(bool bOn) const
+{
+	DecreaseInputText->SetVisibility(bOn ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	IncreaseInputText->SetVisibility(bOn ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 }
 
 void UTwoMinWidget_CustomProgressbar::SetCheckMuteButton(bool bOn) const
@@ -73,10 +80,9 @@ void UTwoMinWidget_CustomProgressbar::NativeOnRemovedFromFocusPath(const FFocusE
 	HighlightFocusSlot(false);
 }
 
-void UTwoMinWidget_CustomProgressbar::HighlightFocusSlot(bool bOn)
+void UTwoMinWidget_CustomProgressbar::HighlightFocusSlot(bool bOn) const
 {
-	DecreaseInputText->SetVisibility(bOn ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
-	IncreaseInputText->SetVisibility(bOn ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	SetEnableInputText(bOn);
 	MuteButton->SetLocked(!bOn);
 	
 	FLinearColor tColor = bOn ? FLinearColor(1, 1, 1, 1) : FLinearColor(0.2f, 0.2f, 0.2f, 1.f);

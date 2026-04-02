@@ -55,6 +55,12 @@ private:
 	TObjectPtr<UTwoMinWidget_BaseButton> ScreenSizeButton;
 	
 	UPROPERTY(meta=(BindWidget))
+	UTextBlock* ScreenSizeDecreaseText;
+	
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* ScreenSizeIncreaseText;
+	
+	UPROPERTY(meta=(BindWidget))
 	UCanvasPanel* GraphicQualityCanvas;
 	
 	UPROPERTY()
