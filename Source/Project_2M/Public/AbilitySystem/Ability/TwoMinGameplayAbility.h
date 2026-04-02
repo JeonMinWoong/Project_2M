@@ -113,6 +113,9 @@ protected:
 	UFUNCTION()
 	virtual void CustomOnBlendOutAbility();
 
+	virtual bool TryGetAttackInfoData(FAttackInfoData& OutData) const;
+	ATwoMinBaseCharacter* ResolveInstigator(const FGameplayEventData& Payload) const;
+
 	void MeleeOnHitEffectProcess(ATwoMinBaseCharacter* OwnerCharacter, const bool bIsTargetGuard, const int32 WeaponIndex);
 	
 	UFUNCTION()

@@ -260,62 +260,34 @@ void UTwoMinGameplayAbility::CustomEventReceived(FGameplayEventData Payload)
 	
 }
 
-void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByMelee(FGameplayEventData Payload)
+bool UTwoMinGameplayAbility::TryGetAttackInfoData(FAttackInfoData& OutData) const
+{
+	return false;
+}
+
+ATwoMinBaseCharacter* UTwoMinGameplayAbility::ResolveInstigator(const FGameplayEventData& Payload) const
 {
 	AActor* InstigatorActor = const_cast<AActor*>(Payload.Instigator.Get());
-	AActor* TargetActor = const_cast<AActor*>(Payload.Target.Get());
-	if (!InstigatorActor || !TargetActor) return;
-	
+	if (!InstigatorActor) return nullptr;
+
 	ATwoMinBaseCharacter* BaseCharacter = Cast<ATwoMinBaseCharacter>(InstigatorActor);
+	if (!BaseCharacter) return nullptr;
+
+	if (BaseCharacter->GetCharacterType() == ECharacterType::None) return nullptr;
+
+	return BaseCharacter;
+}
+
+void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByMelee(FGameplayEventData Payload)
+{
+	ATwoMinBaseCharacter* BaseCharacter = ResolveInstigator(Payload);
 	if (!BaseCharacter) return;
 
-	const ECharacterType CharacterType = BaseCharacter->GetCharacterType();
-	if (CharacterType == ECharacterType::None) return;
+	AActor* TargetActor = const_cast<AActor*>(Payload.Target.Get());
+	if (!TargetActor) return;
 
 	UAttackPayloadObject* AttackPayload = NewObject<UAttackPayloadObject>(BaseCharacter);
-	
-	if (CharacterType == ECharacterType::Enemy)
-	{
-		//DebugTwoMin::Print(TEXT("Enemy Ability Event Received"), FColor::Red);
-
-		UTwoMinEGA_AttackBase* EnemyAttackBase = Cast<UTwoMinEGA_AttackBase>(this);
-		UTwoMinEGA_SpecialAttackBase* EnemySpecialAttackBase = Cast<UTwoMinEGA_SpecialAttackBase>(this);
-		if (EnemyAttackBase)
-		{
-			const FAttackInfoData& AttackInfoData = EnemyAttackBase->GetAttackInfoData();
-			AttackPayload->Data = AttackInfoData;
-		}
-		else if (EnemySpecialAttackBase)
-		{
-			const FAttackInfoData& AttackInfoData = EnemySpecialAttackBase->GetAttackInfoData();
-			AttackPayload->Data = AttackInfoData;
-		}
-		else
-		{
-			return;
-		}		
-	}
-	else if (CharacterType == ECharacterType::Player)
-	{
-		//DebugTwoMin::Print(TEXT("Player Ability Event Received"), FColor::Green);
-
-		UTwoMinGA_AttackBase* PlayerAttackBase = Cast<UTwoMinGA_AttackBase>(this);
-		UTwoMinGA_SpecialAttackBase* PlayerSpecialAttackBase = Cast<UTwoMinGA_SpecialAttackBase>(this);
-		if (PlayerAttackBase)
-		{
-			const FAttackInfoData& AttackInfoData = PlayerAttackBase->GetAttackInfoData();
-			AttackPayload->Data = AttackInfoData;	
-		}
-		else if (PlayerSpecialAttackBase)
-		{
-			const FAttackInfoData& AttackInfoData = PlayerSpecialAttackBase->GetAttackInfoData();
-			AttackPayload->Data = AttackInfoData;
-		}
-		else
-		{
-			return;
-		}
-	}
+	if (!TryGetAttackInfoData(AttackPayload->Data)) return;
 
 	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(TargetActor);
 	if (!TargetCharacter) return;
@@ -358,14 +330,10 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByMelee(FGameplayEvent
 
 void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByRange(FGameplayEventData Payload)
 {
-	AActor* InstigatorActor = const_cast<AActor*>(Payload.Instigator.Get());
-	if (!InstigatorActor) return;
-	
-	ATwoMinBaseCharacter* BaseCharacter = Cast<ATwoMinBaseCharacter>(InstigatorActor);
+	ATwoMinBaseCharacter* BaseCharacter = ResolveInstigator(Payload);
 	if (!BaseCharacter) return;
 
 	const ECharacterType CharacterType = BaseCharacter->GetCharacterType();
-	if (CharacterType == ECharacterType::None) return;
 
 	UAttackPayloadObject* AttackPayload = NewObject<UAttackPayloadObject>(BaseCharacter);
 	TSubclassOf<ATwoMinProjectileBase> ProjectileBase = nullptr;

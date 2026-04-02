@@ -83,6 +83,7 @@ private:
 
 public:
 	FORCEINLINE FAttackInfoData& GetAttackInfoData() { return AttackInfosData[CurComboCount]; }
+	virtual bool TryGetAttackInfoData(FAttackInfoData& OutData) const override { if (auto* D = AttackInfosData.Find(CurComboCount)) { OutData = *D; return true; } return false; }
 	FORCEINLINE TSubclassOf<ATwoMinProjectileBase> GetProjectile() const { return Projectile; }
 	FORCEINLINE FName GetShootSocketName() const { return ShootSocketName; }
 

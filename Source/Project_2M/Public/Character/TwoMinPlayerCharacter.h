@@ -79,6 +79,7 @@ private:
 	void CheckSpecialAttack(float DeltaTime);
 	void CheckRunState(float DeltaTime);
 	void CancelAimingAbility() const;
+	bool CanProcessInput();
 	
 	/** Components **/
 	UPROPERTY(VisibleAnywhere)

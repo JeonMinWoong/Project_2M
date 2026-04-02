@@ -79,6 +79,7 @@ private:
 	
 public:
 	FORCEINLINE virtual FAttackInfoData& GetAttackInfoData() { return AttackInfosData[CurComboCount]; }
+	virtual bool TryGetAttackInfoData(FAttackInfoData& OutData) const override { if (auto* D = AttackInfosData.Find(CurComboCount)) { OutData = *D; return true; } return false; }
 	FORCEINLINE TSubclassOf<AHitCollisionBase> GetHitCollisionBase() { return HitCollisionMap[CurComboCount]; }
 	
 	FORCEINLINE void SetCachedTargetLocation(const FVector& InLocation) { CachedTargetLocation = InLocation; }

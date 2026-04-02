@@ -17,6 +17,7 @@ class PROJECT_2M_API UTwoMinGA_ExecutionCaster : public UTwoMinGA_ExecutionBase
 
 public:
 	FAttackInfoData& GetAttackInfoData();
+	virtual bool TryGetAttackInfoData(FAttackInfoData& OutData) const override;
 	void AddComboCount(FGameplayEventData Payload);
 	void InstantDamage(FGameplayEventData Payload);
 	

@@ -24,6 +24,21 @@ FAttackInfoData& UTwoMinGA_ExecutionCaster::GetAttackInfoData()
 	return *AttackInfo;
 }
 
+bool UTwoMinGA_ExecutionCaster::TryGetAttackInfoData(FAttackInfoData& OutData) const
+{
+	if (!CachedExecutionData) return false;
+	int32 ExecutionNumber = CachedExecutionData->ExecutionNumber;
+	ExecutionNumber += CachedExecutionData->bIsExecutionForward ? 0 : 10;
+	const FExecutionInfoData* ExecInfo = ExecutionInfosData.Find(ExecutionNumber);
+	if (!ExecInfo) return false;
+	const int32* ComboCount = CurComboCount.Find(ExecutionNumber);
+	if (!ComboCount) return false;
+	const FAttackInfoData* AttackInfo = ExecInfo->AttackInfosData.Find(*ComboCount);
+	if (!AttackInfo) return false;
+	OutData = *AttackInfo;
+	return true;
+}
+
 void UTwoMinGA_ExecutionCaster::AddComboCount(FGameplayEventData Payload)
 {
 	int32 ExecutionNumber = CachedExecutionData->ExecutionNumber;

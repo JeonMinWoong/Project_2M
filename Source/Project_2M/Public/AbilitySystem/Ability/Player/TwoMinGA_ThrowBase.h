@@ -57,6 +57,7 @@ private:
 
 public:
 	FORCEINLINE FAttackInfoData& GetAttackInfoData() { return AttackInfosData; }
+	virtual bool TryGetAttackInfoData(FAttackInfoData& OutData) const override { OutData = AttackInfosData; return true; }
 	FORCEINLINE TSubclassOf<ATwoMinProjectileBase> GetProjectile() const { return Projectile; }
 	FORCEINLINE FName GetShootSocketName() const { return ShootSocketName; }
 	FORCEINLINE UStaticMesh* GetCustomStaticMesh() const { return NewStaticMesh; }

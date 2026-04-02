@@ -460,14 +460,16 @@ bool ATwoMinPlayerCharacter::IsUsingGamepad() const
 	return UTwoMinFunctionLibrary::IsUsingGamePad(GetWorld(), GetPlatformUserId());
 }
 
+bool ATwoMinPlayerCharacter::CanProcessInput()
+{
+	return !(UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitDowning)
+		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitThrowing)
+		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_OpenInventory));
+}
+
 void ATwoMinPlayerCharacter::Input_AbilityInputPressed(FGameplayTag InInputTag)
 {
-	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitDowning)
-		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitThrowing)
-			|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_OpenInventory))
-	{
-		return;
-	}
+	if (CanProcessInput() == false) return;
 	
 	if (InInputTag == TwoMinGameplayTag::InputTag_LightAttack_OneHand ||
 		InInputTag == TwoMinGameplayTag::InputTag_HeavyAttack_OneHand)
@@ -483,12 +485,7 @@ void ATwoMinPlayerCharacter::Input_AbilityInputPressed(FGameplayTag InInputTag)
 
 void ATwoMinPlayerCharacter::Input_AbilityInputReleased(FGameplayTag InInputTag)
 {
-	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitDowning)
-		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitThrowing)
-			|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_OpenInventory))
-	{
-		return;
-	}
+	if (CanProcessInput() == false) return;
 	
 	AbilitySystemComponent->OnAbilityInputReleased(InInputTag);
 }
@@ -510,12 +507,7 @@ void ATwoMinPlayerCharacter::Input_ObjectiveTargetingTrigger(const FInputActionV
 
 void ATwoMinPlayerCharacter::Input_PickUpTrigger(const FInputActionValue& InputActionValue)
 {
-	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitDowning)
-		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitThrowing)
-			|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_OpenInventory))
-	{
-		return;
-	}
+	if (CanProcessInput() == false) return;
 	
 	for (auto GameplayTag : IgnoreTagContainer)
 	{
@@ -536,12 +528,7 @@ void ATwoMinPlayerCharacter::Input_PickUpTrigger(const FInputActionValue& InputA
 
 void ATwoMinPlayerCharacter::Input_InteractTrigger(const FInputActionValue& InputActionValue)
 {
-	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitDowning)
-		|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Shared_State_HitThrowing)
-			|| UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_OpenInventory))
-	{
-		return;
-	}
+	if (CanProcessInput() == false) return;
 	
 	for (auto GameplayTag : IgnoreTagContainer)
 	{

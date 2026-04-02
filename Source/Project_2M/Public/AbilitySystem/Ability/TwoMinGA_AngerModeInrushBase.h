@@ -58,5 +58,6 @@ private:
 
 public:
 	FORCEINLINE FAttackInfoData& GetAttackInfoData() { return AttackInfosData; }
+	virtual bool TryGetAttackInfoData(FAttackInfoData& OutData) const override { OutData = AttackInfosData; return true; }
 	FORCEINLINE TSubclassOf<AHitCollisionBase> GetHitCollisionBase() { return HitCollision; }
 };
