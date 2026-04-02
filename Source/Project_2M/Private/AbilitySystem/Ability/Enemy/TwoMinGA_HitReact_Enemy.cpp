@@ -3,17 +3,21 @@
 
 #include "AbilitySystem/Ability/Enemy/TwoMinGA_HitReact_Enemy.h"
 
+#include "AIController.h"
 #include "TwoMinFunctionLibrary.h"
 #include "TwoMinGameplayTag.h"
 #include "AbilitySystem/TwoMinAttributeSet.h"
 #include "Character/TwoMinEnemyCharacter.h"
+#include "Compnents/Combat/BaseCombatComponent.h"
+#include "Compnents/Combat/EnemyCombatComponent.h"
+#include "Controller/TwoMinEnemyAIController.h"
 
 void UTwoMinGA_HitReact_Enemy::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                                const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                                const FGameplayEventData* TriggerEventData)
 {
 	StartDecreaseGroggy();
-	
+	ImmediatelyBattleStart(TriggerEventData);
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
@@ -49,4 +53,20 @@ void UTwoMinGA_HitReact_Enemy::StartDecreaseGroggy()
 		{
 			UTwoMinFunctionLibrary::AddGameplayTagToActor(EnemyCharacter, TwoMinGameplayTag::Enemy_State_DecreaseGroggy);
 		}, DecreaseGroggyDelay, false);
+}
+
+void UTwoMinGA_HitReact_Enemy::ImmediatelyBattleStart(const FGameplayEventData* TriggerEventData)
+{
+	const AActor* Attacker = TriggerEventData->Instigator.Get();
+	ATwoMinEnemyCharacter* VictimEnemyCharacter = Cast<ATwoMinEnemyCharacter>(GetAvatarActorFromActorInfo());
+	if (!Attacker || !VictimEnemyCharacter) return;
+	
+	UEnemyCombatComponent* CombatComponent = Cast<UEnemyCombatComponent>(VictimEnemyCharacter->GetCombatComponent());
+	if (!CombatComponent) return;
+	
+	const float BattleRange = CombatComponent->GetBaseBattleRange();
+	const float CurDist = VictimEnemyCharacter->GetDistanceTo(Attacker);
+	if (CurDist > BattleRange) return;
+	
+	CombatComponent->SetIsBattlePossible(true);
 }

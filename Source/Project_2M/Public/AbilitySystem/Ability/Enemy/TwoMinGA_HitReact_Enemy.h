@@ -23,4 +23,5 @@ protected:
 
 private:
 	void StartDecreaseGroggy();
+	void ImmediatelyBattleStart(const FGameplayEventData* TriggerEventData);
 };

@@ -239,6 +239,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			{
 				bIsMasterMute = !bIsMasterMute;
 				MasterVolumeProgressbar->SetCheckMuteButton(bIsMasterMute);
+				PlayUISound(EUISoundType::Focus_Select);
 				
 				return FReply::Handled();	
 			}
@@ -249,6 +250,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			{
 				bIsMusicMute = !bIsMusicMute;
 				MusicVolumeProgressbar->SetCheckMuteButton(bIsMusicMute);
+				PlayUISound(EUISoundType::Focus_Select);
 				
 				return FReply::Handled();	
 			}
@@ -259,15 +261,8 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			{
 				bIsSFXMute = !bIsSFXMute;
 				SFXVolumeProgressbar->SetCheckMuteButton(bIsSFXMute);
+				PlayUISound(EUISoundType::Focus_Select);
 				
-				return FReply::Handled();	
-			}
-		}
-		if (CurCategoryIndex == 4)
-		{
-			if (MasterVolumeIndex == 1)
-			{
-				bIsMasterMute = !bIsMasterMute;
 				return FReply::Handled();	
 			}
 		}

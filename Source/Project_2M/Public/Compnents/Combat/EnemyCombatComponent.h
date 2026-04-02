@@ -73,6 +73,9 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category="IsBossInfo|CustomBattleRange")
 	float CustomBattleRange = 0;
 	
+	UPROPERTY(EditDefaultsOnly, Category="Battle|BattleRange")
+	float BaseBattleRange;
+	
 	bool bIsBattlePossible = false;
 	
 	bool bIsBanAttack = false;
@@ -111,7 +114,9 @@ private:
 #pragma endregion
 	
 public:
+	FORCEINLINE float GetBaseBattleRange() const { return BaseBattleRange; }
 	FORCEINLINE float GetCustomBattleRange() const { return CustomBattleRange; }
+	
 	FORCEINLINE bool IsBattlePossible() const { return bIsBattlePossible; }
 	FORCEINLINE void SetIsBattlePossible(bool InIsBattlePossible)
 	{

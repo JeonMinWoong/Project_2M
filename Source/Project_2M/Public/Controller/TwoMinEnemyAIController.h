@@ -45,5 +45,7 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Detour Crowd Avoidance Config")
 	float CollisionQueryRange = 150.f;
 
+public:
+	FORCEINLINE UBehaviorTree* GetBT() const { return BehaviorTree; };
 	
 };

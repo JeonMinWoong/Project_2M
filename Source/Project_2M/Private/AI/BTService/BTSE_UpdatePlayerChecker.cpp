@@ -27,7 +27,7 @@ void UBTSE_UpdatePlayerChecker::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 		BB->SetValueAsObject(TwoMinBBKeys::BattleTarget, nullptr);
 	}
 	
-	float BaseBattleRange = BattleRange;
+	float BaseBattleRange = CombatComponent->GetBaseBattleRange();
 	const float CustomBattleRange = 
 		EnemyCharacter->IsUseBossHealthBar() ? CombatComponent->GetCustomBattleRange() : 0;
 	if (CustomBattleRange > 0.f)

@@ -20,8 +20,5 @@ protected:
 
 private:
 	ATwoMinBaseCharacter* UpdatePlayerChecker(AActor* EnemyCharacter, const float CheckBattleRange) const;
-
-	UPROPERTY(EditAnywhere, Category = "CheckRange")
-	float BattleRange;
 	
 };
