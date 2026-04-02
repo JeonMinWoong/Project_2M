@@ -6,6 +6,8 @@
 #include "AIController.h"
 #include "BrainComponent.h"
 #include "TwoMinDebugHelper.h"
+#include "TwoMinFunctionLibrary.h"
+#include "TwoMinGameplayTag.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Compnents/ItemDropComponent.h"
@@ -326,6 +328,7 @@ void ATwoMinEnemyCharacter::InitEnemyHealthWidget()
 	if (bUseBossHealthBar)
 	{
 		HealthWidget->HideWorldHealthBar();
+		UTwoMinFunctionLibrary::AddGameplayTagToActor(this, TwoMinGameplayTag::Shared_State_Invincible);
 	}
 	else
 	{
@@ -414,6 +417,7 @@ void ATwoMinEnemyCharacter::BossDetectProcess()
 	
 	GetEnemyUIComponent()->ShowBossHealthBar(GetMonsterName());
 	GI->SoundManager->PlayBGMSound(BossBGMSound);
+	UTwoMinFunctionLibrary::RemoveGameplayTagToActor(this, TwoMinGameplayTag::Shared_State_Invincible);
 }
 
 
