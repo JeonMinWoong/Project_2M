@@ -14,7 +14,7 @@
 void UTwoMinWidget_CustomProgressbar::InitProgressbar(float InitPercent, bool bIsMute)
 {
 	HighlightFocusSlot(false);
-	SetPercent(InitPercent);
+	SetPercent(bIsMute ? 0 : InitPercent);
 	ProgressBar->SetIsEnabled(false);
 	MuteButton->SetCheckBox(bIsMute);
 }

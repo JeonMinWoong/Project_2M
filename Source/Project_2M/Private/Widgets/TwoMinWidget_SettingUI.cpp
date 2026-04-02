@@ -35,7 +35,7 @@ void UTwoMinWidget_SettingUI::InitSettingLoadData()
 		bIsFullScreen = Settings->GetFullscreenMode() == EWindowMode::Fullscreen;
 		ScreenSize = Settings->GetScreenResolution();
 		GraphicQuality = Settings->GetOverallScalabilityLevel();
-		bIsVerticalSynchronization = Settings->IsVSyncEnabled();
+		bIsVeSync = Settings->IsVSyncEnabled();
 	}
 	
 	FSoundSaveData LoadSoundData;
@@ -52,7 +52,7 @@ void UTwoMinWidget_SettingUI::InitSettingLoadData()
 	ScreenModeIndex = bIsFullScreen ? 0 : 1;
 	ScreenSizeIndex = GetScreenSizeIndex(ScreenSize);
 	GraphicQualityIndex = GetGraphicQualityIndex(GraphicQuality);
-	VerticalSynchronizationIndex = bIsVerticalSynchronization ? 1 : 0;
+	VerticalSynchronizationIndex = bIsVeSync ? 1 : 0;
 	MasterVolumeIndex = bIsMasterMute ? 1 : 0;
 	MusicVolumeIndex = bIsMusicMute ? 1 : 0;
 	SFXVolumeIndex = bIsSFXMute ? 1 : 0;
@@ -239,6 +239,8 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			{
 				bIsMasterMute = !bIsMasterMute;
 				MasterVolumeProgressbar->SetCheckMuteButton(bIsMasterMute);
+				MasterVolumeProgressbar->SetPercent(bIsMasterMute ? 0 : MasterVolume);
+				TempApplySetting(EApplySettingType::SoundVolume);
 				PlayUISound(EUISoundType::Focus_Select);
 				
 				return FReply::Handled();	
@@ -250,6 +252,8 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			{
 				bIsMusicMute = !bIsMusicMute;
 				MusicVolumeProgressbar->SetCheckMuteButton(bIsMusicMute);
+				MusicVolumeProgressbar->SetPercent(bIsMusicMute ? 0 : MusicVolume);
+				TempApplySetting(EApplySettingType::SoundVolume);
 				PlayUISound(EUISoundType::Focus_Select);
 				
 				return FReply::Handled();	
@@ -261,6 +265,8 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			{
 				bIsSFXMute = !bIsSFXMute;
 				SFXVolumeProgressbar->SetCheckMuteButton(bIsSFXMute);
+				SFXVolumeProgressbar->SetPercent(bIsSFXMute ? 0 : SFXVolume);
+				TempApplySetting(EApplySettingType::SoundVolume);
 				PlayUISound(EUISoundType::Focus_Select);
 				
 				return FReply::Handled();	
@@ -305,6 +311,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			
 			ScreenSizeIndex--;
 			ScreenSize = TwoMinConstant::SupportedResolutions[ScreenSizeIndex];
+			TempApplySetting(EApplySettingType::ScreenSize);
 			SetScreenSizeText();
 			PlayUISound(EUISoundType::Focus_Move);
 			
@@ -317,7 +324,8 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			
 			MasterVolume += DecreaseValue;
 			MasterVolume = FMath::Clamp(MasterVolume, 0, 1);
-			MasterVolumeProgressbar->SetPercent(MasterVolume);
+			MasterVolumeProgressbar->SetPercent(bIsMasterMute ? 0 : MasterVolume);
+			TempApplySetting(EApplySettingType::SoundVolume);
 			PlayUISound(EUISoundType::Focus_Move);
 			
 			return FReply::Handled();
@@ -329,7 +337,8 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			
 			MusicVolume += DecreaseValue;
 			MusicVolume = FMath::Clamp(MusicVolume, 0, 1);
-			MusicVolumeProgressbar->SetPercent(MusicVolume);
+			MusicVolumeProgressbar->SetPercent(bIsMusicMute ? 0 : MusicVolume);
+			TempApplySetting(EApplySettingType::SoundVolume);
 			PlayUISound(EUISoundType::Focus_Move);
 			
 			return FReply::Handled();
@@ -341,7 +350,8 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			
 			SFXVolume += DecreaseValue;
 			SFXVolume = FMath::Clamp(SFXVolume, 0, 1);
-			SFXVolumeProgressbar->SetPercent(SFXVolume);
+			SFXVolumeProgressbar->SetPercent(bIsSFXMute ? 0 : SFXVolume);
+			TempApplySetting(EApplySettingType::SoundVolume);
 			PlayUISound(EUISoundType::Focus_Move);
 			
 			return FReply::Handled();
@@ -357,6 +367,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			
 			ScreenSizeIndex++;
 			ScreenSize = TwoMinConstant::SupportedResolutions[ScreenSizeIndex];
+			TempApplySetting(EApplySettingType::ScreenSize);
 			SetScreenSizeText();
 			PlayUISound(EUISoundType::Focus_Move);
 			
@@ -369,7 +380,8 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			
 			MasterVolume += IncreaseValue;
 			MasterVolume = FMath::Clamp(MasterVolume, 0, 1);
-			MasterVolumeProgressbar->SetPercent(MasterVolume);
+			MasterVolumeProgressbar->SetPercent(bIsMasterMute ? 0 : MasterVolume);
+			TempApplySetting(EApplySettingType::SoundVolume);
 			PlayUISound(EUISoundType::Focus_Move);
 			
 			return FReply::Handled();
@@ -381,7 +393,8 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			
 			MusicVolume += IncreaseValue;
 			MusicVolume = FMath::Clamp(MusicVolume, 0, 1);
-			MusicVolumeProgressbar->SetPercent(MusicVolume);
+			MusicVolumeProgressbar->SetPercent(bIsMusicMute ? 0 : MusicVolume);
+			TempApplySetting(EApplySettingType::SoundVolume);
 			PlayUISound(EUISoundType::Focus_Move);
 			
 			return FReply::Handled();
@@ -393,7 +406,8 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			
 			SFXVolume += IncreaseValue;
 			SFXVolume = FMath::Clamp(SFXVolume, 0, 1);
-			SFXVolumeProgressbar->SetPercent(SFXVolume);
+			SFXVolumeProgressbar->SetPercent(bIsSFXMute ? 0 : SFXVolume);
+			TempApplySetting(EApplySettingType::SoundVolume);
 			PlayUISound(EUISoundType::Focus_Move);
 			
 			return FReply::Handled();
@@ -411,6 +425,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			ScreenModeIndex = 1;
 			bIsFullScreen = false;
 			
+			TempApplySetting(EApplySettingType::ScreenMode);
 			PlayUISound(EUISoundType::Focus_Move);
 			OnFocusSlot();
 			
@@ -422,7 +437,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 
 			ScreenSizeIndex++;
 			ScreenSize = TwoMinConstant::SupportedResolutions[ScreenSizeIndex];
-			
+			TempApplySetting(EApplySettingType::ScreenSize);
 			PlayUISound(EUISoundType::Focus_Move);
 			
 			return FReply::Handled();
@@ -433,7 +448,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			
 			GraphicQualityIndex++;
 			GraphicQuality++;
-			
+			TempApplySetting(EApplySettingType::GraphicQuality);
 			PlayUISound(EUISoundType::Focus_Move);
 			OnFocusSlot();
 			
@@ -444,8 +459,8 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			if (VerticalSynchronizationIndex >= 1) return FReply::Unhandled();
 			
 			VerticalSynchronizationIndex = 1;
-			bIsVerticalSynchronization = true;
-			
+			bIsVeSync = true;
+			TempApplySetting(EApplySettingType::VSync);
 			PlayUISound(EUISoundType::Focus_Move);
 			OnFocusSlot();
 			
@@ -506,6 +521,8 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			
 			ScreenModeIndex = 0;
 			bIsFullScreen = true;
+			
+			TempApplySetting(EApplySettingType::ScreenMode);
 			PlayUISound(EUISoundType::Focus_Move);
 			OnFocusSlot();
 			
@@ -517,7 +534,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 
 			ScreenSizeIndex--;
 			ScreenSize = TwoMinConstant::SupportedResolutions[ScreenSizeIndex];
-
+			TempApplySetting(EApplySettingType::ScreenSize);
 			PlayUISound(EUISoundType::Focus_Move);
 			
 			return FReply::Handled();
@@ -528,7 +545,7 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			
 			GraphicQualityIndex--;
 			GraphicQuality--;
-			
+			TempApplySetting(EApplySettingType::GraphicQuality);
 			PlayUISound(EUISoundType::Focus_Move);
 			OnFocusSlot();
 			
@@ -539,7 +556,8 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 			if (VerticalSynchronizationIndex == 0) return FReply::Unhandled();
 			
 			VerticalSynchronizationIndex = 0;
-			bIsVerticalSynchronization = false;
+			bIsVeSync = false;
+			TempApplySetting(EApplySettingType::VSync);
 			PlayUISound(EUISoundType::Focus_Move);
 			OnFocusSlot();
 			
@@ -630,7 +648,7 @@ void UTwoMinWidget_SettingUI::ApplySettingData() const
 		Settings->SetFrameRateLimit(FrameRateLimit);
 		Settings->SetResolutionScaleValueEx(ResolutionQuality);
 		Settings->SetOverallScalabilityLevel(GraphicQuality);
-		Settings->SetVSyncEnabled(bIsVerticalSynchronization);
+		Settings->SetVSyncEnabled(bIsVeSync);
 		
 		// Settings->SetViewDistanceQuality(1);
 		// Settings->SetAntiAliasingQuality(1);
@@ -726,7 +744,7 @@ void UTwoMinWidget_SettingUI::OnFocusSlot()
 	}
 	else if (CurCategoryIndex == 3)
 	{
-		VerticalSynchronizationCheckBox->SetCheckBox(bIsVerticalSynchronization);
+		VerticalSynchronizationCheckBox->SetCheckBox(bIsVeSync);
 		VerticalSynchronizationCheckBox->SetLocked(false);
 		VerticalSynchronizationCheckBox->SetFocus();
 	}
@@ -780,3 +798,49 @@ void UTwoMinWidget_SettingUI::CloseSettingWindow()
 	RemoveFromParent();
 	TitleGM->ReFocusingTitleUI();
 }
+
+void UTwoMinWidget_SettingUI::TempApplySetting(EApplySettingType ApplySettingType) const
+{
+	UGameUserSettings* Settings = GEngine->GetGameUserSettings();
+	
+	switch (ApplySettingType) {
+	case EApplySettingType::ScreenMode:
+		{
+			Settings->SetFullscreenMode(bIsFullScreen ? EWindowMode::Fullscreen : EWindowMode::Windowed);
+			Settings->ApplyResolutionSettings(false);
+		}
+		break;
+	case EApplySettingType::ScreenSize:
+		{
+			Settings->SetScreenResolution(ScreenSize);
+			Settings->ApplyResolutionSettings(false);
+		}
+		break;
+	case EApplySettingType::GraphicQuality:
+		{
+			Settings->SetOverallScalabilityLevel(GraphicQuality);
+			Settings->ApplyNonResolutionSettings();
+		}
+		break;
+	case EApplySettingType::VSync:
+		{
+			Settings->SetVSyncEnabled(bIsVeSync);
+			Settings->ApplyResolutionSettings(false);
+		}
+		break;
+	case EApplySettingType::SoundVolume:
+		{
+			FSoundSaveData TempSoundSaveData;
+			TempSoundSaveData.MasterVolume = MasterVolume;
+			TempSoundSaveData.bIsMasterMute = bIsMasterMute;
+			TempSoundSaveData.MusicVolume = MusicVolume;
+			TempSoundSaveData.bIsMusicMute = bIsMusicMute;
+			TempSoundSaveData.SFXVolume = SFXVolume;
+			TempSoundSaveData.bIsSFXMute = bIsSFXMute;
+			
+			UTwoMinFunctionLibrary::ApplySoundVolume(this, TempSoundSaveData);
+		}
+		break;
+	}
+}
+

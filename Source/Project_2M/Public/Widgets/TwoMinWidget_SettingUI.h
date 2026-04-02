@@ -6,6 +6,7 @@
 #include "Widgets/TwoMinWidgetBase.h"
 #include "TwoMinWidget_SettingUI.generated.h"
 
+enum class EApplySettingType : uint8;
 class UTwoMinWidget_CustomProgressbar;
 class UTwoMinWidget_CheckBoxButton;
 class UTextBlock;
@@ -38,6 +39,8 @@ private:
 	void ResetSettingData();
 	void OnFocusSlot();
 	void CloseSettingWindow();
+	
+	void TempApplySetting(EApplySettingType ApplySettingType) const;
 	
 	UPROPERTY(meta=(BindWidget))
 	UCanvasPanel* ScreenModeCanvas;
@@ -133,7 +136,7 @@ private:
 	int32 GraphicQuality;
 	
 	UPROPERTY()
-	bool bIsVerticalSynchronization = false;
+	bool bIsVeSync = false;
 	
 	UPROPERTY()
 	float MasterVolume = 1.0f;

@@ -387,3 +387,13 @@ FORCEINLINE int32 ToZOrder(EWidgetZOrderType Type)
 {
 	return static_cast<int32>(Type);
 }
+
+UENUM(Blueprintable)
+enum class EApplySettingType : uint8
+{
+	ScreenMode,
+	ScreenSize,
+	GraphicQuality,
+	VSync,
+	SoundVolume,
+};
