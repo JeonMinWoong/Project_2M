@@ -48,6 +48,12 @@ void UTwoMinWidget_BaseButton::NativeOnAddedToFocusPath(const FFocusEvent& InFoc
 void UTwoMinWidget_BaseButton::NativeOnRemovedFromFocusPath(const FFocusEvent& InFocusEvent)
 {
 	Super::NativeOnRemovedFromFocusPath(InFocusEvent);
+	if (InFocusEvent.GetCause() == EFocusCause::WindowActivate)
+	{
+		SetFocus();
+		return;
+	}
+	
 	if (InFocusEvent.GetCause() == EFocusCause::Mouse)
 	{
 		SetFocus();

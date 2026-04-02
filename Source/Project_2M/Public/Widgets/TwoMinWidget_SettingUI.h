@@ -34,7 +34,7 @@ private:
 	int32 GetGraphicQualityIndex(int32 InGraphicQuality);
 	int32 GetScreenSizeIndex(FIntPoint InScreenSize);
 	
-	void SetScreenSizeText() const;
+	void SetScreenSizeText(const FIntPoint NewScreenSize) const;
 	void ApplySettingData() const;
 	void ResetSettingData();
 	void OnFocusSlot();
@@ -130,13 +130,25 @@ private:
 	bool bIsFullScreen = false;
 	
 	UPROPERTY()
+	bool bIsTempFullScreen = false;
+	
+	UPROPERTY()
 	FIntPoint ScreenSize;
+
+	UPROPERTY()
+	FIntPoint TempScreenSize;
 	
 	UPROPERTY()
 	int32 GraphicQuality;
 	
 	UPROPERTY()
+	int32 TempGraphicQuality;
+	
+	UPROPERTY()
 	bool bIsVeSync = false;
+	
+	UPROPERTY()
+	bool bIsTempVeSync = false;
 	
 	UPROPERTY()
 	float MasterVolume = 1.0f;
