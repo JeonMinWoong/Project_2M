@@ -22,10 +22,10 @@ public:
 	
 protected:
 	UPROPERTY()
-	ATwoMinBaseCharacter* OwningCharacter;
+	ATwoMinBaseCharacter* OwnerCharacter;
 
 	UPROPERTY()
-	UCharacterMovementComponent* OwningMovementComponent;
+	UCharacterMovementComponent* OwnerMovementComponent;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category="AnimData|Locomotion")
 	float GroundSpeed;

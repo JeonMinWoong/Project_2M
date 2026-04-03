@@ -22,8 +22,8 @@ UTwoMinAttributeSet::UTwoMinAttributeSet()
 	InitMaxStamina(1.f);
 	InitCurrentStamina(1.f);
 	
-	InitMaxHealth(0.f);
-	InitCurrentHealth(0.f);
+	InitMaxFight(0.f);
+	InitCurrentFight(0.f);
 	
 	InitMaxExperience(1.f);
 	InitCurrentExperience(0.f);

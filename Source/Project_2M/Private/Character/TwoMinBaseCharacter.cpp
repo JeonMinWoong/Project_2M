@@ -5,6 +5,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "AbilitySystem/TwoMinAbilitySystemComponent.h"
 #include "AbilitySystem/TwoMinAttributeSet.h"
+#include "AnimInstances/TwoMinCharacterAnimInstance.h"
 #include "Compnents/Combat/BaseCombatComponent.h"
 #include "Compnents/UI/BaseUIComponent.h"
 #include "Components/CapsuleComponent.h"

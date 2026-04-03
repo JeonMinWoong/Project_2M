@@ -4,7 +4,6 @@
 #include "AnimInstances/TwoMinCharacterAnimInstance.h"
 
 #include "KismetAnimationLibrary.h"
-#include "TwoMinGameplayTag.h"
 #include "Character/TwoMinBaseCharacter.h"
 #include "Character/TwoMinEnemyCharacter.h"
 #include "Compnents/Combat/BaseCombatComponent.h"
@@ -13,21 +12,21 @@
 
 void UTwoMinCharacterAnimInstance::NativeInitializeAnimation()
 {
-	OwningCharacter = Cast<ATwoMinBaseCharacter>(TryGetPawnOwner());
-	if (OwningCharacter)
+	OwnerCharacter = Cast<ATwoMinBaseCharacter>(TryGetPawnOwner());
+	if (OwnerCharacter)
 	{
-		OwningMovementComponent = OwningCharacter->GetCharacterMovement();
+		OwnerMovementComponent = OwnerCharacter->GetCharacterMovement();
 	}
 }
 
 void UTwoMinCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 {
-	if (!OwningCharacter || !OwningMovementComponent) return;
+	if (!OwnerCharacter || !OwnerMovementComponent) return;
 
-	GroundSpeed = OwningCharacter->GetVelocity().Size2D();
-	bHasAcceleration = OwningMovementComponent->GetCurrentAcceleration().SizeSquared2D() > 0.f;
-	LocomotionDirection = UKismetAnimationLibrary::CalculateDirection(OwningCharacter->GetVelocity(),
-		OwningCharacter->GetActorRotation());
+	GroundSpeed = OwnerCharacter->GetVelocity().Size2D();
+	bHasAcceleration = OwnerMovementComponent->GetCurrentAcceleration().SizeSquared2D() > 0.f;
+	LocomotionDirection = UKismetAnimationLibrary::CalculateDirection(OwnerCharacter->GetVelocity(),
+		OwnerCharacter->GetActorRotation());
 	
 	UpdateBattlePossible();
 	UpdateIdleElapsedTime(DeltaSeconds);
@@ -35,7 +34,7 @@ void UTwoMinCharacterAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSe
 
 void UTwoMinCharacterAnimInstance::UpdateBattlePossible()
 {
-	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(OwningCharacter);
+	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(OwnerCharacter);
 	if (!EnemyCharacter) return;
 	UEnemyCombatComponent* EnemyCombatComponent = Cast<UEnemyCombatComponent>(EnemyCharacter->GetCombatComponent());
 	if (!EnemyCombatComponent) return;
@@ -47,7 +46,7 @@ void UTwoMinCharacterAnimInstance::UpdateIdleElapsedTime(float DeltaSeconds)
 {
 	if (bIsPossibleBreaker == false) return;
 	
-	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(OwningCharacter);
+	ATwoMinEnemyCharacter* EnemyCharacter = Cast<ATwoMinEnemyCharacter>(OwnerCharacter);
 	if (!EnemyCharacter) return;
 	
 	if (bIsBattlePossible)

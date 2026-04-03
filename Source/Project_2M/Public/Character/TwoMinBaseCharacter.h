@@ -83,7 +83,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "GameplayEffect|Stamina_Gain")
 	TSubclassOf<UGameplayEffect> StaminaGainEffect;
-
 	
 	UPROPERTY()
 	int32 GainGold;

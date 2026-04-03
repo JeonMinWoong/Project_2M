@@ -32,7 +32,8 @@ public:
 
 private:
 	void CalculateDropProbability(const FItemDropData* ItemDropData, int32& OutItemCode, int32& OutDropCount) const;
-	
+	void CacheAllItemData();
+
 	UPROPERTY(EditDefaultsOnly, Category="EquipmentData")
 	UDataTable* EquipmentDataTable;
 
@@ -41,7 +42,12 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category="EtcData")
 	UDataTable* EtcDataTable;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category = "StageInfo|DropTable")
 	UDataTable* DropTable;
+
+	bool bIsCached = false;
+	TMap<int32, FItemEquipmentData> CachedEquipmentData;
+	TMap<int32, FItemConsumeData> CachedConsumeData;
+	TMap<int32, FItemEtcData> CachedEtcData;
 };

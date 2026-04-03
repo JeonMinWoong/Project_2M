@@ -9,9 +9,9 @@ void UTwoMinPlayerAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
-	if (OwningCharacter)
+	if (OwnerCharacter)
 	{
-		OwningPlayerCharacter = Cast<ATwoMinPlayerCharacter>(OwningCharacter);
+		OwningPlayerCharacter = Cast<ATwoMinPlayerCharacter>(OwnerCharacter);
 	}
 }
 

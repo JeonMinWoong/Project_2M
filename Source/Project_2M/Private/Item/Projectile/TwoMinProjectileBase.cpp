@@ -215,8 +215,22 @@ AActor* ATwoMinProjectileBase::UpdateHomingTarget()
 	}
 	
 	if (EnemyActors.IsEmpty()) return nullptr;
-	
-	return EnemyActors[0];
+
+	const FVector MyLocation = GetActorLocation();
+	AActor* ClosestActor = nullptr;
+	float ClosestDistSq = TNumericLimits<float>::Max();
+
+	for (AActor* Enemy : EnemyActors)
+	{
+		const float DistSq = FVector::DistSquared(MyLocation, Enemy->GetActorLocation());
+		if (DistSq < ClosestDistSq)
+		{
+			ClosestDistSq = DistSq;
+			ClosestActor = Enemy;
+		}
+	}
+
+	return ClosestActor;
 }
 
 void ATwoMinProjectileBase::FallingTick(float DeltaSeconds)

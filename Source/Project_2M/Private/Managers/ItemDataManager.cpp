@@ -179,59 +179,74 @@ void UItemDataManager::CalculateDropProbability(const FItemDropData* ItemDropDat
 	OutDropCount = 0;
 }
 
-FItemEquipmentData UItemDataManager::GetItemEquipmentData(int32 ItemID) const
+void UItemDataManager::CacheAllItemData()
 {
-	FItemEquipmentData NewEquipmentData;
-	TArray<FItemEquipmentData*> EquipmentTableGroup;
-	FString DropTableGroupName = FString::FromInt(ItemID);
-	EquipmentDataTable->GetAllRows(DropTableGroupName, EquipmentTableGroup);
+	if (bIsCached) return;
+	bIsCached = true;
 
-	for (FItemEquipmentData* TableGroup : EquipmentTableGroup)
+	if (EquipmentDataTable)
 	{
-		if (ItemID == TableGroup->ItemDataBase.ItemID)
+		TArray<FItemEquipmentData*> Rows;
+		EquipmentDataTable->GetAllRows(TEXT("CacheEquipment"), Rows);
+		for (const FItemEquipmentData* Row : Rows)
 		{
-			NewEquipmentData = *TableGroup;
-			break;
+			if (Row) CachedEquipmentData.Add(Row->ItemDataBase.ItemID, *Row);
 		}
 	}
-	
-	return NewEquipmentData;
+
+	if (ConsumeDataTable)
+	{
+		TArray<FItemConsumeData*> Rows;
+		ConsumeDataTable->GetAllRows(TEXT("CacheConsume"), Rows);
+		for (const FItemConsumeData* Row : Rows)
+		{
+			if (Row) CachedConsumeData.Add(Row->ItemDataBase.ItemID, *Row);
+		}
+	}
+
+	if (EtcDataTable)
+	{
+		TArray<FItemEtcData*> Rows;
+		EtcDataTable->GetAllRows(TEXT("CacheEtc"), Rows);
+		for (const FItemEtcData* Row : Rows)
+		{
+			if (Row) CachedEtcData.Add(Row->ItemDataBase.ItemID, *Row);
+		}
+	}
+}
+
+FItemEquipmentData UItemDataManager::GetItemEquipmentData(int32 ItemID) const
+{
+	const_cast<UItemDataManager*>(this)->CacheAllItemData();
+
+	if (const FItemEquipmentData* Found = CachedEquipmentData.Find(ItemID))
+	{
+		return *Found;
+	}
+
+	return FItemEquipmentData();
 }
 
 FItemConsumeData UItemDataManager::GetItemConsumeData(int32 ItemID) const
 {
-	FItemConsumeData NewConsumeData;
-	TArray<FItemConsumeData*> ConsumeTableGroup;
-	FString DropTableGroupName = FString::FromInt(ItemID);
-	ConsumeDataTable->GetAllRows(DropTableGroupName, ConsumeTableGroup);
+	const_cast<UItemDataManager*>(this)->CacheAllItemData();
 
-	for (FItemConsumeData* TableGroup : ConsumeTableGroup)
+	if (const FItemConsumeData* Found = CachedConsumeData.Find(ItemID))
 	{
-		if (ItemID == TableGroup->ItemDataBase.ItemID)
-		{
-			NewConsumeData = *TableGroup;
-			break;
-		}
+		return *Found;
 	}
-	
-	return NewConsumeData;
+
+	return FItemConsumeData();
 }
 
 FItemEtcData UItemDataManager::GetItemEtcData(int32 ItemID) const
 {
-	FItemEtcData NewEtcData;
-	TArray<FItemEtcData*> EtcTableGroup;
-	FString DropTableGroupName = FString::FromInt(ItemID);
-	EtcDataTable->GetAllRows(DropTableGroupName, EtcTableGroup);
+	const_cast<UItemDataManager*>(this)->CacheAllItemData();
 
-	for (FItemEtcData* TableGroup : EtcTableGroup)
+	if (const FItemEtcData* Found = CachedEtcData.Find(ItemID))
 	{
-		if (ItemID == TableGroup->ItemDataBase.ItemID)
-		{
-			NewEtcData = *TableGroup;
-			break;
-		}
+		return *Found;
 	}
-	
-	return NewEtcData;
+
+	return FItemEtcData();
 }
