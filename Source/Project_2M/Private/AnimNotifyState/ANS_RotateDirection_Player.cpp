@@ -38,7 +38,7 @@ void UANS_RotateDirection_Player::NotifyTick(USkeletalMeshComponent* MeshComp, U
 				{
 					const UAutoTargetingComponent* AutoTargetingComp =
 						PlayerCharacter->GetCombatComponent()->GetAutoTargetingComponent();
-					CharacterToTargeting(PlayerCharacter, AutoTargetingComp, FrameDeltaTime);
+					CharacterToTargeting(PlayerCharacter, AutoTargetingComp);
 				}
 				else
 				{
@@ -53,6 +53,20 @@ void UANS_RotateDirection_Player::NotifyTick(USkeletalMeshComponent* MeshComp, U
 	}
 	
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime, EventReference);
+}
+
+void UANS_RotateDirection_Player::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
+	const FAnimNotifyEventReference& EventReference)
+{
+	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(MeshComp->GetOwner());
+	if (!PlayerCharacter)
+	{
+		return;
+	}
+	
+	PlayerCharacter->SetStartRotationTargetInfo(nullptr, 0);
+	
+	Super::NotifyEnd(MeshComp, Animation, EventReference);
 }
 
 void UANS_RotateDirection_Player::CharacterToInputDirection(ATwoMinPlayerCharacter* PlayerCharacter)
@@ -100,7 +114,7 @@ void UANS_RotateDirection_Player::CharacterToInputDirection(ATwoMinPlayerCharact
 }
 
 void UANS_RotateDirection_Player::CharacterToTargeting(ATwoMinPlayerCharacter* PlayerCharacter,
-	const UAutoTargetingComponent* AutoTargetingComp, const float FrameDeltaTime)
+	const UAutoTargetingComponent* AutoTargetingComp)
 {
 	UMotionWarpingComponent* MotionWarpingComp = PlayerCharacter->GetMotionWarpingComponent();
 	if (!MotionWarpingComp) return;
@@ -110,18 +124,11 @@ void UANS_RotateDirection_Player::CharacterToTargeting(ATwoMinPlayerCharacter* P
 	bool IsLockOnTarget =
 		UTwoMinFunctionLibrary::HasGameplayTag(PlayerCharacter, TwoMinGameplayTag::Player_State_LockOn);
 	
-	const AActor* Target =
-		IsLockOnTarget ? GetLockOnTarget(PlayerCharacter) : AutoTargetingComp->GetCurrentTargetingActor();
+	AActor* Target = IsLockOnTarget ? GetLockOnTarget(PlayerCharacter) : AutoTargetingComp->GetCurrentTargetingActor();
 	
 	if (!Target) return;
-
-	const float TargetingRotationSpeed = AutoTargetingComp->GetTargetingRotationSpeed();
-
-	const FRotator TargetDirection = (Target->GetActorLocation() - PlayerCharacter->GetActorLocation()).Rotation();
-	const FRotator NewCharacterRot = FMath::RInterpTo(PlayerCharacter->GetActorRotation(),
-	FRotator(0.f, TargetDirection.Yaw, 0.f), FrameDeltaTime, TargetingRotationSpeed);
 	
-	PlayerCharacter->SetActorRotation(NewCharacterRot);
+	PlayerCharacter->SetStartRotationTargetInfo(Target, AutoTargetingComp->GetTargetingRotationSpeed());
 }
 
 AActor* UANS_RotateDirection_Player::GetLockOnTarget(ATwoMinBaseCharacter* MyActor)

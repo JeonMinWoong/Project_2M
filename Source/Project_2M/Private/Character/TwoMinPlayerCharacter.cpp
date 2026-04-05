@@ -206,6 +206,8 @@ void ATwoMinPlayerCharacter::Tick(float DeltaTime)
 	CheckSpecialAttack(DeltaTime);
 	CheckRunState(DeltaTime);
 	CheckAimingZoom(DeltaTime);
+	
+	RotateTowardsTarget(DeltaTime);
 }
 
 void ATwoMinPlayerCharacter::CheckSpecialAttack(float DeltaTime)
@@ -239,6 +241,18 @@ void ATwoMinPlayerCharacter::CheckRunState(float DeltaTime)
 	
 	UTwoMinFunctionLibrary::AddGameplayTagToActor(this, TwoMinGameplayTag::Player_State_Running);
 	GetCharacterMovement()->MaxWalkSpeed = MaxRunSpeed;
+}
+
+void ATwoMinPlayerCharacter::RotateTowardsTarget(float DeltaTime)
+{
+	if (!RotationTargetActor) return;
+	
+	FRotator CurrentRot = GetActorRotation();
+	FRotator TargetRot = (RotationTargetActor->GetActorLocation() - GetActorLocation()).Rotation();
+	FRotator NewRot = FMath::RInterpTo(CurrentRot, 
+		FRotator(CurrentRot.Pitch, TargetRot.Yaw, CurrentRot.Roll), DeltaTime, TargetRotationSpeed);
+    
+	SetActorRotation(NewRot);
 }
 
 void ATwoMinPlayerCharacter::AfterDeathProcess()

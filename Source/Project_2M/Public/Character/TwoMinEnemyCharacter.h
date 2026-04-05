@@ -190,7 +190,12 @@ public:
 	
 	FORCEINLINE AActor* GetCinematicSyncActor() const { return CinematicSyncActor; };
 	
-	FORCEINLINE void SetUseBossHealthBar(const bool bIsUse) { bUseBossHealthBar =  bIsUse; }
+	FORCEINLINE void SetUseBossHealthBar(const bool bIsUse)
+	{
+		MonsterType = EMonsterType::Boss;
+		bUseBossHealthBar =  bIsUse;
+	}
+	
 	FORCEINLINE bool IsUseBossHealthBar() const { return bUseBossHealthBar; }
 	FORCEINLINE void SetBossPhaseType(EBossPhaseType NewBossPhaseType) { BossPhase = NewBossPhaseType; };
 	

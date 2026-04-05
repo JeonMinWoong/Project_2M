@@ -62,7 +62,7 @@ public:
 	virtual void SetThrowProjectile(ATwoMinProjectileBase* NewThrowProjectile);
 	
 	FTimerHandle FightDecreaseTimerHandle;
-	
+
 protected:
 	//~ Begin APawn Interface.
 	virtual void PossessedBy(AController* NewController) override;
@@ -78,6 +78,8 @@ protected:
 private:
 	void CheckSpecialAttack(float DeltaTime);
 	void CheckRunState(float DeltaTime);
+	void RotateTowardsTarget(float DeltaTime);
+	
 	void CancelAimingAbility() const;
 	bool CanProcessInput();
 	
@@ -298,6 +300,16 @@ private:
 	
 #pragma endregion
 
+#pragma region AutoTargeting
+	
+	UPROPERTY()
+	AActor* RotationTargetActor;
+	
+	UPROPERTY()
+	float TargetRotationSpeed;
+	
+#pragma endregion
+	
 public:
 	bool GetIsRunning();
 	FORCEINLINE UCameraComponent* GetCamera() const { return CameraComponent; }
@@ -346,5 +358,11 @@ public:
 	
 	FORCEINLINE void SetEquipWeapon(bool bOn) { bIsEquipWeapon = bOn; }
 	FORCEINLINE bool GetEquipWeapon() const { return bIsEquipWeapon; };
+	
+	FORCEINLINE void SetStartRotationTargetInfo(AActor* NewTargetActor, const float RotationSpeed)
+	{
+		RotationTargetActor = NewTargetActor;
+		TargetRotationSpeed = RotationSpeed;
+	}
 };
 

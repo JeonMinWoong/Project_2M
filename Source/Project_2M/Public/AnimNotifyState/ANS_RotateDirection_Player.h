@@ -28,11 +28,12 @@ protected:
 	//~ Begin UAnimNotifyState Interface.
 	virtual void NotifyTick(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation, float FrameDeltaTime,
 	                        const FAnimNotifyEventReference& EventReference) override;
+	virtual void NotifyEnd(USkeletalMeshComponent * MeshComp, UAnimSequenceBase * Animation,
+		const FAnimNotifyEventReference& EventReference) override;
 	//~ End UAnimNotifyState Interface.
 
 	void CharacterToInputDirection(ATwoMinPlayerCharacter* PlayerCharacter);
-	void CharacterToTargeting(ATwoMinPlayerCharacter* PlayerCharacter, const UAutoTargetingComponent* AutoTargetingComp,
-		float FrameDeltaTime);
+	void CharacterToTargeting(ATwoMinPlayerCharacter* PlayerCharacter, const UAutoTargetingComponent* AutoTargetingComp);
 	
 	virtual AActor* GetLockOnTarget(ATwoMinBaseCharacter* MyActor) override;
 	

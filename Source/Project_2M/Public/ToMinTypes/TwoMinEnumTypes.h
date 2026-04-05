@@ -95,7 +95,6 @@ enum class EMonsterType : uint8
 {
 	Practice,
 	Normal,
-	Elite,
 	Boss,
 };
 
