@@ -29,6 +29,7 @@
 #include "Compnents/Combat/BaseCombatComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Item/HitBox/BoxHitCollision.h"
+#include "System/TwoMinActorPoolSubsystem.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 
 class UAbilityTask_WaitGameplayEvent;
@@ -379,16 +380,18 @@ void UTwoMinGameplayAbility::OnAttackGameplayEventReceivedByRange(FGameplayEvent
 	}
 	
 	if (!ProjectileBase || SocketName.IsNone()) return;
-	
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = BaseCharacter;
-	
-	ATwoMinProjectileBase* Projectile = GetWorld()->SpawnActor<ATwoMinProjectileBase>(
-		ProjectileBase,
-		SpawnLocation,
-		SpawnRotation,
-		SpawnParams
-	);
+
+	ATwoMinProjectileBase* Projectile = nullptr;
+	if (UTwoMinActorPoolSubsystem* PoolSubsystem = GetWorld()->GetSubsystem<UTwoMinActorPoolSubsystem>())
+	{
+		Projectile = PoolSubsystem->AcquireActor<ATwoMinProjectileBase>(ProjectileBase, SpawnLocation, SpawnRotation, BaseCharacter);
+	}
+	else
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = BaseCharacter;
+		Projectile = GetWorld()->SpawnActor<ATwoMinProjectileBase>(ProjectileBase, SpawnLocation, SpawnRotation, SpawnParams);
+	}
 
 	if (Projectile)
 	{
@@ -848,17 +851,22 @@ void UTwoMinGameplayAbility::EnableHitCollision(ATwoMinBaseCharacter* BaseCharac
 	}
 	
 	if (!CollisionBase) return;
-	
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Owner = BaseCharacter;
-	
-	AHitCollisionBase* SpawnCollision = GetWorld()->SpawnActor<AHitCollisionBase>(
-		CollisionBase,
-		TargetLocation.IsZero() ? BaseCharacter->GetActorLocation() : TargetLocation,
-		BaseCharacter->GetActorForwardVector().Rotation(),
-		SpawnParams
-	);
-	
+
+	const FVector SpawnLocation = TargetLocation.IsZero() ? BaseCharacter->GetActorLocation() : TargetLocation;
+	const FRotator SpawnRotation = BaseCharacter->GetActorForwardVector().Rotation();
+
+	AHitCollisionBase* SpawnCollision = nullptr;
+	if (UTwoMinActorPoolSubsystem* PoolSubsystem = GetWorld()->GetSubsystem<UTwoMinActorPoolSubsystem>())
+	{
+		SpawnCollision = PoolSubsystem->AcquireActor<AHitCollisionBase>(CollisionBase, SpawnLocation, SpawnRotation, BaseCharacter);
+	}
+	else
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = BaseCharacter;
+		SpawnCollision = GetWorld()->SpawnActor<AHitCollisionBase>(CollisionBase, SpawnLocation, SpawnRotation, SpawnParams);
+	}
+
 	if (!SpawnCollision) return;
 	
 	SpawnCollision->SetCollisionAttackInfoData(AttackPayload->Data);

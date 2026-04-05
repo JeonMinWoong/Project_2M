@@ -17,6 +17,8 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "NiagaraComponent.h"
+#include "System/TwoMinActorPoolSubsystem.h"
 
 ATwoMinProjectileBase::ATwoMinProjectileBase()
 {
@@ -52,12 +54,16 @@ ATwoMinProjectileBase::ATwoMinProjectileBase()
 void ATwoMinProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	CachedStaticMeshComp = FindComponentByClass<UStaticMeshComponent>();
-	
-	SetLifeSpan(LifeTime);
-	IgnoreActors.Emplace(GetOwner());
-	ProjectileCollisionBox->IgnoreActorWhenMoving(GetOwner(), true);
+	GetComponents<UNiagaraComponent>(CachedNiagaraComponents);
+
+	if (!bIsPooled)
+	{
+		SetLifeSpan(LifeTime);
+		IgnoreActors.Emplace(GetOwner());
+		ProjectileCollisionBox->IgnoreActorWhenMoving(GetOwner(), true);
+	}
 }
 
 void ATwoMinProjectileBase::Tick(float DeltaSeconds)
@@ -476,22 +482,12 @@ void ATwoMinProjectileBase::Destroyed()
 {
 	Super::Destroyed();
 
+	// 풀링된 액터가 월드 종료로 파괴되는 경우 안전망
 	if (DestroyCallback)
 	{
 		DestroyCallback();
+		DestroyCallback = nullptr;
 	}
-	
-	if (bIsHit)
-	{
-		return;
-	}
-	
-	// 여기서 이펙트 스폰
-	FHitResult HitResult;
-	HitResult.ImpactPoint = GetActorLocation();
-	HitResult.ImpactNormal = GetActorLocation();
-	
-	PlayImpactEffect(HitResult);
 }
 
 FVector ATwoMinProjectileBase::GetDirection() const
@@ -527,6 +523,141 @@ void ATwoMinProjectileBase::PickUpProjectileProcess(AActor* OwnerActor)
 void ATwoMinProjectileBase::DestroyProjectile()
 {
 	if (ProjectileMovementComp->bShouldBounce) return;
-	
-	Destroy();
+
+	ReturnToPool();
+}
+
+void ATwoMinProjectileBase::ActivateFromPool(const FVector& Location, const FRotator& Rotation, AActor* NewOwner)
+{
+	bIsPooled = true;
+
+	SetOwner(NewOwner);
+	SetActorLocationAndRotation(Location, Rotation);
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
+	SetActorTickEnabled(true);
+
+	ProjectileCollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Block);
+	ProjectileCollisionBox->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+
+	ProjectileMovementComp->SetComponentTickEnabled(true);
+	ProjectileMovementComp->SetUpdatedComponent(RootComponent);
+	ProjectileMovementComp->InitialSpeed = InitialSpeed;
+	ProjectileMovementComp->MaxSpeed = MaxSpeed;
+	ProjectileMovementComp->Velocity = GetActorForwardVector() * InitialSpeed;
+	ProjectileMovementComp->ProjectileGravityScale = 0.f;
+
+	IgnoreActors.Emplace(NewOwner);
+	ProjectileCollisionBox->IgnoreActorWhenMoving(NewOwner, true);
+
+	for (UNiagaraComponent* NiagaraComp : CachedNiagaraComponents)
+	{
+		NiagaraComp->ReinitializeSystem();
+	}
+
+	GetWorldTimerManager().SetTimer(
+		PoolReturnTimerHandle,
+		this,
+		&ATwoMinProjectileBase::ReturnToPool,
+		LifeTime,
+		false
+	);
+}
+
+void ATwoMinProjectileBase::DeactivateToPool()
+{
+	if (DestroyCallback)
+	{
+		DestroyCallback();
+		DestroyCallback = nullptr;
+	}
+
+	if (!bIsHit)
+	{
+		FHitResult HitResult;
+		HitResult.ImpactPoint = GetActorLocation();
+		HitResult.ImpactNormal = GetActorLocation();
+		PlayImpactEffect(HitResult);
+	}
+
+	GetWorldTimerManager().ClearTimer(PoolReturnTimerHandle);
+	SetLifeSpan(0.f);
+	SetActorHiddenInGame(true);
+	SetActorEnableCollision(false);
+	SetActorTickEnabled(false);
+
+	ProjectileMovementComp->StopMovementImmediately();
+	ProjectileMovementComp->SetComponentTickEnabled(false);
+
+	for (UNiagaraComponent* NiagaraComp : CachedNiagaraComponents)
+	{
+		NiagaraComp->Deactivate();
+	}
+
+	ResetProjectileState();
+}
+
+void ATwoMinProjectileBase::SetOwningPool(UTwoMinActorPoolSubsystem* InPool)
+{
+	OwningPoolSubsystem = InPool;
+	bIsPooled = true;
+}
+
+void ATwoMinProjectileBase::ReturnToPool()
+{
+	if (!bIsPooled)
+	{
+		Destroy();
+		return;
+	}
+
+	if (IsActorTickEnabled() == false && IsHidden())
+	{
+		return;
+	}
+
+	if (OwningPoolSubsystem)
+	{
+		OwningPoolSubsystem->ReleaseActor(this);
+	}
+	else
+	{
+		Destroy();
+	}
+}
+
+void ATwoMinProjectileBase::ResetProjectileState()
+{
+	const ATwoMinProjectileBase* CDO = GetClass()->GetDefaultObject<ATwoMinProjectileBase>();
+
+	ProjectileType = CDO->ProjectileType;
+	bIsOverlapEvent = CDO->bIsOverlapEvent;
+
+	bIsHit = false;
+	bIsHoverOut = false;
+	bIsFallingStart = false;
+	bIsHomingStart = false;
+	bIsRecallProjectile = false;
+	bIsHitFloor = false;
+
+	CurHoverTime = 0.f;
+	CurFallingTime = 0.f;
+	CurHomingActivationDelay = 0.f;
+	CurHomingRetargetInterval = 0.f;
+	CurFallingGravity = 0.f;
+
+	HomingTarget = nullptr;
+	CachedTargetCharacter = nullptr;
+	ProjectileAttackInfoData = FAttackInfoData();
+	ActiveAbilityTag = FGameplayTag();
+	ProjectileAttackGameplayEffectClass = nullptr;
+	AbilityLevel = 0;
+
+	IgnoreActors.Empty();
+	DestroyCallback = nullptr;
+	SetOwner(nullptr);
+
+	ProjectileMovementComp->bShouldBounce = CDO->ProjectileMovementComp->bShouldBounce;
 }

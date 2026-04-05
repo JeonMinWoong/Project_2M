@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbilityTypes.h"
 #include "GameFramework/Actor.h"
+#include "Interfaces/PoolableActorInterface.h"
 #include "ToMinTypes/TwoMinEnumTypes.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "TwoMinProjectileBase.generated.h"
@@ -10,11 +11,13 @@
 class USphereComponent;
 class ATwoMinBaseCharacter;
 class UNiagaraSystem;
+class UNiagaraComponent;
 class UProjectileMovementComponent;
 class UBoxComponent;
+class UTwoMinActorPoolSubsystem;
 
 UCLASS()
-class PROJECT_2M_API ATwoMinProjectileBase : public AActor
+class PROJECT_2M_API ATwoMinProjectileBase : public AActor, public IPoolableActorInterface
 {
 	GENERATED_BODY()
 	
@@ -183,23 +186,40 @@ protected:
 #pragma endregion
 
 	
+public:
+	// IPoolableActorInterface
+	virtual void ActivateFromPool(const FVector& Location, const FRotator& Rotation, AActor* NewOwner) override;
+	virtual void DeactivateToPool() override;
+	virtual void SetOwningPool(UTwoMinActorPoolSubsystem* InPool) override;
+	virtual void ReturnToPool() override;
+
 private:
 	FVector GetDirection() const;
-	
+
 	void PickUpProjectileProcess(AActor* OwnerActor);
 	void DestroyProjectile();
-	
+	void ResetProjectileState();
+
 	FAttackInfoData ProjectileAttackInfoData;
-	
+
 	FGameplayTag ActiveAbilityTag;
-	
+
 	UPROPERTY()
 	ATwoMinBaseCharacter* CachedTargetCharacter;
-	
+
 	UPROPERTY()
 	TSubclassOf<UGameplayEffect> ProjectileAttackGameplayEffectClass;
 
 	int AbilityLevel;
+
+	FTimerHandle PoolReturnTimerHandle;
+	bool bIsPooled = false;
+
+	UPROPERTY()
+	TObjectPtr<UTwoMinActorPoolSubsystem> OwningPoolSubsystem;
+
+	UPROPERTY()
+	TArray<TObjectPtr<UNiagaraComponent>> CachedNiagaraComponents;
 	
 public:
 	FORCEINLINE EProjectileType GetProjectileType() const { return ProjectileType; }

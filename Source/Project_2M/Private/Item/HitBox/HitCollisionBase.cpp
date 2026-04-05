@@ -8,6 +8,8 @@
 #include "AbilitySystem/Ability/TwoMinGA_GuardBase.h"
 #include "Character/TwoMinBaseCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "NiagaraComponent.h"
+#include "System/TwoMinActorPoolSubsystem.h"
 
 class UTwoMinGA_GuardBase;
 
@@ -36,6 +38,9 @@ void AHitCollisionBase::BeginPlay()
 	{
 		OwnerCharacter = MyOwner;
 	}
+	
+	IgnoreActors.AddUnique(OwnerCharacter);
+	GetComponents<UNiagaraComponent>(CachedNiagaraComponents);
 }
 
 void AHitCollisionBase::Tick(float DeltaTime)
@@ -44,15 +49,15 @@ void AHitCollisionBase::Tick(float DeltaTime)
 
 	if (CurrentHitTerm >= MaxTimer)
 	{
-		Destroy();
-		return;	
+		ReturnToPool();
+		return;
 	}
-	
+
 	CurrentHitTerm += DeltaTime;
 	if (CurrentHitTerm >= MaxHitTerm)
 	{
 		if (CurrentHitCount >= MaxHitCount) return;
-		
+
 		CurrentHitCount++;
 		OnCheckHitActorCollision();
 	}
@@ -178,4 +183,77 @@ void AHitCollisionBase::OnDamageToHitActor(AActor* HitActor)
 bool AHitCollisionBase::IsCustomHitCondition(AActor* HitActor)
 {
 	return true;
+}
+
+void AHitCollisionBase::ActivateFromPool(const FVector& Location, const FRotator& Rotation, AActor* NewOwner)
+{
+	bIsPooled = true;
+
+	SetOwner(NewOwner);
+	SetActorLocationAndRotation(Location, Rotation);
+	SetActorHiddenInGame(false);
+	SetActorTickEnabled(true);
+
+	OwnerCharacter = Cast<ATwoMinBaseCharacter>(NewOwner);
+
+	CurrentHitCount = 0;
+	CurrentHitTerm = 0.f;
+	IgnoreActors.Empty();
+	IgnoreActors.AddUnique(OwnerCharacter);
+
+	for (UNiagaraComponent* NiagaraComp : CachedNiagaraComponents)
+	{
+		NiagaraComp->ReinitializeSystem();
+	}
+}
+
+void AHitCollisionBase::DeactivateToPool()
+{
+	for (UNiagaraComponent* NiagaraComp : CachedNiagaraComponents)
+	{
+		NiagaraComp->Deactivate();
+	}
+
+	SetActorHiddenInGame(true);
+	SetActorTickEnabled(false);
+
+	OwnerCharacter = nullptr;
+	CurrentHitCount = 0;
+	CurrentHitTerm = 0.f;
+	IgnoreActors.Empty();
+
+	AttackInfoData = FAttackInfoData();
+	ActiveAbilityTag = FGameplayTag();
+	CollisionAttackGameplayEffectClass = nullptr;
+	AbilityLevel = 0;
+	SetOwner(nullptr);
+}
+
+void AHitCollisionBase::SetOwningPool(UTwoMinActorPoolSubsystem* InPool)
+{
+	OwningPoolSubsystem = InPool;
+	bIsPooled = true;
+}
+
+void AHitCollisionBase::ReturnToPool()
+{
+	if (!bIsPooled)
+	{
+		Destroy();
+		return;
+	}
+
+	if (IsActorTickEnabled() == false && IsHidden())
+	{
+		return;
+	}
+
+	if (OwningPoolSubsystem)
+	{
+		OwningPoolSubsystem->ReleaseActor(this);
+	}
+	else
+	{
+		Destroy();
+	}
 }

@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interfaces/PoolableActorInterface.h"
 #include "ToMinTypes/TwoMinStructTypes.h"
 #include "GameplayEffect.h"
 #include "HitCollisionBase.generated.h"
@@ -15,9 +16,11 @@ namespace EDrawDebugTrace
 }
 
 class ATwoMinBaseCharacter;
+class UNiagaraComponent;
+class UTwoMinActorPoolSubsystem;
 
 UCLASS()
-class PROJECT_2M_API AHitCollisionBase : public AActor
+class PROJECT_2M_API AHitCollisionBase : public AActor, public IPoolableActorInterface
 {
 	GENERATED_BODY()
 	
@@ -85,16 +88,32 @@ protected:
 	int AbilityLevel;
 	
 public:
+	// IPoolableActorInterface
+	virtual void ActivateFromPool(const FVector& Location, const FRotator& Rotation, AActor* NewOwner) override;
+	virtual void DeactivateToPool() override;
+	virtual void SetOwningPool(UTwoMinActorPoolSubsystem* InPool) override;
+	virtual void ReturnToPool() override;
+
 	FORCEINLINE EHitCollisionType GetHitCollisionType() const { return HitCollisionType; }
 	FORCEINLINE EHitCollisionSpawnType GetHitCollisionSpawnType() const { return HitCollisionSpawnType; }
-	
+
 	FORCEINLINE void SetCollisionAttackInfoData(const FAttackInfoData& InAttackInfoData)
 	{ AttackInfoData = InAttackInfoData; }
 
 	FORCEINLINE void SetActiveAbilityTag(const FGameplayTag InTag) { ActiveAbilityTag = InTag; }
-	
+
 	FORCEINLINE void SetCollisionAttackGameplayEffectClass(TSubclassOf<UGameplayEffect> InGameplayEffect)
 	{ CollisionAttackGameplayEffectClass = InGameplayEffect; }
-	
+
 	FORCEINLINE void SetActiveAbilityLevel(const int InLevel) { AbilityLevel = InLevel; }
+
+private:
+	FTimerHandle PoolReturnTimerHandle;
+	bool bIsPooled = false;
+
+	UPROPERTY()
+	TObjectPtr<UTwoMinActorPoolSubsystem> OwningPoolSubsystem;
+
+	UPROPERTY()
+	TArray<TObjectPtr<UNiagaraComponent>> CachedNiagaraComponents;
 };
