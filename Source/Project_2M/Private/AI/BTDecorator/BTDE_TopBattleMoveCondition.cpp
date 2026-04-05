@@ -18,8 +18,10 @@ bool UBTDE_TopBattleMoveCondition::CalculateRawConditionValue(UBehaviorTreeCompo
 	UEnemyCombatComponent* EnemyCombatComp = GetEnemyCombatComponent(OwnerComp);
 	if (!EnemyCombatComp) return false;
 	
-	if (UTwoMinFunctionLibrary::HasGameplayTag(EnemyCombatComp->GetOwner(), TwoMinGameplayTag::Enemy_State_Actioning)) 
-		return false;;
+	if (UTwoMinFunctionLibrary::HasGameplayTag(EnemyCombatComp->GetOwner(), TwoMinGameplayTag::Enemy_State_Actioning))
+	{
+		return false;	
+	} 
 	
 	UBlackboardComponent* BB = GetBlackboardComponent(OwnerComp);
 	if (!BB) return false;

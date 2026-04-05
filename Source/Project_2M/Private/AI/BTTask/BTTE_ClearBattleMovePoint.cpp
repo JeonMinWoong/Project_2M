@@ -3,7 +3,10 @@
 
 #include "AI/BTTask/BTTE_ClearBattleMovePoint.h"
 
+#include "TwoMinFunctionLibrary.h"
+#include "TwoMinGameplayTag.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Compnents/Combat/EnemyCombatComponent.h"
 #include "ToMinTypes/TwoMinBlackboardKeys.h"
 
 UBTTE_ClearBattleMovePoint::UBTTE_ClearBattleMovePoint()
@@ -16,6 +19,14 @@ EBTNodeResult::Type UBTTE_ClearBattleMovePoint::ExecuteTask(UBehaviorTreeCompone
 	UBlackboardComponent* BB = OwnerComp.GetBlackboardComponent();
 	if (!BB) return EBTNodeResult::Failed;
 
+	UEnemyCombatComponent* EnemyCombatComp = GetEnemyCombatComponent(OwnerComp);
+	if (!EnemyCombatComp) return EBTNodeResult::Failed;
+	
+	if (UTwoMinFunctionLibrary::HasGameplayTag(EnemyCombatComp->GetOwner(), TwoMinGameplayTag::Enemy_State_Actioning))
+	{
+		return EBTNodeResult::Succeeded;	
+	} 
+	
 	FVector BattleMovePointVector = BB->GetValueAsVector(TwoMinBBKeys::BattleMovePoint);
 	if (BattleMovePointVector.IsNearlyZero()) return EBTNodeResult::Failed;
 	
