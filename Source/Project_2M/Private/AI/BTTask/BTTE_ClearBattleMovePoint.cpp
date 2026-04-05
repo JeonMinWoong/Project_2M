@@ -28,7 +28,10 @@ EBTNodeResult::Type UBTTE_ClearBattleMovePoint::ExecuteTask(UBehaviorTreeCompone
 	} 
 	
 	FVector BattleMovePointVector = BB->GetValueAsVector(TwoMinBBKeys::BattleMovePoint);
-	if (BattleMovePointVector.IsNearlyZero()) return EBTNodeResult::Failed;
+	if (BattleMovePointVector.IsNearlyZero())
+	{
+		return  EBTNodeResult::Succeeded;
+	}
 	
 	BB->SetValueAsVector(TwoMinBBKeys::BattleMovePoint, FVector::ZeroVector);
 	return EBTNodeResult::Succeeded;
