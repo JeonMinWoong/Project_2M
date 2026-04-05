@@ -201,6 +201,7 @@ enum class EHitCollisionType : uint8
 	Circle = 1,
 	Box = 2,
 	Sector = 3,
+	Capsule = 4,
 };
 
 UENUM(Blueprintable)
