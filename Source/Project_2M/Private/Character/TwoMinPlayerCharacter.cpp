@@ -683,6 +683,24 @@ void ATwoMinPlayerCharacter::SetThrowProjectile(ATwoMinProjectileBase* NewThrowP
 	ThrowProjectile = NewThrowProjectile;
 }
 
+void ATwoMinPlayerCharacter::OnUIInputApply(bool bOn)
+{
+	ULocalPlayer* LocalPlayer = GetPlayerController()->GetLocalPlayer();
+	if (!LocalPlayer) return;
+	
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer);
+	if (!Subsystem) return;
+	
+	if (bOn)
+	{
+		Subsystem->AddMappingContext(UIInputMappingContext, 100);
+	}
+	else
+	{
+		Subsystem->RemoveMappingContext(UIInputMappingContext);
+	}
+}
+
 void ATwoMinPlayerCharacter::Input_UseItemTrigger(const FInputActionValue& InputActionValue)
 {
 	if (UTwoMinFunctionLibrary::HasGameplayTag(this, TwoMinGameplayTag::Player_State_OpenInventory)) return;

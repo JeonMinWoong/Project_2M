@@ -3,24 +3,19 @@
 
 #include "Widgets/TwoMinWidget_PossibleExecution.h"
 
-#include "TwoMinFunctionLibrary.h"
 #include "Components/CanvasPanel.h"
 
 void UTwoMinWidget_PossibleExecution::ShowPossibleExecution()
 {
-	const bool bIsUsingGamePad = UTwoMinFunctionLibrary::IsUsingGamePad(GetWorld(), GetOwningPlayer()->GetPlatformUserId());
-	if (bIsUseGamepad == bIsUsingGamePad) return;
-	
-	bIsUseGamepad = bIsUsingGamePad;
-	
-	if (bIsUseGamepad)
-	{
-		KeyBoardCanvas->SetVisibility(ESlateVisibility::Hidden);
-		GamepadCanvas->SetVisibility(ESlateVisibility::Visible);
-	}
-	else
-	{
-		KeyBoardCanvas->SetVisibility(ESlateVisibility::Visible);
-		GamepadCanvas->SetVisibility(ESlateVisibility::Hidden);
-	}
+	OnInputDeviceChanged(IsUsingGamePad());
+}
+
+void UTwoMinWidget_PossibleExecution::OnInputDeviceChanged(bool bIsGamePad)
+{
+	if (bIsUseGamepad == bIsGamePad) return;
+
+	bIsUseGamepad = bIsGamePad;
+
+	KeyBoardCanvas->SetVisibility(bIsGamePad ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
+	GamepadCanvas->SetVisibility(bIsGamePad ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 }

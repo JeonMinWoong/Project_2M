@@ -22,7 +22,7 @@ class PROJECT_2M_API UTwoMinWidget_CustomProgressbar : public UTwoMinWidgetBase
 public:
 	void InitProgressbar(float InitPercent, bool bIsMute);
 	void SetPercent(const float InPercent) const;
-	void SetModifyInputText() const;
+	void SetModifyInputText(bool bIsUsingGamepad) const;
 	
 	void SetFocusMuteButton() const;
 	void SetEnableInputText(bool bOn) const;
@@ -30,7 +30,8 @@ public:
 protected:
 	virtual void NativeOnAddedToFocusPath(const FFocusEvent& InFocusEvent) override;
 	virtual void NativeOnRemovedFromFocusPath(const FFocusEvent& InFocusEvent) override;
-
+	virtual void OnInputDeviceChanged(bool bIsGamePad) override;
+	
 private:
 	void HighlightFocusSlot(bool bOn) const;
 	

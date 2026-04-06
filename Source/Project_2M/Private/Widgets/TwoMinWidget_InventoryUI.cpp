@@ -35,12 +35,9 @@ void UTwoMinWidget_InventoryUI::NativeConstruct()
 	
 	PlayUISound(EUISoundType::Inventory_Open);
 	InventorySelect->SetVisibility(ESlateVisibility::Hidden);
-
-	const bool bIsUsingGamePad =
-		UTwoMinFunctionLibrary::IsUsingGamePad(GetWorld(), GetOwningPlayer()->GetPlatformUserId());
 	
-	SaveKeyBoardBox->SetVisibility(bIsUsingGamePad ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
-	SaveGamePadBox->SetVisibility(bIsUsingGamePad ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+	SaveKeyBoardBox->SetVisibility(IsUsingGamePad() ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
+	SaveGamePadBox->SetVisibility(IsUsingGamePad() ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 	
 	const bool bIsVillageMap = UTwoMinFunctionLibrary::IsVillageMap(GetWorld());
 	const FString Str = FString::Printf(bIsVillageMap ? TEXT(": 수동 저장") : TEXT(": 전투 포기"));
@@ -739,6 +736,14 @@ FReply UTwoMinWidget_InventoryUI::NativeOnPreviewKeyDown(const FGeometry& MyGeom
 	}
 	
 	return Super::NativeOnPreviewKeyDown(MyGeometry, InKeyEvent);
+}
+
+void UTwoMinWidget_InventoryUI::OnInputDeviceChanged(bool bIsGamePad)
+{
+	Super::OnInputDeviceChanged(bIsGamePad);
+	
+	SaveKeyBoardBox->SetVisibility(bIsGamePad ? ESlateVisibility::Hidden : ESlateVisibility::Visible);
+	SaveGamePadBox->SetVisibility(bIsGamePad ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 }
 
 UTwoMinWidget_InventorySlot* UTwoMinWidget_InventoryUI::FindInventorySlot(int32 ItemID)

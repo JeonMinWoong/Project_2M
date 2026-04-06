@@ -63,9 +63,15 @@ void UTwoMinWidget_IC_Slot::NativeOnRemovedFromFocusPath(const FFocusEvent& InFo
 	}
 }
 
+void UTwoMinWidget_IC_Slot::OnInputDeviceChanged(bool bIsGamePad)
+{
+	Super::OnInputDeviceChanged(bIsGamePad);
+	
+	FocusKey->SetKeyTextValue(bIsGamePad ? TEXT("A") : TEXT("F"));
+}
+
 void UTwoMinWidget_IC_Slot::OnEnable()
 {
-	const bool bIsUsingGamePad = UTwoMinFunctionLibrary::IsUsingGamePad(GetWorld(), GetOwningPlayer()->GetPlatformUserId());
-	const FString KeyText = bIsUsingGamePad ? TEXT("A") : TEXT("F");
+	const FString KeyText = IsUsingGamePad() ? TEXT("A") : TEXT("F");
 	FocusKey->SetKeyTextValue(KeyText);
 }

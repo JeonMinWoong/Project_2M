@@ -26,6 +26,7 @@ public:
 	
 protected:
 	virtual FReply NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent) override;
+	virtual void OnInputDeviceChanged(bool bIsGamePad) override;
 	
 private:
 	void InitSettingLoadData();

@@ -29,14 +29,13 @@ void UTwoMinWidget_CustomProgressbar::SetPercent(const float InPercent) const
 		CanvasSlot->SetPosition(FVector2D(PosX, 0));
 	}
 	
-	SetModifyInputText();
+	SetModifyInputText(IsUsingGamePad());
 }
 
-void UTwoMinWidget_CustomProgressbar::SetModifyInputText() const
+void UTwoMinWidget_CustomProgressbar::SetModifyInputText(bool bIsUsingGamepad) const
 {
-	const bool bIsUsingGamePad = UTwoMinFunctionLibrary::IsUsingGamePad(GetWorld(), GetOwningPlayer()->GetPlatformUserId());
-	const FString DecreaseKeyText = bIsUsingGamePad ? TEXT("LB") : TEXT("Q");
-	const FString IncreaseKeyText = bIsUsingGamePad ? TEXT("RB") : TEXT("E");
+	const FString DecreaseKeyText = bIsUsingGamepad ? TEXT("LB") : TEXT("Q");
+	const FString IncreaseKeyText = bIsUsingGamepad ? TEXT("RB") : TEXT("E");
 	
 	if (DecreaseInputText->GetText().ToString() == DecreaseKeyText) return;
 	if (IncreaseInputText->GetText().ToString() == IncreaseKeyText) return;
@@ -78,6 +77,13 @@ void UTwoMinWidget_CustomProgressbar::NativeOnRemovedFromFocusPath(const FFocusE
 	}
 	
 	HighlightFocusSlot(false);
+}
+
+void UTwoMinWidget_CustomProgressbar::OnInputDeviceChanged(bool bIsGamePad)
+{
+	Super::OnInputDeviceChanged(bIsGamePad);
+	
+	SetModifyInputText(bIsGamePad);
 }
 
 void UTwoMinWidget_CustomProgressbar::HighlightFocusSlot(bool bOn) const

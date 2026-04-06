@@ -434,7 +434,11 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 	{
 		if (bIsDealPopupOpen)
 		{
-			if (StoreDealPopup->GetCurButtonIndex() == 1) return FReply::Unhandled();
+			if (StoreDealPopup->GetCurButtonIndex() >= 1)
+			{
+				StoreDealPopup->SetSelectButton(1);
+				return FReply::Handled();
+			}
 			
 			StoreDealPopup->SetSelectButton(1);
 			PlayUISound(EUISoundType::Focus_Move);
@@ -483,7 +487,11 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 	{
 		if (bIsDealPopupOpen)
 		{
-			if (StoreDealPopup->GetCurButtonIndex() == 0) return FReply::Unhandled();
+			if (StoreDealPopup->GetCurButtonIndex() <= 0)
+			{
+				StoreDealPopup->SetSelectButton(0);
+				return FReply::Handled();	
+			}	
 			
 			StoreDealPopup->SetSelectButton(0);
 			PlayUISound(EUISoundType::Focus_Move);
@@ -519,6 +527,10 @@ FReply UTwoMinWidget_StoreUI::NativeOnPreviewKeyDown(const FGeometry& MyGeometry
 			InventoryWindow->SetCurInventoryIndex(NextInventoryIndex);
 			PlayUISound(EUISoundType::Focus_Move);
 			
+			return FReply::Handled();
+		}
+		else if (CurStoreWindowType == EInventoryWindowType::Store)
+		{
 			return FReply::Handled();
 		}
 		

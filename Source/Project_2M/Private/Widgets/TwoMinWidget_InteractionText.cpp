@@ -68,14 +68,24 @@ void UTwoMinWidget_InteractionText::NativeOnRemovedFromFocusPath(const FFocusEve
 	}
 }
 
+void UTwoMinWidget_InteractionText::OnInputDeviceChanged(bool bIsGamePad)
+{
+	Super::OnInputDeviceChanged(bIsGamePad);
+	
+	if (!CachedKeyTypeWidget) return;
+	
+	const FString KeyText = bIsGamePad ? TEXT("A") : TEXT("F");
+	CachedKeyTypeWidget->SetKeyTextValue(KeyText);
+}
+
 void UTwoMinWidget_InteractionText::KeyTypeWidgetCreated(const FString& WidgetID, UUserWidget* Widget)
 {
 	UTwoMinWidget_KeyType* KeyTypeWidget = Cast<UTwoMinWidget_KeyType>(Widget);
 	if (!KeyTypeWidget) return;
 	
-	const bool bIsUsingGamePad = UTwoMinFunctionLibrary::IsUsingGamePad(GetWorld(), GetOwningPlayer()->GetPlatformUserId());
-	const FString KeyText = bIsUsingGamePad ? TEXT("A") : TEXT("F");
+	const FString KeyText = IsUsingGamePad() ? TEXT("A") : TEXT("F");
 	if (KeyTypeWidget->GetKeyTextValue().ToString() == KeyText) return;
 	
 	KeyTypeWidget->SetKeyTextValue(KeyText);
+	CachedKeyTypeWidget = KeyTypeWidget;
 }

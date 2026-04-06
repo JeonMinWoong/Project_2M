@@ -145,6 +145,13 @@ void UTwoMinWidget_StoreDealPopup::SetSelectButton(const int32 ButtonIndex)
 	}
 }
 
+void UTwoMinWidget_StoreDealPopup::OnInputDeviceChanged(bool bIsGamePad)
+{
+	Super::OnInputDeviceChanged(bIsGamePad);
+	
+	SetModifyInputItemCountText();
+}
+
 void UTwoMinWidget_StoreDealPopup::GetItemInformation(const FItemData& ItemData, FText& OutName, UTexture2D*& OutTexture)
 {
 	OutName = FText::FromString(ItemData.ItemName);
@@ -210,7 +217,7 @@ float UTwoMinWidget_StoreDealPopup::GetDealProgressPointPos(const float CurProgr
 
 void UTwoMinWidget_StoreDealPopup::SetModifyInputItemCountText() const
 {
-	const bool bIsUsingGamePad = UTwoMinFunctionLibrary::IsUsingGamePad(GetWorld(), GetOwningPlayer()->GetPlatformUserId());
+	const bool bIsUsingGamePad = IsUsingGamePad();
 	const FString DecreaseKeyText = bIsUsingGamePad ? TEXT("LB") : TEXT("Q");
 	const FString IncreaseKeyText = bIsUsingGamePad ? TEXT("RB") : TEXT("E");
 	

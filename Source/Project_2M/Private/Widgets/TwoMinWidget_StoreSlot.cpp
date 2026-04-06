@@ -46,12 +46,6 @@ void UTwoMinWidget_StoreSlot::NativeOnAddedToFocusPath(const FFocusEvent& InFocu
 void UTwoMinWidget_StoreSlot::NativeOnRemovedFromFocusPath(const FFocusEvent& InFocusEvent)
 {
 	Super::NativeOnRemovedFromFocusPath(InFocusEvent);
-	if (InFocusEvent.GetCause() == EFocusCause::Navigation)
-	{
-		SetFocus();
-		return;
-	}
-	
 	if (InFocusEvent.GetCause() == EFocusCause::Mouse)
 	{
 		SetFocus();

@@ -18,10 +18,13 @@ class PROJECT_2M_API UTwoMinWidget_InputKey_Notify : public UTwoMinWidgetBase
 	
 public:
 	void OnEnable(bool bOn);
-	
+
 	UPROPERTY(meta=(BindWidget), BlueprintReadWrite)
 	UTextBlock* TextBox;
-	
+
+protected:
+	virtual void OnInputDeviceChanged(bool bIsGamePad) override;
+
 private:
 	UPROPERTY(meta=(BindWidget))
 	UTwoMinWidget_KeyType* KeyType;

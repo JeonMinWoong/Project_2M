@@ -31,6 +31,7 @@ public:
 protected:
 	virtual void NativeOnAddedToFocusPath(const FFocusEvent& InFocusEvent) override;
 	virtual void NativeOnRemovedFromFocusPath(const FFocusEvent& InFocusEvent) override;
+	virtual void OnInputDeviceChanged(bool bIsGamePad) override;
 	
 private:
 	void OnEnable();

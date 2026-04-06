@@ -17,7 +17,10 @@ class PROJECT_2M_API UTwoMinWidget_PossibleExecution : public UTwoMinWidgetBase
 	
 public:
 	void ShowPossibleExecution();
-	
+
+protected:
+	virtual void OnInputDeviceChanged(bool bIsGamePad) override;
+
 private:
 	UPROPERTY(meta=(BindWidget))
 	UCanvasPanel* KeyBoardCanvas;

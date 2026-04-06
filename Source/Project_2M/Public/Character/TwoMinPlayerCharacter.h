@@ -61,6 +61,8 @@ public:
 	void CheckAimingZoom(float DeltaTime);
 	virtual void SetThrowProjectile(ATwoMinProjectileBase* NewThrowProjectile);
 	
+	void OnUIInputApply(bool bOn);
+	
 	FTimerHandle FightDecreaseTimerHandle;
 
 protected:
@@ -222,6 +224,9 @@ private:
 	
 	UPROPERTY()
 	ECameraShakeType CachedCameraShakeType;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "UIInput|Mapping")
+	UInputMappingContext* UIInputMappingContext;
 	
 #pragma region Input
   	/** Inputs **/

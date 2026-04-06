@@ -32,7 +32,8 @@ public:
 	void OnUnEquipment(int32 ItemID);
 protected:
 	virtual FReply NativeOnPreviewKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent) override;
-
+	virtual void OnInputDeviceChanged(bool bIsGamePad) override;
+	
 private:
 	UTwoMinWidget_InventorySlot* FindInventorySlot(int32 ItemID);
 	UTwoMinWidget_InventorySlot* FindQuickSlot(int32 ItemID);

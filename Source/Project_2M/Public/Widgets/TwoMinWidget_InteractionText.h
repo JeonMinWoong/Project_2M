@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "TwoMinWidget_KeyType.h"
 #include "Widgets/TwoMinWidgetBase.h"
 #include "TwoMinWidget_InteractionText.generated.h"
 
@@ -24,6 +25,8 @@ protected:
 	
 	virtual void NativeOnRemovedFromFocusPath(const FFocusEvent& InFocusEvent) override;
 	
+	virtual void OnInputDeviceChanged(bool bIsGamePad) override;
+	
 private:
 	UFUNCTION()
 	void KeyTypeWidgetCreated(const FString& WidgetID, UUserWidget* Widget);
@@ -33,6 +36,9 @@ private:
 
 	UPROPERTY()
 	bool bIsInteractionTexting = false;
+	
+	UPROPERTY()
+	UTwoMinWidget_KeyType* CachedKeyTypeWidget;
 	
 public:
 	FORCEINLINE void SetInteractionTexting(const bool bOn) { bIsInteractionTexting = bOn; }

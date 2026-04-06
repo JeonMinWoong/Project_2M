@@ -29,6 +29,9 @@ public:
 	void HideStorePopup();
 	void SetSelectButton(const int32 ButtonIndex);
 	
+protected:
+	virtual void OnInputDeviceChanged(bool bIsGamePad) override;
+	
 private:
 	void GetItemInformation(const FItemData& ItemData, FText& OutName, UTexture2D*& OutTexture);
 	int32 GetMaxDealValue(const FItemData& ItemData, EItemType DealItemType);

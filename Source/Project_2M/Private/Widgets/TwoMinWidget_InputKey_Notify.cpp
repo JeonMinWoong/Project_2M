@@ -3,14 +3,18 @@
 
 #include "Widgets/TwoMinWidget_InputKey_Notify.h"
 
-#include "TwoMinFunctionLibrary.h"
 #include "Widgets/TwoMinWidget_KeyType.h"
 
 void UTwoMinWidget_InputKey_Notify::OnEnable(bool bOn)
 {
 	if (!bOn) return;
-	
-	const bool bIsUsingGamePad = UTwoMinFunctionLibrary::IsUsingGamePad(GetWorld(), GetOwningPlayer()->GetPlatformUserId());
-	const FString KeyText = bIsUsingGamePad ? TEXT("A") : TEXT("F");
+
+	const FString KeyText = IsUsingGamePad() ? TEXT("A") : TEXT("F");
+	KeyType->SetKeyTextValue(KeyText);
+}
+
+void UTwoMinWidget_InputKey_Notify::OnInputDeviceChanged(bool bIsGamePad)
+{
+	const FString KeyText = bIsGamePad ? TEXT("A") : TEXT("F");
 	KeyType->SetKeyTextValue(KeyText);
 }

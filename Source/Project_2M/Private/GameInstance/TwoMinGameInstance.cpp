@@ -3,7 +3,11 @@
 
 #include "GameInstance/TwoMinGameInstance.h"
 
+#include "Brushes/SlateNoResource.h"
 #include "GameFramework/GameUserSettings.h"
+#include "Styling/AppStyle.h"
+#include "Styling/SlateStyle.h"
+#include "Styling/SlateStyleRegistry.h"
 #include "Kismet/GameplayStatics.h"
 #include "Managers/SoundManager.h"
 #include "Managers/WorldStageManager.h"
@@ -14,7 +18,15 @@
 void UTwoMinGameInstance::OnStart()
 {
 	Super::OnStart();
-	
+
+	// Slate 기본 포커스 사각형(파란 테두리) 제거
+	const ISlateStyle* AppStyle = FSlateStyleRegistry::FindSlateStyle(FAppStyle::GetAppStyleSetName());
+	if (AppStyle)
+	{
+		FSlateStyleSet* MutableStyle = const_cast<FSlateStyleSet*>(static_cast<const FSlateStyleSet*>(AppStyle));
+		MutableStyle->Set("FocusRectangle", new FSlateNoResource());
+	}
+
 	ApplyInitSettings();
 	StageManager->InitStage();
 }

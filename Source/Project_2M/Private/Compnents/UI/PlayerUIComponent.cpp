@@ -55,6 +55,7 @@ void UPlayerUIComponent::OpenMapSelectWidget(ATwoMinPlayerCharacter* PlayerChara
 		MapSelectUI->RemoveFromParent();
 	}
 	
+	PlayerCharacter->OnUIInputApply(bIsOpenMapSelectWidget);
 	bIsMapSelectWidgetOpen = bIsOpenMapSelectWidget;
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), TimeDilation);
 }
@@ -96,6 +97,7 @@ void UPlayerUIComponent::OpenStoreWidget(ATwoMinPlayerCharacter* PlayerCharacter
 		NPC->ResetInteractionProcess();
 	}
 	
+	PlayerCharacter->OnUIInputApply(bIsOpenStoreWidget);
 	bIsStoreWidgetOpen = bIsOpenStoreWidget;
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), TimeDilation);
 }
@@ -136,6 +138,7 @@ void UPlayerUIComponent::OpenEndGameWidget(ATwoMinPlayerCharacter* PlayerCharact
 		EndGameWidgetUI->RemoveFromParent();
 	}
 	
+	PlayerCharacter->OnUIInputApply(bIsOpenEndGameWidget);
 	bIsEndGameWidgetOpen = bIsOpenEndGameWidget;
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), TimeDilation);
 }

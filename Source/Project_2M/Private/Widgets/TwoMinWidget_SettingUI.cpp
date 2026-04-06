@@ -220,7 +220,7 @@ void UTwoMinWidget_SettingUI::SetScreenSizeText(const FIntPoint NewScreenSize) c
 	FString ScreenSizeString = FString::Printf(TEXT("%d x %d"), NewScreenSize.X, NewScreenSize.Y);
 	ScreenSizeButton->TextBox->SetText(FText::FromString(ScreenSizeString));
 	
-	const bool bIsUsingGamePad = UTwoMinFunctionLibrary::IsUsingGamePad(GetWorld(), GetOwningPlayer()->GetPlatformUserId());
+	const bool bIsUsingGamePad = IsUsingGamePad();
 	const FString DecreaseKeyText = bIsUsingGamePad ? TEXT("◀ LB") : TEXT("◀ Q");
 	const FString IncreaseKeyText = bIsUsingGamePad ? TEXT("RB ▶") : TEXT("E ▶");
 	
@@ -676,6 +676,13 @@ FReply UTwoMinWidget_SettingUI::NativeOnPreviewKeyDown(const FGeometry& MyGeomet
 	}
 	
 	return Super::NativeOnPreviewKeyDown(MyGeometry, InKeyEvent);
+}
+
+void UTwoMinWidget_SettingUI::OnInputDeviceChanged(bool bIsGamePad)
+{
+	Super::OnInputDeviceChanged(bIsGamePad);
+	
+	SetScreenSizeText(ScreenSize);
 }
 
 void UTwoMinWidget_SettingUI::ApplySettingData() const
