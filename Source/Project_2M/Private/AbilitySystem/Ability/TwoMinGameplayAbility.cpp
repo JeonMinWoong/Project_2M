@@ -21,6 +21,7 @@
 #include "AbilitySystem/Ability/TwoMinGA_GuardBase.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEGA_AttackBase.h"
 #include "AbilitySystem/Ability/Enemy/TwoMinEGA_SpecialAttackBase.h"
+#include "AbilitySystem/Ability/Player/TwoMinGA_CounterAttack_Player.h"
 #include "AbilitySystem/Ability/Player/TwoMinGA_SpecialAttackBase.h"
 #include "AbilitySystem/Ability/Player/TwoMinGA_ThrowBase.h"
 #include "Character/TwoMinEnemyCharacter.h"
@@ -553,6 +554,8 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 	}
 
 	ATwoMinPlayerCharacter* PlayerCharacter = Cast<ATwoMinPlayerCharacter>(InstigatorActor);
+	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(TargetActor);
+	
 	if (bIsExecution == false && PlayerCharacter)
 	{
 		EffectSpecHandle.Data->SetSetByCallerMagnitude(
@@ -563,17 +566,23 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 	
 	if (PlayerCharacter)
 	{
-		UTwoMinAbilitySystemComponent* ASC = 
-			Cast<UTwoMinAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
+		UTwoMinAbilitySystemComponent* ASC = Cast<UTwoMinAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
 		if (ASC)
 		{
 			ASC->GiveFightValue(FName("Player.Attack.Fight"));
 		}
+		
+		if (UTwoMinGA_CounterAttack_Player* CounterAttack_Player = Cast<UTwoMinGA_CounterAttack_Player>(this))
+		{
+			if (UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetCharacter))
+			{
+				TargetASC->CancelAllAbilities();	
+				UTwoMinFunctionLibrary::RemoveGameplayTagToActor(TargetCharacter, TwoMinGameplayTag::Shared_State_SuperArmor);
+			}
+		}
 	}
 	
-	ATwoMinBaseCharacter* TargetCharacter = Cast<ATwoMinBaseCharacter>(TargetActor);
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetCharacter);
-	
 	FActiveGameplayEffectHandle ResultEffectHandle =
 		GetTwoMinAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToTarget(
 		*EffectSpecHandle.Data,
