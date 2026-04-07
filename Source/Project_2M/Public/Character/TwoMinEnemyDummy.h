@@ -21,14 +21,23 @@ protected:
 	virtual void BeginPlay() override;
 	
 private:
-	UPROPERTY(EditAnywhere, Category = "AttackIndex")
+	UPROPERTY(EditAnywhere, Category = "Dummy|AttackIndex")
 	int32 AttackIndex = 1;
 
-	UPROPERTY(EditAnywhere, Category = "AutoAction")
+	UPROPERTY(EditAnywhere, Category = "Dummy|AutoAction")
 	bool bAutoAction = false;
 
-	UPROPERTY(EditAnywhere, Category = "AutoAction")
+	UPROPERTY(EditAnywhere, Category = "Dummy|AutoAction")
 	bool bResetAttackLocation = false;
+	
+	UPROPERTY(EditAnywhere, Category = "Dummy|IsUseHitReact")
+	bool bIsUseHitReact = true;
+	
+	UPROPERTY(EditAnywhere, Category = "Dummy|IsUsePush")
+	bool bIsUsePush = true;
+	
+	UPROPERTY(EditAnywhere, Category = "Dummy|IsPossibleExecution")
+	bool bIsPossibleExecution = false;
 	
 	UPROPERTY(VisibleAnywhere, Category= "UI")
 	UWidgetComponent* AIStateWidgetComponent;
@@ -37,4 +46,7 @@ public:
 	FORCEINLINE int32 GetAttackIndex() const { return AttackIndex; }
 	FORCEINLINE bool GetAutoAction() const { return bAutoAction; }
 	FORCEINLINE bool GetResetAttackLocation() const { return bResetAttackLocation; }
+	FORCEINLINE bool GetIsUseHitReact() const { return bIsUseHitReact; }
+	FORCEINLINE bool GetIsUsePush() const { return bIsUsePush; }
+	FORCEINLINE bool GetIsPossibleExecution() const { return bIsPossibleExecution; }
 };

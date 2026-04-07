@@ -454,7 +454,9 @@ void ATwoMinEnemyCharacter::EnableExecutionWidget(bool bIsEnable)
 void ATwoMinEnemyCharacter::UpdateExecutionWidgetPosition()
 {
 	if (!EnemyExecutionWidgetComponent || EnemyExecutionWidgetComponent->IsVisible() == false) return;
-
+	if (!PossibleExecutionWidget) return;
+	if (PossibleExecutionWidget->IsVisible() == false) return;
+	
 	FVector Location = GetLockOnPos();
 	FVector PlayerCameraPos = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
 	FRotator Rotation = (PlayerCameraPos - GetActorLocation()).Rotation();

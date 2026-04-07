@@ -25,6 +25,7 @@
 #include "AbilitySystem/Ability/Player/TwoMinGA_SpecialAttackBase.h"
 #include "AbilitySystem/Ability/Player/TwoMinGA_ThrowBase.h"
 #include "Character/TwoMinEnemyCharacter.h"
+#include "Character/TwoMinEnemyDummy.h"
 #include "Character/TwoMinPlayerCharacter.h"
 #include "Compnents/ExecutionComponent.h"
 #include "Compnents/Combat/BaseCombatComponent.h"
@@ -195,6 +196,11 @@ void UTwoMinGameplayAbility::OnStartKnockBack(AActor* OwnerActor, UAnimMontage* 
 	UAnimInstance* AnimInst = Character->GetMesh() ? Character->GetMesh()->GetAnimInstance() : nullptr;
 	if (!MW || !AnimInst) return;
 
+	if (ATwoMinEnemyDummy* Dummy = Cast<ATwoMinEnemyDummy>(Character))
+	{
+		if (Dummy->GetIsUsePush() == false) return;
+	}
+	
 	MW->RemoveWarpTarget(FName("KB_Target"));
 	
 	FVector Target;
@@ -558,10 +564,19 @@ void UTwoMinGameplayAbility::DamageToEffectSpecHandle(TSubclassOf<UGameplayEffec
 	
 	if (bIsExecution == false && PlayerCharacter)
 	{
-		EffectSpecHandle.Data->SetSetByCallerMagnitude(
-			TwoMinGameplayTag::Shared_SetByCaller_GroggyAmount,
-			UTwoMinFunctionLibrary::AttackTypeChangeToAmount(AttackPayload->Data.AttackType)
-		);
+		bool bIsPossibleGroggy = true;
+		if (ATwoMinEnemyDummy* Dummy = Cast<ATwoMinEnemyDummy>(TargetCharacter))
+		{
+			bIsPossibleGroggy = Dummy->GetIsPossibleExecution();
+		}
+		
+		if (bIsPossibleGroggy)
+		{
+			EffectSpecHandle.Data->SetSetByCallerMagnitude(
+				TwoMinGameplayTag::Shared_SetByCaller_GroggyAmount,
+				UTwoMinFunctionLibrary::AttackTypeChangeToAmount(AttackPayload->Data.AttackType)
+			);	
+		}
 	}
 	
 	if (PlayerCharacter)
@@ -616,6 +631,14 @@ void UTwoMinGameplayAbility::OnHitStop(const FGameplayEventData& Payload, bool b
 {
 	CameraShakeToShakeType(Payload.Instigator->GetInstigator(), AttackPayload->Data.CameraShakeType);
 	CameraShakeOnHitReact(TargetCharacter, AttackPayload->Data.HitData.HitType, bIsTargetGuard);
+	
+	if (ATwoMinEnemyDummy* Dummy = Cast<ATwoMinEnemyDummy>(TargetCharacter))
+	{
+		if (Dummy->GetIsUseHitReact() == false)
+		{
+			return;
+		}	
+	}
 	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 		TargetCharacter,

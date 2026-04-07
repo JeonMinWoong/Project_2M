@@ -3,6 +3,8 @@
 
 #include "Character/TwoMinEnemyDummy.h"
 
+#include "TwoMinFunctionLibrary.h"
+#include "TwoMinGameplayTag.h"
 #include "Components/WidgetComponent.h"
 #include "Widgets/Enemy/TwoMinWidgetDummy.h"
 
@@ -20,5 +22,4 @@ void ATwoMinEnemyDummy::BeginPlay()
 	{
 		AIStateWidget->InitEnemyIComponent(EnemyUIComponent);
 	}
-	
 }
